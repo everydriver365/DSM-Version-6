@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import * as React from "react";
 import {
   IconArrowBackUp,
   IconArrowLeft,
@@ -13,6 +14,7 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { useGoBack } from "@/hooks/useGoBack";
+import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pro-teach")({
   head: () => ({
@@ -67,9 +69,70 @@ const TEMPLATES = [
   { key: "dual", label: "Dual carriageway", Icon: IconRoad },
 ] as const;
 
+type Favourite = {
+  id: string;
+  name: string;
+  imageData: string;
+  type: "map" | "sketch";
+  createdAt: string;
+};
+
+function useRecentSketches(max = 3): Favourite[] {
+  const [items, setItems] = React.useState<Favourite[]>([]);
+  React.useEffect(() => {
+    const out: Favourite[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith("pro_teach_fav_")) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const parsed = JSON.parse(raw);
+          out.push({
+            id: parsed.id ?? key,
+            name: parsed.name ?? "Saved sketch",
+            imageData: parsed.imageData ?? "",
+            type: parsed.mapUrl || parsed.lat ? "map" : "sketch",
+            createdAt: parsed.createdAt ?? new Date().toISOString(),
+          });
+        } catch {
+          // ignore corrupt entries
+        }
+      }
+    }
+    out.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    setItems(out.slice(0, max));
+  }, []);
+  return items;
+}
+
 function ProTeachPage() {
   const navigate = useNavigate();
   const goBack = useGoBack();
+  const search = useSearch({ from: "/pro-teach" as never }) as { pupilId?: string };
+  const pupilId = search.pupilId;
+  const [pupilName, setPupilName] = React.useState<string | null>(null);
+  const [shareTemplate, setShareTemplate] = React.useState<string | null>(null);
+  const recent = useRecentSketches(3);
+
+  React.useEffect(() => {
+    if (!pupilId) {
+      setPupilName(null);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .from("pupils")
+      .select("name")
+      .eq("id", pupilId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setPupilName((data as { name?: string | null } | null)?.name ?? null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pupilId]);
 
   const bigCard: React.CSSProperties = {
     background: "#fff",
@@ -90,6 +153,33 @@ function ProTeachPage() {
     color: "#fff",
     fontWeight: 700,
     letterSpacing: "0.4px",
+  };
+
+  const openTemplate = (key: string) => {
+    navigate({ to: "/pro-teach/sketch" as never, search: { template: key } as never });
+  };
+
+  const handleTemplateClick = (key: string) => {
+    openTemplate(key);
+  };
+
+  const startLongPress = (key: string) => {
+    const id = window.setTimeout(() => setShareTemplate(key), 500);
+    return () => window.clearTimeout(id);
+  };
+
+  const shareTemplateUrl = async (key: string) => {
+    const url = `${window.location.origin}/pro-teach/sketch?template=${key}`;
+    const nav = navigator as Navigator & { share?: (d: ShareData) => Promise<void> };
+    if (nav.share) {
+      try {
+        await nav.share({ title: "PRO Teach template", url });
+        return;
+      } catch {
+        /* cancelled */
+      }
+    }
+    await navigator.clipboard.writeText(url);
   };
 
   return (
@@ -158,7 +248,9 @@ function ProTeachPage() {
             }}
           >
             <IconUser size={16} color="rgba(255,255,255,0.6)" />
-            <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>Teaching tools</span>
+            <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
+              {pupilId ? (pupilName ? `With ${pupilName}` : "Loading pupil…") : "Teaching tools"}
+            </span>
           </div>
         </div>
       </div>
@@ -248,49 +340,131 @@ function ProTeachPage() {
           </div>
         </div>
 
+        {/* Recent sketches */}
+        {recent.length > 0 && (
+          <div>
+            <SectionLabel text="Recent sketches" />
+            <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 4 }}>
+              {recent.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() =>
+                    navigate({
+                      to: item.type === "map" ? ("/pro-teach/map" as never) : ("/pro-teach/sketch" as never),
+                    })
+                  }
+                  style={{
+                    flexShrink: 0,
+                    width: 120,
+                    borderRadius: 12,
+                    border: `1px solid ${BORDER}`,
+                    overflow: "hidden",
+                    background: "#fff",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
+                >
+                  <div style={{ height: 80, background: "#F9FAFB" }}>
+                    {item.imageData ? (
+                      <img
+                        src={item.imageData}
+                        alt={item.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: MUTED,
+                          fontSize: 11,
+                        }}
+                      >
+                        No preview
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ padding: 8 }}>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: NAVY,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.name}
+                    </div>
+                    <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>
+                      {new Date(item.createdAt).toLocaleDateString("en-GB")}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* section 2 */}
         <div>
           <SectionLabel text="Templates" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-            {TEMPLATES.map(({ key, label, Icon }) => (
-              <div
-                key={key}
-                role="button"
-                tabIndex={0}
-                onClick={() =>
-                  navigate({ to: "/pro-teach/sketch" as never, search: { template: key } as never })
-                }
-                style={{
-                  background: "#fff",
-                  borderRadius: 12,
-                  border: `1px solid ${BORDER}`,
-                  boxShadow: "0 2px 0 #E4E4E8",
-                  padding: "12px 8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 6,
-                  cursor: "pointer",
-                }}
-              >
+            {TEMPLATES.map(({ key, label, Icon }) => {
+              let clearTimer: (() => void) | null = null;
+              return (
                 <div
+                  key={key}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleTemplateClick(key)}
+                  onMouseDown={() => {
+                    clearTimer = startLongPress(key);
+                  }}
+                  onMouseUp={() => clearTimer?.()}
+                  onMouseLeave={() => clearTimer?.()}
+                  onTouchStart={() => {
+                    clearTimer = startLongPress(key);
+                  }}
+                  onTouchEnd={() => clearTimer?.()}
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 10,
-                    background: "#EAF5FC",
+                    background: "#fff",
+                    borderRadius: 12,
+                    border: `1px solid ${BORDER}`,
+                    boxShadow: "0 2px 0 #E4E4E8",
+                    padding: "12px 8px",
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 6,
+                    cursor: "pointer",
+                    userSelect: "none",
                   }}
                 >
-                  <Icon size={20} color={BLUE} stroke={1.6} />
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 10,
+                      background: "#EAF5FC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Icon size={20} color={BLUE} stroke={1.6} />
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, textAlign: "center" }}>
+                    {label}
+                  </div>
                 </div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, textAlign: "center" }}>
-                  {label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -339,6 +513,91 @@ function ProTeachPage() {
           </div>
         </div>
       </div>
+
+      {shareTemplate && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,35,65,0.45)",
+            display: "flex",
+            alignItems: "flex-end",
+            zIndex: 60,
+          }}
+          onClick={() => setShareTemplate(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              width: "100%",
+              borderRadius: "18px 18px 0 0",
+              padding: "14px 16px calc(env(safe-area-inset-bottom, 0px) + 16px)",
+            }}
+          >
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto 12px" }} />
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 12 }}>
+              {TEMPLATES.find((t) => t.key === shareTemplate)?.label ?? "Template"}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setShareTemplate(null);
+                openTemplate(shareTemplate);
+              }}
+              style={{
+                width: "100%",
+                padding: "12px 0",
+                borderRadius: 12,
+                border: "none",
+                background: NAVY,
+                color: "#fff",
+                fontWeight: 700,
+                marginBottom: 8,
+                cursor: "pointer",
+              }}
+            >
+              Open
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                await shareTemplateUrl(shareTemplate);
+                setShareTemplate(null);
+              }}
+              style={{
+                width: "100%",
+                padding: "12px 0",
+                borderRadius: 12,
+                border: `1px solid ${BORDER}`,
+                background: "#fff",
+                color: NAVY,
+                fontWeight: 700,
+                marginBottom: 8,
+                cursor: "pointer",
+              }}
+            >
+              Share link
+            </button>
+            <button
+              type="button"
+              onClick={() => setShareTemplate(null)}
+              style={{
+                width: "100%",
+                padding: "12px 0",
+                borderRadius: 12,
+                border: "none",
+                background: "transparent",
+                color: MUTED,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

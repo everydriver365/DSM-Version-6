@@ -533,3 +533,11 @@ html.dsm-native body::before {
   outline: none;
   border-radius: 14px;
 }
+
+/* ============================================================
+ * PRO Teach full-screen mode
+ * ============================================================ */
+.pro-teach-fullscreen .fixed.bottom-0 {
+  display: none !important;
+}
+
