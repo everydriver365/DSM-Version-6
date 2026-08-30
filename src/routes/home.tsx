@@ -88,7 +88,7 @@ import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
   | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "availability" | "event"
-  | "course" | "note" | "eol" | "enquiry" | "call";
+  | "course" | "note" | "eol" | "enquiry" | "call" | "proteach";
 
 const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
   { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6", group: "Teaching" },
