@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "@/lib/toast";
 import { IconBroadcast, IconMicrophone, IconPlayerPlay, IconSteeringWheel, IconUsers } from "@tabler/icons-react";
-import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
@@ -115,9 +114,7 @@ function DsmLivePage() {
   const poppins = "Poppins, sans-serif";
 
   return (
-    <DSMTopSheet title="DSM Live">
-      <div style={{ fontFamily: poppins }}>
-
+    <div style={{ fontFamily: poppins, background: "#F4F6F8", paddingTop: 12 }}>
       {/* Live status pill */}
       <div style={{ padding: "12px 16px 0", display: "flex" }}>
         <span
@@ -147,8 +144,6 @@ function DsmLivePage() {
           Live
         </span>
       </div>
-
-
 
       {/* Hero */}
       <div style={{ padding: "16px 16px 18px" }}>
@@ -272,7 +267,6 @@ function DsmLivePage() {
         })()}
       </div>
 
-
       {/* Sessions */}
       <div style={{ padding: 16 }}>
         <h2
@@ -286,10 +280,6 @@ function DsmLivePage() {
         >
           Sessions
         </h2>
-
-
-
-
 
         {sessions === null ? null : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
@@ -333,7 +323,6 @@ function DsmLivePage() {
 
       <CommunitySection />
     </div>
-    </DSMTopSheet>
   );
 }
 

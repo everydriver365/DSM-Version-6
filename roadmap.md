@@ -10,3 +10,4 @@
 - [x] PRO Radio expanded player uses shared DSM bottom sheet shell
 - [x] Move FAB quick-add pill menu up so bottom items aren't obscured
 - [x] Auto-refresh payment history after taking a payment
+- [ ] Show a success toast after taking a payment
