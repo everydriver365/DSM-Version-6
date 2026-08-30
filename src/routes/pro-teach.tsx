@@ -516,8 +516,10 @@ function ProTeachPage() {
                     <Icon size={20} color={BLUE} stroke={1.6} />
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, textAlign: "center" }}>
+                    {favourites.includes(key) ? "⭐ " : ""}
                     {label}
                   </div>
+
                 </div>
               );
             })}
