@@ -26,7 +26,6 @@ const COMING_SOON_STATIONS = [
   { name: "PRO 60s", Icon: IconVinyl, bg: "#536579" },
   { name: "PRO Chill", Icon: IconWaveSine, bg: "#18A999" },
   { name: "PRO Drive", Icon: IconCar, bg: "#2C97DE" },
-  { name: "PRO Talk", Icon: IconMicrophone, bg: "#7B61FF" },
   { name: "PRO Xmas", Icon: IconTree, bg: "#E53935", toastText: "PRO Xmas coming soon! 🎄" },
 ];
 
