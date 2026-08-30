@@ -561,7 +561,7 @@ function SketchBoardPage() {
               background: tool === "fill" ? "#EAF5FC" : "#fff",
             }}
           >
-            <IconBucket size={18} color={tool === "fill" ? "#2C97DE" : MUTED} />
+            <IconPaint size={18} color={tool === "fill" ? "#2C97DE" : MUTED} />
           </button>
           <button
             type="button"
