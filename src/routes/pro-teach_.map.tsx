@@ -274,7 +274,10 @@ function MapDrawPage() {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#fff" }}>
+    <div
+      ref={rootRef}
+      style={{ height: shellHeight, display: "flex", flexDirection: "column", background: "#fff" }}
+    >
       {/* header */}
       <div style={{ background: NAVY, paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 16px 14px" }}>
