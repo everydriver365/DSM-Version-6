@@ -170,7 +170,7 @@ export function useProRadio() {
         };
         setState((s) => {
           const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
-          const fallbackShowName = liveSelected ? "PRO Live" : s.selectedStation;
+          const fallbackShowName = liveSelected ? "PRO Live" : (s.selectedStation || "PRO Radio");
           return {
             ...s,
             nowPlaying: fallbackNowPlaying,
