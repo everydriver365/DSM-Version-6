@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { tokens } from "@/lib/tokens";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { tapLight } from "@/lib/haptics";
