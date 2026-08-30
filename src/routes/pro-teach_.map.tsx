@@ -1,8 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import {
   IconArrowBackUp,
-  IconArrowLeft,
   IconEraser,
   IconHeart,
   IconHeartFilled,
