@@ -39,13 +39,26 @@ export interface RadioState {
  */
 export function useProRadio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const savedPrefs =
+    typeof window !== "undefined"
+      ? (() => {
+          try {
+            const raw = localStorage.getItem(RADIO_PREFS_KEY);
+            return raw ? (JSON.parse(raw) as { selectedStation?: string | null; favorites?: string[] }) : null;
+          } catch {
+            return null;
+          }
+        })()
+      : null;
   const stateRef = useRef<RadioState>({
     isPlaying: false,
     isLoading: false,
     nowPlaying: { title: "PRO Radio" },
-    showName: "PRO Radio",
+    showName: savedPrefs?.selectedStation ?? "PRO Radio",
     isLive: true,
     hasStarted: false,
+    selectedStation: savedPrefs?.selectedStation ?? null,
+    favorites: savedPrefs?.favorites ?? [],
   });
   const [state, setState] = useState<RadioState>(stateRef.current);
 
