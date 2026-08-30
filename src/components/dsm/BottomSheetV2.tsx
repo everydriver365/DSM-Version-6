@@ -105,6 +105,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer, header
     >
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div
+        ref={sheetRef}
         className="relative w-full max-w-md rounded-t-lg overflow-hidden flex flex-col"
         style={{
           backgroundColor: canvas,
