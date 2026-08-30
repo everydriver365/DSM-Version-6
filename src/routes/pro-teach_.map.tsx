@@ -1299,7 +1299,7 @@ function MapDrawPage() {
             ...(activeTool === "arrow" ? toolPillActive : {}),
           }}
         >
-          <IconArrowUp size={18} color={activeTool === "arrow" ? "#2C97DE" : NAVY} />
+          <IconArrowUpRight size={18} color={activeTool === "arrow" ? "#2C97DE" : NAVY} />
         </button>
         <button
           type="button"
