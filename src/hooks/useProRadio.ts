@@ -7,6 +7,8 @@ import {
   useContext,
 } from "react";
 
+const RADIO_PREFS_KEY = "edp-radio-preferences";
+
 const STREAM_URL = "https://ice1.somafm.com/groovesalad-256-mp3";
 const SOMAFM_STATUS_URL = "https://api.somafm.com/groovesalad.json";
 
