@@ -585,6 +585,46 @@ function MapDrawPage() {
             <IconMinus size={20} color={NAVY} />
           </button>
         </div>
+
+        {/* Map type toggle */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 12,
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: 6,
+          }}
+        >
+          {[
+            { key: "roadmap", label: "Map" },
+            { key: "satellite", label: "Satellite" },
+            { key: "hybrid", label: "Hybrid" },
+          ].map((t) => {
+            const active = mapType === (t.key as typeof mapType);
+            return (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setMapType(t.key as typeof mapType)}
+                style={{
+                  background: active ? NAVY : "rgba(255,255,255,0.95)",
+                  color: active ? "#fff" : NAVY,
+                  borderRadius: 20,
+                  padding: "6px 14px",
+                  fontSize: 12,
+                  fontWeight: active ? 700 : 600,
+                  border: active ? "none" : `1px solid ${BORDER}`,
+                  boxShadow: active ? "none" : "0 2px 6px rgba(0,0,0,0.15)",
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* toolbar */}
