@@ -258,7 +258,7 @@ function RadioPage() {
               position: "absolute",
               top: 12,
               left: 12,
-              background: "rgba(229,57,53,0.9)",
+              background: radio.isLive ? "rgba(229,57,53,0.9)" : "rgba(83,101,121,0.9)",
               borderRadius: 20,
               padding: "4px 10px",
               display: "flex",
@@ -266,9 +266,9 @@ function RadioPage() {
               gap: 5,
             }}
           >
-            <LiveDot />
+            {radio.isLive && <LiveDot />}
             <span style={{ color: "#FFFFFF", fontSize: 10, fontWeight: 700 }}>
-              LIVE
+              {radio.isLive ? (radio.isPlaying ? "LIVE" : "PAUSED") : "COMING SOON"}
             </span>
           </div>
         </div>
