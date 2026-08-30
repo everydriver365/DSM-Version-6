@@ -1,7 +1,8 @@
 import * as React from "react";
 import { tokens } from "@/lib/tokens";
-import { useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft } from "@tabler/icons-react";
+import { useGoBack } from "@/hooks/useGoBack";
+import { useRegisterPageBack } from "@/components/dsm/BackBarContext";
 
 /**
  * Shared navy page header for DSM secondary pages.
@@ -26,11 +27,13 @@ export function PageHeader({
   onBack,
   right,
 }: PageHeaderProps) {
-  const navigate = useNavigate();
+  const goBack = useGoBack();
+  useRegisterPageBack(showBack);
 
   function handleBack() {
+    // Always mean "previous screen"; backTo is only the deep-link fallback.
     if (onBack) onBack();
-    else navigate({ to: (backTo ?? "/home") as never });
+    else goBack(backTo ?? "/home");
   }
 
   return (

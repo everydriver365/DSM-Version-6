@@ -3,6 +3,7 @@ import { tapLight } from "@/lib/haptics";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { tokens } from "@/lib/tokens";
 import { useGoBack } from "@/hooks/useGoBack";
+import { useRegisterPageBack } from "@/components/dsm/BackBarContext";
 
 export interface DSMTopSheetProps {
   title: string;
@@ -29,6 +30,7 @@ export default function DSMTopSheet({
   const goBack = useGoBack();
   const handleBack = onBack ?? (() => goBack(backFallback));
   const showBack = !hideBack;
+  useRegisterPageBack(showBack);
 
   return (
     <div
