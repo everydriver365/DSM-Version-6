@@ -518,17 +518,19 @@ function MapDrawPage() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    if (strokes.length === 0) {
+    const stack = strokesRef.current;
+    if (stack.length === 0) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       return;
     }
-    const prev = strokes[strokes.length - 2];
+    const prev = stack[stack.length - 2];
     if (prev) {
       ctx.putImageData(prev, 0, 0);
     } else {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    setStrokes((s) => s.slice(0, -1));
+    stack.pop();
+    setStrokeCount(stack.length);
     drawnStrokesRef.current.pop();
   };
 
@@ -539,7 +541,8 @@ function MapDrawPage() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     drawnStrokesRef.current = [];
-    setStrokes([]);
+    strokesRef.current = [];
+    setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
     setDraggingId(null);
@@ -555,19 +558,21 @@ function MapDrawPage() {
     setSelectedIconId(null);
   };
 
-  const drawIconsOntoCanvas = (ctx: CanvasRenderingContext2D) => {
+  // icons are stored in CSS px; exports draw onto an untransformed device-px canvas
+  const drawIconsOntoCanvas = (ctx: CanvasRenderingContext2D, scale = 1) => {
     for (const icon of placedIcons) {
       const emoji = ICON_EMOJI[icon.type];
       ctx.save();
-      ctx.translate(icon.x, icon.y);
+      ctx.translate(icon.x * scale, icon.y * scale);
       ctx.rotate((icon.rotation * Math.PI) / 180);
-      ctx.font = "28px serif";
+      ctx.font = `${28 * scale}px serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(emoji, 0, 0);
       ctx.restore();
     }
   };
+
 
   const shareMap = async () => {
     const canvas = canvasRef.current;
