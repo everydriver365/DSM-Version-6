@@ -1591,8 +1591,14 @@ function MapDrawPage() {
                 type="button"
                 aria-label={`Place ${type}`}
                 onClick={() => {
-                  setSelectedHazardType((current) => (current === type ? null : type));
-                  setActiveTool("hazard");
+                  if (selectedHazardType === type && activeTool === "hazard") {
+                    setSelectedHazardType(null);
+                    setActiveTool("draw");
+                  } else {
+                    setSelectedHazardType(type);
+                    setActiveTool("hazard");
+                  }
+                  setMode("draw");
                   setSelectedCarType(null);
                   setIsErasing(false);
                 }}
