@@ -1557,8 +1557,15 @@ function MapDrawPage() {
                 type="button"
                 aria-label={`Place ${type}`}
                 onClick={() => {
-                  setSelectedCarType((current) => (current === type ? null : type));
-                  setActiveTool("car");
+                  if (selectedCarType === type && activeTool === "car") {
+                    // tapping the armed pill disarms back to the pen
+                    setSelectedCarType(null);
+                    setActiveTool("draw");
+                  } else {
+                    setSelectedCarType(type);
+                    setActiveTool("car");
+                  }
+                  setMode("draw");
                   setSelectedHazardType(null);
                   setIsErasing(false);
                 }}
