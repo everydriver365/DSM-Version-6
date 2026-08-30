@@ -129,6 +129,7 @@ import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
 import { Route as ProTeachSmtmRouteImport } from './routes/pro-teach_.smtm'
 import { Route as ProTeachSketchRouteImport } from './routes/pro-teach_.sketch'
+import { Route as ProTeachRoutePlannerRouteImport } from './routes/pro-teach_.route-planner'
 import { Route as ProTeachMapRouteImport } from './routes/pro-teach_.map'
 import { Route as PerksPerkIdRouteImport } from './routes/perks_.$perkId'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
@@ -162,7 +163,6 @@ import { Route as AdminChatRoomsRouteImport } from './routes/admin.chat-rooms'
 import { Route as AdminBitesizeRouteImport } from './routes/admin.bitesize'
 import { Route as AdminBenefitsRouteImport } from './routes/admin.benefits'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
-import { Route as ProTeachRouteIndexRouteImport } from './routes/pro-teach_.route.index'
 import { Route as TermsSignPupilIdRouteImport } from './routes/terms_.sign.$pupilId'
 import { Route as PupilsSyllabusIdRouteImport } from './routes/pupils.syllabus.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
@@ -775,19 +775,24 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProTeachSmtmRoute = ProTeachSmtmRouteImport.update({
-  id: '/pro-teach_/smtm',
-  path: '/pro-teach/smtm',
-  getParentRoute: () => rootRouteImport,
+  id: '/smtm',
+  path: '/smtm',
+  getParentRoute: () => ProTeachRouteRoute,
 } as any)
 const ProTeachSketchRoute = ProTeachSketchRouteImport.update({
-  id: '/pro-teach_/sketch',
-  path: '/pro-teach/sketch',
+  id: '/sketch',
+  path: '/sketch',
+  getParentRoute: () => ProTeachRouteRoute,
+} as any)
+const ProTeachRoutePlannerRoute = ProTeachRoutePlannerRouteImport.update({
+  id: '/pro-teach_/route-planner',
+  path: '/pro-teach/route-planner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProTeachMapRoute = ProTeachMapRouteImport.update({
-  id: '/pro-teach_/map',
-  path: '/pro-teach/map',
-  getParentRoute: () => rootRouteImport,
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => ProTeachRouteRoute,
 } as any)
 const PerksPerkIdRoute = PerksPerkIdRouteImport.update({
   id: '/perks_/$perkId',
@@ -949,11 +954,6 @@ const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
   id: '/applications',
   path: '/applications',
   getParentRoute: () => AdminRoute,
-} as any)
-const ProTeachRouteIndexRoute = ProTeachRouteIndexRouteImport.update({
-  id: '/pro-teach_/route/',
-  path: '/pro-teach/route/',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const TermsSignPupilIdRoute = TermsSignPupilIdRouteImport.update({
   id: '/terms_/sign/$pupilId',
@@ -1202,6 +1202,7 @@ export interface FileRoutesByFullPath {
   '/notes/$id': typeof NotesIdRoute
   '/perks/$perkId': typeof PerksPerkIdRoute
   '/pro-teach/map': typeof ProTeachMapRoute
+  '/pro-teach/route-planner': typeof ProTeachRoutePlannerRoute
   '/pro-teach/sketch': typeof ProTeachSketchRoute
   '/pro-teach/smtm': typeof ProTeachSmtmRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1233,7 +1234,6 @@ export interface FileRoutesByFullPath {
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
   '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
-  '/pro-teach/route/': typeof ProTeachRouteIndexRoute
   '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
   '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
   '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
@@ -1375,6 +1375,7 @@ export interface FileRoutesByTo {
   '/notes/$id': typeof NotesIdRoute
   '/perks/$perkId': typeof PerksPerkIdRoute
   '/pro-teach/map': typeof ProTeachMapRoute
+  '/pro-teach/route-planner': typeof ProTeachRoutePlannerRoute
   '/pro-teach/sketch': typeof ProTeachSketchRoute
   '/pro-teach/smtm': typeof ProTeachSmtmRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1406,7 +1407,6 @@ export interface FileRoutesByTo {
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
   '/terms/sign/$pupilId': typeof TermsSignPupilIdRoute
-  '/pro-teach/route': typeof ProTeachRouteIndexRoute
   '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
   '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
   '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
@@ -1552,6 +1552,7 @@ export interface FileRoutesById {
   '/notes/$id': typeof NotesIdRoute
   '/perks_/$perkId': typeof PerksPerkIdRoute
   '/pro-teach_/map': typeof ProTeachMapRoute
+  '/pro-teach_/route-planner': typeof ProTeachRoutePlannerRoute
   '/pro-teach_/sketch': typeof ProTeachSketchRoute
   '/pro-teach_/smtm': typeof ProTeachSmtmRoute
   '/pupils/$id': typeof PupilsIdRoute
@@ -1583,7 +1584,6 @@ export interface FileRoutesById {
   '/pupils/progress/$id': typeof PupilsProgressIdRoute
   '/pupils/syllabus/$id': typeof PupilsSyllabusIdRoute
   '/terms_/sign/$pupilId': typeof TermsSignPupilIdRoute
-  '/pro-teach_/route/': typeof ProTeachRouteIndexRoute
   '/api/public/carplay/v1/dashboard': typeof ApiPublicCarplayV1DashboardRoute
   '/api/public/carplay/v1/devices': typeof ApiPublicCarplayV1DevicesRoute
   '/api/public/carplay/v1/directions': typeof ApiPublicCarplayV1DirectionsRoute
@@ -1730,6 +1730,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/perks/$perkId'
     | '/pro-teach/map'
+    | '/pro-teach/route-planner'
     | '/pro-teach/sketch'
     | '/pro-teach/smtm'
     | '/pupils/$id'
@@ -1761,7 +1762,6 @@ export interface FileRouteTypes {
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
     | '/terms/sign/$pupilId'
-    | '/pro-teach/route/'
     | '/api/public/carplay/v1/dashboard'
     | '/api/public/carplay/v1/devices'
     | '/api/public/carplay/v1/directions'
@@ -1903,6 +1903,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/perks/$perkId'
     | '/pro-teach/map'
+    | '/pro-teach/route-planner'
     | '/pro-teach/sketch'
     | '/pro-teach/smtm'
     | '/pupils/$id'
@@ -1934,7 +1935,6 @@ export interface FileRouteTypes {
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
     | '/terms/sign/$pupilId'
-    | '/pro-teach/route'
     | '/api/public/carplay/v1/dashboard'
     | '/api/public/carplay/v1/devices'
     | '/api/public/carplay/v1/directions'
@@ -2079,6 +2079,7 @@ export interface FileRouteTypes {
     | '/notes/$id'
     | '/perks_/$perkId'
     | '/pro-teach_/map'
+    | '/pro-teach_/route-planner'
     | '/pro-teach_/sketch'
     | '/pro-teach_/smtm'
     | '/pupils/$id'
@@ -2110,7 +2111,6 @@ export interface FileRouteTypes {
     | '/pupils/progress/$id'
     | '/pupils/syllabus/$id'
     | '/terms_/sign/$pupilId'
-    | '/pro-teach_/route/'
     | '/api/public/carplay/v1/dashboard'
     | '/api/public/carplay/v1/devices'
     | '/api/public/carplay/v1/directions'
@@ -2240,9 +2240,7 @@ export interface RootRouteChildren {
   NewsArticleIdRoute: typeof NewsArticleIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PerksPerkIdRoute: typeof PerksPerkIdRoute
-  ProTeachMapRoute: typeof ProTeachMapRoute
-  ProTeachSketchRoute: typeof ProTeachSketchRoute
-  ProTeachSmtmRoute: typeof ProTeachSmtmRoute
+  ProTeachRoutePlannerRoute: typeof ProTeachRoutePlannerRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
@@ -2266,7 +2264,6 @@ export interface RootRouteChildren {
   PupilsProgressIdRoute: typeof PupilsProgressIdRoute
   PupilsSyllabusIdRoute: typeof PupilsSyllabusIdRoute
   TermsSignPupilIdRoute: typeof TermsSignPupilIdRoute
-  ProTeachRouteIndexRoute: typeof ProTeachRouteIndexRoute
   ApiPublicCarplayV1DashboardRoute: typeof ApiPublicCarplayV1DashboardRoute
   ApiPublicCarplayV1DevicesRoute: typeof ApiPublicCarplayV1DevicesRoute
   ApiPublicCarplayV1DirectionsRoute: typeof ApiPublicCarplayV1DirectionsRoute
@@ -3103,24 +3100,31 @@ declare module '@tanstack/react-router' {
     }
     '/pro-teach_/smtm': {
       id: '/pro-teach_/smtm'
-      path: '/pro-teach/smtm'
+      path: '/smtm'
       fullPath: '/pro-teach/smtm'
       preLoaderRoute: typeof ProTeachSmtmRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProTeachRouteRoute
     }
     '/pro-teach_/sketch': {
       id: '/pro-teach_/sketch'
-      path: '/pro-teach/sketch'
+      path: '/sketch'
       fullPath: '/pro-teach/sketch'
       preLoaderRoute: typeof ProTeachSketchRouteImport
+      parentRoute: typeof ProTeachRouteRoute
+    }
+    '/pro-teach_/route-planner': {
+      id: '/pro-teach_/route-planner'
+      path: '/pro-teach/route-planner'
+      fullPath: '/pro-teach/route-planner'
+      preLoaderRoute: typeof ProTeachRoutePlannerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pro-teach_/map': {
       id: '/pro-teach_/map'
-      path: '/pro-teach/map'
+      path: '/map'
       fullPath: '/pro-teach/map'
       preLoaderRoute: typeof ProTeachMapRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProTeachRouteRoute
     }
     '/perks_/$perkId': {
       id: '/perks_/$perkId'
@@ -3345,13 +3349,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/applications'
       preLoaderRoute: typeof AdminApplicationsRouteImport
       parentRoute: typeof AdminRoute
-    }
-    '/pro-teach_/route/': {
-      id: '/pro-teach_/route/'
-      path: '/pro-teach/route'
-      fullPath: '/pro-teach/route/'
-      preLoaderRoute: typeof ProTeachRouteIndexRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/terms_/sign/$pupilId': {
       id: '/terms_/sign/$pupilId'
@@ -3697,9 +3694,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsArticleIdRoute: NewsArticleIdRoute,
   NotesIdRoute: NotesIdRoute,
   PerksPerkIdRoute: PerksPerkIdRoute,
-  ProTeachMapRoute: ProTeachMapRoute,
-  ProTeachSketchRoute: ProTeachSketchRoute,
-  ProTeachSmtmRoute: ProTeachSmtmRoute,
+  ProTeachRoutePlannerRoute: ProTeachRoutePlannerRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
@@ -3723,7 +3718,6 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsProgressIdRoute: PupilsProgressIdRoute,
   PupilsSyllabusIdRoute: PupilsSyllabusIdRoute,
   TermsSignPupilIdRoute: TermsSignPupilIdRoute,
-  ProTeachRouteIndexRoute: ProTeachRouteIndexRoute,
   ApiPublicCarplayV1DashboardRoute: ApiPublicCarplayV1DashboardRoute,
   ApiPublicCarplayV1DevicesRoute: ApiPublicCarplayV1DevicesRoute,
   ApiPublicCarplayV1DirectionsRoute: ApiPublicCarplayV1DirectionsRoute,
