@@ -524,36 +524,48 @@ function MapDrawPage() {
           </div>
         )}
 
-        {/* zoom controls */}
-        {mode === "pan" && (
+        {/* FEATURE 1 — zoom controls */}
+        <div
+          style={{
+            position: "absolute",
+            right: 12,
+            top: "50%",
+            transform: "translateY(-50%)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <button
+            type="button"
+            aria-label="Zoom in"
+            style={zoomBtn}
+            onClick={() => setZoom((z) => Math.min(19, z + 1))}
+          >
+            <IconPlus size={20} color={NAVY} />
+          </button>
           <div
             style={{
-              position: "absolute",
-              right: 12,
-              bottom: 12,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
+              background: "rgba(11,35,65,0.7)",
+              borderRadius: 6,
+              padding: "3px 6px",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 700,
+              textAlign: "center",
             }}
           >
-            <button
-              type="button"
-              aria-label="Zoom in"
-              style={zoomBtn}
-              onClick={() => setZoom((z) => Math.min(20, z + 1))}
-            >
-              <IconPlus size={18} color={NAVY} />
-            </button>
-            <button
-              type="button"
-              aria-label="Zoom out"
-              style={zoomBtn}
-              onClick={() => setZoom((z) => Math.max(10, z - 1))}
-            >
-              <IconMinus size={18} color={NAVY} />
-            </button>
+            {zoom}
           </div>
-        )}
+          <button
+            type="button"
+            aria-label="Zoom out"
+            style={zoomBtn}
+            onClick={() => setZoom((z) => Math.max(13, z - 1))}
+          >
+            <IconMinus size={20} color={NAVY} />
+          </button>
+        </div>
       </div>
 
       {/* toolbar */}
