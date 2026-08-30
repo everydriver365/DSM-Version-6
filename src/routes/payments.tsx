@@ -258,6 +258,7 @@ function PaymentsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -292,16 +293,25 @@ function PaymentsPage() {
     setLoading(false);
   }
 
-  useEffect(() => { if (userId) refetch(); /* eslint-disable-next-line */ }, [userId]);
+  useEffect(() => { if (userId) refetch(); /* eslint-disable-next-line */ }, [userId, refreshKey]);
 
   const { pullToRefreshProps } = usePullToRefresh({ onRefresh: async () => { await refetch(); } });
 
   // Keep totals and history in sync with payments recorded elsewhere.
   useEffect(() => {
     if (!userId) return;
-    const onPaymentRecorded = () => { refetch(); };
+    const onPaymentRecorded = () => { setRefreshKey((k) => k + 1); };
     window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
     return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+    /* eslint-disable-next-line */
+  }, [userId]);
+
+  // Refetch when the page becomes visible again (e.g. user returns from take-payment).
+  useEffect(() => {
+    if (!userId) return;
+    const onVisible = () => { if (!document.hidden) setRefreshKey((k) => k + 1); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
     /* eslint-disable-next-line */
   }, [userId]);
 
