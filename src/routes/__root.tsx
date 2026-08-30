@@ -763,10 +763,38 @@ function Header({ unreadCount }: { unreadCount: number }) {
   }, []);
   const firstInitial = (instructorName.trim().split(/\s+/)[0]?.[0] ?? "").toUpperCase();
 
+  // Publish the header's real rendered height so pages that size themselves
+  // (chat thread, full-height screens) never guess it or double-count the
+  // status-bar safe area.
+  const headerRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () => {
+      const h = Math.round(el.getBoundingClientRect().height);
+      if (!h) return;
+      document.documentElement.style.setProperty("--dsm-header-h", `${h}px`);
+      window.dispatchEvent(new CustomEvent("dsm-header-height", { detail: h }));
+    };
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    window.addEventListener("orientationchange", publish);
+    window.addEventListener("load", publish);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("orientationchange", publish);
+      window.removeEventListener("load", publish);
+      document.documentElement.style.removeProperty("--dsm-header-h");
+      window.dispatchEvent(new CustomEvent("dsm-header-height", { detail: 0 }));
+    };
+  }, []);
 
   return (
     <header
+      ref={headerRef}
       style={{
+
         position: "sticky",
         top: 0,
         left: 0,
