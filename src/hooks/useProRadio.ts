@@ -7,6 +7,8 @@ import {
   useContext,
 } from "react";
 
+const RADIO_PREFS_KEY = "edp-radio-preferences";
+
 const STREAM_URL = "https://ice1.somafm.com/groovesalad-256-mp3";
 const SOMAFM_STATUS_URL = "https://api.somafm.com/groovesalad.json";
 
@@ -24,6 +26,10 @@ export interface RadioState {
   isLive: boolean;
   /** True once play() has been triggered at least once this session. */
   hasStarted: boolean;
+  /** Name of the currently selected PRO station in the UI. */
+  selectedStation: string | null;
+  /** Favorite station names, persisted to localStorage. */
+  favorites: string[];
 }
 
 /**
@@ -33,13 +39,26 @@ export interface RadioState {
  */
 export function useProRadio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const savedPrefs =
+    typeof window !== "undefined"
+      ? (() => {
+          try {
+            const raw = localStorage.getItem(RADIO_PREFS_KEY);
+            return raw ? (JSON.parse(raw) as { selectedStation?: string | null; favorites?: string[] }) : null;
+          } catch {
+            return null;
+          }
+        })()
+      : null;
   const stateRef = useRef<RadioState>({
     isPlaying: false,
     isLoading: false,
     nowPlaying: { title: "PRO Radio" },
-    showName: "PRO Radio",
+    showName: savedPrefs?.selectedStation ?? "PRO Radio",
     isLive: true,
     hasStarted: false,
+    selectedStation: savedPrefs?.selectedStation ?? null,
+    favorites: savedPrefs?.favorites ?? [],
   });
   const [state, setState] = useState<RadioState>(stateRef.current);
 
@@ -47,6 +66,16 @@ export function useProRadio() {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
+
+  // Persist selected station + favorites to localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const prefs = {
+      selectedStation: state.selectedStation,
+      favorites: state.favorites,
+    };
+    localStorage.setItem(RADIO_PREFS_KEY, JSON.stringify(prefs));
+  }, [state.selectedStation, state.favorites]);
 
   // Initialise audio element once + poll SomaFM now playing every 30s
   useEffect(() => {
@@ -121,14 +150,17 @@ export function useProRadio() {
           artist: current?.artist ?? song?.artist ?? "SomaFM",
           artwork: current?.cover ?? null,
         };
-        const nextShowName = "PRO Chill";
-        setState((s) => ({
-          ...s,
-          nowPlaying: nextNowPlaying,
-          showName: nextShowName,
-          isLive: true,
-        }));
-        updateMediaSession(nextNowPlaying, nextShowName);
+        setState((s) => {
+          const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
+          const nextShowName = liveSelected ? "PRO Live" : (s.selectedStation || "PRO Radio");
+          return {
+            ...s,
+            nowPlaying: nextNowPlaying,
+            showName: nextShowName,
+            isLive: liveSelected,
+          };
+        });
+        updateMediaSession(nextNowPlaying, stateRef.current.showName);
       } catch {
         // fail silently
         const fallbackNowPlaying = {
@@ -136,14 +168,17 @@ export function useProRadio() {
           artist: "SomaFM",
           artwork: null,
         };
-        const fallbackShowName = "PRO Chill";
-        setState((s) => ({
-          ...s,
-          nowPlaying: fallbackNowPlaying,
-          showName: fallbackShowName,
-          isLive: true,
-        }));
-        updateMediaSession(fallbackNowPlaying, fallbackShowName);
+        setState((s) => {
+          const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
+          const fallbackShowName = liveSelected ? "PRO Live" : (s.selectedStation || "PRO Radio");
+          return {
+            ...s,
+            nowPlaying: fallbackNowPlaying,
+            showName: fallbackShowName,
+            isLive: liveSelected,
+          };
+        });
+        updateMediaSession(fallbackNowPlaying, stateRef.current.showName);
       }
     };
 
@@ -158,7 +193,14 @@ export function useProRadio() {
     // Reload the stream so we always join at the live edge
     audio.src = STREAM_URL;
     audio.load();
-    setState((s) => ({ ...s, isLoading: true, hasStarted: true }));
+    setState((s) => ({
+      ...s,
+      isLoading: true,
+      hasStarted: true,
+      selectedStation: "PRO Live",
+      showName: "PRO Live",
+      isLive: true,
+    }));
     audio.play().catch(() => setState((s) => ({ ...s, isLoading: false })));
   }, []);
 
@@ -176,7 +218,26 @@ export function useProRadio() {
     else play();
   }, [state.isPlaying, play, pause]);
 
-  return { ...state, play, pause, toggle, audioRef };
+  const selectStation = useCallback((name: string) => {
+    const isLive = name === "PRO Live";
+    setState((s) => ({
+      ...s,
+      selectedStation: name,
+      showName: isLive ? "PRO Live" : name,
+      isLive,
+    }));
+  }, []);
+
+  const toggleFavorite = useCallback((name: string) => {
+    setState((s) => ({
+      ...s,
+      favorites: s.favorites.includes(name)
+        ? s.favorites.filter((f) => f !== name)
+        : [...s.favorites, name],
+    }));
+  }, []);
+
+  return { ...state, play, pause, toggle, selectStation, toggleFavorite, audioRef };
 }
 
 export type ProRadio = ReturnType<typeof useProRadio>;

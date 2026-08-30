@@ -26,7 +26,6 @@ const COMING_SOON_STATIONS = [
   { name: "PRO 60s", Icon: IconVinyl, bg: "#536579" },
   { name: "PRO Chill", Icon: IconWaveSine, bg: "#18A999" },
   { name: "PRO Drive", Icon: IconCar, bg: "#2C97DE" },
-  { name: "PRO Talk", Icon: IconMicrophone, bg: "#7B61FF" },
   { name: "PRO Xmas", Icon: IconTree, bg: "#E53935", toastText: "PRO Xmas coming soon! 🎄" },
 ];
 
@@ -43,6 +42,131 @@ function LiveDot({ size = 6 }: { size?: number }) {
         flexShrink: 0,
       }}
     />
+  );
+}
+
+interface StationTileProps {
+  name: string;
+  Icon: React.ComponentType<{ size?: number; color?: string; stroke?: number }>;
+  bg: string;
+  isLive: boolean;
+  isPlaying: boolean;
+  isSelected: boolean;
+  isFavorite: boolean;
+  toastText?: string;
+  onToggle: () => void;
+  onToggleFavorite: () => void;
+}
+
+function StationTile({
+  name,
+  Icon,
+  bg,
+  isLive,
+  isPlaying,
+  isSelected,
+  isFavorite,
+  toastText,
+  onToggle,
+  onToggleFavorite,
+}: StationTileProps) {
+  const isDark = isLive;
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => {
+        if (!isLive && toastText) toast(toastText);
+        onToggle();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          if (!isLive && toastText) toast(toastText);
+          onToggle();
+        }
+      }}
+      style={{
+        position: "relative",
+        background: isDark ? "#0B2341" : "#FFFFFF",
+        borderRadius: 14,
+        padding: "14px 8px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 8,
+        border: isSelected
+          ? `2px solid ${isDark ? "#2C97DE" : "#2C97DE"}`
+          : isDark
+            ? "none"
+            : "1px solid #E4E8EF",
+        boxShadow: isDark
+          ? "0 4px 12px rgba(11,35,65,0.3)"
+          : "0 2px 0 #E4E4E8",
+        cursor: "pointer",
+      }}
+    >
+      <button
+        type="button"
+        aria-label={isFavorite ? `Remove ${name} from favourites` : `Add ${name} to favourites`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleFavorite();
+        }}
+        style={{
+          position: "absolute",
+          top: 6,
+          right: 6,
+          background: "transparent",
+          border: "none",
+          padding: 4,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconHeart
+          size={14}
+          color={isFavorite ? "#E53935" : isDark ? "rgba(255,255,255,0.5)" : "#D1D5DB"}
+          fill={isFavorite ? "#E53935" : "none"}
+          stroke={2}
+        />
+      </button>
+      <div
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 12,
+          background: bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Icon size={22} color="#FFFFFF" stroke={1.8} />
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: isDark ? 700 : 600,
+          color: isDark ? "#FFFFFF" : "#0B2341",
+        }}
+      >
+        {name}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {isLive ? (
+          <>
+            <LiveDot size={5} />
+            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)" }}>
+              {isPlaying ? "LIVE" : "PAUSED"}
+            </span>
+          </>
+        ) : (
+          <span style={{ fontSize: 9, color: "#536579" }}>COMING SOON</span>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -134,7 +258,7 @@ function RadioPage() {
               position: "absolute",
               top: 12,
               left: 12,
-              background: "rgba(229,57,53,0.9)",
+              background: radio.isLive ? "rgba(229,57,53,0.9)" : "rgba(83,101,121,0.9)",
               borderRadius: 20,
               padding: "4px 10px",
               display: "flex",
@@ -142,9 +266,9 @@ function RadioPage() {
               gap: 5,
             }}
           >
-            <LiveDot />
+            {radio.isLive && <LiveDot />}
             <span style={{ color: "#FFFFFF", fontSize: 10, fontWeight: 700 }}>
-              LIVE
+              {radio.isLive ? (radio.isPlaying ? "LIVE" : "PAUSED") : "COMING SOON"}
             </span>
           </div>
         </div>
@@ -153,20 +277,57 @@ function RadioPage() {
         <div style={{ padding: "14px 16px", borderBottom: "1px solid #F4F6F8" }}>
           <div
             style={{
-              fontSize: 11,
-              color: "#536579",
-              textTransform: "uppercase",
-              letterSpacing: "0.6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
               marginBottom: 3,
             }}
           >
-            Now playing
+            <span
+              style={{
+                fontSize: 11,
+                color: "#536579",
+                textTransform: "uppercase",
+                letterSpacing: "0.6px",
+              }}
+            >
+              Now playing
+            </span>
+            {radio.isLive ? (
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "#E53935",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                }}
+              >
+                <LiveDot size={5} />
+                {radio.isPlaying ? "LIVE" : "PAUSED"}
+              </span>
+            ) : (
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "#536579",
+                }}
+              >
+                COMING SOON
+              </span>
+            )}
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#0B2341" }}>
             {radio.showName}
           </div>
           <div style={{ fontSize: 13, color: "#536579", marginTop: 2 }}>
-            {radio.nowPlaying.title}
+            {radio.isLive
+              ? radio.nowPlaying.artist
+                ? `${radio.nowPlaying.title} · ${radio.nowPlaying.artist}`
+                : radio.nowPlaying.title
+              : "This station will be available soon"}
           </div>
         </div>
 
@@ -226,91 +387,40 @@ function RadioPage() {
         }}
       >
         {/* PRO Live — active */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => radio.toggle()}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") radio.toggle();
-          }}
-          style={{
-            background: "#0B2341",
-            borderRadius: 14,
-            padding: "14px 8px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 8,
-            boxShadow: "0 4px 12px rgba(11,35,65,0.3)",
-            cursor: "pointer",
-          }}
-        >
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 12,
-              background: "#2C97DE",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconRadio size={22} color="#FFFFFF" stroke={1.8} />
-          </div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>
-            PRO Live
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <LiveDot size={5} />
-            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)" }}>
-              LIVE
-            </span>
-          </div>
-        </div>
+        <StationTile
+          name="PRO Live"
+          Icon={IconRadio}
+          bg="#2C97DE"
+          isLive
+          isPlaying={radio.isPlaying}
+          isSelected={radio.selectedStation === "PRO Live"}
+          isFavorite={radio.favorites.includes("PRO Live")}
+          onToggle={() => radio.toggle()}
+          onToggleFavorite={() => radio.toggleFavorite("PRO Live")}
+        />
 
-        {COMING_SOON_STATIONS.map(({ name, Icon, bg, toastText }) => (
-          <div
-            key={name}
-            role="button"
-            tabIndex={0}
-            onClick={() => toast(toastText || `${name} coming soon!`)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ")
-                toast(toastText || `${name} coming soon!`);
-            }}
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 14,
-              padding: "14px 8px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8,
-              border: "1px solid #E4E8EF",
-              boxShadow: "0 2px 0 #E4E4E8",
-              cursor: "pointer",
-            }}
-          >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 12,
-                background: bg,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Icon size={22} color="#FFFFFF" stroke={1.8} />
-            </div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#0B2341" }}>
-              {name}
-            </div>
-            <div style={{ fontSize: 9, color: "#536579" }}>COMING SOON</div>
-          </div>
-        ))}
+        {[...COMING_SOON_STATIONS]
+          .sort((a, b) => {
+            const aFav = radio.favorites.includes(a.name);
+            const bFav = radio.favorites.includes(b.name);
+            if (aFav === bFav) return 0;
+            return aFav ? -1 : 1;
+          })
+          .map(({ name, Icon, bg, toastText }) => (
+            <StationTile
+              key={name}
+              name={name}
+              Icon={Icon}
+              bg={bg}
+              isLive={false}
+              isPlaying={false}
+              isSelected={radio.selectedStation === name}
+              isFavorite={radio.favorites.includes(name)}
+              toastText={toastText}
+              onToggle={() => radio.selectStation(name)}
+              onToggleFavorite={() => radio.toggleFavorite(name)}
+            />
+          ))}
       </div>
     </div>
   );
