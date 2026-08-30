@@ -56,7 +56,7 @@ export function TakePaymentSheet({
       setPupils(
         rows.map((r) => ({
           id: r.id,
-          name: r.name ?? `${r.first_name ?? ""} ${r.last_name ?? ""}`.trim() || "Unnamed",
+          name: (r.name ?? `${r.first_name ?? ""} ${r.last_name ?? ""}`.trim()) || "Unnamed",
         })),
       );
     })();
