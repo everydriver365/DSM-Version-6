@@ -393,7 +393,63 @@ function ProTeachPage() {
                 <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Draw on live map</div>
               </div>
             </div>
+
+            {/* Show Me Tell Me */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate({ to: "/pro-teach/smtm" as never })}
+              onKeyDown={(e) => e.key === "Enter" && navigate({ to: "/pro-teach/smtm" as never })}
+              style={bigCard}
+            >
+              <div
+                style={{
+                  height: 90,
+                  position: "relative",
+                  background: "linear-gradient(135deg, #F59E0B, #E53935)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconCards size={32} color="#fff" stroke={1.5} />
+                <span style={{ ...badge, background: "rgba(255,255,255,0.2)" }}>DVSA</span>
+              </div>
+              <div style={{ padding: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>Show Me Tell Me</div>
+                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Flashcard revision</div>
+              </div>
+            </div>
+
+            {/* AI Route Planner */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate({ to: "/pro-teach/route" as never })}
+              onKeyDown={(e) => e.key === "Enter" && navigate({ to: "/pro-teach/route" as never })}
+              style={bigCard}
+            >
+              <div
+                style={{
+                  height: 90,
+                  position: "relative",
+                  background: "linear-gradient(135deg, #7B61FF, #2C97DE)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconRoute size={32} color="#fff" stroke={1.5} />
+                <span style={{ ...badge, background: "rgba(255,255,255,0.2)" }}>ED AI</span>
+              </div>
+              <div style={{ padding: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>AI Route Planner</div>
+                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Lesson route ideas</div>
+              </div>
+            </div>
           </div>
+        </div>
+
         </div>
 
         {/* Recent sketches */}
