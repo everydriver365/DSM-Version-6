@@ -790,10 +790,7 @@ export function AddLessonSheet({
               onClose={() => setPupilListOpen(false)}
               pupils={pupils}
               selectedId={pupilId}
-              onSelect={(id) => {
-                setPupilId(id);
-                setPupilQuery("");
-              }}
+              onSelect={(id) => setPupilId(id)}
             />
           </>
         ) : (
