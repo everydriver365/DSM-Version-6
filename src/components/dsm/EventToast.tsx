@@ -119,21 +119,38 @@ export function EventToastController() {
       const color = colorFor(detail.kind);
       const title = detail.title ?? titleFor(detail.kind);
 
-      toast(title, {
-        description: detail.text,
-        duration: 5000,
-        style: {
-          borderLeftColor: color,
-          borderLeftWidth: 4,
-          borderLeftStyle: "solid",
+      toast(
+        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: color,
+              flexShrink: 0,
+            }}
+          />
+          <span>{title}</span>
+        </span>,
+        {
+          description: detail.text,
+          duration: 5000,
+          style: {
+            borderLeftColor: color,
+            borderLeftWidth: 4,
+            borderLeftStyle: "solid",
+          },
+          action: detail.url
+            ? {
+                label: "View",
+                onClick: () =>
+                  navigate({
+                    to: detail.url as never,
+                  }),
+              }
+            : undefined,
         },
-        action: detail.url ? {
-          label: "View",
-          onClick: () => navigate({
-            to: detail.url as never,
-          }),
-        } : undefined,
-      });
+      );
     };
 
     window.addEventListener(EVENT_NAME, handler);
