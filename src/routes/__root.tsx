@@ -18,7 +18,7 @@ import icon192 from "../assets/icon-192.png.asset.json";
 import icon512 from "../assets/icon-512.png.asset.json";
 import headerLogoAsset from "../assets/edp_transparent_logo_big_letters.png.asset.json";
 import { BackBarProvider } from "@/components/dsm/BackBarContext";
-import { tapLight } from "@/lib/haptics";
+
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
