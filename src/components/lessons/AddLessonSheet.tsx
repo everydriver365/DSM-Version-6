@@ -708,7 +708,7 @@ export function AddLessonSheet({
     <BottomSheetV2
       title={editingLesson ? "Edit Lesson" : "Add Lesson"}
       subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
-      onClose={onClose}
+      onClose={handleCloseAttempt}
       footer={
         <>
           <SaveButton
