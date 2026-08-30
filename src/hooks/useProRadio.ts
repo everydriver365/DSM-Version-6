@@ -67,6 +67,16 @@ export function useProRadio() {
     stateRef.current = state;
   }, [state]);
 
+  // Persist selected station + favorites to localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const prefs = {
+      selectedStation: state.selectedStation,
+      favorites: state.favorites,
+    };
+    localStorage.setItem(RADIO_PREFS_KEY, JSON.stringify(prefs));
+  }, [state.selectedStation, state.favorites]);
+
   // Initialise audio element once + poll SomaFM now playing every 30s
   useEffect(() => {
     if (typeof window === "undefined") return;
