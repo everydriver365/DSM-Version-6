@@ -719,7 +719,7 @@ export function AddLessonSheet({
           </SaveButton>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleCloseAttempt}
             disabled={saving}
             style={{
               width: "100%",
