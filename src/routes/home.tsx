@@ -9992,6 +9992,51 @@ function HomePage() {
         onSaved={() => setReloadKey((k) => k + 1)}
       />
 
+      <UnavailabilitySheet
+        open={unavailabilitySheetOpen}
+        onClose={() => setUnavailabilitySheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      <NoteSheet
+        open={noteSheetOpen}
+        onClose={() => setNoteSheetOpen(false)}
+      />
+
+      <EnquirySheet
+        open={enquirySheetOpen}
+        onClose={() => setEnquirySheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      <LogCallSheet
+        open={logCallSheetOpen}
+        onClose={() => setLogCallSheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      <QuickPupilSheet
+        open={quickPupilSheetOpen}
+        onClose={() => setQuickPupilSheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+        onOpenFullForm={() => {
+          setQuickPupilSheetOpen(false);
+          navigate({ to: "/pupils/new" as never });
+        }}
+      />
+
+      <TakePaymentSheet
+        open={takePaymentSheetOpen}
+        onClose={() => setTakePaymentSheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+        onOpenFullPage={() => {
+          setTakePaymentSheetOpen(false);
+          navigate({ to: "/take-payment" as never });
+        }}
+      />
+
+
+
       {addChooserOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
           <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
