@@ -28,6 +28,14 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import {
+  VEHICLE_TYPES,
+  VEHICLE_LABEL,
+  VehicleIcon,
+  isVehicleType,
+  vehicleDataUrl,
+  type VehicleType,
+} from "../components/icons/VehicleIcons";
 
 export const Route = createFileRoute("/pro-teach_/map")({
   head: () => ({
