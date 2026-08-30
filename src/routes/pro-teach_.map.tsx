@@ -80,6 +80,11 @@ function MapDrawPage() {
   const [isErasing, setIsErasing] = React.useState(false);
   const [confirmClear, setConfirmClear] = React.useState(false);
   const [geoError, setGeoError] = React.useState<string | null>(null);
+  const [savedFav, setSavedFav] = React.useState(false);
+  const [pupilSheet, setPupilSheet] = React.useState(false);
+  const [pupils, setPupils] = React.useState<Array<{ id: string; name: string | null }>>([]);
+  const [loadingPupils, setLoadingPupils] = React.useState(false);
+  const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!("geolocation" in navigator)) {
