@@ -1677,6 +1677,7 @@ function HomePage() {
   }, [lessonMsgsPupil?.id, reloadKey]);
 
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
+  const [unifiedPayInitialMethod, setUnifiedPayInitialMethod] = useState<"cash" | "qr" | null>(null);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [addChooserOpen, setAddChooserOpen] = useState(false);
