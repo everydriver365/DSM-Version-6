@@ -42,7 +42,7 @@ import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -87,7 +87,7 @@ import UniversalSearch from "@/components/dsm/UniversalSearch";
 import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
-  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "event"
+  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "availability" | "event"
   | "course" | "note" | "eol" | "enquiry" | "call";
 
 const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
@@ -95,6 +95,7 @@ const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus;
   { key: "test", label: "Add test", icon: IconCalendarEvent, bg: "#F59E0B", group: "Teaching" },
   { key: "eol", label: "End of lesson", icon: IconFlagCheck, bg: "#2C97DE", group: "Teaching" },
   { key: "unavailability", label: "Add unavailability", icon: IconCalendarOff, bg: "#E53935", group: "Teaching" },
+  { key: "availability", label: "Availability", icon: IconCalendarCheck, bg: "#18A999", group: "Teaching" },
   { key: "event", label: "Add event", icon: IconCalendarEvent, bg: "#7B61FF", group: "Teaching" },
   { key: "pupil", label: "Add pupil", icon: IconUserPlus, bg: "#18A999", group: "People" },
   { key: "enquiry", label: "Log enquiry", icon: IconMail, bg: "#7B61FF", group: "People" },
@@ -1870,10 +1871,14 @@ function HomePage() {
         setQuickPupilSheetOpen(true);
         break;
       case "payment":
-        setTakePaymentSheetOpen(true);
+        setUnifiedPayPupilId(undefined);
+        setUnifiedPayOpen(true);
         break;
       case "unavailability":
         setUnavailabilitySheetOpen(true);
+        break;
+      case "availability":
+        navigate({ to: "/availability-settings" as never });
         break;
       case "event":
         setEditingPersonal(null);
@@ -4762,6 +4767,7 @@ function HomePage() {
     { icon: <IconCalendar size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
     { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
+    { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#18A999", label: "Availability", route: "/availability-settings" },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" /><span style={{ position: 'absolute', right: -4, bottom: -4, width: 16, height: 16, borderRadius: '50%', background: '#7C3AED', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconSearch size={9} color="#FFFFFF" stroke={2.5} /></span></span>, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
     { icon: <IconMapSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#18A999", label: "Nearest", route: "/nearest" },
@@ -9695,14 +9701,40 @@ function HomePage() {
 
             <div
               style={{
-                padding: "2px 20px 12px",
-                fontSize: 18,
-                fontWeight: 700,
-                color: "#0B2341",
-                letterSpacing: -0.2,
+                padding: "2px 16px 12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              Quick add
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: "#0B2341",
+                  letterSpacing: -0.2,
+                }}
+              >
+                Quick add
+              </span>
+              <button
+                type="button"
+                aria-label="Close quick add menu"
+                onClick={() => setQuickAddOpen(false)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "none",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                <IconX size={18} stroke={2} color="#0B2341" />
+              </button>
             </div>
 
             <div style={{ overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 8px" }}>
