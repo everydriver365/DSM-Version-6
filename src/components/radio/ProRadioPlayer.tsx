@@ -377,15 +377,15 @@ export function ProRadioPlayer() {
               </div>
             </div>
 
-            {COMING_SOON_STATIONS.map(({ name, Icon, bg }) => (
+            {COMING_SOON_STATIONS.map(({ name, Icon, bg, toastText }) => (
               <div
                 key={name}
                 role="button"
                 tabIndex={0}
-                onClick={() => toast(`${name} coming soon!`)}
+                onClick={() => toast(toastText || `${name} coming soon!`)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ")
-                    toast(`${name} coming soon!`);
+                    toast(toastText || `${name} coming soon!`);
                 }}
                 style={{
                   background: "#FFFFFF",
