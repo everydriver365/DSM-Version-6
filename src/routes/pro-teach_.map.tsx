@@ -1471,7 +1471,7 @@ function MapDrawPage() {
           )}
           <span style={{ fontSize: 12, color: MUTED }}>Save</span>
         </button>
-        <button type="button" onClick={openPupilPicker} style={saveBtn} aria-label="Save to pupil">
+        <button type="button" onClick={() => void openPupilPicker("save")} style={saveBtn} aria-label="Save to pupil">
           <IconUser size={18} color={MUTED} />
           <span style={{ fontSize: 12, color: MUTED }}>Save to pupil</span>
         </button>
