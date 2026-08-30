@@ -406,7 +406,8 @@ function MapDrawPage() {
 
 
   const getPos = (
-    e: React.TouchEvent<HTMLCanvasElement>
+    e: React.PointerEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>
       | React.MouseEvent<HTMLCanvasElement>
       | TouchEvent
       | MouseEvent,
@@ -572,8 +573,9 @@ function MapDrawPage() {
     selectedHazardTypeRef.current = selectedHazardType;
   }, [selectedHazardType]);
 
-  const start = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
+  const start = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (mode !== "draw") return;
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* ignore */ }
     const { x, y } = getPos(e);
 
     // icon selection / drag
@@ -621,12 +623,10 @@ function MapDrawPage() {
   const dragFrameRef = React.useRef<number | null>(null);
   const lastMoveTime = React.useRef(0);
 
-  const move = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
+  const move = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (draggingIdRef.current) {
-      if ("touches" in e) {
-        if (e.cancelable) e.preventDefault();
-        e.stopPropagation();
-      }
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
       const now = Date.now();
       if (now - lastMoveTime.current < 16) return; // ~60fps cap
       lastMoveTime.current = now;
@@ -1264,13 +1264,10 @@ function MapDrawPage() {
             touchAction: mode === "draw" ? "none" : "auto",
             pointerEvents: mode === "draw" ? "auto" : "none",
           }}
-          onTouchStart={start}
-          onTouchMove={move}
-          onTouchEnd={end}
-          onMouseDown={start}
-          onMouseMove={move}
-          onMouseUp={end}
-          onMouseLeave={end}
+          onPointerDown={start}
+          onPointerMove={move}
+          onPointerUp={end}
+          onPointerCancel={end}
         />
 
         {/* placed icons overlay (memoised so placement doesn't re-render the page) */}
@@ -1407,7 +1404,11 @@ function MapDrawPage() {
             }}
           >
             {activeTool === "car" || activeTool === "hazard" ? (
-              <span style={{ fontSize: 12 }}>{ICON_EMOJI[selectedCarType || selectedHazardType || "car-blue"]}</span>
+              <span style={{ fontSize: 12, display: "inline-flex", alignItems: "center" }}>
+                {isVehicleType(selectedCarType ?? "")
+                  ? <VehicleIcon type={selectedCarType as VehicleType} size={16} />
+                  : ICON_EMOJI[selectedCarType || selectedHazardType || "car-blue"]}
+              </span>
             ) : (
               <IconPencil size={12} color="#fff" />
             )}
@@ -1599,7 +1600,7 @@ function MapDrawPage() {
               <button
                 key={type}
                 type="button"
-                aria-label={`Place ${type}`}
+                aria-label={`Place ${isVehicleType(type) ? VEHICLE_LABEL[type] : type}`}
                 onClick={() => {
                   if (selectedCarType === type && activeTool === "car") {
                     // tapping the armed pill disarms back to the pen
@@ -1619,7 +1620,7 @@ function MapDrawPage() {
                   ...(active ? iconPillActive : {}),
                 }}
               >
-                {ICON_EMOJI[type]}
+                {isVehicleType(type) ? <VehicleIcon type={type} size={26} /> : ICON_EMOJI[type]}
               </button>
             );
           })}
