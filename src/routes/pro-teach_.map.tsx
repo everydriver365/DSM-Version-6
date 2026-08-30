@@ -858,47 +858,9 @@ function MapDrawPage() {
           onMouseLeave={end}
         />
 
-        {/* placed icons overlay */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-          {placedIcons.map((icon) => (
-            <div
-              key={icon.id}
-              style={{
-                position: "absolute",
-                left: icon.x - 15,
-                top: icon.y - 15,
-                fontSize: 28,
-                userSelect: "none",
-                pointerEvents: "none",
-                transform: `rotate(${icon.rotation}deg)`,
-                width: 30,
-                height: 30,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {ICON_EMOJI[icon.type]}
-            </div>
-          ))}
+        {/* placed icons overlay (memoised so placement doesn't re-render the page) */}
+        <IconOverlay icons={placedIcons} selectedId={selectedIconId} />
 
-          {/* selection ring */}
-          {selectedIcon && (
-            <div
-              style={{
-                position: "absolute",
-                left: selectedIcon.x - 25,
-                top: selectedIcon.y - 25,
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                border: "2px solid #2C97DE",
-                pointerEvents: "none",
-                boxShadow: "0 0 0 4px rgba(44,151,222,0.2)",
-              }}
-            />
-          )}
-        </div>
 
         {/* selected icon action bar */}
         {selectedIcon && (
