@@ -387,6 +387,7 @@ export function UnifiedPaymentSheet({
   onClose,
   onSaved,
   initialPupilId,
+  initialMethod,
 }: UnifiedPaymentSheetProps) {
   const navigate = useNavigate();
 
