@@ -26,6 +26,10 @@ export interface RadioState {
   isLive: boolean;
   /** True once play() has been triggered at least once this session. */
   hasStarted: boolean;
+  /** Name of the currently selected PRO station in the UI. */
+  selectedStation: string | null;
+  /** Favorite station names, persisted to localStorage. */
+  favorites: string[];
 }
 
 /**
