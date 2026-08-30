@@ -74,6 +74,7 @@ function MapDrawPage() {
 
   const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
   const [zoom, setZoom] = React.useState(16);
+  const [mapType, setMapType] = React.useState<"roadmap" | "satellite" | "hybrid">("hybrid");
   const [mode, setMode] = React.useState<"draw" | "pan">("draw");
   const [currentColor, setCurrentColor] = React.useState("#E53935");
   const [lineWidth, setLineWidth] = React.useState(3);
@@ -105,10 +106,11 @@ function MapDrawPage() {
       zoom: String(zoom),
       size: "390x500",
       scale: "2",
+      maptype: mapType,
       key: GOOGLE_KEY,
     });
     return `https://maps.googleapis.com/maps/api/staticmap?${params.toString()}&style=feature:poi|visibility:off`;
-  }, [coords, zoom]);
+  }, [coords, zoom, mapType]);
 
   const repaint = React.useCallback(() => {
     const canvas = canvasRef.current;
@@ -139,6 +141,12 @@ function MapDrawPage() {
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
   }, [repaint]);
+
+  // clear drawing when map type changes so annotations don't sit on the wrong imagery
+  React.useEffect(() => {
+    strokesRef.current = [];
+    repaint();
+  }, [mapType, repaint]);
 
   const getPos = (e: React.TouchEvent | React.MouseEvent): Point => {
     const canvas = canvasRef.current!;
@@ -576,6 +584,46 @@ function MapDrawPage() {
           >
             <IconMinus size={20} color={NAVY} />
           </button>
+        </div>
+
+        {/* Map type toggle */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 12,
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: 6,
+          }}
+        >
+          {[
+            { key: "roadmap", label: "Map" },
+            { key: "satellite", label: "Satellite" },
+            { key: "hybrid", label: "Hybrid" },
+          ].map((t) => {
+            const active = mapType === (t.key as typeof mapType);
+            return (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setMapType(t.key as typeof mapType)}
+                style={{
+                  background: active ? NAVY : "rgba(255,255,255,0.95)",
+                  color: active ? "#fff" : NAVY,
+                  borderRadius: 20,
+                  padding: "6px 14px",
+                  fontSize: 12,
+                  fontWeight: active ? 700 : 600,
+                  border: active ? "none" : `1px solid ${BORDER}`,
+                  boxShadow: active ? "none" : "0 2px 6px rgba(0,0,0,0.15)",
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
