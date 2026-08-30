@@ -248,6 +248,34 @@ function PupilThreadPage() {
   const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
   const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const [pageHeight, setPageHeight] = useState<number | null>(null);
+
+  // Measure the space actually left for this screen: viewport minus whatever
+  // the app header occupies above it and the bottom-nav padding below it.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = pageRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      const parent = el.parentElement;
+      const padBottom = parent
+        ? parseFloat(getComputedStyle(parent).paddingBottom || "0") || 0
+        : 0;
+      const next = Math.max(240, Math.round(window.innerHeight - top - padBottom));
+      setPageHeight((prev) => (prev !== null && Math.abs(prev - next) < 2 ? prev : next));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    const ro = new ResizeObserver(measure);
+    if (pageRef.current?.parentElement) ro.observe(pageRef.current.parentElement);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+      ro.disconnect();
+    };
+  }, []);
   const [hasMoreOlder, setHasMoreOlder] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const loadingOlderRef = useRef(false);
