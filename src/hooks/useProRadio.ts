@@ -54,10 +54,10 @@ export function useProRadio() {
     isPlaying: false,
     isLoading: false,
     nowPlaying: { title: "PRO Radio" },
-    showName: savedPrefs?.selectedStation ?? "PRO Radio",
+    showName: savedPrefs?.selectedStation === "PRO Live" ? "PRO Live" : "PRO Radio",
     isLive: true,
     hasStarted: false,
-    selectedStation: savedPrefs?.selectedStation ?? null,
+    selectedStation: savedPrefs?.selectedStation === "PRO Live" ? "PRO Live" : null,
     favorites: savedPrefs?.favorites ?? [],
   });
   const [state, setState] = useState<RadioState>(stateRef.current);
