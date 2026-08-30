@@ -1712,7 +1712,7 @@ function MapDrawPage() {
           >
             <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto 12px" }} />
             <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
-              Save to which pupil?
+              {pupilMode === "send" ? "Send to which pupil?" : "Save to which pupil?"}
             </div>
             {loadingPupils ? (
               <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>Loading pupils…</div>
