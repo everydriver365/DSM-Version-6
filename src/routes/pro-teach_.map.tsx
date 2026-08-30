@@ -1431,6 +1431,9 @@ function MapDrawPage() {
           >
             <IconMinus size={20} color={NAVY} />
           </button>
+          <button type="button" aria-label="Recentre on my location" style={zoomBtn} onClick={recentre}>
+            <IconCurrentLocation size={18} color={NAVY} />
+          </button>
         </div>
 
         {/* Map type toggle */}
