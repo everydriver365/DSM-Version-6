@@ -1126,252 +1126,244 @@ function MapDrawPage() {
       <div
         style={{
           background: "#F4F6F8",
-          padding: "10px 16px calc(env(safe-area-inset-bottom, 0px) + 10px)",
           borderTop: `1px solid ${BORDER}`,
           display: "flex",
-          alignItems: "center",
-          gap: 10,
-          flexWrap: "wrap",
+          flexDirection: "column",
+          gap: 8,
+          padding: "10px 0 calc(env(safe-area-inset-bottom, 0px) + 10px)",
         }}
       >
-        {SIZES.map((s) => (
-          <button
-            key={s.dot}
-            type="button"
-            aria-label={`Pen size ${s.width}`}
-            onClick={() => {
-              setLineWidth(s.width);
-              setIsErasing(false);
-              setActiveTool("draw");
-              setSelectedCarType(null);
-              setSelectedHazardType(null);
-            }}
-            style={{
-              width: s.dot + 8,
-              height: s.dot + 8,
-              borderRadius: "50%",
-              background: "transparent",
-              border: lineWidth === s.width && !isErasing ? "2px solid #2C97DE" : "2px solid transparent",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <span style={{ width: s.dot, height: s.dot, borderRadius: "50%", background: NAVY }} />
-          </button>
-        ))}
+        {/* scrollable tool strip */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            padding: "0 16px",
+          }}
+        >
+          <style>{`.pro-teach-toolbar-scroll::-webkit-scrollbar { display: none; }`}</style>
+          <div className="pro-teach-toolbar-scroll" style={{ display: "contents" }} />
 
-        <span style={{ width: 1, height: 24, background: BORDER }} />
-
-        {COLOURS.map((c) => {
-          const active = currentColor === c && !isErasing;
-          return (
+          {SIZES.map((s) => (
             <button
-              key={c}
+              key={s.dot}
               type="button"
-              aria-label={`Colour ${c}`}
+              aria-label={`Pen size ${s.width}`}
               onClick={() => {
-                setCurrentColor(c);
+                setLineWidth(s.width);
                 setIsErasing(false);
                 setActiveTool("draw");
                 setSelectedCarType(null);
                 setSelectedHazardType(null);
               }}
               style={{
-                width: 22,
-                height: 22,
+                width: s.dot + 8,
+                height: s.dot + 8,
                 borderRadius: "50%",
-                background: c,
-                border: active ? "2px solid #fff" : "2px solid transparent",
-                boxShadow: active ? `0 0 0 2px ${c}` : "none",
+                background: "transparent",
+                border: lineWidth === s.width && !isErasing ? "2px solid #2C97DE" : "2px solid transparent",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
                 padding: 0,
+                flexShrink: 0,
               }}
-            />
-          );
-        })}
+            >
+              <span style={{ width: s.dot, height: s.dot, borderRadius: "50%", background: NAVY }} />
+            </button>
+          ))}
 
-        <span style={{ width: 1, height: 24, background: BORDER }} />
+          <span style={{ width: 1, height: 24, background: BORDER, flexShrink: 0 }} />
 
-        {/* Cars section */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span
+          {COLOURS.map((c) => {
+            const active = currentColor === c && !isErasing;
+            return (
+              <button
+                key={c}
+                type="button"
+                aria-label={`Colour ${c}`}
+                onClick={() => {
+                  setCurrentColor(c);
+                  setIsErasing(false);
+                  setActiveTool("draw");
+                  setSelectedCarType(null);
+                  setSelectedHazardType(null);
+                }}
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: "50%",
+                  background: c,
+                  border: active ? "2px solid #fff" : "2px solid transparent",
+                  boxShadow: active ? `0 0 0 2px ${c}` : "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  flexShrink: 0,
+                }}
+              />
+            );
+          })}
+
+          <span style={{ width: 1, height: 24, background: BORDER, flexShrink: 0 }} />
+
+          {/* Cars */}
+          {CAR_TYPES.map((type) => {
+            const active = selectedCarType === type;
+            return (
+              <button
+                key={type}
+                type="button"
+                aria-label={`Place ${type}`}
+                onClick={() => {
+                  setSelectedCarType((current) => (current === type ? null : type));
+                  setActiveTool("car");
+                  setSelectedHazardType(null);
+                  setIsErasing(false);
+                }}
+                style={{
+                  ...iconPill,
+                  flexShrink: 0,
+                  ...(active ? iconPillActive : {}),
+                }}
+              >
+                {ICON_EMOJI[type]}
+              </button>
+            );
+          })}
+
+          <span style={{ width: 1, height: 24, background: BORDER, flexShrink: 0 }} />
+
+          {/* Hazards */}
+          {HAZARD_TYPES.map((type) => {
+            const active = selectedHazardType === type;
+            return (
+              <button
+                key={type}
+                type="button"
+                aria-label={`Place ${type}`}
+                onClick={() => {
+                  setSelectedHazardType((current) => (current === type ? null : type));
+                  setActiveTool("hazard");
+                  setSelectedCarType(null);
+                  setIsErasing(false);
+                }}
+                style={{
+                  ...iconPill,
+                  flexShrink: 0,
+                  ...(active ? iconPillActive : {}),
+                }}
+              >
+                {ICON_EMOJI[type]}
+              </button>
+            );
+          })}
+
+          <span style={{ width: 1, height: 24, background: BORDER, flexShrink: 0 }} />
+
+          {/* Tools: arrow / text / ruler */}
+          <button
+            type="button"
+            aria-label="Arrow tool"
+            onClick={() => {
+              setActiveTool("arrow");
+              setArrowStart(null);
+              setSelectedCarType(null);
+              setSelectedHazardType(null);
+              setIsErasing(false);
+            }}
             style={{
-              fontSize: 10,
-              color: MUTED,
-              textTransform: "uppercase",
-              letterSpacing: "0.6px",
-              marginBottom: 4,
-              fontWeight: 600,
+              ...toolBtn,
+              flexShrink: 0,
+              ...(activeTool === "arrow" ? toolPillActive : {}),
             }}
           >
-            Place car
-          </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            {CAR_TYPES.map((type) => {
-              const active = selectedCarType === type;
-              return (
-                <button
-                  key={type}
-                  type="button"
-                  aria-label={`Place ${type}`}
-                  onClick={() => {
-                    setSelectedCarType((current) => (current === type ? null : type));
-                    setActiveTool("car");
-                    setSelectedHazardType(null);
-                    setIsErasing(false);
-                  }}
-                  style={{
-                    ...iconPill,
-                    ...(active ? iconPillActive : {}),
-                  }}
-                >
-                  {ICON_EMOJI[type]}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <span style={{ width: 1, height: 24, background: BORDER }} />
-
-        {/* Hazards section */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <span
+            <IconArrowUpRight size={18} color={activeTool === "arrow" ? "#2C97DE" : NAVY} />
+          </button>
+          <button
+            type="button"
+            aria-label="Text tool"
+            onClick={() => {
+              setActiveTool("text");
+              setSelectedCarType(null);
+              setSelectedHazardType(null);
+              setIsErasing(false);
+            }}
             style={{
-              fontSize: 10,
-              color: MUTED,
-              textTransform: "uppercase",
-              letterSpacing: "0.6px",
-              marginBottom: 4,
-              fontWeight: 600,
+              ...toolBtn,
+              flexShrink: 0,
+              ...(activeTool === "text" ? toolPillActive : {}),
             }}
           >
-            Hazards
-          </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            {HAZARD_TYPES.map((type) => {
-              const active = selectedHazardType === type;
-              return (
-                <button
-                  key={type}
-                  type="button"
-                  aria-label={`Place ${type}`}
-                  onClick={() => {
-                    setSelectedHazardType((current) => (current === type ? null : type));
-                    setActiveTool("hazard");
-                    setSelectedCarType(null);
-                    setIsErasing(false);
-                  }}
-                  style={{
-                    ...iconPill,
-                    ...(active ? iconPillActive : {}),
-                  }}
-                >
-                  {ICON_EMOJI[type]}
-                </button>
-              );
-            })}
-          </div>
+            <IconTextSize size={18} color={activeTool === "text" ? "#2C97DE" : NAVY} />
+          </button>
+          <button
+            type="button"
+            aria-label="Ruler tool"
+            onClick={() => {
+              setActiveTool("ruler");
+              setRulerStart(null);
+              setSelectedCarType(null);
+              setSelectedHazardType(null);
+              setIsErasing(false);
+            }}
+            style={{
+              ...toolBtn,
+              flexShrink: 0,
+              ...(activeTool === "ruler" ? toolPillActive : {}),
+            }}
+          >
+            <IconRuler2 size={18} color={activeTool === "ruler" ? "#2C97DE" : NAVY} />
+          </button>
+
+          <span style={{ width: 1, height: 24, background: BORDER, flexShrink: 0 }} />
+
+          {/* Draw mode pill */}
+          <button
+            type="button"
+            aria-label="Draw mode"
+            onClick={() => {
+              setActiveTool("draw");
+              setSelectedCarType(null);
+              setSelectedHazardType(null);
+            }}
+            style={{
+              borderRadius: 20,
+              padding: "6px 14px",
+              fontSize: 12,
+              fontWeight: 700,
+              border: `1px solid ${BORDER}`,
+              cursor: "pointer",
+              background: activeTool === "draw" ? NAVY : "#fff",
+              color: activeTool === "draw" ? "#fff" : NAVY,
+              flexShrink: 0,
+            }}
+          >
+            Draw
+          </button>
+
+          <button
+            type="button"
+            aria-label="Eraser"
+            onClick={() => {
+              setIsErasing((v) => !v);
+              setActiveTool("draw");
+              setSelectedCarType(null);
+              setSelectedHazardType(null);
+            }}
+            style={{ ...toolBtn, flexShrink: 0, borderColor: isErasing ? "#2C97DE" : BORDER }}
+          >
+            <IconEraser size={18} color={isErasing ? "#2C97DE" : MUTED} />
+          </button>
+          <button type="button" aria-label="Undo" onClick={undo} style={{ ...toolBtn, flexShrink: 0 }}>
+            <IconArrowBackUp size={18} color={MUTED} />
+          </button>
         </div>
-
-        <span style={{ width: 1, height: 24, background: BORDER }} />
-
-        {/* Tool pills: arrow / text / ruler */}
-        <button
-          type="button"
-          aria-label="Arrow tool"
-          onClick={() => {
-            setActiveTool("arrow");
-            setArrowStart(null);
-            setSelectedCarType(null);
-            setSelectedHazardType(null);
-            setIsErasing(false);
-          }}
-          style={{
-            ...toolBtn,
-            ...(activeTool === "arrow" ? toolPillActive : {}),
-          }}
-        >
-          <IconArrowUpRight size={18} color={activeTool === "arrow" ? "#2C97DE" : NAVY} />
-        </button>
-        <button
-          type="button"
-          aria-label="Text tool"
-          onClick={() => {
-            setActiveTool("text");
-            setSelectedCarType(null);
-            setSelectedHazardType(null);
-            setIsErasing(false);
-          }}
-          style={{
-            ...toolBtn,
-            ...(activeTool === "text" ? toolPillActive : {}),
-          }}
-        >
-          <IconTextSize size={18} color={activeTool === "text" ? "#2C97DE" : NAVY} />
-        </button>
-        <button
-          type="button"
-          aria-label="Ruler tool"
-          onClick={() => {
-            setActiveTool("ruler");
-            setRulerStart(null);
-            setSelectedCarType(null);
-            setSelectedHazardType(null);
-            setIsErasing(false);
-          }}
-          style={{
-            ...toolBtn,
-            ...(activeTool === "ruler" ? toolPillActive : {}),
-          }}
-        >
-          <IconRuler2 size={18} color={activeTool === "ruler" ? "#2C97DE" : NAVY} />
-        </button>
-
-        <span style={{ flex: 1 }} />
-
-        {/* Draw mode pill */}
-        <button
-          type="button"
-          aria-label="Draw mode"
-          onClick={() => {
-            setActiveTool("draw");
-            setSelectedCarType(null);
-            setSelectedHazardType(null);
-          }}
-          style={{
-            borderRadius: 20,
-            padding: "6px 14px",
-            fontSize: 12,
-            fontWeight: 700,
-            border: `1px solid ${BORDER}`,
-            cursor: "pointer",
-            background: activeTool === "draw" ? NAVY : "#fff",
-            color: activeTool === "draw" ? "#fff" : NAVY,
-          }}
-        >
-          Draw
-        </button>
-
-        <button
-          type="button"
-          aria-label="Eraser"
-          onClick={() => {
-            setIsErasing((v) => !v);
-            setActiveTool("draw");
-            setSelectedCarType(null);
-            setSelectedHazardType(null);
-          }}
-          style={{ ...toolBtn, borderColor: isErasing ? "#2C97DE" : BORDER }}
-        >
-          <IconEraser size={18} color={isErasing ? "#2C97DE" : MUTED} />
-        </button>
-        <button type="button" aria-label="Undo" onClick={undo} style={toolBtn}>
-          <IconArrowBackUp size={18} color={MUTED} />
-        </button>
       </div>
 
       {/* save row */}
