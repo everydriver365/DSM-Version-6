@@ -17,9 +17,8 @@ import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
 import icon512 from "../assets/icon-512.png.asset.json";
 import headerLogoAsset from "../assets/edp_transparent_logo_big_letters.png.asset.json";
-import { BackBarProvider, usePageHasBack } from "@/components/dsm/BackBarContext";
-import { useGoBack } from "@/hooks/useGoBack";
-import { tapLight } from "@/lib/haptics";
+import { BackBarProvider } from "@/components/dsm/BackBarContext";
+
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
@@ -28,7 +27,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
-import { IconFingerprint, IconChevronLeft } from "@tabler/icons-react";
+import { IconFingerprint } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
@@ -910,101 +909,6 @@ function Header({ unreadCount }: { unreadCount: number }) {
   );
 }
 
-const NO_BACK_EXACT = new Set([
-  // Main tabs / entry screens
-  "/",
-  "/home",
-  "/schedule",
-  "/pupils",
-  "/messages",
-  "/more",
-  "/login",
-  "/register",
-  "/forgotpassword",
-  "/resetpassword",
-  "/onboarding",
-  "/pay",
-  // Screens that already draw their own back control
-  "/admin",
-  "/admin/applications",
-  "/admin/chat-rooms",
-  "/admin/featured",
-  "/admin/learn-videos",
-  "/admin/listings",
-  "/admin/terms",
-  "/availability-settings",
-  "/certifications",
-  "/coverage-areas",
-  "/ed-settings",
-  "/lessons/new",
-  "/live",
-  "/livesession",
-  "/pupils/new",
-  "/quotes",
-  "/radio",
-  "/rewards",
-  "/satnav",
-  "/square",
-  "/take-payment",
-]);
-
-const NO_BACK_PREFIX = [
-  "/i/",
-  "/quote/",
-  "/terms/sign/",
-  "/dsm-live/",
-  "/marketplace/",
-  "/marketplace_",
-  "/messages/",
-  "/test-day/",
-];
-
-/**
- * Global back chip shown under the app header on any screen whose own page
- * header does not already render one.
- */
-function GlobalBackBar({ pathname }: { pathname: string }) {
-  const pageHasBack = usePageHasBack();
-  const goBack = useGoBack();
-
-  const excluded =
-    NO_BACK_EXACT.has(pathname) ||
-    NO_BACK_PREFIX.some((prefix) => pathname.startsWith(prefix));
-
-  if (pageHasBack || excluded) return null;
-
-  return (
-    <div
-      style={{
-        background: "#0B2341",
-        padding: "6px 16px 14px",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <button
-        type="button"
-        aria-label="Go back"
-        onClick={() => { tapLight(); goBack("/home"); }}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          border: 0,
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "rgba(255,255,255,0.1)",
-          cursor: "pointer",
-          flexShrink: 0,
-        }}
-      >
-        <IconChevronLeft size={20} color="#fff" stroke={2} />
-      </button>
-    </div>
-  );
-}
 
 function RootComponent() {
   // Keep the native app-icon badge in sync with the real unread count on every
@@ -1674,7 +1578,6 @@ function RootComponent() {
       {showHeader && <Header unreadCount={unreadCount} />}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <BackBarProvider>
-        {showHeader && <GlobalBackBar pathname={pathname} />}
         <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
           <Outlet />
         </div>
