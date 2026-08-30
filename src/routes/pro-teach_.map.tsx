@@ -4,13 +4,17 @@ import {
   IconArrowBackUp,
   IconArrowLeft,
   IconEraser,
+  IconHeart,
+  IconHeartFilled,
   IconMinus,
   IconPencil,
   IconPlus,
   IconShare,
   IconTrash,
+  IconUser,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pro-teach_/map")({
   head: () => ({
