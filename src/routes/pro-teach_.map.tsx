@@ -287,7 +287,7 @@ function MapDrawPage() {
     setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
-    setDraggingId(null);
+    draggingIdRef.current = null;
     repaint();
   }, [mapType, repaint]);
 
@@ -466,7 +466,9 @@ function MapDrawPage() {
     if (selectedIconId) {
       if (icon) {
         setSelectedIconId(icon.id);
-        setDraggingId(icon.id);
+        draggingIdRef.current = icon.id;
+        draggingPosRef.current = { x: icon.x, y: icon.y };
+        draggingRotationRef.current = icon.rotation;
         return;
       }
       setSelectedIconId(null);
@@ -588,7 +590,7 @@ function MapDrawPage() {
     setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
-    setDraggingId(null);
+    draggingIdRef.current = null;
     setConfirmClear(false);
   };
 
