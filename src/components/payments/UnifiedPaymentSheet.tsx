@@ -531,7 +531,7 @@ export function UnifiedPaymentSheet({
     setQuery("");
     setTab("payment");
     setAmount("");
-    setMethod("cash");
+    setMethod(initialMethod ?? "cash");
     setPartial(false);
     setNote("");
     setPaymentDate(todayIso());
