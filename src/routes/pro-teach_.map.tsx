@@ -147,7 +147,11 @@ const IconOverlay = React.memo(function IconOverlay({
             justifyContent: "center",
           }}
         >
-          {ICON_EMOJI[icon.type]}
+          {isVehicleType(icon.type) ? (
+            <VehicleIcon type={icon.type} size={30} />
+          ) : (
+            ICON_EMOJI[icon.type]
+          )}
         </div>
       ))}
 
