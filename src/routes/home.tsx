@@ -10140,11 +10140,9 @@ function HomePage() {
         open={unifiedPayOpen}
         onClose={() => setUnifiedPayOpen(false)}
         initialPupilId={unifiedPayPupilId}
-        initialMethod={unifiedPayInitialMethod ?? undefined}
         onSaved={(info) => {
           setUnifiedPayOpen(false);
           setUnifiedPayPupilId(undefined);
-          setUnifiedPayInitialMethod(null);
           // Optimistic: reflect paid status on schedule rows immediately,
           // before the background refetch lands.
           const updates = info?.updatedLessons ?? [];
