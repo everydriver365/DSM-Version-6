@@ -427,8 +427,8 @@ function ProTeachPage() {
             <div
               role="button"
               tabIndex={0}
-              onClick={() => navigate({ to: "/pro-teach/route" as never })}
-              onKeyDown={(e) => e.key === "Enter" && navigate({ to: "/pro-teach/route" as never })}
+              onClick={() => navigate({ to: "/pro-teach/route-planner" as never })}
+              onKeyDown={(e) => e.key === "Enter" && navigate({ to: "/pro-teach/route-planner" as never })}
               style={bigCard}
             >
               <div

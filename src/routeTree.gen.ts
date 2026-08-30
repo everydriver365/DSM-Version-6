@@ -775,19 +775,19 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProTeachSmtmRoute = ProTeachSmtmRouteImport.update({
-  id: '/smtm',
-  path: '/smtm',
-  getParentRoute: () => ProTeachRouteRoute,
+  id: '/pro-teach_/smtm',
+  path: '/pro-teach/smtm',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProTeachSketchRoute = ProTeachSketchRouteImport.update({
-  id: '/sketch',
-  path: '/sketch',
-  getParentRoute: () => ProTeachRouteRoute,
+  id: '/pro-teach_/sketch',
+  path: '/pro-teach/sketch',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProTeachMapRoute = ProTeachMapRouteImport.update({
-  id: '/map',
-  path: '/map',
-  getParentRoute: () => ProTeachRouteRoute,
+  id: '/pro-teach_/map',
+  path: '/pro-teach/map',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PerksPerkIdRoute = PerksPerkIdRouteImport.update({
   id: '/perks_/$perkId',
@@ -2240,6 +2240,9 @@ export interface RootRouteChildren {
   NewsArticleIdRoute: typeof NewsArticleIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PerksPerkIdRoute: typeof PerksPerkIdRoute
+  ProTeachMapRoute: typeof ProTeachMapRoute
+  ProTeachSketchRoute: typeof ProTeachSketchRoute
+  ProTeachSmtmRoute: typeof ProTeachSmtmRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
@@ -3100,24 +3103,24 @@ declare module '@tanstack/react-router' {
     }
     '/pro-teach_/smtm': {
       id: '/pro-teach_/smtm'
-      path: '/smtm'
+      path: '/pro-teach/smtm'
       fullPath: '/pro-teach/smtm'
       preLoaderRoute: typeof ProTeachSmtmRouteImport
-      parentRoute: typeof ProTeachRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/pro-teach_/sketch': {
       id: '/pro-teach_/sketch'
-      path: '/sketch'
+      path: '/pro-teach/sketch'
       fullPath: '/pro-teach/sketch'
       preLoaderRoute: typeof ProTeachSketchRouteImport
-      parentRoute: typeof ProTeachRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/pro-teach_/map': {
       id: '/pro-teach_/map'
-      path: '/map'
+      path: '/pro-teach/map'
       fullPath: '/pro-teach/map'
       preLoaderRoute: typeof ProTeachMapRouteImport
-      parentRoute: typeof ProTeachRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/perks_/$perkId': {
       id: '/perks_/$perkId'
@@ -3694,6 +3697,9 @@ const rootRouteChildren: RootRouteChildren = {
   NewsArticleIdRoute: NewsArticleIdRoute,
   NotesIdRoute: NotesIdRoute,
   PerksPerkIdRoute: PerksPerkIdRoute,
+  ProTeachMapRoute: ProTeachMapRoute,
+  ProTeachSketchRoute: ProTeachSketchRoute,
+  ProTeachSmtmRoute: ProTeachSmtmRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
