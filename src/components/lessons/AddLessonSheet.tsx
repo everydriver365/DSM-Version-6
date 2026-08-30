@@ -1,6 +1,6 @@
 import { tokens } from "@/lib/tokens";
 import { testStartTime, testEndTime, minutesBetween, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   IconCheck,
   IconCalendar,
@@ -24,6 +24,7 @@ import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resol
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
 import { syncPupilTestFields } from "@/lib/pupilTestSync";
+import { useGoBack } from "@/hooks/useGoBack";
 
 const BLUE = "#1877D6";
 
@@ -205,6 +206,31 @@ export function AddLessonSheet({
     d.setMonth(d.getMonth() + 3);
     return d.toISOString().split("T")[0];
   });
+
+  const goBack = useGoBack();
+
+  const hasUnsavedChanges = useCallback(() => {
+    return Boolean(
+      pupilId ||
+      time ||
+      pickup.trim() ||
+      notes.trim() ||
+      testCentre.trim() ||
+      eventTitle.trim() ||
+      isRecurring
+    );
+  }, [pupilId, time, pickup, notes, testCentre, eventTitle, isRecurring]);
+
+  const handleCloseAttempt = useCallback(() => {
+    if (saving) return;
+    if (hasUnsavedChanges()) {
+      if (window.confirm("You have unsaved changes. Discard them?")) {
+        onClose();
+      }
+    } else {
+      onClose();
+    }
+  }, [saving, hasUnsavedChanges, onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -536,6 +562,7 @@ export function AddLessonSheet({
       setSaving(false);
       onSaved(editingLesson.id);
       onClose();
+      goBack("/home");
       return;
     }
 
@@ -672,6 +699,7 @@ export function AddLessonSheet({
     setSaving(false);
     onSaved((insertedLesson as any)?.id as string);
     onClose();
+    goBack("/home");
   }
 
   if (!open) return null;
@@ -680,7 +708,7 @@ export function AddLessonSheet({
     <BottomSheetV2
       title={editingLesson ? "Edit Lesson" : "Add Lesson"}
       subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
-      onClose={onClose}
+      onClose={handleCloseAttempt}
       footer={
         <>
           <SaveButton
@@ -691,7 +719,7 @@ export function AddLessonSheet({
           </SaveButton>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleCloseAttempt}
             disabled={saving}
             style={{
               width: "100%",

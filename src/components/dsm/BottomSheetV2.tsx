@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { tokens } from "@/lib/tokens";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { tapLight } from "@/lib/haptics";
@@ -47,23 +47,52 @@ export interface BottomSheetProps {
 export function BottomSheet({ title, subtitle, onClose, children, footer, headerStyle, titleStyle, subtitleStyle, headerRight }: BottomSheetProps) {
   const [dragY, setDragY] = React.useState(0);
   const dragStart = React.useRef<number | null>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     tapLight();
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("dsm-sheet-open"));
+      previouslyFocused.current = document.activeElement as HTMLElement | null;
+      // Focus the close button on open so keyboard users start inside the sheet.
+      const closeBtn = sheetRef.current?.querySelector('[aria-label="Close"]') as HTMLElement | null;
+      closeBtn?.focus();
     }
     return () => {
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("dsm-sheet-close"));
       }
+      previouslyFocused.current?.focus();
     };
   }, []);
 
-  // Escape key closes the sheet
+  // Escape key closes the sheet; Tab is trapped inside the sheet.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab" || !sheetRef.current) return;
+      const focusable = Array.from(
+        sheetRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => {
+        const htmlEl = el as HTMLElement;
+        return htmlEl.tabIndex >= 0 && htmlEl.offsetParent !== null && htmlEl.offsetHeight > 0;
+      }) as HTMLElement[];
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -76,6 +105,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer, header
     >
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div
+        ref={sheetRef}
         className="relative w-full max-w-md rounded-t-lg overflow-hidden flex flex-col"
         style={{
           backgroundColor: canvas,
