@@ -1205,7 +1205,7 @@ function PupilThreadPage() {
           )}
         </div>
       </div>
-      <div style={{ height: "calc(56px + env(safe-area-inset-top, 0px))" }} />
+      
 
 
       {noAccount && (
