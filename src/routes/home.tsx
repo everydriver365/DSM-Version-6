@@ -67,6 +67,12 @@ import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { PersonalEventSheet, type PersonalEvent } from "@/components/schedule/PersonalEventSheet";
+import { UnavailabilitySheet } from "@/components/dsm/quickadd/UnavailabilitySheet";
+import { NoteSheet } from "@/components/dsm/quickadd/NoteSheet";
+import { EnquirySheet } from "@/components/dsm/quickadd/EnquirySheet";
+import { LogCallSheet } from "@/components/dsm/quickadd/LogCallSheet";
+import { QuickPupilSheet } from "@/components/dsm/quickadd/QuickPupilSheet";
+import { TakePaymentSheet } from "@/components/dsm/quickadd/TakePaymentSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
@@ -1842,6 +1848,14 @@ function HomePage() {
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
+  // Quick-add bottom sheets (every FAB action opens a sheet except Add course)
+  const [unavailabilitySheetOpen, setUnavailabilitySheetOpen] = useState(false);
+  const [noteSheetOpen, setNoteSheetOpen] = useState(false);
+  const [enquirySheetOpen, setEnquirySheetOpen] = useState(false);
+  const [logCallSheetOpen, setLogCallSheetOpen] = useState(false);
+  const [quickPupilSheetOpen, setQuickPupilSheetOpen] = useState(false);
+  const [takePaymentSheetOpen, setTakePaymentSheetOpen] = useState(false);
+
   const runQuickAdd = (key: QuickAddKey) => {
     switch (key) {
       case "lesson":
@@ -1853,13 +1867,13 @@ function HomePage() {
         setAddLessonOpen(true);
         break;
       case "pupil":
-        navigate({ to: "/pupils/new" as never });
+        setQuickPupilSheetOpen(true);
         break;
       case "payment":
-        navigate({ to: "/take-payment" as never });
+        setTakePaymentSheetOpen(true);
         break;
       case "unavailability":
-        navigate({ to: "/quickavailability" as never });
+        setUnavailabilitySheetOpen(true);
         break;
       case "event":
         setEditingPersonal(null);
@@ -1869,7 +1883,7 @@ function HomePage() {
         navigate({ to: "/courses/new" as never });
         break;
       case "note":
-        navigate({ to: "/notes" as never });
+        setNoteSheetOpen(true);
         break;
       case "eol": {
         const candidate =
@@ -1879,10 +1893,10 @@ function HomePage() {
         break;
       }
       case "enquiry":
-        navigate({ to: "/enquiries" as never });
+        setEnquirySheetOpen(true);
         break;
       case "call":
-        navigate({ to: "/enquiries" as never });
+        setLogCallSheetOpen(true);
         break;
     }
   };
@@ -9977,6 +9991,51 @@ function HomePage() {
         onClose={() => { setPersonalSheetOpen(false); setEditingPersonal(null); }}
         onSaved={() => setReloadKey((k) => k + 1)}
       />
+
+      <UnavailabilitySheet
+        open={unavailabilitySheetOpen}
+        onClose={() => setUnavailabilitySheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      <NoteSheet
+        open={noteSheetOpen}
+        onClose={() => setNoteSheetOpen(false)}
+      />
+
+      <EnquirySheet
+        open={enquirySheetOpen}
+        onClose={() => setEnquirySheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      <LogCallSheet
+        open={logCallSheetOpen}
+        onClose={() => setLogCallSheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      <QuickPupilSheet
+        open={quickPupilSheetOpen}
+        onClose={() => setQuickPupilSheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+        onOpenFullForm={() => {
+          setQuickPupilSheetOpen(false);
+          navigate({ to: "/pupils/new" as never });
+        }}
+      />
+
+      <TakePaymentSheet
+        open={takePaymentSheetOpen}
+        onClose={() => setTakePaymentSheetOpen(false)}
+        onSaved={() => setReloadKey((k) => k + 1)}
+        onOpenFullPage={() => {
+          setTakePaymentSheetOpen(false);
+          navigate({ to: "/take-payment" as never });
+        }}
+      />
+
+
 
       {addChooserOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
