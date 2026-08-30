@@ -253,6 +253,8 @@ function PupilThreadPage() {
 
   // Measure the space actually left for this screen: viewport minus whatever
   // the app header occupies above it and the bottom-nav padding below it.
+  // Re-measured whenever the app header reports a new height, so a late-loading
+  // logo or a status-bar inset can never leave a navy band above this screen.
   useLayoutEffect(() => {
     const measure = () => {
       const el = pageRef.current;
@@ -266,16 +268,25 @@ function PupilThreadPage() {
       setPageHeight((prev) => (prev !== null && Math.abs(prev - next) < 2 ? prev : next));
     };
     measure();
+    const raf = requestAnimationFrame(measure);
     window.addEventListener("resize", measure);
     window.addEventListener("orientationchange", measure);
+    window.addEventListener("load", measure);
+    window.addEventListener("dsm-header-height", measure as EventListener);
     const ro = new ResizeObserver(measure);
     if (pageRef.current?.parentElement) ro.observe(pageRef.current.parentElement);
+    const header = document.querySelector("header");
+    if (header) ro.observe(header);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
       window.removeEventListener("orientationchange", measure);
+      window.removeEventListener("load", measure);
+      window.removeEventListener("dsm-header-height", measure as EventListener);
       ro.disconnect();
     };
   }, []);
+
   const [hasMoreOlder, setHasMoreOlder] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const loadingOlderRef = useRef(false);
