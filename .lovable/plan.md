@@ -1,36 +1,26 @@
-# Map Draw: place vehicle icons reliably, with proper car graphics
+# Fix the navy band above the chat header (and finish the Map Draw icons)
 
-Scope: `src/routes/pro-teach_.map.tsx` (plus one small new icon file). No changes to drawing, ruler, arrow, text, save/share, or any other page.
+## 1. Finish the in-progress Map Draw work (build is currently broken)
 
-## 1. Fix placement (the blocker)
+The vehicle-icon change was mid-edit when the mode switched, and `src/routes/pro-teach_.map.tsx` now references `VEHICLE_TYPES` without importing it, which fails the build. First action on approval: add the import from the new `src/components/icons/VehicleIcons.tsx`, then complete the approved icon work — SVG vehicles in the toolbar pills, on the map overlay and in the exported image, plus the pointer-event placement fix.
 
-Reading the tap path, several things can swallow a tap that should drop an icon:
+## 2. The navy band at the top of the chat page
 
-- Touch taps fire `onTouchStart` and then a synthesised `onMouseDown` at the same point, so one tap runs the placement handler twice — the second pass lands on the icon just placed and switches into select/drag instead of leaving a clean placed icon.
-- The canvas only accepts input while the mode toggle says "Draw". If the toggle is on "Move map", every tap is ignored with no feedback.
-- The toolbar strip and the map both live under the same tap area, so a tap that starts on a pill and ends on the map does nothing.
+In the screenshot there is a navy strip roughly one header tall between the app header and the "Richard Chapman" chat header.
 
-Work:
-- Unify canvas input on Pointer Events (single code path for mouse, touch and pencil) so one tap is exactly one placement.
-- When a vehicle/hazard tool is armed, tapping the map always places — never falls through to selection on the same gesture.
-- Auto-switch the mode toggle back to "Draw" whenever an icon pill is armed, and show a short "Tap the map to place" hint on the toolbar while a tool is armed.
-- Verify end-to-end in a headless browser: arm a car, tap the map, assert exactly one icon appears at the tap point, then drag it and confirm it moves.
+What the code shows today (verified):
 
-## 2. Real car graphics instead of emoji
+- The global app header in `src/routes/__root.tsx` is `position: sticky` and includes `padding-top: env(safe-area-inset-top) + 16px`, so it occupies its own height in the page flow.
+- The chat page in `src/routes/messages.$pupilId.tsx` wraps everything in `PageLayout` with `height: 100dvh`, and its own navy header is a second `position: sticky; top: 0` block.
 
-Today the pills and placed markers are emoji characters, which render differently per device and can't rotate convincingly.
+Two full-viewport-height stacked blocks under a header that is itself in flow makes the page taller than the screen, so the body scrolls; both navy headers then pin independently and a navy band appears between them. The exact pixel source needs confirming on the running app before the fix is written.
 
 Work:
-- Add `src/components/icons/VehicleIcons.tsx` with top-down SVG vehicles (car, van, lorry, bus, motorbike, bicycle, pedestrian) drawn in the app style, colour-driven so one shape covers all four car colours.
-- Render those SVGs both in the toolbar pills and as the placed markers, keeping the existing rotate/scale/delete action bar.
-- Draw the same shapes onto the canvas for the exported/shared image so what's shared matches what's on screen.
-
-## 3. More vehicle types
-
-Extend the toolbar with: car (blue/yellow/green/red), van, lorry, bus, motorbike, bicycle, pedestrian — grouped and horizontally scrollable, hazards unchanged after the divider.
+1. Reproduce the thread screen headlessly at mobile width, signed in, and measure the top/height/padding of the app header, the chat header and the wrapper — confirm which element is producing the extra navy.
+2. Fix the sizing so the chat screen fills exactly the space below the app header: the page column sized against the app header instead of a flat `100dvh`, the chat header in flow at the top of that column (no second sticky/safe-area offset), and no navy element other than the two headers themselves.
+3. Re-measure after the change: app header immediately followed by the chat header, no navy gap, at 390px, 430px and desktop widths, and with the thread scrolled up and down.
 
 ## Technical notes
 
-- Coordinates stay in CSS pixels; DPR multiplication only happens when drawing to the canvas and in hit-testing (already the case).
-- Placed-icon state stays in the memoised overlay component so placement doesn't re-render the whole route.
-- Existing saved templates that reference `car-blue` etc. keep working — the new SVG set is keyed off the same type strings.
+- Files touched: `src/routes/messages.$pupilId.tsx`, `src/routes/pro-teach_.map.tsx`, `src/components/icons/VehicleIcons.tsx` (new). `__root.tsx` only if measurement proves the extra space originates there.
+- No change to message sending, realtime, search, jump-to-latest or auto-scroll behaviour.
