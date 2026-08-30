@@ -251,20 +251,28 @@ function PupilThreadPage() {
   const pageRef = useRef<HTMLDivElement>(null);
   const [pageHeight, setPageHeight] = useState<number | null>(null);
 
-  // Measure the space actually left for this screen: viewport minus whatever
-  // the app header occupies above it and the bottom-nav padding below it.
-  // Re-measured whenever the app header reports a new height, so a late-loading
-  // logo or a status-bar inset can never leave a navy band above this screen.
+  // Measure the space actually left for this screen: viewport minus the app
+  // header above it and the bottom-nav padding below it.
+  //
+  // The header height is read from the *live* header element (it publishes
+  // --dsm-header-h too) rather than from this element's own offset — an offset
+  // read is wrong whenever the document happens to be scrolled or the header
+  // hasn't finished laying out, and a too-tall column is exactly what pushes
+  // this screen's navy header down and leaves a blue band under the app header.
   useLayoutEffect(() => {
     const measure = () => {
       const el = pageRef.current;
       if (!el) return;
-      const top = el.getBoundingClientRect().top + window.scrollY;
+      const header = document.querySelector("header");
+      const headerH = header ? header.getBoundingClientRect().height : 0;
       const parent = el.parentElement;
       const padBottom = parent
         ? parseFloat(getComputedStyle(parent).paddingBottom || "0") || 0
         : 0;
-      const next = Math.max(240, Math.round(window.innerHeight - top - padBottom));
+      const next = Math.max(
+        240,
+        Math.round(window.innerHeight - headerH - padBottom),
+      );
       setPageHeight((prev) => (prev !== null && Math.abs(prev - next) < 2 ? prev : next));
     };
     measure();
@@ -1037,12 +1045,19 @@ function PupilThreadPage() {
         overflow: "hidden",
       }}
     >
-      {/* Header — in flow at the top of the fixed-height column */}
+      {/* Header — in flow at the top of the fixed-height column.
+          Pinned to exactly 56px and non-shrinking: no safe-area padding here
+          (the app header above already owns the status-bar inset), so this
+          block can never grow into an empty navy band. */}
       <div
         style={{
           position: "relative",
           zIndex: 60,
           background: tokens.navy,
+          height: 56,
+          flexShrink: 0,
+          paddingTop: 0,
+          marginTop: 0,
         }}
       >
         <div
@@ -1598,7 +1613,9 @@ function PupilThreadPage() {
           background: "#fff",
           borderTop: "1px solid #E4E8EF",
           padding: "12px 16px",
-          paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+          /* The root wrapper already reserves the bottom-nav + safe-area space
+             below this column, so the composer only needs its own padding. */
+          paddingBottom: 12,
           display: "flex",
           gap: 10,
           alignItems: "flex-end",
