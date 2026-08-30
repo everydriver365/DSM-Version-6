@@ -156,6 +156,14 @@ function AdminInstructorsPage() {
   const active = filtered.filter((i) => !i.deleted_at);
   const archived = filtered.filter((i) => !!i.deleted_at);
 
+  const newInstructors = active.filter(isNewInstructor);
+  const visibleInstructors = filter === "inactive" ? archived : active.filter((i) => {
+    if (filter === "new") return isNewInstructor(i);
+    return true;
+  });
+  const showArchiveSection = filter !== "inactive" && archived.length > 0;
+
+
   function openEdit(inst: any) {
     setMenuFor(null);
     setEditInstructor(inst);
