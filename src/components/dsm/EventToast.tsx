@@ -97,14 +97,19 @@ function titleFor(kind: LiveEventKind): string {
   }
 }
 
-function colorFor(kind: LiveEventKind): string {
+function variantFor(kind: LiveEventKind): "success" | "error" | "info" | "warning" {
   switch (kind) {
-    case "job": return "#E0932F";
-    case "enquiry": return "#1877D6";
-    case "message": return "#1877D6";
-    case "booking": return "#1B7F3B";
-    case "call": return "#CC2229";
-    case "payment": return "#0F766E";
+    case "booking":
+    case "payment":
+      return "success";
+    case "call":
+      return "error";
+    case "job":
+      return "warning";
+    case "enquiry":
+    case "message":
+    default:
+      return "info";
   }
 }
 
@@ -116,41 +121,30 @@ export function EventToastController() {
       const detail = (e as CustomEvent<LiveEventPayload>).detail;
       if (!detail) return;
 
-      const color = colorFor(detail.kind);
+      const variant = variantFor(detail.kind);
       const title = detail.title ?? titleFor(detail.kind);
+      const action = detail.url
+        ? {
+            label: "View",
+            onClick: () =>
+              navigate({
+                to: detail.url as never,
+              }),
+          }
+        : undefined;
 
-      toast(
-        <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: color,
-              flexShrink: 0,
-            }}
-          />
-          <span>{title}</span>
-        </span>,
-        {
-          description: detail.text,
-          duration: 5000,
-          style: {
-            borderLeftColor: color,
-            borderLeftWidth: 4,
-            borderLeftStyle: "solid",
-          },
-          action: detail.url
-            ? {
-                label: "View",
-                onClick: () =>
-                  navigate({
-                    to: detail.url as never,
-                  }),
-              }
-            : undefined,
-        },
-      );
+      const fire = {
+        success: toast.success,
+        error: toast.error,
+        info: toast.info,
+        warning: toast.warning,
+      }[variant];
+
+      fire(title, {
+        description: detail.text,
+        duration: 5000,
+        action,
+      });
     };
 
     window.addEventListener(EVENT_NAME, handler);
