@@ -1205,8 +1205,6 @@ function PupilThreadPage() {
           )}
         </div>
       </div>
-      
-
 
       {noAccount && (
         <div
