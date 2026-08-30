@@ -397,6 +397,16 @@ function MapDrawPage() {
     justifyContent: "center",
     cursor: "pointer",
   };
+  const saveBtn: React.CSSProperties = {
+    background: "#fff",
+    border: `1px solid ${BORDER}`,
+    borderRadius: 10,
+    padding: "8px 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    cursor: "pointer",
+  };
   const zoomBtn: React.CSSProperties = {
     width: 40,
     height: 40,
