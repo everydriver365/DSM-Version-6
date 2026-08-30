@@ -77,6 +77,31 @@ type Favourite = {
   createdAt: string;
 };
 
+const FAV_TEMPLATE_KEY = "pro_teach_template_fav";
+const CUSTOM_TEMPLATE_PREFIX = "pro_teach_custom_";
+
+type CustomTemplate = { key: string; name: string; imageData: string; createdAt: string };
+
+function readCustomTemplates(): CustomTemplate[] {
+  const out: CustomTemplate[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key?.startsWith(CUSTOM_TEMPLATE_PREFIX)) continue;
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) ?? "");
+      out.push({
+        key,
+        name: parsed.name ?? key.replace(CUSTOM_TEMPLATE_PREFIX, ""),
+        imageData: parsed.imageData ?? "",
+        createdAt: parsed.createdAt ?? new Date().toISOString(),
+      });
+    } catch {
+      // ignore corrupt entries
+    }
+  }
+  return out.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
 function useRecentSketches(max = 3): Favourite[] {
   const [items, setItems] = React.useState<Favourite[]>([]);
   React.useEffect(() => {
