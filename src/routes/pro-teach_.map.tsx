@@ -194,7 +194,9 @@ function MapDrawPage() {
   // placed icons (cars + hazards)
   const [placedIcons, setPlacedIcons] = React.useState<PlacedIcon[]>([]);
   const [selectedIconId, setSelectedIconId] = React.useState<string | null>(null);
-  const [draggingId, setDraggingId] = React.useState<string | null>(null);
+  const draggingIdRef = React.useRef<string | null>(null);
+  const draggingPosRef = React.useRef({ x: 0, y: 0 });
+  const draggingRotationRef = React.useRef(0);
   const hasShownHintRef = React.useRef(false);
 
   // two-tap tools
