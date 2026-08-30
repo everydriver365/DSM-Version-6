@@ -495,16 +495,24 @@ function MapDrawPage() {
     }
   };
 
+  const dragFrameRef = React.useRef<number | null>(null);
+
   const move = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
     if (draggingId) {
       const { x, y } = getPos(e);
-      setPlacedIcons((prev) => prev.map((i) => (i.id === draggingId ? { ...i, x, y } : i)));
+      // coalesce drag updates to one per frame
+      if (dragFrameRef.current !== null) return;
+      dragFrameRef.current = requestAnimationFrame(() => {
+        dragFrameRef.current = null;
+        setPlacedIcons((prev) => prev.map((i) => (i.id === draggingId ? { ...i, x, y } : i)));
+      });
       return;
     }
     if (mode !== "draw" || !drawingRef.current || activeTool !== "draw") return;
     const { x, y } = getPos(e);
     draw(x, y, false);
   };
+
 
   const end = () => {
     if (draggingId) {
