@@ -88,7 +88,7 @@ import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
   | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "availability" | "event"
-  | "course" | "note" | "eol" | "enquiry" | "call";
+  | "course" | "note" | "eol" | "enquiry" | "call" | "proteach";
 
 const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
   { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6", group: "Teaching" },
@@ -97,6 +97,7 @@ const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus;
   { key: "unavailability", label: "Add unavailability", icon: IconCalendarOff, bg: "#E53935", group: "Teaching" },
   { key: "availability", label: "Availability", icon: IconCalendarCheck, bg: "#18A999", group: "Teaching" },
   { key: "event", label: "Add event", icon: IconCalendarEvent, bg: "#7B61FF", group: "Teaching" },
+  { key: "proteach", label: "PRO Teach", icon: IconSchool, bg: "#7B61FF", group: "Teaching" },
   { key: "pupil", label: "Add pupil", icon: IconUserPlus, bg: "#18A999", group: "People" },
   { key: "enquiry", label: "Log enquiry", icon: IconMail, bg: "#7B61FF", group: "People" },
   { key: "call", label: "Log call", icon: IconPhone, bg: "#16A34A", group: "People" },
@@ -1879,6 +1880,9 @@ function HomePage() {
         break;
       case "availability":
         navigate({ to: "/availability-settings" as never });
+        break;
+      case "proteach":
+        navigate({ to: "/pro-teach" as never });
         break;
       case "event":
         setEditingPersonal(null);
@@ -4768,6 +4772,7 @@ function HomePage() {
     { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#18A999", label: "Availability", route: "/availability-settings" },
+    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#7B61FF", label: "PRO Teach", route: "/pro-teach" },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" /><span style={{ position: 'absolute', right: -4, bottom: -4, width: 16, height: 16, borderRadius: '50%', background: '#7C3AED', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconSearch size={9} color="#FFFFFF" stroke={2.5} /></span></span>, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
     { icon: <IconMapSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#18A999", label: "Nearest", route: "/nearest" },

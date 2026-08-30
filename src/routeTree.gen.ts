@@ -45,6 +45,7 @@ import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProTeachRouteImport } from './routes/pro-teach'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PostcodeRatesRouteImport } from './routes/postcode-rates'
 import { Route as PipelineRouteImport } from './routes/pipeline'
@@ -126,6 +127,8 @@ import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as QuoteTokenRouteImport } from './routes/quote.$token'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
+import { Route as ProTeachSketchRouteImport } from './routes/pro-teach_.sketch'
+import { Route as ProTeachMapRouteImport } from './routes/pro-teach_.map'
 import { Route as PerksPerkIdRouteImport } from './routes/perks_.$perkId'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as NewsArticleIdRouteImport } from './routes/news.$articleId'
@@ -357,6 +360,11 @@ const QuickaccessRoute = QuickaccessRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProTeachRoute = ProTeachRouteImport.update({
+  id: '/pro-teach',
+  path: '/pro-teach',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -764,6 +772,16 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   path: '/pupils/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProTeachSketchRoute = ProTeachSketchRouteImport.update({
+  id: '/pro-teach_/sketch',
+  path: '/pro-teach/sketch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProTeachMapRoute = ProTeachMapRouteImport.update({
+  id: '/pro-teach_/map',
+  path: '/pro-teach/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerksPerkIdRoute = PerksPerkIdRouteImport.update({
   id: '/perks_/$perkId',
   path: '/perks/$perkId',
@@ -1102,6 +1120,7 @@ export interface FileRoutesByFullPath {
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
+  '/pro-teach': typeof ProTeachRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1170,6 +1189,8 @@ export interface FileRoutesByFullPath {
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/perks/$perkId': typeof PerksPerkIdRoute
+  '/pro-teach/map': typeof ProTeachMapRoute
+  '/pro-teach/sketch': typeof ProTeachSketchRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quote/$token': typeof QuoteTokenRoute
@@ -1271,6 +1292,7 @@ export interface FileRoutesByTo {
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
+  '/pro-teach': typeof ProTeachRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1338,6 +1360,8 @@ export interface FileRoutesByTo {
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/perks/$perkId': typeof PerksPerkIdRoute
+  '/pro-teach/map': typeof ProTeachMapRoute
+  '/pro-teach/sketch': typeof ProTeachSketchRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quote/$token': typeof QuoteTokenRoute
@@ -1442,6 +1466,7 @@ export interface FileRoutesById {
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
+  '/pro-teach': typeof ProTeachRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1510,6 +1535,8 @@ export interface FileRoutesById {
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/perks_/$perkId': typeof PerksPerkIdRoute
+  '/pro-teach_/map': typeof ProTeachMapRoute
+  '/pro-teach_/sketch': typeof ProTeachSketchRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quote/$token': typeof QuoteTokenRoute
@@ -1615,6 +1642,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
+    | '/pro-teach'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1683,6 +1711,8 @@ export interface FileRouteTypes {
     | '/news/$articleId'
     | '/notes/$id'
     | '/perks/$perkId'
+    | '/pro-teach/map'
+    | '/pro-teach/sketch'
     | '/pupils/$id'
     | '/pupils/new'
     | '/quote/$token'
@@ -1784,6 +1814,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
+    | '/pro-teach'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1851,6 +1882,8 @@ export interface FileRouteTypes {
     | '/news/$articleId'
     | '/notes/$id'
     | '/perks/$perkId'
+    | '/pro-teach/map'
+    | '/pro-teach/sketch'
     | '/pupils/$id'
     | '/pupils/new'
     | '/quote/$token'
@@ -1954,6 +1987,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
+    | '/pro-teach'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -2022,6 +2056,8 @@ export interface FileRouteTypes {
     | '/news/$articleId'
     | '/notes/$id'
     | '/perks_/$perkId'
+    | '/pro-teach_/map'
+    | '/pro-teach_/sketch'
     | '/pupils/$id'
     | '/pupils/new'
     | '/quote/$token'
@@ -2126,6 +2162,7 @@ export interface RootRouteChildren {
   PipelineRoute: typeof PipelineRoute
   PostcodeRatesRoute: typeof PostcodeRatesRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProTeachRoute: typeof ProTeachRoute
   ProfileRoute: typeof ProfileRoute
   QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
@@ -2179,6 +2216,8 @@ export interface RootRouteChildren {
   NewsArticleIdRoute: typeof NewsArticleIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PerksPerkIdRoute: typeof PerksPerkIdRoute
+  ProTeachMapRoute: typeof ProTeachMapRoute
+  ProTeachSketchRoute: typeof ProTeachSketchRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
@@ -2460,6 +2499,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro-teach': {
+      id: '/pro-teach'
+      path: '/pro-teach'
+      fullPath: '/pro-teach'
+      preLoaderRoute: typeof ProTeachRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -3029,6 +3075,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PupilsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pro-teach_/sketch': {
+      id: '/pro-teach_/sketch'
+      path: '/pro-teach/sketch'
+      fullPath: '/pro-teach/sketch'
+      preLoaderRoute: typeof ProTeachSketchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro-teach_/map': {
+      id: '/pro-teach_/map'
+      path: '/pro-teach/map'
+      fullPath: '/pro-teach/map'
+      preLoaderRoute: typeof ProTeachMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perks_/$perkId': {
       id: '/perks_/$perkId'
       path: '/perks/$perkId'
@@ -3543,6 +3603,7 @@ const rootRouteChildren: RootRouteChildren = {
   PipelineRoute: PipelineRoute,
   PostcodeRatesRoute: PostcodeRatesRoute,
   PrivacyRoute: PrivacyRoute,
+  ProTeachRoute: ProTeachRoute,
   ProfileRoute: ProfileRoute,
   QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
@@ -3596,6 +3657,8 @@ const rootRouteChildren: RootRouteChildren = {
   NewsArticleIdRoute: NewsArticleIdRoute,
   NotesIdRoute: NotesIdRoute,
   PerksPerkIdRoute: PerksPerkIdRoute,
+  ProTeachMapRoute: ProTeachMapRoute,
+  ProTeachSketchRoute: ProTeachSketchRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
