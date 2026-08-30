@@ -13,6 +13,7 @@ import {
   IconWaveSine,
   IconCar,
   IconMicrophone,
+  IconTree,
 } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { useProRadioContext } from "@/hooks/useProRadio";
