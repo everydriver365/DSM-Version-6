@@ -87,6 +87,63 @@ const ICON_EMOJI: Record<string, string> = {
 
 type Tool = "draw" | "car" | "hazard" | "arrow" | "text" | "ruler";
 
+/** Isolated overlay layer: placing/dragging an icon only re-renders this. */
+const IconOverlay = React.memo(function IconOverlay({
+  icons,
+  selectedId,
+}: {
+  icons: PlacedIcon[];
+  selectedId: string | null;
+}) {
+  const selected = selectedId ? icons.find((i) => i.id === selectedId) : undefined;
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", contain: "layout paint" }}>
+      {icons.map((icon) => (
+        <div
+          key={icon.id}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            fontSize: 28,
+            lineHeight: "30px",
+            userSelect: "none",
+            pointerEvents: "none",
+            transform: `translate3d(${icon.x - 15}px, ${icon.y - 15}px, 0) rotate(${icon.rotation}deg)`,
+            willChange: "transform",
+            width: 30,
+            height: 30,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {ICON_EMOJI[icon.type]}
+        </div>
+      ))}
+
+      {selected && (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            transform: `translate3d(${selected.x - 25}px, ${selected.y - 25}px, 0)`,
+            width: 50,
+            height: 50,
+            borderRadius: "50%",
+            border: "2px solid #2C97DE",
+            pointerEvents: "none",
+            boxShadow: "0 0 0 4px rgba(44,151,222,0.2)",
+          }}
+        />
+      )}
+    </div>
+  );
+});
+
+
+
 function MapDrawPage() {
   const navigate = useNavigate();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
@@ -124,8 +181,11 @@ function MapDrawPage() {
   const [loadingPupils, setLoadingPupils] = React.useState(false);
   const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
 
-  // undo state: snapshots of the canvas after each completed stroke
-  const [strokes, setStrokes] = React.useState<ImageData[]>([]);
+  // undo state: bitmaps live in a ref (they are megabytes each) — state only tracks the count
+  const strokesRef = React.useRef<ImageData[]>([]);
+  const [strokeCount, setStrokeCount] = React.useState(0);
+  const MAX_UNDO = 10;
+
 
   // placed icons (cars + hazards)
   const [placedIcons, setPlacedIcons] = React.useState<PlacedIcon[]>([]);
@@ -181,6 +241,7 @@ function MapDrawPage() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
+    const dpr = window.devicePixelRatio || 1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (const s of drawnStrokesRef.current) {
       ctx.beginPath();
@@ -191,6 +252,7 @@ function MapDrawPage() {
       s.points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
       ctx.stroke();
     }
+    void dpr;
   }, []);
 
   // size canvas to its container with DPR-aware backing store
@@ -204,6 +266,8 @@ function MapDrawPage() {
       canvas.height = rect.height * dpr;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
+      // draw in CSS pixels so pointer coords map 1:1 to canvas coords
+      canvas.getContext("2d")?.setTransform(dpr, 0, 0, dpr, 0, 0);
       repaint();
     });
     observer.observe(canvas);
@@ -213,7 +277,8 @@ function MapDrawPage() {
   // clear drawing when map type changes so annotations don't sit on the wrong imagery
   React.useEffect(() => {
     drawnStrokesRef.current = [];
-    setStrokes([]);
+    strokesRef.current = [];
+    setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
     setDraggingId(null);
@@ -229,7 +294,6 @@ function MapDrawPage() {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
     let clientX: number;
     let clientY: number;
     if ("touches" in e && e.touches.length > 0) {
@@ -242,10 +306,8 @@ function MapDrawPage() {
       clientX = (e as MouseEvent).clientX;
       clientY = (e as MouseEvent).clientY;
     }
-    return {
-      x: (clientX - rect.left) * dpr,
-      y: (clientY - rect.top) * dpr,
-    };
+    // CSS pixels — matches both the scaled canvas context and the DOM overlay
+    return { x: clientX - rect.left, y: clientY - rect.top };
   };
 
   const pushUndoSnapshot = () => {
@@ -253,8 +315,11 @@ function MapDrawPage() {
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
     const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    setStrokes((prev) => [...prev, snapshot]);
+    strokesRef.current.push(snapshot);
+    if (strokesRef.current.length > MAX_UNDO) strokesRef.current.shift();
+    setStrokeCount(strokesRef.current.length);
   };
+
 
   const draw = (x: number, y: number, newStroke: boolean) => {
     const canvas = canvasRef.current;
@@ -293,18 +358,20 @@ function MapDrawPage() {
   };
 
   const addIcon = (x: number, y: number, category: "car" | "hazard", type: string) => {
-    setPlacedIcons((prev) => {
-      const next = [...prev, { id: Date.now().toString(), x, y, category, type, rotation: 0 }];
-      return next;
-    });
+    setPlacedIcons((prev) => [
+      ...prev,
+      { id: `${Date.now()}-${prev.length}`, x, y, category, type, rotation: 0 },
+    ]);
     if (!hasShownHintRef.current) {
       hasShownHintRef.current = true;
-      toast("Tap icon to select", { duration: 2000 });
+      // defer so the toast never competes with the placement frame
+      setTimeout(() => toast("Tap icon to select", { duration: 2000 }), 400);
     }
   };
 
   const findIconAt = (x: number, y: number) => {
-    return placedIcons.find((icon) => Math.abs(icon.x - x) < 30 && Math.abs(icon.y - y) < 30);
+    return placedIcons.find((icon) => Math.abs(icon.x - x) < 22 && Math.abs(icon.y - y) < 22);
+
   };
 
   const drawArrow = (startX: number, startY: number, endX: number, endY: number) => {
@@ -428,16 +495,24 @@ function MapDrawPage() {
     }
   };
 
+  const dragFrameRef = React.useRef<number | null>(null);
+
   const move = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
     if (draggingId) {
       const { x, y } = getPos(e);
-      setPlacedIcons((prev) => prev.map((i) => (i.id === draggingId ? { ...i, x, y } : i)));
+      // coalesce drag updates to one per frame
+      if (dragFrameRef.current !== null) return;
+      dragFrameRef.current = requestAnimationFrame(() => {
+        dragFrameRef.current = null;
+        setPlacedIcons((prev) => prev.map((i) => (i.id === draggingId ? { ...i, x, y } : i)));
+      });
       return;
     }
     if (mode !== "draw" || !drawingRef.current || activeTool !== "draw") return;
     const { x, y } = getPos(e);
     draw(x, y, false);
   };
+
 
   const end = () => {
     if (draggingId) {
@@ -453,17 +528,19 @@ function MapDrawPage() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    if (strokes.length === 0) {
+    const stack = strokesRef.current;
+    if (stack.length === 0) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       return;
     }
-    const prev = strokes[strokes.length - 2];
+    const prev = stack[stack.length - 2];
     if (prev) {
       ctx.putImageData(prev, 0, 0);
     } else {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    setStrokes((s) => s.slice(0, -1));
+    stack.pop();
+    setStrokeCount(stack.length);
     drawnStrokesRef.current.pop();
   };
 
@@ -474,7 +551,8 @@ function MapDrawPage() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     drawnStrokesRef.current = [];
-    setStrokes([]);
+    strokesRef.current = [];
+    setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
     setDraggingId(null);
@@ -490,19 +568,21 @@ function MapDrawPage() {
     setSelectedIconId(null);
   };
 
-  const drawIconsOntoCanvas = (ctx: CanvasRenderingContext2D) => {
+  // icons are stored in CSS px; exports draw onto an untransformed device-px canvas
+  const drawIconsOntoCanvas = (ctx: CanvasRenderingContext2D, scale = 1) => {
     for (const icon of placedIcons) {
       const emoji = ICON_EMOJI[icon.type];
       ctx.save();
-      ctx.translate(icon.x, icon.y);
+      ctx.translate(icon.x * scale, icon.y * scale);
       ctx.rotate((icon.rotation * Math.PI) / 180);
-      ctx.font = "28px serif";
+      ctx.font = `${28 * scale}px serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(emoji, 0, 0);
       ctx.restore();
     }
   };
+
 
   const shareMap = async () => {
     const canvas = canvasRef.current;
@@ -532,7 +612,8 @@ function MapDrawPage() {
       ctx.fillRect(0, 0, offscreen.width, offscreen.height);
     }
     ctx.drawImage(canvas, 0, 0);
-    drawIconsOntoCanvas(ctx);
+    drawIconsOntoCanvas(ctx, canvas.width / (canvas.getBoundingClientRect().width || canvas.width));
+
 
     offscreen.toBlob(async (blob) => {
       if (!blob) return;
@@ -584,7 +665,7 @@ function MapDrawPage() {
       ctx.fillRect(0, 0, offscreen.width, offscreen.height);
     }
     ctx.drawImage(canvas, 0, 0);
-    drawIconsOntoCanvas(ctx);
+    drawIconsOntoCanvas(ctx, canvas.width / (canvas.getBoundingClientRect().width || canvas.width));
     try {
       return offscreen.toDataURL("image/png");
     } catch {
@@ -858,47 +939,9 @@ function MapDrawPage() {
           onMouseLeave={end}
         />
 
-        {/* placed icons overlay */}
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-          {placedIcons.map((icon) => (
-            <div
-              key={icon.id}
-              style={{
-                position: "absolute",
-                left: icon.x - 15,
-                top: icon.y - 15,
-                fontSize: 28,
-                userSelect: "none",
-                pointerEvents: "none",
-                transform: `rotate(${icon.rotation}deg)`,
-                width: 30,
-                height: 30,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {ICON_EMOJI[icon.type]}
-            </div>
-          ))}
+        {/* placed icons overlay (memoised so placement doesn't re-render the page) */}
+        <IconOverlay icons={placedIcons} selectedId={selectedIconId} />
 
-          {/* selection ring */}
-          {selectedIcon && (
-            <div
-              style={{
-                position: "absolute",
-                left: selectedIcon.x - 25,
-                top: selectedIcon.y - 25,
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                border: "2px solid #2C97DE",
-                pointerEvents: "none",
-                boxShadow: "0 0 0 4px rgba(44,151,222,0.2)",
-              }}
-            />
-          )}
-        </div>
 
         {/* selected icon action bar */}
         {selectedIcon && (
