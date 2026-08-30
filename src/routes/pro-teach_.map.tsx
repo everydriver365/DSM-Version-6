@@ -1358,7 +1358,7 @@ function MapDrawPage() {
             cursor: "pointer",
           }}
         >
-          {mode === "draw" ? "Draw" : "Pan"}
+          {mode === "draw" ? "Draw" : "Move map"}
         </button>
 
         {/* tool indicator */}
