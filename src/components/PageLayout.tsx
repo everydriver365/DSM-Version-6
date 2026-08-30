@@ -19,21 +19,19 @@ type PageLayoutProps = React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
 };
 
-export function PageLayout({
-  children,
-  className,
-  style,
-  ...rest
-}: PageLayoutProps) {
-  return (
-    <div
-      {...rest}
-      className={`min-h-dvh ${className ?? ""}`.trim()}
-      style={{ backgroundColor: PAGE_BACKGROUND, ...style }}
-    >
-      {children}
-    </div>
-  );
-}
+export const PageLayout = React.forwardRef<HTMLDivElement, PageLayoutProps>(
+  function PageLayout({ children, className, style, ...rest }, ref) {
+    return (
+      <div
+        {...rest}
+        ref={ref}
+        className={`min-h-dvh ${className ?? ""}`.trim()}
+        style={{ backgroundColor: PAGE_BACKGROUND, ...style }}
+      >
+        {children}
+      </div>
+    );
+  },
+);
 
 export default PageLayout;

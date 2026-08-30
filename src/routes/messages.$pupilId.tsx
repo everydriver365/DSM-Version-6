@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -248,6 +248,34 @@ function PupilThreadPage() {
   const [pendingOffer, setPendingOffer] = useState<PendingOffer | null>(null);
   const [booking, setBooking] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const [pageHeight, setPageHeight] = useState<number | null>(null);
+
+  // Measure the space actually left for this screen: viewport minus whatever
+  // the app header occupies above it and the bottom-nav padding below it.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = pageRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      const parent = el.parentElement;
+      const padBottom = parent
+        ? parseFloat(getComputedStyle(parent).paddingBottom || "0") || 0
+        : 0;
+      const next = Math.max(240, Math.round(window.innerHeight - top - padBottom));
+      setPageHeight((prev) => (prev !== null && Math.abs(prev - next) < 2 ? prev : next));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    const ro = new ResizeObserver(measure);
+    if (pageRef.current?.parentElement) ro.observe(pageRef.current.parentElement);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+      ro.disconnect();
+    };
+  }, []);
   const [hasMoreOlder, setHasMoreOlder] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const loadingOlderRef = useRef(false);
@@ -984,21 +1012,24 @@ function PupilThreadPage() {
 
   return (
     <PageLayout
+      ref={pageRef}
       className="flex flex-col"
       style={{
         ...POPPINS,
-        height: "100dvh",
+        // Exactly the space left under the fixed app header (and above the
+        // bottom nav), so the body never scrolls and no navy band can appear
+        // between the app header and this screen's own header.
+        height: pageHeight ? `${pageHeight}px` : "100dvh",
         minHeight: 0,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
       }}
     >
-      {/* Header */}
+      {/* Header — in flow at the top of the fixed-height column */}
       <div
         style={{
-          position: "sticky",
-          top: 0,
+          position: "relative",
           zIndex: 60,
           background: tokens.navy,
         }}
