@@ -181,9 +181,17 @@ function MapDrawPage() {
   const [geoError, setGeoError] = React.useState<string | null>(null);
   const [savedFav, setSavedFav] = React.useState(false);
   const [pupilSheet, setPupilSheet] = React.useState(false);
+  const [pupilMode, setPupilMode] = React.useState<"save" | "send">("save");
   const [pupils, setPupils] = React.useState<Array<{ id: string; name: string | null }>>([]);
   const [loadingPupils, setLoadingPupils] = React.useState(false);
   const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
+
+  // GROUP B — voice annotation
+  const [isRecording, setIsRecording] = React.useState(false);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+  const [audioBlob, setAudioBlob] = React.useState<Blob | null>(null);
+  const [hasAudio, setHasAudio] = React.useState(false);
 
   // undo state: bitmaps live in a ref (they are megabytes each) — state only tracks the count
   const strokesRef = React.useRef<ImageData[]>([]);
