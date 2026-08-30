@@ -750,7 +750,7 @@ function NotificationsPage() {
       {/* Action bar */}
       <div
         className="flex items-center justify-end gap-2"
-        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
+        style={{ background: "transparent", padding: "0 16px 4px" }}
       >
         <button
           type="button"
