@@ -1071,16 +1071,14 @@ function MapDrawPage() {
               <IconX size={20} color="#fff" />
             </button>
           ) : (
-            <button
-              type="button"
-              aria-label="Back"
-              style={iconBtn}
-              onClick={() => navigate({ to: "/pro-teach" as never })}
-            >
+            <button type="button" aria-label="Back" style={iconBtn} onClick={leaveWithPrompt}>
               <IconArrowLeft size={18} color="#fff" />
             </button>
           )}
           <div style={{ flex: 1, color: "#fff", fontSize: 15, fontWeight: 700 }}>Map Draw</div>
+          <button type="button" aria-label="Test routes" style={iconBtn} onClick={showTestRoutes}>
+            <IconRoute size={20} color="#fff" />
+          </button>
           <button
             type="button"
             aria-label={isFullScreen ? "Exit full screen" : "Enter full screen"}
@@ -1089,9 +1087,18 @@ function MapDrawPage() {
           >
             {isFullScreen ? <IconMinimize size={20} color="#fff" /> : <IconMaximize size={20} color="#fff" />}
           </button>
+          <button
+            type="button"
+            aria-label="Send to pupil"
+            style={iconBtn}
+            onClick={() => void openPupilPicker("send")}
+          >
+            <IconMessageShare size={20} color="#fff" />
+          </button>
           <button type="button" aria-label="Share" style={iconBtn} onClick={shareMap}>
             <IconShare size={18} color="#fff" />
           </button>
+
           <button type="button" aria-label="Clear" style={iconBtn} onClick={() => setConfirmClear(true)}>
             <IconTrash size={18} color="#fff" />
           </button>
