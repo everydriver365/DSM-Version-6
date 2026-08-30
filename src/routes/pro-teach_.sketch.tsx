@@ -70,7 +70,9 @@ function SketchBoardPage() {
   const [currentColor, setCurrentColor] = React.useState("#E53935");
   const [lineWidth, setLineWidth] = React.useState(3);
   const [isErasing, setIsErasing] = React.useState(false);
-  const [template, setTemplate] = React.useState<string | null>(null);
+  const search = useSearch({ from: "/pro-teach_/sketch" as never }) as { template?: string };
+  const [template, setTemplate] = React.useState<string | null>(search.template ?? null);
+
   const [confirmClear, setConfirmClear] = React.useState(false);
   const [isFullScreen, setIsFullScreen] = React.useState(false);
   const [lineStart, setLineStart] = React.useState<Point | null>(null);
