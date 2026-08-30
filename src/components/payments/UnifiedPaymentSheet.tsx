@@ -77,7 +77,6 @@ export interface UnifiedPaymentSheetProps {
    */
   onSaved?: (info?: { updatedLessons: PaidLessonUpdate[] }) => void;
   initialPupilId?: string;
-  initialMethod?: PayMethod;
 }
 
 interface PupilRow {
@@ -387,7 +386,6 @@ export function UnifiedPaymentSheet({
   onClose,
   onSaved,
   initialPupilId,
-  initialMethod,
 }: UnifiedPaymentSheetProps) {
   const navigate = useNavigate();
 
@@ -532,7 +530,7 @@ export function UnifiedPaymentSheet({
     setQuery("");
     setTab("payment");
     setAmount("");
-    setMethod(initialMethod ?? "cash");
+    setMethod("cash");
     setPartial(false);
     setNote("");
     setPaymentDate(todayIso());
@@ -549,7 +547,7 @@ export function UnifiedPaymentSheet({
     setPaymentSuccess(null);
     setEditPayment(null);
     setDeletePayment(null);
-  }, [open, initialPupilId, initialMethod]);
+  }, [open, initialPupilId]);
 
   // ---- close QR fullscreen with Escape key --------------------------------
   useEffect(() => {
