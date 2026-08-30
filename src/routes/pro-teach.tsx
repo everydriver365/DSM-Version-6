@@ -471,7 +471,7 @@ function ProTeachPage() {
         <div>
           <SectionLabel text="Templates" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-            {TEMPLATES.map(({ key, label, Icon }) => {
+            {orderedTemplates.map(({ key, label, Icon }) => {
               let clearTimer: (() => void) | null = null;
               return (
                 <div
