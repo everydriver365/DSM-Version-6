@@ -101,6 +101,7 @@ const IconOverlay = React.memo(function IconOverlay({
       {icons.map((icon) => (
         <div
           key={icon.id}
+          id={`icon-${icon.id}`}
           style={{
             position: "absolute",
             left: 0,
@@ -124,11 +125,13 @@ const IconOverlay = React.memo(function IconOverlay({
 
       {selected && (
         <div
+          id={`icon-ring-${selected.id}`}
           style={{
             position: "absolute",
             left: 0,
             top: 0,
             transform: `translate3d(${selected.x - 25}px, ${selected.y - 25}px, 0)`,
+            willChange: "transform",
             width: 50,
             height: 50,
             borderRadius: "50%",
@@ -138,6 +141,7 @@ const IconOverlay = React.memo(function IconOverlay({
           }}
         />
       )}
+
     </div>
   );
 });
