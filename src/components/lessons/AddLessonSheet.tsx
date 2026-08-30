@@ -5,7 +5,6 @@ import {
   IconCheck,
   IconCalendar,
   IconChevronDown,
-  IconChevronRight,
   IconClock,
   IconCreditCard,
   IconCurrencyPound,
