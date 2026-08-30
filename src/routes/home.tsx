@@ -1676,7 +1676,6 @@ function HomePage() {
   }, [lessonMsgsPupil?.id, reloadKey]);
 
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
-  const [unifiedPayInitialMethod, setUnifiedPayInitialMethod] = useState<"cash" | "qr" | null>(null);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [addChooserOpen, setAddChooserOpen] = useState(false);
@@ -1872,12 +1871,6 @@ function HomePage() {
         setQuickPupilSheetOpen(true);
         break;
       case "payment":
-        setUnifiedPayInitialMethod("cash");
-        setUnifiedPayPupilId(undefined);
-        setUnifiedPayOpen(true);
-        break;
-      case "qr_payment":
-        setUnifiedPayInitialMethod("qr");
         setUnifiedPayPupilId(undefined);
         setUnifiedPayOpen(true);
         break;
@@ -1885,7 +1878,7 @@ function HomePage() {
         setUnavailabilitySheetOpen(true);
         break;
       case "availability":
-        setUnavailabilitySheetOpen(true);
+        navigate({ to: "/availability-settings" as never });
         break;
       case "event":
         setEditingPersonal(null);
