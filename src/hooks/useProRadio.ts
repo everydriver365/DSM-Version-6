@@ -150,14 +150,17 @@ export function useProRadio() {
           artist: current?.artist ?? song?.artist ?? "SomaFM",
           artwork: current?.cover ?? null,
         };
-        const nextShowName = "PRO Chill";
-        setState((s) => ({
-          ...s,
-          nowPlaying: nextNowPlaying,
-          showName: nextShowName,
-          isLive: true,
-        }));
-        updateMediaSession(nextNowPlaying, nextShowName);
+        setState((s) => {
+          const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
+          const nextShowName = liveSelected ? "PRO Live" : s.selectedStation;
+          return {
+            ...s,
+            nowPlaying: nextNowPlaying,
+            showName: nextShowName,
+            isLive: liveSelected,
+          };
+        });
+        updateMediaSession(nextNowPlaying, stateRef.current.showName);
       } catch {
         // fail silently
         const fallbackNowPlaying = {
@@ -165,14 +168,17 @@ export function useProRadio() {
           artist: "SomaFM",
           artwork: null,
         };
-        const fallbackShowName = "PRO Chill";
-        setState((s) => ({
-          ...s,
-          nowPlaying: fallbackNowPlaying,
-          showName: fallbackShowName,
-          isLive: true,
-        }));
-        updateMediaSession(fallbackNowPlaying, fallbackShowName);
+        setState((s) => {
+          const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
+          const fallbackShowName = liveSelected ? "PRO Live" : s.selectedStation;
+          return {
+            ...s,
+            nowPlaying: fallbackNowPlaying,
+            showName: fallbackShowName,
+            isLive: liveSelected,
+          };
+        });
+        updateMediaSession(fallbackNowPlaying, stateRef.current.showName);
       }
     };
 
