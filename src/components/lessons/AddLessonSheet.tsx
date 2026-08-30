@@ -24,7 +24,6 @@ import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resol
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
 import { syncPupilTestFields } from "@/lib/pupilTestSync";
-import { useGoBack } from "@/hooks/useGoBack";
 
 const BLUE = "#1877D6";
 
@@ -207,7 +206,6 @@ export function AddLessonSheet({
     return d.toISOString().split("T")[0];
   });
 
-  const goBack = useGoBack();
 
   const hasUnsavedChanges = useCallback(() => {
     return Boolean(
