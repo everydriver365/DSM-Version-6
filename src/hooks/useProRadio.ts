@@ -193,7 +193,14 @@ export function useProRadio() {
     // Reload the stream so we always join at the live edge
     audio.src = STREAM_URL;
     audio.load();
-    setState((s) => ({ ...s, isLoading: true, hasStarted: true }));
+    setState((s) => ({
+      ...s,
+      isLoading: true,
+      hasStarted: true,
+      selectedStation: "PRO Live",
+      showName: "PRO Live",
+      isLive: true,
+    }));
     audio.play().catch(() => setState((s) => ({ ...s, isLoading: false })));
   }, []);
 
@@ -211,7 +218,26 @@ export function useProRadio() {
     else play();
   }, [state.isPlaying, play, pause]);
 
-  return { ...state, play, pause, toggle, audioRef };
+  const selectStation = useCallback((name: string) => {
+    const isLive = name === "PRO Live";
+    setState((s) => ({
+      ...s,
+      selectedStation: name,
+      showName: isLive ? "PRO Live" : name,
+      isLive,
+    }));
+  }, []);
+
+  const toggleFavorite = useCallback((name: string) => {
+    setState((s) => ({
+      ...s,
+      favorites: s.favorites.includes(name)
+        ? s.favorites.filter((f) => f !== name)
+        : [...s.favorites, name],
+    }));
+  }, []);
+
+  return { ...state, play, pause, toggle, selectStation, toggleFavorite, audioRef };
 }
 
 export type ProRadio = ReturnType<typeof useProRadio>;
