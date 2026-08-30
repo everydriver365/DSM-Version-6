@@ -1724,7 +1724,7 @@ function MapDrawPage() {
                   key={p.id}
                   type="button"
                   disabled={savingPupil !== null}
-                  onClick={() => saveToPupil(p)}
+                  onClick={() => (pupilMode === "send" ? void sendToPupil(p) : void saveToPupil(p))}
                   style={{
                     width: "100%",
                     display: "flex",
