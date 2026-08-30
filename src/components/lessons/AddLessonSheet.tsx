@@ -698,7 +698,6 @@ export function AddLessonSheet({
     setSaving(false);
     onSaved((insertedLesson as any)?.id as string);
     onClose();
-    goBack("/home");
   }
 
   if (!open) return null;
