@@ -45,6 +45,9 @@ export interface BottomSheetProps {
 }
 
 export function BottomSheet({ title, subtitle, onClose, children, footer, headerStyle, titleStyle, subtitleStyle, headerRight }: BottomSheetProps) {
+  const [dragY, setDragY] = React.useState(0);
+  const dragStart = React.useRef<number | null>(null);
+
   useEffect(() => {
     tapLight();
     if (typeof window !== "undefined") {
@@ -57,87 +60,119 @@ export function BottomSheet({ title, subtitle, onClose, children, footer, header
     };
   }, []);
 
+  // Escape key closes the sheet
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ fontFamily: font }}
+      className="fixed inset-0 flex items-end justify-center"
+      style={{ fontFamily: font, zIndex: 300 }}
     >
-      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div
         className="relative w-full max-w-md rounded-t-lg overflow-hidden flex flex-col"
         style={{
           backgroundColor: canvas,
-          boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",
-          maxHeight: "calc(100vh - 90px)",
-          paddingBottom: "calc(16px + 90px + env(safe-area-inset-bottom))",
+          boxShadow: "0 -4px 24px rgba(0,0,0,0.2)",
+          // leave room for the status bar + app header so the title is never clipped
+          maxHeight: "calc(100dvh - env(safe-area-inset-top, 0px) - 72px)",
+          paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
+          transform: dragY ? `translateY(${dragY}px)` : undefined,
+          transition: dragStart.current === null ? "transform 180ms ease" : undefined,
         }}
       >
+        {/* Drag-to-dismiss handle area */}
         <div
+          onPointerDown={(e) => {
+            dragStart.current = e.clientY;
+          }}
+          onPointerMove={(e) => {
+            if (dragStart.current === null) return;
+            setDragY(Math.max(0, e.clientY - dragStart.current));
+          }}
+          onPointerUp={() => {
+            const shouldClose = dragY > 90;
+            dragStart.current = null;
+            setDragY(0);
+            if (shouldClose) onClose();
+          }}
+          onPointerCancel={() => {
+            dragStart.current = null;
+            setDragY(0);
+          }}
           style={{
             position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "12px 16px 0",
+            padding: "12px 16px 4px",
+            touchAction: "none",
+            cursor: "grab",
           }}
         >
           <div
-            style={{ width: 36, height: 5, borderRadius: 3, backgroundColor: "#D1D1D6" }}
+            style={{ width: 44, height: 5, borderRadius: 3, backgroundColor: "#C3CCD8" }}
           />
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            type="button"
-            style={{
-              position: "absolute",
-              right: 16,
-              top: 8,
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              background: tokens.canvas,
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconX size={16} color="#6B7686" stroke={2} />
-          </button>
         </div>
 
-        <div className="px-5 pt-2 pb-4 shrink-0" style={{ position: "relative", ...headerStyle }}>
-          <div className="min-w-0">
-            <h2
-              style={{
-                color: navy,
-                fontSize: 26,
-                fontWeight: tokens.fontWeight.extrabold,
-                letterSpacing: "-0.5px",
-                lineHeight: 1.15,
-                ...titleStyle,
-              }}
-            >
-              {title}
-            </h2>
-            {subtitle && (
-              <div
-                className="mt-1"
-                style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500, ...subtitleStyle }}
+        <div className="px-5 pt-1 pb-4 shrink-0" style={{ position: "relative", ...headerStyle }}>
+          <div className="flex items-start gap-3">
+            <div className="min-w-0 flex-1">
+              <h2
+                style={{
+                  color: navy,
+                  fontSize: 24,
+                  fontWeight: tokens.fontWeight.extrabold,
+                  letterSpacing: "-0.5px",
+                  lineHeight: 1.15,
+                  ...titleStyle,
+                }}
               >
-                {subtitle}
-              </div>
-            )}
-          </div>
-          {headerRight && (
-            <div style={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}>
-              {headerRight}
+                {title}
+              </h2>
+              {subtitle && (
+                <div
+                  className="mt-1"
+                  style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500, ...subtitleStyle }}
+                >
+                  {subtitle}
+                </div>
+              )}
             </div>
-          )}
+            <div className="flex items-center gap-2 shrink-0">
+              {headerRight}
+              <button
+                onClick={onClose}
+                aria-label="Close"
+                type="button"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background: "#FFFFFF",
+                  border: `1px solid ${hairline}`,
+                  boxShadow: cardShadow,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconX size={18} color={navy} stroke={2.2} />
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="overflow-y-auto px-4 pb-2 flex-1">{children}</div>
+
 
         {footer && (
           <div
