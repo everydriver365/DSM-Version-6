@@ -1873,9 +1873,19 @@ function HomePage() {
         setQuickPupilSheetOpen(true);
         break;
       case "payment":
-        setTakePaymentSheetOpen(true);
+        setUnifiedPayInitialMethod("cash");
+        setUnifiedPayPupilId(undefined);
+        setUnifiedPayOpen(true);
+        break;
+      case "qr_payment":
+        setUnifiedPayInitialMethod("qr");
+        setUnifiedPayPupilId(undefined);
+        setUnifiedPayOpen(true);
         break;
       case "unavailability":
+        setUnavailabilitySheetOpen(true);
+        break;
+      case "availability":
         setUnavailabilitySheetOpen(true);
         break;
       case "event":
