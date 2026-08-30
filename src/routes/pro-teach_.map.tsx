@@ -648,6 +648,111 @@ function MapDrawPage() {
         </button>
       </div>
 
+      {/* FEATURE 2 + 3 — save row */}
+      <div
+        style={{
+          background: "#F4F6F8",
+          padding: "0 16px calc(env(safe-area-inset-bottom, 0px) + 10px)",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <button type="button" onClick={saveFavourite} style={saveBtn} aria-label="Save to favourites">
+          {savedFav ? (
+            <IconHeartFilled size={18} color="#E53935" />
+          ) : (
+            <IconHeart size={18} color={MUTED} />
+          )}
+          <span style={{ fontSize: 12, color: MUTED }}>Save</span>
+        </button>
+        <button type="button" onClick={openPupilPicker} style={saveBtn} aria-label="Save to pupil">
+          <IconUser size={18} color={MUTED} />
+          <span style={{ fontSize: 12, color: MUTED }}>Save to pupil</span>
+        </button>
+      </div>
+
+      {pupilSheet && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,35,65,0.45)",
+            display: "flex",
+            alignItems: "flex-end",
+            zIndex: 60,
+          }}
+          onClick={() => setPupilSheet(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              width: "100%",
+              borderRadius: "18px 18px 0 0",
+              padding: "14px 16px calc(env(safe-area-inset-bottom, 0px) + 16px)",
+              maxHeight: "70vh",
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto 12px" }} />
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
+              Save to which pupil?
+            </div>
+            {loadingPupils ? (
+              <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>Loading pupils…</div>
+            ) : pupils.length === 0 ? (
+              <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>No pupils found.</div>
+            ) : (
+              pupils.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  disabled={savingPupil !== null}
+                  onClick={() => saveToPupil(p)}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 4px",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: `1px solid ${BORDER}`,
+                    cursor: "pointer",
+                    opacity: savingPupil && savingPupil !== p.id ? 0.5 : 1,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: "50%",
+                      background: "#EAF1FB",
+                      color: NAVY,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {(p.name ?? "?").trim().charAt(0).toUpperCase()}
+                  </span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                    {p.name ?? "Unnamed pupil"}
+                  </span>
+                  {savingPupil === p.id && (
+                    <span style={{ marginLeft: "auto", fontSize: 12, color: MUTED }}>Saving…</span>
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+
       {confirmClear && (
         <div
           style={{
