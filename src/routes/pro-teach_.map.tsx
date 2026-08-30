@@ -101,6 +101,7 @@ const IconOverlay = React.memo(function IconOverlay({
       {icons.map((icon) => (
         <div
           key={icon.id}
+          id={`icon-${icon.id}`}
           style={{
             position: "absolute",
             left: 0,
@@ -124,11 +125,13 @@ const IconOverlay = React.memo(function IconOverlay({
 
       {selected && (
         <div
+          id={`icon-ring-${selected.id}`}
           style={{
             position: "absolute",
             left: 0,
             top: 0,
             transform: `translate3d(${selected.x - 25}px, ${selected.y - 25}px, 0)`,
+            willChange: "transform",
             width: 50,
             height: 50,
             borderRadius: "50%",
@@ -138,6 +141,7 @@ const IconOverlay = React.memo(function IconOverlay({
           }}
         />
       )}
+
     </div>
   );
 });
@@ -190,7 +194,9 @@ function MapDrawPage() {
   // placed icons (cars + hazards)
   const [placedIcons, setPlacedIcons] = React.useState<PlacedIcon[]>([]);
   const [selectedIconId, setSelectedIconId] = React.useState<string | null>(null);
-  const [draggingId, setDraggingId] = React.useState<string | null>(null);
+  const draggingIdRef = React.useRef<string | null>(null);
+  const draggingPosRef = React.useRef({ x: 0, y: 0 });
+  const draggingRotationRef = React.useRef(0);
   const hasShownHintRef = React.useRef(false);
 
   // two-tap tools
@@ -281,7 +287,7 @@ function MapDrawPage() {
     setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
-    setDraggingId(null);
+    draggingIdRef.current = null;
     repaint();
   }, [mapType, repaint]);
 
@@ -460,7 +466,9 @@ function MapDrawPage() {
     if (selectedIconId) {
       if (icon) {
         setSelectedIconId(icon.id);
-        setDraggingId(icon.id);
+        draggingIdRef.current = icon.id;
+        draggingPosRef.current = { x: icon.x, y: icon.y };
+        draggingRotationRef.current = icon.rotation;
         return;
       }
       setSelectedIconId(null);
@@ -496,15 +504,34 @@ function MapDrawPage() {
   };
 
   const dragFrameRef = React.useRef<number | null>(null);
+  const lastMoveTime = React.useRef(0);
 
   const move = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
-    if (draggingId) {
+    if (draggingIdRef.current) {
+      if ("touches" in e) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+      }
+      const now = Date.now();
+      if (now - lastMoveTime.current < 16) return; // ~60fps cap
+      lastMoveTime.current = now;
+
       const { x, y } = getPos(e);
-      // coalesce drag updates to one per frame
+      draggingPosRef.current = { x, y };
+      const id = draggingIdRef.current;
+
+      // move the DOM node directly — no React re-render while dragging
       if (dragFrameRef.current !== null) return;
       dragFrameRef.current = requestAnimationFrame(() => {
         dragFrameRef.current = null;
-        setPlacedIcons((prev) => prev.map((i) => (i.id === draggingId ? { ...i, x, y } : i)));
+        const { x: px, y: py } = draggingPosRef.current;
+        const el = document.getElementById(`icon-${id}`);
+        if (el) {
+          const rot = draggingRotationRef.current;
+          el.style.transform = `translate3d(${px - 15}px, ${py - 15}px, 0) rotate(${rot}deg)`;
+        }
+        const ring = document.getElementById(`icon-ring-${id}`);
+        if (ring) ring.style.transform = `translate3d(${px - 25}px, ${py - 25}px, 0)`;
       });
       return;
     }
@@ -515,14 +542,22 @@ function MapDrawPage() {
 
 
   const end = () => {
-    if (draggingId) {
-      setDraggingId(null);
+    if (draggingIdRef.current) {
+      const id = draggingIdRef.current;
+      const { x, y } = draggingPosRef.current;
+      draggingIdRef.current = null;
+      if (dragFrameRef.current !== null) {
+        cancelAnimationFrame(dragFrameRef.current);
+        dragFrameRef.current = null;
+      }
+      setPlacedIcons((prev) => prev.map((i) => (i.id === id ? { ...i, x, y } : i)));
       return;
     }
     if (!drawingRef.current) return;
     drawingRef.current = false;
     pushUndoSnapshot();
   };
+
 
   const undo = () => {
     const canvas = canvasRef.current;
@@ -555,7 +590,7 @@ function MapDrawPage() {
     setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
-    setDraggingId(null);
+    draggingIdRef.current = null;
     setConfirmClear(false);
   };
 
