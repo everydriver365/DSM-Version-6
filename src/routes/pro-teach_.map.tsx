@@ -142,6 +142,12 @@ function MapDrawPage() {
     return () => window.removeEventListener("resize", resize);
   }, [repaint]);
 
+  // clear drawing when map type changes so annotations don't sit on the wrong imagery
+  React.useEffect(() => {
+    strokesRef.current = [];
+    repaint();
+  }, [mapType, repaint]);
+
   const getPos = (e: React.TouchEvent | React.MouseEvent): Point => {
     const canvas = canvasRef.current!;
     const rect = canvas.getBoundingClientRect();
