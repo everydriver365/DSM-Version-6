@@ -330,7 +330,10 @@ function SketchPage() {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column", background: "#fff" }}>
+    <div
+      ref={rootRef}
+      style={{ height: shellHeight, display: "flex", flexDirection: "column", background: "#fff" }}
+    >
       {/* header */}
       <div
         style={{
