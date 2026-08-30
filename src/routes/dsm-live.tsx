@@ -420,7 +420,7 @@ function DsmLiveLayout() {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button
             type="button"
             aria-label="Go back"
