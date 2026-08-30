@@ -3,15 +3,24 @@ import * as React from "react";
 import {
   IconArrowBackUp,
   IconArrowLeft,
+  IconArrowUpRight,
+  IconCheck,
   IconEraser,
   IconHeart,
   IconHeartFilled,
+  IconMaximize,
+  IconMinimize,
   IconMinus,
   IconPencil,
   IconPlus,
+  IconRotate,
+  IconRotateClockwise,
+  IconRuler2,
   IconShare,
+  IconTextSize,
   IconTrash,
   IconUser,
+  IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -52,21 +61,31 @@ const GOOGLE_KEY = (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_K
 type Point = { x: number; y: number };
 type Stroke = { points: Point[]; colour: string; width: number };
 
-type PlacedCar = {
+type PlacedIcon = {
   id: string;
   x: number;
   y: number;
-  type: "car-blue" | "car-red" | "car-green" | "car-yellow";
+  category: "car" | "hazard";
+  type: string;
   rotation: number;
 };
 
-const CAR_TYPES: PlacedCar["type"][] = ["car-blue", "car-yellow", "car-green", "car-red"];
-const CAR_EMOJI: Record<PlacedCar["type"], string> = {
+const CAR_TYPES: string[] = ["car-blue", "car-yellow", "car-green", "car-red"];
+const HAZARD_TYPES: string[] = ["pedestrian", "hazard", "traffic-lights", "stop-sign", "school", "roadworks"];
+const ICON_EMOJI: Record<string, string> = {
   "car-blue": "🚗",
   "car-yellow": "🚕",
   "car-green": "🚙",
   "car-red": "🚐",
+  pedestrian: "🚶",
+  hazard: "⚠️",
+  "traffic-lights": "🚦",
+  "stop-sign": "🛑",
+  school: "🚸",
+  roadworks: "🚧",
 };
+
+type Tool = "draw" | "car" | "hazard" | "arrow" | "text" | "ruler";
 
 function MapDrawPage() {
   const navigate = useNavigate();
@@ -85,6 +104,7 @@ function MapDrawPage() {
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
   }, []);
+
   const drawnStrokesRef = React.useRef<Stroke[]>([]);
   const drawingRef = React.useRef(false);
 
@@ -92,6 +112,7 @@ function MapDrawPage() {
   const [zoom, setZoom] = React.useState(16);
   const [mapType, setMapType] = React.useState<"roadmap" | "satellite" | "hybrid">("hybrid");
   const [mode, setMode] = React.useState<"draw" | "pan">("draw");
+  const [activeTool, setActiveTool] = React.useState<Tool>("draw");
   const [currentColor, setCurrentColor] = React.useState("#E53935");
   const [lineWidth, setLineWidth] = React.useState(3);
   const [isErasing, setIsErasing] = React.useState(false);
@@ -103,14 +124,33 @@ function MapDrawPage() {
   const [loadingPupils, setLoadingPupils] = React.useState(false);
   const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
 
-  // FEATURE 1 — undo state: snapshots of the canvas after each completed stroke
+  // undo state: snapshots of the canvas after each completed stroke
   const [strokes, setStrokes] = React.useState<ImageData[]>([]);
 
-  // FEATURE 2 — placeable car icons
-  const [placedCars, setPlacedCars] = React.useState<PlacedCar[]>([]);
-  const [selectedCarType, setSelectedCarType] = React.useState<PlacedCar["type"] | null>(null);
-  const [carMenu, setCarMenu] = React.useState<{ carId: string; x: number; y: number } | null>(null);
-  const longPressTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  // placed icons (cars + hazards)
+  const [placedIcons, setPlacedIcons] = React.useState<PlacedIcon[]>([]);
+  const [selectedIconId, setSelectedIconId] = React.useState<string | null>(null);
+  const [draggingId, setDraggingId] = React.useState<string | null>(null);
+  const hasShownHintRef = React.useRef(false);
+
+  // two-tap tools
+  const [arrowStart, setArrowStart] = React.useState<Point | null>(null);
+  const [rulerStart, setRulerStart] = React.useState<Point | null>(null);
+
+  // text label popup
+  const [textInput, setTextInput] = React.useState<{ x: number; y: number; value: string } | null>(null);
+
+  // full screen
+  const [isFullScreen, setIsFullScreen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isFullScreen) {
+      document.body.classList.add("pro-teach-fullscreen");
+    } else {
+      document.body.classList.remove("pro-teach-fullscreen");
+    }
+    return () => document.body.classList.remove("pro-teach-fullscreen");
+  }, [isFullScreen]);
 
   React.useEffect(() => {
     if (!("geolocation" in navigator)) {
@@ -153,33 +193,67 @@ function MapDrawPage() {
     }
   }, []);
 
+  // size canvas to its container with DPR-aware backing store
   React.useEffect(() => {
-    const resize = () => {
-      const canvas = canvasRef.current;
-      const wrap = wrapRef.current;
-      if (!canvas || !wrap) return;
-      canvas.width = wrap.clientWidth;
-      canvas.height = wrap.clientHeight;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const observer = new ResizeObserver(() => {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
       repaint();
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    });
+    observer.observe(canvas);
+    return () => observer.disconnect();
   }, [repaint]);
 
   // clear drawing when map type changes so annotations don't sit on the wrong imagery
   React.useEffect(() => {
     drawnStrokesRef.current = [];
     setStrokes([]);
-    setPlacedCars([]);
+    setPlacedIcons([]);
+    setSelectedIconId(null);
+    setDraggingId(null);
     repaint();
   }, [mapType, repaint]);
 
-  const getPos = (e: React.TouchEvent | React.MouseEvent): Point => {
-    const canvas = canvasRef.current!;
+  const getPos = (
+    e: React.TouchEvent<HTMLCanvasElement>
+      | React.MouseEvent<HTMLCanvasElement>
+      | TouchEvent
+      | MouseEvent,
+  ): Point => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    const touch = "touches" in e && e.touches.length ? e.touches[0] : (e as React.MouseEvent);
-    return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+    const dpr = window.devicePixelRatio || 1;
+    let clientX: number;
+    let clientY: number;
+    if ("touches" in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if ("changedTouches" in e && e.changedTouches.length > 0) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    } else {
+      clientX = (e as MouseEvent).clientX;
+      clientY = (e as MouseEvent).clientY;
+    }
+    return {
+      x: (clientX - rect.left) * dpr,
+      y: (clientY - rect.top) * dpr,
+    };
+  };
+
+  const pushUndoSnapshot = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    setStrokes((prev) => [...prev, snapshot]);
   };
 
   const draw = (x: number, y: number, newStroke: boolean) => {
@@ -206,39 +280,173 @@ function MapDrawPage() {
     ctx.globalCompositeOperation = "source-over";
   };
 
-  const placeCar = (x: number, y: number) => {
-    if (!selectedCarType) return;
-    setPlacedCars((prev) => [
-      ...prev,
-      { id: Date.now().toString(), x, y, type: selectedCarType, rotation: 0 },
-    ]);
+  const placeIcon = (x: number, y: number) => {
+    if (activeTool === "car") {
+      const type = selectedCarTypeRef.current;
+      if (!type) return;
+      addIcon(x, y, "car", type);
+    } else if (activeTool === "hazard") {
+      const type = selectedHazardTypeRef.current;
+      if (!type) return;
+      addIcon(x, y, "hazard", type);
+    }
   };
 
-  const start = (e: React.TouchEvent | React.MouseEvent) => {
-    if (selectedCarType) {
-      if (mode !== "draw") return;
-      const { x, y } = getPos(e);
-      placeCar(x, y);
-      return;
+  const addIcon = (x: number, y: number, category: "car" | "hazard", type: string) => {
+    setPlacedIcons((prev) => {
+      const next = [...prev, { id: Date.now().toString(), x, y, category, type, rotation: 0 }];
+      return next;
+    });
+    if (!hasShownHintRef.current) {
+      hasShownHintRef.current = true;
+      toast("Tap icon to select", { duration: 2000 });
     }
-    if (mode !== "draw") return;
-    drawingRef.current = true;
-    const { x, y } = getPos(e);
-    draw(x, y, true);
   };
-  const move = (e: React.TouchEvent | React.MouseEvent) => {
-    if (selectedCarType || mode !== "draw" || !drawingRef.current) return;
-    const { x, y } = getPos(e);
-    draw(x, y, false);
+
+  const findIconAt = (x: number, y: number) => {
+    return placedIcons.find((icon) => Math.abs(icon.x - x) < 30 && Math.abs(icon.y - y) < 30);
   };
-  const end = () => {
-    if (!drawingRef.current) return;
-    drawingRef.current = false;
+
+  const drawArrow = (startX: number, startY: number, endX: number, endY: number) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
-    const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    setStrokes((prev) => [...prev, snapshot]);
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    const angle = Math.atan2(endY - startY, endX - startX);
+    const headLen = 15;
+    ctx.beginPath();
+    ctx.moveTo(endX, endY);
+    ctx.lineTo(endX - headLen * Math.cos(angle - Math.PI / 6), endY - headLen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(endX, endY);
+    ctx.lineTo(endX - headLen * Math.cos(angle + Math.PI / 6), endY - headLen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
+  };
+
+  const drawRuler = (aX: number, aY: number, bX: number, bY: number) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+
+    const METERS_PER_PIXEL_ZOOM16 = 0.6;
+    const scale = Math.pow(2, 16 - zoom);
+    const pixelDist = Math.sqrt(Math.pow(bX - aX, 2) + Math.pow(bY - aY, 2));
+    const meters = pixelDist * METERS_PER_PIXEL_ZOOM16 * scale;
+    const display = meters < 1000 ? `${Math.round(meters)}m` : `${(meters / 1000).toFixed(1)}km`;
+
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = "#7B61FF";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(aX, aY);
+    ctx.lineTo(bX, bY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const midX = (aX + bX) / 2;
+    const midY = (aY + bY) / 2;
+    ctx.fillStyle = "rgba(123,97,255,0.9)";
+    ctx.fillRect(midX - 20, midY - 12, 40, 20);
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 11px system-ui";
+    ctx.textAlign = "center";
+    ctx.fillText(display, midX, midY + 2);
+  };
+
+  const drawTextLabel = (x: number, y: number, text: string) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    ctx.font = "bold 14px system-ui";
+    const width = ctx.measureText(text).width;
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.fillRect(x - 4, y - 16, width + 8, 20);
+    ctx.fillStyle = currentColor;
+    ctx.fillText(text, x, y);
+  };
+
+  const selectedCarTypeRef = React.useRef<string | null>(null);
+  const selectedHazardTypeRef = React.useRef<string | null>(null);
+  const [selectedCarType, setSelectedCarType] = React.useState<string | null>(null);
+  const [selectedHazardType, setSelectedHazardType] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    selectedCarTypeRef.current = selectedCarType;
+  }, [selectedCarType]);
+  React.useEffect(() => {
+    selectedHazardTypeRef.current = selectedHazardType;
+  }, [selectedHazardType]);
+
+  const start = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
+    if (mode !== "draw") return;
+    const { x, y } = getPos(e);
+
+    // icon selection / drag
+    const icon = findIconAt(x, y);
+    if (selectedIconId) {
+      if (icon) {
+        setSelectedIconId(icon.id);
+        setDraggingId(icon.id);
+        return;
+      }
+      setSelectedIconId(null);
+    } else if (icon && activeTool !== "draw" && activeTool !== "arrow" && activeTool !== "text" && activeTool !== "ruler") {
+      setSelectedIconId(icon.id);
+      return;
+    }
+
+    if (activeTool === "draw") {
+      drawingRef.current = true;
+      draw(x, y, true);
+    } else if (activeTool === "car" || activeTool === "hazard") {
+      placeIcon(x, y);
+    } else if (activeTool === "arrow") {
+      if (!arrowStart) {
+        setArrowStart({ x, y });
+      } else {
+        drawArrow(arrowStart.x, arrowStart.y, x, y);
+        setArrowStart(null);
+        pushUndoSnapshot();
+      }
+    } else if (activeTool === "ruler") {
+      if (!rulerStart) {
+        setRulerStart({ x, y });
+      } else {
+        drawRuler(rulerStart.x, rulerStart.y, x, y);
+        setRulerStart(null);
+        pushUndoSnapshot();
+      }
+    } else if (activeTool === "text") {
+      setTextInput({ x, y, value: "" });
+    }
+  };
+
+  const move = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
+    if (draggingId) {
+      const { x, y } = getPos(e);
+      setPlacedIcons((prev) => prev.map((i) => (i.id === draggingId ? { ...i, x, y } : i)));
+      return;
+    }
+    if (mode !== "draw" || !drawingRef.current || activeTool !== "draw") return;
+    const { x, y } = getPos(e);
+    draw(x, y, false);
+  };
+
+  const end = () => {
+    if (draggingId) {
+      setDraggingId(null);
+      return;
+    }
+    if (!drawingRef.current) return;
+    drawingRef.current = false;
+    pushUndoSnapshot();
   };
 
   const undo = () => {
@@ -267,16 +475,27 @@ function MapDrawPage() {
     }
     drawnStrokesRef.current = [];
     setStrokes([]);
-    setPlacedCars([]);
+    setPlacedIcons([]);
+    setSelectedIconId(null);
+    setDraggingId(null);
     setConfirmClear(false);
   };
 
-  const drawCarsOntoCanvas = (ctx: CanvasRenderingContext2D) => {
-    for (const car of placedCars) {
-      const emoji = CAR_EMOJI[car.type];
+  const rotateIcon = (id: string, delta: number) => {
+    setPlacedIcons((prev) => prev.map((i) => (i.id === id ? { ...i, rotation: i.rotation + delta } : i)));
+  };
+
+  const deleteIcon = (id: string) => {
+    setPlacedIcons((prev) => prev.filter((i) => i.id !== id));
+    setSelectedIconId(null);
+  };
+
+  const drawIconsOntoCanvas = (ctx: CanvasRenderingContext2D) => {
+    for (const icon of placedIcons) {
+      const emoji = ICON_EMOJI[icon.type];
       ctx.save();
-      ctx.translate(car.x, car.y);
-      ctx.rotate((car.rotation * Math.PI) / 180);
+      ctx.translate(icon.x, icon.y);
+      ctx.rotate((icon.rotation * Math.PI) / 180);
       ctx.font = "28px serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -313,7 +532,7 @@ function MapDrawPage() {
       ctx.fillRect(0, 0, offscreen.width, offscreen.height);
     }
     ctx.drawImage(canvas, 0, 0);
-    drawCarsOntoCanvas(ctx);
+    drawIconsOntoCanvas(ctx);
 
     offscreen.toBlob(async (blob) => {
       if (!blob) return;
@@ -337,7 +556,6 @@ function MapDrawPage() {
     }, "image/png");
   };
 
-  /* ---------- composite (map + drawing + cars) as a data URL ---------- */
   const compositeDataUrl = React.useCallback(async (): Promise<string | null> => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
@@ -366,15 +584,14 @@ function MapDrawPage() {
       ctx.fillRect(0, 0, offscreen.width, offscreen.height);
     }
     ctx.drawImage(canvas, 0, 0);
-    drawCarsOntoCanvas(ctx);
+    drawIconsOntoCanvas(ctx);
     try {
       return offscreen.toDataURL("image/png");
     } catch {
       return canvas.toDataURL("image/png");
     }
-  }, [staticMapUrl, placedCars]);
+  }, [staticMapUrl, placedIcons]);
 
-  /* ---------- FEATURE 2 — save to favourites ---------- */
   const saveFavourite = async () => {
     try {
       const imageData = (await compositeDataUrl()) ?? "";
@@ -396,7 +613,6 @@ function MapDrawPage() {
     }
   };
 
-  /* ---------- FEATURE 3 — save to pupil ---------- */
   const openPupilPicker = async () => {
     setPupilSheet(true);
     setLoadingPupils(true);
@@ -442,7 +658,6 @@ function MapDrawPage() {
       } as never);
 
       if (error) {
-        // table may not exist — fall back to appending a note on the pupil
         const { data: existing } = await supabase
           .from("pupils")
           .select("notes")
@@ -463,30 +678,6 @@ function MapDrawPage() {
     } finally {
       setSavingPupil(null);
     }
-  };
-
-  const handleCarPressStart = (carId: string, e: React.TouchEvent | React.MouseEvent) => {
-    const touch = "touches" in e && e.touches.length ? e.touches[0] : (e as React.MouseEvent);
-    longPressTimerRef.current = setTimeout(() => {
-      setCarMenu({ carId, x: touch.clientX, y: touch.clientY });
-    }, 500);
-  };
-
-  const handleCarPressEnd = () => {
-    if (longPressTimerRef.current) {
-      clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
-  };
-
-  const rotateCar = (carId: string) => {
-    setPlacedCars((prev) => prev.map((c) => (c.id === carId ? { ...c, rotation: c.rotation + 45 } : c)));
-    setCarMenu(null);
-  };
-
-  const deleteCar = (carId: string) => {
-    setPlacedCars((prev) => prev.filter((c) => c.id !== carId));
-    setCarMenu(null);
   };
 
   const iconBtn: React.CSSProperties = {
@@ -533,7 +724,7 @@ function MapDrawPage() {
     justifyContent: "center",
     cursor: "pointer",
   };
-  const carPill: React.CSSProperties = {
+  const iconPill: React.CSSProperties = {
     width: 40,
     height: 40,
     borderRadius: 10,
@@ -546,28 +737,70 @@ function MapDrawPage() {
     cursor: "pointer",
     padding: 0,
   };
-  const carPillActive: React.CSSProperties = {
+  const iconPillActive: React.CSSProperties = {
     border: "2px solid #2C97DE",
     background: "#EAF5FC",
+  };
+  const toolPillActive: React.CSSProperties = {
+    border: "2px solid #2C97DE",
+    background: "#EAF5FC",
+  };
+
+  const selectedIcon = placedIcons.find((i) => i.id === selectedIconId);
+
+  const indicatorText = () => {
+    if (activeTool === "car") return "Place car mode";
+    if (activeTool === "hazard") return "Place hazard mode";
+    if (activeTool === "arrow") return arrowStart ? "Tap end point" : "Arrow mode";
+    if (activeTool === "text") return "Text mode";
+    if (activeTool === "ruler") return rulerStart ? "Tap point B" : "Ruler mode";
+    return "Drawing mode";
   };
 
   return (
     <div
       ref={rootRef}
-      style={{ height: shellHeight, display: "flex", flexDirection: "column", background: "#fff" }}
+      style={{
+        height: isFullScreen ? "100dvh" : shellHeight,
+        display: "flex",
+        flexDirection: "column",
+        background: "#fff",
+        position: isFullScreen ? "fixed" : "relative",
+        inset: isFullScreen ? 0 : undefined,
+        zIndex: isFullScreen ? 50 : undefined,
+      }}
     >
       {/* header */}
       <div style={{ background: NAVY, paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 16px 14px" }}>
+          {isFullScreen ? (
+            <button
+              type="button"
+              aria-label="Close full screen"
+              style={iconBtn}
+              onClick={() => setIsFullScreen(false)}
+            >
+              <IconX size={20} color="#fff" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              aria-label="Back"
+              style={iconBtn}
+              onClick={() => navigate({ to: "/pro-teach" as never })}
+            >
+              <IconArrowLeft size={18} color="#fff" />
+            </button>
+          )}
+          <div style={{ flex: 1, color: "#fff", fontSize: 15, fontWeight: 700 }}>Map Draw</div>
           <button
             type="button"
-            aria-label="Back"
+            aria-label={isFullScreen ? "Exit full screen" : "Enter full screen"}
             style={iconBtn}
-            onClick={() => navigate({ to: "/pro-teach" as never })}
+            onClick={() => setIsFullScreen((v) => !v)}
           >
-            <IconArrowLeft size={18} color="#fff" />
+            {isFullScreen ? <IconMinimize size={20} color="#fff" /> : <IconMaximize size={20} color="#fff" />}
           </button>
-          <div style={{ flex: 1, color: "#fff", fontSize: 15, fontWeight: 700 }}>Map Draw</div>
           <button type="button" aria-label="Share" style={iconBtn} onClick={shareMap}>
             <IconShare size={18} color="#fff" />
           </button>
@@ -625,27 +858,19 @@ function MapDrawPage() {
           onMouseLeave={end}
         />
 
-        {/* placed cars overlay */}
+        {/* placed icons overlay */}
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-          {placedCars.map((car) => (
+          {placedIcons.map((icon) => (
             <div
-              key={car.id}
-              onTouchStart={(e) => handleCarPressStart(car.id, e)}
-              onTouchEnd={handleCarPressEnd}
-              onTouchMove={handleCarPressEnd}
-              onMouseDown={(e) => handleCarPressStart(car.id, e)}
-              onMouseUp={handleCarPressEnd}
-              onMouseLeave={handleCarPressEnd}
-              onClick={(e) => e.stopPropagation()}
+              key={icon.id}
               style={{
                 position: "absolute",
-                left: car.x - 15,
-                top: car.y - 15,
+                left: icon.x - 15,
+                top: icon.y - 15,
                 fontSize: 28,
-                cursor: "pointer",
                 userSelect: "none",
-                pointerEvents: "auto",
-                transform: `rotate(${car.rotation}deg)`,
+                pointerEvents: "none",
+                transform: `rotate(${icon.rotation}deg)`,
                 width: 30,
                 height: 30,
                 display: "flex",
@@ -653,10 +878,115 @@ function MapDrawPage() {
                 justifyContent: "center",
               }}
             >
-              {CAR_EMOJI[car.type]}
+              {ICON_EMOJI[icon.type]}
             </div>
           ))}
+
+          {/* selection ring */}
+          {selectedIcon && (
+            <div
+              style={{
+                position: "absolute",
+                left: selectedIcon.x - 25,
+                top: selectedIcon.y - 25,
+                width: 50,
+                height: 50,
+                borderRadius: "50%",
+                border: "2px solid #2C97DE",
+                pointerEvents: "none",
+                boxShadow: "0 0 0 4px rgba(44,151,222,0.2)",
+              }}
+            />
+          )}
         </div>
+
+        {/* selected icon action bar */}
+        {selectedIcon && (
+          <div
+            style={{
+              position: "absolute",
+              left: selectedIcon.x - 76,
+              top: selectedIcon.y - 60,
+              display: "flex",
+              gap: 8,
+              zIndex: 100,
+              pointerEvents: "auto",
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Delete icon"
+              onClick={() => deleteIcon(selectedIcon.id)}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "#E53935",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconTrash size={16} color="#fff" />
+            </button>
+            <button
+              type="button"
+              aria-label="Rotate left"
+              onClick={() => rotateIcon(selectedIcon.id, -45)}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: NAVY,
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconRotate size={16} color="#fff" />
+            </button>
+            <button
+              type="button"
+              aria-label="Rotate right"
+              onClick={() => rotateIcon(selectedIcon.id, 45)}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: NAVY,
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconRotateClockwise size={16} color="#fff" />
+            </button>
+            <button
+              type="button"
+              aria-label="Done"
+              onClick={() => setSelectedIconId(null)}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "#16A34A",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconCheck size={16} color="#fff" />
+            </button>
+          </div>
+        )}
 
         {/* mode toggle */}
         <button
@@ -679,14 +1009,19 @@ function MapDrawPage() {
           {mode === "draw" ? "Draw" : "Pan"}
         </button>
 
-        {/* drawing / place-car indicator */}
+        {/* tool indicator */}
         {mode === "draw" && (
           <div
             style={{
               position: "absolute",
               top: 12,
               left: 12,
-              background: selectedCarType ? "rgba(44,151,222,0.8)" : "rgba(11,35,65,0.8)",
+              background:
+                activeTool === "car" || activeTool === "hazard"
+                  ? "rgba(44,151,222,0.8)"
+                  : activeTool === "arrow" || activeTool === "ruler" || activeTool === "text"
+                    ? "rgba(123,97,255,0.8)"
+                    : "rgba(11,35,65,0.8)",
               borderRadius: 20,
               padding: "4px 10px",
               display: "flex",
@@ -694,18 +1029,16 @@ function MapDrawPage() {
               gap: 6,
             }}
           >
-            {selectedCarType ? (
-              <span style={{ fontSize: 12 }}>{CAR_EMOJI[selectedCarType]}</span>
+            {activeTool === "car" || activeTool === "hazard" ? (
+              <span style={{ fontSize: 12 }}>{ICON_EMOJI[selectedCarType || selectedHazardType || "car-blue"]}</span>
             ) : (
               <IconPencil size={12} color="#fff" />
             )}
-            <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>
-              {selectedCarType ? "Place car mode" : "Drawing mode"}
-            </span>
+            <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>{indicatorText()}</span>
           </div>
         )}
 
-        {/* FEATURE 1 — zoom controls */}
+        {/* zoom controls */}
         <div
           style={{
             position: "absolute",
@@ -809,7 +1142,9 @@ function MapDrawPage() {
             onClick={() => {
               setLineWidth(s.width);
               setIsErasing(false);
+              setActiveTool("draw");
               setSelectedCarType(null);
+              setSelectedHazardType(null);
             }}
             style={{
               width: s.dot + 8,
@@ -840,7 +1175,9 @@ function MapDrawPage() {
               onClick={() => {
                 setCurrentColor(c);
                 setIsErasing(false);
+                setActiveTool("draw");
                 setSelectedCarType(null);
+                setSelectedHazardType(null);
               }}
               style={{
                 width: 22,
@@ -880,18 +1217,119 @@ function MapDrawPage() {
                   key={type}
                   type="button"
                   aria-label={`Place ${type}`}
-                  onClick={() => setSelectedCarType((current) => (current === type ? null : type))}
+                  onClick={() => {
+                    setSelectedCarType((current) => (current === type ? null : type));
+                    setActiveTool("car");
+                    setSelectedHazardType(null);
+                    setIsErasing(false);
+                  }}
                   style={{
-                    ...carPill,
-                    ...(active ? carPillActive : {}),
+                    ...iconPill,
+                    ...(active ? iconPillActive : {}),
                   }}
                 >
-                  {CAR_EMOJI[type]}
+                  {ICON_EMOJI[type]}
                 </button>
               );
             })}
           </div>
         </div>
+
+        <span style={{ width: 1, height: 24, background: BORDER }} />
+
+        {/* Hazards section */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span
+            style={{
+              fontSize: 10,
+              color: MUTED,
+              textTransform: "uppercase",
+              letterSpacing: "0.6px",
+              marginBottom: 4,
+              fontWeight: 600,
+            }}
+          >
+            Hazards
+          </span>
+          <div style={{ display: "flex", gap: 6 }}>
+            {HAZARD_TYPES.map((type) => {
+              const active = selectedHazardType === type;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  aria-label={`Place ${type}`}
+                  onClick={() => {
+                    setSelectedHazardType((current) => (current === type ? null : type));
+                    setActiveTool("hazard");
+                    setSelectedCarType(null);
+                    setIsErasing(false);
+                  }}
+                  style={{
+                    ...iconPill,
+                    ...(active ? iconPillActive : {}),
+                  }}
+                >
+                  {ICON_EMOJI[type]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <span style={{ width: 1, height: 24, background: BORDER }} />
+
+        {/* Tool pills: arrow / text / ruler */}
+        <button
+          type="button"
+          aria-label="Arrow tool"
+          onClick={() => {
+            setActiveTool("arrow");
+            setArrowStart(null);
+            setSelectedCarType(null);
+            setSelectedHazardType(null);
+            setIsErasing(false);
+          }}
+          style={{
+            ...toolBtn,
+            ...(activeTool === "arrow" ? toolPillActive : {}),
+          }}
+        >
+          <IconArrowUpRight size={18} color={activeTool === "arrow" ? "#2C97DE" : NAVY} />
+        </button>
+        <button
+          type="button"
+          aria-label="Text tool"
+          onClick={() => {
+            setActiveTool("text");
+            setSelectedCarType(null);
+            setSelectedHazardType(null);
+            setIsErasing(false);
+          }}
+          style={{
+            ...toolBtn,
+            ...(activeTool === "text" ? toolPillActive : {}),
+          }}
+        >
+          <IconTextSize size={18} color={activeTool === "text" ? "#2C97DE" : NAVY} />
+        </button>
+        <button
+          type="button"
+          aria-label="Ruler tool"
+          onClick={() => {
+            setActiveTool("ruler");
+            setRulerStart(null);
+            setSelectedCarType(null);
+            setSelectedHazardType(null);
+            setIsErasing(false);
+          }}
+          style={{
+            ...toolBtn,
+            ...(activeTool === "ruler" ? toolPillActive : {}),
+          }}
+        >
+          <IconRuler2 size={18} color={activeTool === "ruler" ? "#2C97DE" : NAVY} />
+        </button>
 
         <span style={{ flex: 1 }} />
 
@@ -899,7 +1337,11 @@ function MapDrawPage() {
         <button
           type="button"
           aria-label="Draw mode"
-          onClick={() => setSelectedCarType(null)}
+          onClick={() => {
+            setActiveTool("draw");
+            setSelectedCarType(null);
+            setSelectedHazardType(null);
+          }}
           style={{
             borderRadius: 20,
             padding: "6px 14px",
@@ -907,8 +1349,8 @@ function MapDrawPage() {
             fontWeight: 700,
             border: `1px solid ${BORDER}`,
             cursor: "pointer",
-            background: selectedCarType === null ? NAVY : "#fff",
-            color: selectedCarType === null ? "#fff" : NAVY,
+            background: activeTool === "draw" ? NAVY : "#fff",
+            color: activeTool === "draw" ? "#fff" : NAVY,
           }}
         >
           Draw
@@ -919,7 +1361,9 @@ function MapDrawPage() {
           aria-label="Eraser"
           onClick={() => {
             setIsErasing((v) => !v);
+            setActiveTool("draw");
             setSelectedCarType(null);
+            setSelectedHazardType(null);
           }}
           style={{ ...toolBtn, borderColor: isErasing ? "#2C97DE" : BORDER }}
         >
@@ -930,7 +1374,7 @@ function MapDrawPage() {
         </button>
       </div>
 
-      {/* FEATURE 2 + 3 — save row */}
+      {/* save row */}
       <div
         style={{
           background: "#F4F6F8",
@@ -1034,65 +1478,78 @@ function MapDrawPage() {
         </div>
       )}
 
-      {carMenu && (
+      {textInput && (
         <div
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(11,35,65,0.25)",
-            zIndex: 70,
+            background: "rgba(11,35,65,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+            zIndex: 80,
           }}
-          onClick={() => setCarMenu(null)}
+          onClick={() => setTextInput(null)}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{
-              position: "absolute",
-              left: Math.min(carMenu.x, window.innerWidth - 140),
-              top: Math.min(carMenu.y, window.innerHeight - 100),
-              background: "#fff",
-              borderRadius: 12,
-              padding: 6,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-              minWidth: 120,
-            }}
+            style={{ background: "#fff", borderRadius: 16, padding: 16, width: "100%", maxWidth: 320 }}
           >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <input
+                autoFocus
+                type="text"
+                value={textInput.value}
+                onChange={(e) => setTextInput((t) => (t ? { ...t, value: e.target.value } : null))}
+                placeholder="Add label..."
+                style={{
+                  flex: 1,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: `1px solid ${BORDER}`,
+                  fontSize: 14,
+                  outline: "none",
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setTextInput(null)}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  border: `1px solid ${BORDER}`,
+                  background: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+            </div>
             <button
               type="button"
-              onClick={() => rotateCar(carMenu.carId)}
+              onClick={() => {
+                if (!textInput.value.trim()) return;
+                drawTextLabel(textInput.x, textInput.y, textInput.value.trim());
+                pushUndoSnapshot();
+                setTextInput(null);
+              }}
               style={{
-                padding: "8px 12px",
-                borderRadius: 8,
+                width: "100%",
+                padding: "10px 0",
+                borderRadius: 10,
                 border: "none",
-                background: "transparent",
-                textAlign: "left",
-                fontSize: 14,
-                fontWeight: 600,
-                color: NAVY,
+                background: NAVY,
+                color: "#fff",
+                fontWeight: 700,
                 cursor: "pointer",
               }}
             >
-              Rotate
-            </button>
-            <button
-              type="button"
-              onClick={() => deleteCar(carMenu.carId)}
-              style={{
-                padding: "8px 12px",
-                borderRadius: 8,
-                border: "none",
-                background: "transparent",
-                textAlign: "left",
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#E53935",
-                cursor: "pointer",
-              }}
-            >
-              Delete
+              Add
             </button>
           </div>
         </div>
@@ -1118,7 +1575,7 @@ function MapDrawPage() {
           >
             <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>Clear all marks?</div>
             <div style={{ fontSize: 13, color: MUTED, marginTop: 6 }}>
-              This removes all drawings and placed cars from the map.
+              This removes all drawings and placed icons from the map.
             </div>
             <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
               <button
