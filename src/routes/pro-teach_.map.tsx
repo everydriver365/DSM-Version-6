@@ -1122,6 +1122,8 @@ function MapDrawPage() {
         </div>
       </div>
 
+      <style>{`.pro-teach-toolbar-scroll::-webkit-scrollbar { display: none; }`}</style>
+
       {/* toolbar */}
       <div
         style={{
