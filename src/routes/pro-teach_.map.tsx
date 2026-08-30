@@ -1205,7 +1205,7 @@ function MapDrawPage() {
           ref={mapLayerRef}
           style={{
             position: "absolute",
-            inset: -40,
+            inset: 0,
             background: staticMapUrl ? `url("${staticMapUrl}") center/cover no-repeat` : "#e8f0e8",
             willChange: "transform",
             pointerEvents: "none",
