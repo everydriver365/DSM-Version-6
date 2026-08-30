@@ -718,17 +718,30 @@ function MapDrawPage() {
     setSelectedIconId(null);
   };
 
+  const loadSvg = (url: string) =>
+    new Promise<HTMLImageElement | null>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+
   // icons are stored in CSS px; exports draw onto an untransformed device-px canvas
-  const drawIconsOntoCanvas = (ctx: CanvasRenderingContext2D, scale = 1) => {
+  const drawIconsOntoCanvas = async (ctx: CanvasRenderingContext2D, scale = 1) => {
     for (const icon of placedIcons) {
-      const emoji = ICON_EMOJI[icon.type];
       ctx.save();
       ctx.translate(icon.x * scale, icon.y * scale);
       ctx.rotate((icon.rotation * Math.PI) / 180);
-      ctx.font = `${28 * scale}px serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(emoji, 0, 0);
+      if (isVehicleType(icon.type)) {
+        const size = 30 * scale;
+        const img = await loadSvg(vehicleDataUrl(icon.type, Math.round(size)));
+        if (img) ctx.drawImage(img, -size / 2, -size / 2, size, size);
+      } else {
+        ctx.font = `${28 * scale}px serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(ICON_EMOJI[icon.type] ?? "", 0, 0);
+      }
       ctx.restore();
     }
   };
