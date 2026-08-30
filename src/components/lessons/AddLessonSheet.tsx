@@ -562,6 +562,7 @@ export function AddLessonSheet({
       setSaving(false);
       onSaved(editingLesson.id);
       onClose();
+      goBack("/home");
       return;
     }
 
