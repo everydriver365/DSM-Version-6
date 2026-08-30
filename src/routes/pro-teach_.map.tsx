@@ -74,7 +74,7 @@ type PlacedIcon = {
   rotation: number;
 };
 
-const CAR_TYPES: string[] = ["car-blue", "car-yellow", "car-green", "car-red"];
+const CAR_TYPES: string[] = VEHICLE_TYPES as unknown as string[];
 const HAZARD_TYPES: string[] = ["pedestrian", "hazard", "traffic-lights", "stop-sign", "school", "roadworks"];
 const ICON_EMOJI: Record<string, string> = {
   "car-blue": "🚗",
