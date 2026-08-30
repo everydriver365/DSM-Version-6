@@ -264,7 +264,7 @@ export function ProRadioPlayer() {
               </>
             ) : (
               <>
-                <span style={{ fontSize: 9, color: "#536579" }}>COMING SOON</span>
+                <span style={{ fontSize: 9 }}>COMING SOON</span>
                 <span>· {radio.showName}</span>
               </>
             )}
