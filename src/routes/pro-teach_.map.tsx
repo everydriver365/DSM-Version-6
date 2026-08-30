@@ -181,8 +181,11 @@ function MapDrawPage() {
   const [loadingPupils, setLoadingPupils] = React.useState(false);
   const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
 
-  // undo state: snapshots of the canvas after each completed stroke
-  const [strokes, setStrokes] = React.useState<ImageData[]>([]);
+  // undo state: bitmaps live in a ref (they are megabytes each) — state only tracks the count
+  const strokesRef = React.useRef<ImageData[]>([]);
+  const [strokeCount, setStrokeCount] = React.useState(0);
+  const MAX_UNDO = 10;
+
 
   // placed icons (cars + hazards)
   const [placedIcons, setPlacedIcons] = React.useState<PlacedIcon[]>([]);
