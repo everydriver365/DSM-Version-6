@@ -737,7 +737,8 @@ function MapDrawPage() {
     }
   };
 
-  const openPupilPicker = async () => {
+  const openPupilPicker = async (mode: "save" | "send" = "save") => {
+    setPupilMode(mode);
     setPupilSheet(true);
     setLoadingPupils(true);
     try {
