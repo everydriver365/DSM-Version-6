@@ -1623,8 +1623,45 @@ function MapDrawPage() {
           <button type="button" aria-label="Undo" onClick={undo} style={{ ...toolBtn, flexShrink: 0 }}>
             <IconArrowBackUp size={18} color={MUTED} />
           </button>
+
+          {/* GROUP B — voice annotation */}
+          <button
+            type="button"
+            aria-label={isRecording ? "Stop recording" : "Record voice note"}
+            onClick={isRecording ? stopRecording : startRecording}
+            style={{
+              ...toolBtn,
+              flexShrink: 0,
+              borderColor: isRecording ? "#E53935" : BORDER,
+              animation: isRecording ? "proTeachPulse 1s ease-in-out infinite" : undefined,
+            }}
+          >
+            <IconMicrophone size={20} color={isRecording ? "#E53935" : MUTED} />
+          </button>
+          {hasAudio && (
+            <button
+              type="button"
+              onClick={playAudio}
+              style={{
+                flexShrink: 0,
+                borderRadius: 20,
+                padding: "6px 10px",
+                fontSize: 11,
+                fontWeight: 700,
+                border: "1px solid #18A999",
+                background: "#E7F7F4",
+                color: "#0F7A6E",
+                cursor: "pointer",
+              }}
+            >
+              🎤 Voice note
+            </button>
+          )}
         </div>
       </div>
+
+      <style>{`@keyframes proTeachPulse { 0%,100% { opacity: 1 } 50% { opacity: 0.45 } }`}</style>
+
 
       {/* save row */}
       <div
