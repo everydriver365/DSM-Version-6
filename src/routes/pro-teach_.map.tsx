@@ -5,6 +5,7 @@ import {
   IconArrowLeft,
   IconArrowUpRight,
   IconCheck,
+  IconCurrentLocation,
   IconEraser,
   IconHeart,
   IconHeartFilled,
