@@ -4,13 +4,17 @@ import {
   IconArrowBackUp,
   IconArrowLeft,
   IconEraser,
+  IconHeart,
+  IconHeartFilled,
   IconMinus,
   IconPencil,
   IconPlus,
   IconShare,
   IconTrash,
+  IconUser,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pro-teach_/map")({
   head: () => ({
@@ -76,6 +80,11 @@ function MapDrawPage() {
   const [isErasing, setIsErasing] = React.useState(false);
   const [confirmClear, setConfirmClear] = React.useState(false);
   const [geoError, setGeoError] = React.useState<string | null>(null);
+  const [savedFav, setSavedFav] = React.useState(false);
+  const [pupilSheet, setPupilSheet] = React.useState(false);
+  const [pupils, setPupils] = React.useState<Array<{ id: string; name: string | null }>>([]);
+  const [loadingPupils, setLoadingPupils] = React.useState(false);
+  const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!("geolocation" in navigator)) {
@@ -239,6 +248,133 @@ function MapDrawPage() {
     }, "image/png");
   };
 
+  /* ---------- composite (map + drawing) as a data URL ---------- */
+  const compositeDataUrl = React.useCallback(async (): Promise<string | null> => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const offscreen = document.createElement("canvas");
+    offscreen.width = canvas.width;
+    offscreen.height = canvas.height;
+    const ctx = offscreen.getContext("2d");
+    if (!ctx) return null;
+
+    if (staticMapUrl) {
+      try {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error("map image"));
+          img.src = staticMapUrl;
+        });
+        ctx.drawImage(img, 0, 0, offscreen.width, offscreen.height);
+      } catch {
+        ctx.fillStyle = "#e8f0e8";
+        ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+      }
+    } else {
+      ctx.fillStyle = "#e8f0e8";
+      ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+    }
+    ctx.drawImage(canvas, 0, 0);
+    try {
+      return offscreen.toDataURL("image/png");
+    } catch {
+      return canvas.toDataURL("image/png");
+    }
+  }, [staticMapUrl]);
+
+  /* ---------- FEATURE 2 — save to favourites ---------- */
+  const saveFavourite = async () => {
+    try {
+      const imageData = (await compositeDataUrl()) ?? "";
+      const favourite = {
+        id: Date.now().toString(),
+        name: `Map ${new Date().toLocaleDateString("en-GB")}`,
+        imageData,
+        mapUrl: staticMapUrl,
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
+        zoom,
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem(`pro_teach_fav_${favourite.id}`, JSON.stringify(favourite));
+      setSavedFav(true);
+      toast.success("Saved to favourites ✅");
+    } catch {
+      toast.error("Could not save this map");
+    }
+  };
+
+  /* ---------- FEATURE 3 — save to pupil ---------- */
+  const openPupilPicker = async () => {
+    setPupilSheet(true);
+    setLoadingPupils(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) {
+        setPupils([]);
+        return;
+      }
+      const { data } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .order("name");
+      setPupils((data ?? []) as Array<{ id: string; name: string | null }>);
+    } catch {
+      setPupils([]);
+    } finally {
+      setLoadingPupils(false);
+    }
+  };
+
+  const saveToPupil = async (pupil: { id: string; name: string | null }) => {
+    setSavingPupil(pupil.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const imageData = (await compositeDataUrl()) ?? "";
+
+      const { error } = await supabase.from("teach_resources" as never).insert({
+        instructor_id: uid,
+        pupil_id: pupil.id,
+        type: "map_draw",
+        image_data: imageData,
+        map_url: staticMapUrl,
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
+        zoom,
+        created_at: new Date().toISOString(),
+      } as never);
+
+      if (error) {
+        // table may not exist — fall back to appending a note on the pupil
+        const { data: existing } = await supabase
+          .from("pupils")
+          .select("notes")
+          .eq("id", pupil.id)
+          .maybeSingle();
+        const prev = ((existing as { notes?: string | null } | null)?.notes ?? "") as string;
+        const { error: noteErr } = await supabase
+          .from("pupils")
+          .update({ notes: `${prev}\n[Map saved: ${new Date().toLocaleDateString("en-GB")}]` })
+          .eq("id", pupil.id);
+        if (noteErr) throw noteErr;
+      }
+
+      toast.success(`Saved to ${pupil.name ?? "pupil"} ✅`);
+      setPupilSheet(false);
+    } catch {
+      toast.error("Could not save to that pupil");
+    } finally {
+      setSavingPupil(null);
+    }
+  };
+
   const iconBtn: React.CSSProperties = {
     width: 34,
     height: 34,
@@ -261,12 +397,23 @@ function MapDrawPage() {
     justifyContent: "center",
     cursor: "pointer",
   };
-  const zoomBtn: React.CSSProperties = {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    background: "rgba(255,255,255,0.92)",
+  const saveBtn: React.CSSProperties = {
+    background: "#fff",
     border: `1px solid ${BORDER}`,
+    borderRadius: 10,
+    padding: "8px 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    cursor: "pointer",
+  };
+  const zoomBtn: React.CSSProperties = {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    background: "rgba(255,255,255,0.95)",
+    border: `1px solid ${BORDER}`,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -388,36 +535,48 @@ function MapDrawPage() {
           </div>
         )}
 
-        {/* zoom controls */}
-        {mode === "pan" && (
+        {/* FEATURE 1 — zoom controls */}
+        <div
+          style={{
+            position: "absolute",
+            right: 12,
+            top: "50%",
+            transform: "translateY(-50%)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <button
+            type="button"
+            aria-label="Zoom in"
+            style={zoomBtn}
+            onClick={() => setZoom((z) => Math.min(19, z + 1))}
+          >
+            <IconPlus size={20} color={NAVY} />
+          </button>
           <div
             style={{
-              position: "absolute",
-              right: 12,
-              bottom: 12,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
+              background: "rgba(11,35,65,0.7)",
+              borderRadius: 6,
+              padding: "3px 6px",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 700,
+              textAlign: "center",
             }}
           >
-            <button
-              type="button"
-              aria-label="Zoom in"
-              style={zoomBtn}
-              onClick={() => setZoom((z) => Math.min(20, z + 1))}
-            >
-              <IconPlus size={18} color={NAVY} />
-            </button>
-            <button
-              type="button"
-              aria-label="Zoom out"
-              style={zoomBtn}
-              onClick={() => setZoom((z) => Math.max(10, z - 1))}
-            >
-              <IconMinus size={18} color={NAVY} />
-            </button>
+            {zoom}
           </div>
-        )}
+          <button
+            type="button"
+            aria-label="Zoom out"
+            style={zoomBtn}
+            onClick={() => setZoom((z) => Math.max(13, z - 1))}
+          >
+            <IconMinus size={20} color={NAVY} />
+          </button>
+        </div>
       </div>
 
       {/* toolbar */}
@@ -498,6 +657,111 @@ function MapDrawPage() {
           <IconArrowBackUp size={18} color={MUTED} />
         </button>
       </div>
+
+      {/* FEATURE 2 + 3 — save row */}
+      <div
+        style={{
+          background: "#F4F6F8",
+          padding: "0 16px calc(env(safe-area-inset-bottom, 0px) + 10px)",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <button type="button" onClick={saveFavourite} style={saveBtn} aria-label="Save to favourites">
+          {savedFav ? (
+            <IconHeartFilled size={18} color="#E53935" />
+          ) : (
+            <IconHeart size={18} color={MUTED} />
+          )}
+          <span style={{ fontSize: 12, color: MUTED }}>Save</span>
+        </button>
+        <button type="button" onClick={openPupilPicker} style={saveBtn} aria-label="Save to pupil">
+          <IconUser size={18} color={MUTED} />
+          <span style={{ fontSize: 12, color: MUTED }}>Save to pupil</span>
+        </button>
+      </div>
+
+      {pupilSheet && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,35,65,0.45)",
+            display: "flex",
+            alignItems: "flex-end",
+            zIndex: 60,
+          }}
+          onClick={() => setPupilSheet(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              width: "100%",
+              borderRadius: "18px 18px 0 0",
+              padding: "14px 16px calc(env(safe-area-inset-bottom, 0px) + 16px)",
+              maxHeight: "70vh",
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto 12px" }} />
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
+              Save to which pupil?
+            </div>
+            {loadingPupils ? (
+              <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>Loading pupils…</div>
+            ) : pupils.length === 0 ? (
+              <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>No pupils found.</div>
+            ) : (
+              pupils.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  disabled={savingPupil !== null}
+                  onClick={() => saveToPupil(p)}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 4px",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: `1px solid ${BORDER}`,
+                    cursor: "pointer",
+                    opacity: savingPupil && savingPupil !== p.id ? 0.5 : 1,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: "50%",
+                      background: "#EAF1FB",
+                      color: NAVY,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {(p.name ?? "?").trim().charAt(0).toUpperCase()}
+                  </span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                    {p.name ?? "Unnamed pupil"}
+                  </span>
+                  {savingPupil === p.id && (
+                    <span style={{ marginLeft: "auto", fontSize: 12, color: MUTED }}>Saving…</span>
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
 
       {confirmClear && (
         <div
