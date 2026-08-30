@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";

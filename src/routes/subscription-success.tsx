@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import {

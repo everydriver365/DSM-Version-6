@@ -4,7 +4,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconPlus, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";

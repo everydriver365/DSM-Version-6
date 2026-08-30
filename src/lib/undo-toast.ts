@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { haptic } from "./haptics";
 
 // Show a toast with an Undo action window.

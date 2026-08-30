@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { IconAlertTriangle, IconBell, IconCalendar, IconChevronRight, IconCirclePlus, IconDotsVertical, IconMessageCircle, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, tapHeavy, hapticSuccess } from "@/lib/haptics";
 import { getPupilBalance } from "@/lib/payments";

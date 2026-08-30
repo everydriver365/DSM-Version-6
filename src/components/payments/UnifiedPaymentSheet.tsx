@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import { IconChevronRight, IconClock, IconCopy, IconCreditCard, IconMail, IconMessage, IconPackage, IconSearch } from "@tabler/icons-react";
 import { IconCashBanknote, IconBuilding, IconBuildingBank, IconLink, IconQrcode, IconSparkles, IconNote } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";

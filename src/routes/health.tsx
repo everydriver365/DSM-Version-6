@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useState } from "react";
 import { IconActivity, IconArrowLeft, IconCoffee, IconDroplet, IconHeart, IconMoodSmile, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";

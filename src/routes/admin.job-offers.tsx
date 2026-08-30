@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconPencil, IconPlus, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
 import { AddressLookup } from "@/components/dsm/AddressLookup";

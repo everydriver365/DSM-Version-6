@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { useGoBack } from "@/hooks/useGoBack";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconCheck, IconCrown, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";

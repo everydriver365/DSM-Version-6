@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useState } from "react";
 import { IconArrowLeft, IconAddressBook, IconChevronRight, IconSearch, IconX } from "@tabler/icons-react";
 
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { AddressLookup } from "@/components/dsm/AddressLookup";

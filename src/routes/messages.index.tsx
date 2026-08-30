@@ -20,7 +20,7 @@ import {
   IconSpeakerphone,
   IconX,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { tapLight, tapMedium } from "@/lib/haptics";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { supabase } from "../lib/supabaseClient";

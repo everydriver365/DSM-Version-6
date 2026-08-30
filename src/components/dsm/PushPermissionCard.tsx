@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { tokens } from "@/lib/tokens";
 import { IconAlertTriangle, IconBell, IconBellOff, IconCircleCheck } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../../lib/supabaseClient";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;

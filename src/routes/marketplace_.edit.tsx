@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState, type CSSProperties } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "@/lib/supabaseClient";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";

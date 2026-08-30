@@ -8,7 +8,7 @@ import { KeepAwake } from "@capacitor-community/keep-awake";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export const Route = createFileRoute("/live")({
   validateSearch: (search: Record<string, unknown>): { autostart?: string; lessonId?: string; pupilId?: string } => ({

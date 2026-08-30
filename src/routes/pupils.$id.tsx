@@ -13,7 +13,7 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { jsPDF } from "jspdf";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";

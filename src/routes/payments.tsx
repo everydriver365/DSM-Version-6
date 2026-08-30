@@ -11,7 +11,7 @@ import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { recordPayment, recordRefund, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
 import { hapticSuccess, hapticError, tapLight } from "@/lib/haptics";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { IconCheck, IconCurrencyPound, IconMapPin } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 import { AddressLookup } from "@/components/dsm/AddressLookup";

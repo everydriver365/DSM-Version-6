@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export type LiveEventKind = "job" | "enquiry" | "message" | "booking" | "call" | "payment";
 

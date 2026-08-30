@@ -9,7 +9,7 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { supabase } from "@/lib/supabaseClient";

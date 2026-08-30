@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconArrowLeft, IconCheck, IconCircleCheck, IconCircleX, IconClock, IconStar } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 

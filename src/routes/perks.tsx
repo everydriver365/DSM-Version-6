@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import {

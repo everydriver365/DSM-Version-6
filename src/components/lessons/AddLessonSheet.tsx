@@ -14,7 +14,7 @@ import {
   IconRepeat,
   IconUser,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/BottomSheetV2";
 import { SaveButton } from "../dsm/SaveFooter";
 import { PupilPickerSheet } from "./PupilPickerSheet";

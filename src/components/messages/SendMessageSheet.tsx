@@ -1,7 +1,7 @@
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronRight, IconMessageCircle2 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import {
   Avatar,

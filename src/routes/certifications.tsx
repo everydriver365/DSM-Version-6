@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconArrowLeft, IconAward, IconCalendar, IconCircleCheck, IconClock, IconDots, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/certifications")({

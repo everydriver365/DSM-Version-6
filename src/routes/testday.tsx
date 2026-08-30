@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconSchool } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";

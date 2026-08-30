@@ -1,7 +1,7 @@
 import * as React from "react";
 import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { IconCamera, IconChevronLeft, IconCircleCheck, IconHeart, IconMapPin, IconSchool, IconStar } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";

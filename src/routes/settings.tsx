@@ -7,7 +7,7 @@ import squareLogo from "../assets/square-logo.png.asset.json";
 
 
 
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 
 

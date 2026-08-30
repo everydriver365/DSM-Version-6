@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconBook, IconChevronDown, IconChevronUp, IconFileCheck, IconNavigation, IconSearch, IconShield, IconTrophy } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/test-day/$pupilId")({

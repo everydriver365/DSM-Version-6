@@ -1,6 +1,6 @@
 import * as React from "react";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import { haptic } from "@/lib/haptics";
 

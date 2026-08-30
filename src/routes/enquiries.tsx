@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";

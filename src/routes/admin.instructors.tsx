@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconArchive, IconCalendar, IconChevronDown, IconChevronLeft, IconChevronUp, IconCurrencyPound, IconDotsVertical, IconId, IconMapPin, IconPencil, IconPhone, IconSearch, IconTrash } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet, SheetGroup, SheetDivider, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import { useAdminGate } from "./admin";

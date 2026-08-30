@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { BottomSheet } from "../BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 import { FONT, TextField, SheetFooter } from "./fields";

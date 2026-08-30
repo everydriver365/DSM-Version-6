@@ -18,7 +18,7 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pro-teach_/sketch")({

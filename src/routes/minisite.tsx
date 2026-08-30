@@ -4,7 +4,7 @@ import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { IconBrush, IconCamera, IconCheck, IconChevronDown, IconChevronLeft, IconCopy, IconExternalLink, IconFileText, IconLayoutBoard, IconLoader2, IconPalette, IconPhoto, IconTypography, IconX } from "@tabler/icons-react";

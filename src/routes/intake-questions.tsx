@@ -4,7 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconClipboardList, IconGripVertical, IconMicrophone, IconMicrophoneOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 

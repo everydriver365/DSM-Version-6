@@ -17,7 +17,7 @@ import {
   IconMessage,
   IconX,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";

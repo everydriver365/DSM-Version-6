@@ -2,7 +2,7 @@ import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { ConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { supabase } from "@/lib/supabaseClient";

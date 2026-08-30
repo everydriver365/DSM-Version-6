@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { IconAlertTriangle, IconClock, IconEye } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/no-show-policy")({

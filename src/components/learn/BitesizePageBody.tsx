@@ -2,7 +2,7 @@ import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import { VideoPlayer } from "@/components/dsm/VideoPlayer";

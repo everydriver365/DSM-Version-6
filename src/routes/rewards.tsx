@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconBolt, IconMedal, IconTrophy } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export const Route = createFileRoute("/rewards")({
   head: () => ({

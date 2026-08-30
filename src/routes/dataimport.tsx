@@ -13,7 +13,7 @@ import {
 import { validatePupilRows, resolveName } from "@/lib/pupilRowValidation";
 import { IconAlertCircle, IconAlertTriangle, IconChevronLeft, IconCircleCheck, IconDownload, IconInfoCircle, IconUpload } from "@tabler/icons-react";
 
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";

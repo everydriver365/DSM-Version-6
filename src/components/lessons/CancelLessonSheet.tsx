@@ -1,7 +1,7 @@
 import { tokens } from "@/lib/tokens";
 import { notifyInstructors } from "@/lib/notify";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { CancelSummaryPanel } from "@/components/lessons/CancelSummaryPanel";

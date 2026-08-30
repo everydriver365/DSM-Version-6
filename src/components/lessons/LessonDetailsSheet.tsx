@@ -1,7 +1,7 @@
 import { tokens } from "@/lib/tokens";
 import React from "react";
 import { IconCalendar, IconClock, IconCurrencyPound, IconMapPin, IconMessage, IconNavigation, IconPhone, IconUser, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 interface LessonDetailsSheetProps {
   open: boolean;
