@@ -763,10 +763,38 @@ function Header({ unreadCount }: { unreadCount: number }) {
   }, []);
   const firstInitial = (instructorName.trim().split(/\s+/)[0]?.[0] ?? "").toUpperCase();
 
+  // Publish the header's real rendered height so pages that size themselves
+  // (chat thread, full-height screens) never guess it or double-count the
+  // status-bar safe area.
+  const headerRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () => {
+      const h = Math.round(el.getBoundingClientRect().height);
+      if (!h) return;
+      document.documentElement.style.setProperty("--dsm-header-h", `${h}px`);
+      window.dispatchEvent(new CustomEvent("dsm-header-height", { detail: h }));
+    };
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    window.addEventListener("orientationchange", publish);
+    window.addEventListener("load", publish);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("orientationchange", publish);
+      window.removeEventListener("load", publish);
+      document.documentElement.style.removeProperty("--dsm-header-h");
+      window.dispatchEvent(new CustomEvent("dsm-header-height", { detail: 0 }));
+    };
+  }, []);
 
   return (
     <header
+      ref={headerRef}
       style={{
+
         position: "sticky",
         top: 0,
         left: 0,
@@ -959,16 +987,18 @@ function RootComponent() {
   const showHeader = !hideNav;
 
   const wrapperStyle: Record<string, string | number> = {
-    // Full viewport minus the sticky app header, so pages that already size
-    // themselves (e.g. a chat thread) don't push the document past the screen.
+    // Full viewport minus the sticky app header. --dsm-header-h is published
+    // by the header itself (measured), so nothing hard-codes its height and no
+    // safe-area value is ever counted twice.
     minHeight: showHeader
-      ? "calc(100dvh - env(safe-area-inset-top, 0px) - 58px)"
+      ? "calc(100dvh - var(--dsm-header-h, 58px))"
       : "100dvh",
   };
   if (!showHeader) {
     // Sticky header already occupies its own space; only pad when it's absent.
     wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
   }
+
 
   if (!hideNav) {
     wrapperStyle.paddingBottom =
