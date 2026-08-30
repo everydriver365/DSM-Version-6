@@ -455,12 +455,13 @@ function MapDrawPage() {
 
   const placeIcon = (x: number, y: number) => {
     if (activeTool === "car") {
-      const type = selectedCarTypeRef.current;
-      if (!type) return;
+      // never leave the tool armed with nothing — fall back to the first car
+      const type = selectedCarTypeRef.current ?? CAR_TYPES[0];
+      if (!selectedCarTypeRef.current) setSelectedCarType(type);
       addIcon(x, y, "car", type);
     } else if (activeTool === "hazard") {
-      const type = selectedHazardTypeRef.current;
-      if (!type) return;
+      const type = selectedHazardTypeRef.current ?? HAZARD_TYPES[0];
+      if (!selectedHazardTypeRef.current) setSelectedHazardType(type);
       addIcon(x, y, "hazard", type);
     }
   };
