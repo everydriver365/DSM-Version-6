@@ -251,20 +251,28 @@ function PupilThreadPage() {
   const pageRef = useRef<HTMLDivElement>(null);
   const [pageHeight, setPageHeight] = useState<number | null>(null);
 
-  // Measure the space actually left for this screen: viewport minus whatever
-  // the app header occupies above it and the bottom-nav padding below it.
-  // Re-measured whenever the app header reports a new height, so a late-loading
-  // logo or a status-bar inset can never leave a navy band above this screen.
+  // Measure the space actually left for this screen: viewport minus the app
+  // header above it and the bottom-nav padding below it.
+  //
+  // The header height is read from the *live* header element (it publishes
+  // --dsm-header-h too) rather than from this element's own offset — an offset
+  // read is wrong whenever the document happens to be scrolled or the header
+  // hasn't finished laying out, and a too-tall column is exactly what pushes
+  // this screen's navy header down and leaves a blue band under the app header.
   useLayoutEffect(() => {
     const measure = () => {
       const el = pageRef.current;
       if (!el) return;
-      const top = el.getBoundingClientRect().top + window.scrollY;
+      const header = document.querySelector("header");
+      const headerH = header ? header.getBoundingClientRect().height : 0;
       const parent = el.parentElement;
       const padBottom = parent
         ? parseFloat(getComputedStyle(parent).paddingBottom || "0") || 0
         : 0;
-      const next = Math.max(240, Math.round(window.innerHeight - top - padBottom));
+      const next = Math.max(
+        240,
+        Math.round(window.innerHeight - headerH - padBottom),
+      );
       setPageHeight((prev) => (prev !== null && Math.abs(prev - next) < 2 ? prev : next));
     };
     measure();
