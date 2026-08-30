@@ -1208,7 +1208,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 alt="Pro"
                 style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }}
               />
-              Learn
+              TV
             </div>
             <div
               style={{
