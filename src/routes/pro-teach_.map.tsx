@@ -863,18 +863,13 @@ function MapDrawPage() {
           {placedIcons.map((icon) => (
             <div
               key={icon.id}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedIconId(icon.id);
-              }}
               style={{
                 position: "absolute",
                 left: icon.x - 15,
                 top: icon.y - 15,
                 fontSize: 28,
-                cursor: "pointer",
                 userSelect: "none",
-                pointerEvents: "auto",
+                pointerEvents: "none",
                 transform: `rotate(${icon.rotation}deg)`,
                 width: 30,
                 height: 30,
@@ -915,6 +910,7 @@ function MapDrawPage() {
               display: "flex",
               gap: 8,
               zIndex: 100,
+              pointerEvents: "auto",
             }}
           >
             <button
