@@ -297,59 +297,47 @@ export function ProRadioPlayer() {
         <IconChevronUp size={18} color="rgba(255,255,255,0.5)" stroke={2} />
       </div>
 
-      {/* ---------- FULL PLAYER ---------- */}
+      {/* ---------- FULL PLAYER (DSM bottom sheet) ---------- */}
       {expanded && (
-        <div
-          className="fixed left-1/2 -translate-x-1/2 w-full max-w-[430px]"
-          style={{
-            ...POPPINS,
-            top: 0,
-            bottom: 0,
-            zIndex: 100001,
-            background: "#DCE4F0",
-            display: "flex",
-            flexDirection: "column",
-            overflowY: "auto",
-            paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
-          }}
+        <BottomSheet
+          title="PRO Radio"
+          subtitle={radio.showName}
+          onClose={() => setExpanded(false)}
+          footer={
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <IconHeart size={20} color="#D1D5DB" stroke={2} />
+              <button
+                type="button"
+                aria-label={radio.isPlaying ? "Pause PRO Radio" : "Play PRO Radio"}
+                onClick={() => radio.toggle()}
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: "50%",
+                  background: "#2C97DE",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 16px rgba(44,151,222,0.4)",
+                  cursor: "pointer",
+                }}
+              >
+                <PlayIcon size={24} color="#FFFFFF" stroke={2} />
+              </button>
+              <IconShare size={20} color="#D1D5DB" stroke={2} />
+            </div>
+          }
         >
-          {/* Header */}
-          <div
-            style={{
-              position: "sticky",
-              top: 0,
-              zIndex: 30,
-              background: "#0B2341",
-              marginTop: "calc(-1 * env(safe-area-inset-top, 0px))",
-              padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <button
-              type="button"
-              aria-label="Close player"
-              onClick={() => setExpanded(false)}
-              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex" }}
-            >
-              <IconChevronDown size={22} color="rgba(255,255,255,0.5)" stroke={2} />
-            </button>
-            <span style={{ color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}>
-              PRO Radio
-            </span>
-            <IconDots size={22} color="rgba(255,255,255,0.5)" stroke={2} />
-          </div>
-
           {/* Now playing card */}
           <div
             style={{
-              margin: 16,
               background: "#FFFFFF",
               borderRadius: 16,
               border: "1px solid #E4E8EF",
               boxShadow: "0 4px 20px rgba(11,35,65,0.08)",
               overflow: "hidden",
+              marginBottom: 16,
             }}
           >
             {/* Artwork */}
@@ -389,7 +377,7 @@ export function ProRadioPlayer() {
             </div>
 
             {/* Track info */}
-            <div style={{ padding: "14px 16px", borderBottom: "1px solid #F4F6F8" }}>
+            <div style={{ padding: "14px 16px" }}>
               <div
                 style={{
                   display: "flex",
@@ -423,13 +411,7 @@ export function ProRadioPlayer() {
                     {radio.isPlaying ? "LIVE" : "PAUSED"}
                   </span>
                 ) : (
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: "#536579",
-                    }}
-                  >
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#536579" }}>
                     COMING SOON
                   </span>
                 )}
@@ -445,38 +427,6 @@ export function ProRadioPlayer() {
                   : "This station will be available soon"}
               </div>
             </div>
-
-            {/* Controls */}
-            <div
-              style={{
-                padding: "14px 16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <IconHeart size={20} color="#D1D5DB" stroke={2} />
-              <button
-                type="button"
-                aria-label={radio.isPlaying ? "Pause PRO Radio" : "Play PRO Radio"}
-                onClick={() => radio.toggle()}
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: "50%",
-                  background: "#2C97DE",
-                  border: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0 4px 16px rgba(44,151,222,0.4)",
-                  cursor: "pointer",
-                }}
-              >
-                <PlayIcon size={24} color="#FFFFFF" stroke={2} />
-              </button>
-              <IconShare size={20} color="#D1D5DB" stroke={2} />
-            </div>
           </div>
 
           {/* Stations */}
@@ -487,7 +437,7 @@ export function ProRadioPlayer() {
               color: "#536579",
               textTransform: "uppercase",
               letterSpacing: "0.6px",
-              padding: "4px 16px 10px",
+              paddingBottom: 10,
             }}
           >
             All stations
@@ -498,7 +448,7 @@ export function ProRadioPlayer() {
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
               gap: 10,
-              padding: "0 16px 16px",
+              paddingBottom: 8,
             }}
           >
             {/* PRO Live — active */}
@@ -537,8 +487,9 @@ export function ProRadioPlayer() {
                 />
               ))}
           </div>
-        </div>
+        </BottomSheet>
       )}
+
     </>
   );
 }
