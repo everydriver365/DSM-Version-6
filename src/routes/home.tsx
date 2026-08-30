@@ -87,22 +87,21 @@ import UniversalSearch from "@/components/dsm/UniversalSearch";
 import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
-  | "lesson" | "test" | "pupil" | "payment" | "qr_payment" | "unavailability" | "availability" | "event"
+  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "availability" | "event"
   | "course" | "note" | "eol" | "enquiry" | "call";
 
 const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
   { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6", group: "Teaching" },
   { key: "test", label: "Add test", icon: IconCalendarEvent, bg: "#F59E0B", group: "Teaching" },
   { key: "eol", label: "End of lesson", icon: IconFlagCheck, bg: "#2C97DE", group: "Teaching" },
-  { key: "availability", label: "My availability", icon: IconCalendarCheck, bg: "#1877D6", group: "Teaching" },
   { key: "unavailability", label: "Add unavailability", icon: IconCalendarOff, bg: "#E53935", group: "Teaching" },
+  { key: "availability", label: "Availability", icon: IconCalendarCheck, bg: "#18A999", group: "Teaching" },
   { key: "event", label: "Add event", icon: IconCalendarEvent, bg: "#7B61FF", group: "Teaching" },
   { key: "pupil", label: "Add pupil", icon: IconUserPlus, bg: "#18A999", group: "People" },
   { key: "enquiry", label: "Log enquiry", icon: IconMail, bg: "#7B61FF", group: "People" },
   { key: "call", label: "Log call", icon: IconPhone, bg: "#16A34A", group: "People" },
   { key: "note", label: "Add note", icon: IconNote, bg: "#536579", group: "People" },
   { key: "payment", label: "Take payment", icon: IconCreditCard, bg: "#16A34A", group: "Business" },
-  { key: "qr_payment", label: "QR payment", icon: IconQrcode, bg: "#0B2341", group: "Business" },
   { key: "course", label: "Add course", icon: IconSchool, bg: "#0B2341", group: "Business" },
 ];
 
