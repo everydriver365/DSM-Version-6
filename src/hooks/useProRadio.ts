@@ -218,15 +218,24 @@ export function useProRadio() {
     else play();
   }, [state.isPlaying, play, pause]);
 
-  const selectStation = useCallback((name: string) => {
-    const isLive = name === "PRO Live";
-    setState((s) => ({
-      ...s,
-      selectedStation: name,
-      showName: isLive ? "PRO Live" : name,
-      isLive,
-    }));
-  }, []);
+  /**
+   * Only PRO Live is a real station today. Selecting it starts (or keeps)
+   * playback; unavailable stations must never change the now-playing state
+   * while audio is still streaming.
+   */
+  const selectStation = useCallback(
+    (name: string) => {
+      if (name !== "PRO Live") return;
+      if (!stateRef.current.isPlaying) play();
+      setState((s) => ({
+        ...s,
+        selectedStation: "PRO Live",
+        showName: "PRO Live",
+        isLive: true,
+      }));
+    },
+    [play],
+  );
 
   const toggleFavorite = useCallback((name: string) => {
     setState((s) => ({
