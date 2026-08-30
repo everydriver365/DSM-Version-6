@@ -9708,14 +9708,40 @@ function HomePage() {
 
             <div
               style={{
-                padding: "2px 20px 12px",
-                fontSize: 18,
-                fontWeight: 700,
-                color: "#0B2341",
-                letterSpacing: -0.2,
+                padding: "2px 16px 12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              Quick add
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: "#0B2341",
+                  letterSpacing: -0.2,
+                }}
+              >
+                Quick add
+              </span>
+              <button
+                type="button"
+                aria-label="Close quick add menu"
+                onClick={() => setQuickAddOpen(false)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "none",
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                <IconX size={18} stroke={2} color="#0B2341" />
+              </button>
             </div>
 
             <div style={{ overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 8px" }}>
