@@ -17,8 +17,7 @@ import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
 import icon512 from "../assets/icon-512.png.asset.json";
 import headerLogoAsset from "../assets/edp_transparent_logo_big_letters.png.asset.json";
-import { BackBarProvider, usePageHasBack } from "@/components/dsm/BackBarContext";
-import { useGoBack } from "@/hooks/useGoBack";
+import { BackBarProvider } from "@/components/dsm/BackBarContext";
 import { tapLight } from "@/lib/haptics";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
@@ -28,7 +27,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
-import { IconFingerprint, IconChevronLeft } from "@tabler/icons-react";
+import { IconFingerprint } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
