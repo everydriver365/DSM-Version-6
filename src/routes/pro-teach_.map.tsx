@@ -807,7 +807,152 @@ function MapDrawPage() {
     }
   };
 
+  // ---- GROUP A: send the map straight to a pupil's chat ---------------------
+  const sendToPupil = async (pupil: { id: string; name: string | null }) => {
+    setSavingPupil(pupil.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const canvas = canvasRef.current;
+      const image = (await compositeDataUrl()) ?? canvas?.toDataURL("image/jpeg", 0.7) ?? "";
+      const payload = {
+        instructor_id: uid,
+        pupil_id: pupil.id,
+        content: "[PRO Teach sketch]",
+        body: "[PRO Teach sketch]",
+        image_data: image,
+        message_type: "teach_sketch",
+        sender_type: "instructor",
+        created_at: new Date().toISOString(),
+      };
+      const { error } = await supabase.from("chat_messages" as never).insert(payload as never);
+      if (error) {
+        const { error: altError } = await supabase
+          .from("instructor_messages" as never)
+          .insert(payload as never);
+        if (altError) throw altError;
+      }
+      toast.success(`Sent to ${pupil.name ?? "pupil"} ✅`);
+      setPupilSheet(false);
+    } catch {
+      toast.error("Could not send that map");
+    } finally {
+      setSavingPupil(null);
+    }
+  };
+
+  // ---- GROUP B: voice annotation -------------------------------------------
+  const startRecording = () => {
+    navigator.mediaDevices
+      ?.getUserMedia({ audio: true })
+      .then((stream) => {
+        const mr = new MediaRecorder(stream);
+        mediaRecorderRef.current = mr;
+        audioChunksRef.current = [];
+        mr.ondataavailable = (e) => audioChunksRef.current.push(e.data);
+        mr.onstop = () => {
+          const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          setAudioBlob(blob);
+          setHasAudio(true);
+          stream.getTracks().forEach((t) => t.stop());
+        };
+        mr.start();
+        setIsRecording(true);
+      })
+      .catch(() => toast.error("Microphone unavailable"));
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+  };
+
+  const playAudio = () => {
+    if (!audioBlob) return;
+    const url = URL.createObjectURL(audioBlob);
+    const audio = new Audio(url);
+    audio.onended = () => URL.revokeObjectURL(url);
+    void audio.play();
+  };
+
+  // ---- GROUP C: auto-save to lesson notes -----------------------------------
+  const canvasHasContent = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return false;
+    if (placedIcons.length > 0) return true;
+    try {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      return imageData.data.some((v, i) => i % 4 === 3 && v !== 0);
+    } catch {
+      return strokeCount > 0;
+    }
+  };
+
+  const saveToLessonNotes = async () => {
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await supabase
+        .from("lessons")
+        .select("id, pupil_id, notes, lesson_time")
+        .eq("instructor_id", uid)
+        .eq("lesson_date", today)
+        .neq("status", "cancelled")
+        .order("lesson_time")
+        .limit(1);
+      const lesson = (data ?? [])[0] as
+        | { id: string; pupil_id: string | null; notes: string | null }
+        | undefined;
+      if (!lesson) {
+        toast.error("No lesson today to attach this to");
+        return;
+      }
+      const stamp = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      await supabase
+        .from("lessons")
+        .update({ notes: `${lesson.notes ?? ""}\n[PRO Teach sketch - ${stamp}]`.trim() })
+        .eq("id", lesson.id);
+      await supabase.from("teach_resources" as never).insert({
+        instructor_id: uid,
+        pupil_id: lesson.pupil_id,
+        lesson_id: lesson.id,
+        type: "map_draw",
+        image_data: (await compositeDataUrl()) ?? "",
+        created_at: new Date().toISOString(),
+      } as never);
+      toast.success("Saved to lesson notes ✅");
+    } catch {
+      toast.error("Could not save to lesson notes");
+    }
+  };
+
+  const leaveWithPrompt = () => {
+    if (canvasHasContent()) {
+      toast("Save sketch to lesson notes?", {
+        duration: 5000,
+        action: { label: "Save", onClick: () => void saveToLessonNotes() },
+        cancel: { label: "Dismiss", onClick: () => undefined },
+      });
+    }
+    navigate({ to: "/pro-teach" as never });
+  };
+
+  // ---- GROUP I: DVSA test route overlay (infrastructure) --------------------
+  const showTestRoutes = () => {
+    const routes = TEST_ROUTES[`${coords?.lat?.toFixed(1) ?? ""},${coords?.lng?.toFixed(1) ?? ""}`];
+    if (routes && routes.length > 0) {
+      toast.success(`${routes.length} test route${routes.length === 1 ? "" : "s"} for your area`);
+      return;
+    }
+    toast("Test routes for your area coming soon. Contact us to add your local test routes.");
+  };
+
   const iconBtn: React.CSSProperties = {
+
     width: 34,
     height: 34,
     borderRadius: 10,
