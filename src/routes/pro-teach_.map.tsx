@@ -657,7 +657,7 @@ function MapDrawPage() {
       ctx.fillRect(0, 0, offscreen.width, offscreen.height);
     }
     ctx.drawImage(canvas, 0, 0);
-    drawIconsOntoCanvas(ctx);
+    drawIconsOntoCanvas(ctx, canvas.width / (canvas.getBoundingClientRect().width || canvas.width));
     try {
       return offscreen.toDataURL("image/png");
     } catch {
