@@ -87,7 +87,7 @@ import UniversalSearch from "@/components/dsm/UniversalSearch";
 import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
-  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "event"
+  | "lesson" | "test" | "pupil" | "payment" | "qr_payment" | "unavailability" | "availability" | "event"
   | "course" | "note" | "eol" | "enquiry" | "call";
 
 const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
