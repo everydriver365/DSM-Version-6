@@ -1,11 +1,10 @@
 import { tokens } from "@/lib/tokens";
 import { testStartTime, testEndTime, minutesBetween, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { useEffect, useRef, useState } from "react";
-import { IconSearch } from "@tabler/icons-react";
 import {
   IconCheck,
   IconCalendar,
-  IconChevronRight,
+  IconChevronDown,
   IconClock,
   IconCreditCard,
   IconCurrencyPound,
@@ -18,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/BottomSheetV2";
 import { SaveButton } from "../dsm/SaveFooter";
+import { PupilPickerSheet } from "./PupilPickerSheet";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
@@ -170,7 +170,6 @@ export function AddLessonSheet({
 }: AddLessonSheetProps) {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [pupilId, setPupilId] = useState(initialPupilId ?? "");
-  const [pupilQuery, setPupilQuery] = useState("");
   const [pupilListOpen, setPupilListOpen] = useState(false);
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
@@ -338,10 +337,6 @@ export function AddLessonSheet({
     if (t === "block" || t === "national_intensives") return true;
     return Number(selectedPupil?.prepaid_hours ?? 0) > 0;
   })();
-
-  const filteredPupils = pupilQuery.trim()
-    ? pupils.filter((p) => p.name.toLowerCase().includes(pupilQuery.trim().toLowerCase()))
-    : pupils;
 
   const effectiveDuration = duration === "test" ? 0 : duration;
 
@@ -756,82 +751,10 @@ export function AddLessonSheet({
 
         {/* SECTION 1 — Pupil */}
         {!isEvent ? (
-          <SheetGroup>
-          <SheetRow
-            onClick={() => {
-              setPupilQuery("");
-              setPupilListOpen((v) => !v);
-            }}
-          >
-            {selectedPupil ? (
-              <span
-                className="flex items-center justify-center shrink-0"
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 999,
-                  background: "#E6F1FB",
-                  color: tokens.blue,
-                  fontSize: tokens.fontSize.base,
-                  fontWeight: tokens.fontWeight.bold,
-                }}
-              >
-                {selectedPupil.name.trim().charAt(0).toUpperCase()}
-              </span>
-            ) : (
-              <IconUser size={20} stroke={1.8} color={BLUE} />
-            )}
-            <span style={selectedPupil ? valueStyle : { ...valueStyle, color: tokens.textMuted }}>
-              {selectedPupil ? selectedPupil.name : "Select pupil"}
-            </span>
-            {!selectedPupil && (
-              <span style={{ marginLeft: "auto", display: "flex" }}>
-                <IconChevronRight size={18} stroke={1.8} color="#C7D0DC" />
-              </span>
-            )}
-          </SheetRow>
-
-          {pupilListOpen && (
-            <SheetRow>
-              <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
-              <input
-                id="al-pupil"
-                type="text"
-                autoFocus
-                value={pupilQuery}
-                onChange={(e) => {
-                  setPupilQuery(e.target.value);
-                  setPupilListOpen(true);
-                }}
-                placeholder="Search pupils…"
-                className="flex-1 bg-transparent focus:outline-none"
-                style={{ ...valueStyle, fontWeight: 500 }}
-              />
-            </SheetRow>
-          )}
-
-          {pupilListOpen && (
-            <div>
-              {filteredPupils.length === 0 && (
-                <div style={{ ...labelStyle, padding: "16px 16px" }}>No pupils found</div>
-              )}
-              {filteredPupils.map((p, i) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    setPupilId(p.id);
-                    setPupilQuery("");
-                    setPupilListOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 text-left active:bg-black/[0.03]"
-                  style={{
-                    padding: "16px 16px",
-                    minHeight: 52,
-                    borderTop: i === 0 ? "none" : "1px solid #E4E8EF",
-                    background: p.id === pupilId ? "#F0F7FF" : "transparent",
-                  }}
-                >
+          <>
+            <SheetGroup>
+              <SheetRow onClick={() => setPupilListOpen(true)}>
+                {selectedPupil ? (
                   <span
                     className="flex items-center justify-center shrink-0"
                     style={{
@@ -844,23 +767,32 @@ export function AddLessonSheet({
                       fontWeight: tokens.fontWeight.bold,
                     }}
                   >
-                    {p.name.trim().charAt(0).toUpperCase()}
+                    {selectedPupil.name.trim().charAt(0).toUpperCase()}
                   </span>
-                  <span
-                    style={{
-                      ...valueStyle,
-                      fontSize: 15,
-                      fontWeight: 600,
-                    }}
-                  >
-                    {p.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
-        </SheetGroup>
-      ) : (
+                ) : (
+                  <IconUser size={20} stroke={1.8} color={BLUE} />
+                )}
+                <span
+                  className="flex-1 truncate"
+                  style={selectedPupil ? valueStyle : { ...valueStyle, color: tokens.textMuted }}
+                >
+                  {selectedPupil ? selectedPupil.name : "Select pupil"}
+                </span>
+                <span style={{ display: "flex" }}>
+                  <IconChevronDown size={18} stroke={1.8} color="#C7D0DC" />
+                </span>
+              </SheetRow>
+            </SheetGroup>
+
+            <PupilPickerSheet
+              open={pupilListOpen}
+              onClose={() => setPupilListOpen(false)}
+              pupils={pupils}
+              selectedId={pupilId}
+              onSelect={(id) => setPupilId(id)}
+            />
+          </>
+        ) : (
         <div style={{ marginBottom: 16 }}>
           <div
             style={{
