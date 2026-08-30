@@ -9672,9 +9672,8 @@ function HomePage() {
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(11,35,65,0.45)",
-              zIndex: 199,
-              animation: "dsmQuickAddFade 160ms ease-out",
+              background: "rgba(0,0,0,0.3)",
+              zIndex: 98,
             }}
           />
         )}
@@ -9685,171 +9684,82 @@ function HomePage() {
             aria-label="Quick add"
             style={{
               position: "fixed",
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "#F4F6F8",
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              zIndex: 200,
-              fontFamily: "Poppins, sans-serif",
-              boxShadow: "0 -8px 30px rgba(11,35,65,0.22)",
-              animation: "dsmQuickAddUp 220ms cubic-bezier(0.22,1,0.36,1)",
-              paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 10px)",
-              maxHeight: "88vh",
+              bottom: 148,
+              right: 20,
+              zIndex: 99,
               display: "flex",
               flexDirection: "column",
+              alignItems: "flex-end",
+              gap: 8,
+              fontFamily: "Poppins, sans-serif",
             }}
           >
-            <style>{`@keyframes dsmQuickAddUp{from{transform:translateY(100%)}to{transform:translateY(0)}}@keyframes dsmQuickAddFade{from{opacity:0}to{opacity:1}}`}</style>
+            <style>{`@keyframes dsmPillUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}`}</style>
 
-            <div style={{ padding: "10px 0 6px", display: "grid", placeItems: "center" }}>
-              <div style={{ width: 40, height: 5, borderRadius: 999, background: "#CBD5E1" }} />
-            </div>
-
-            <div
-              style={{
-                padding: "2px 16px 12px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: "#0B2341",
-                  letterSpacing: -0.2,
-                }}
-              >
-                Quick add
-              </span>
-              <button
-                type="button"
-                aria-label="Close quick add menu"
-                onClick={() => setQuickAddOpen(false)}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  background: "#EEF2F7",
-                  border: "none",
-                  display: "grid",
-                  placeItems: "center",
-                  cursor: "pointer",
-                  WebkitTapHighlightColor: "transparent",
-                }}
-              >
-                <IconX size={18} stroke={2} color="#0B2341" />
-              </button>
-            </div>
-
-            <div style={{ overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 8px" }}>
-              {QUICK_ADD_GROUPS.map((group) => {
-                const items = QUICK_ADD_ITEMS.filter((it) => it.group === group);
-                if (!items.length) return null;
-                return (
-                  <div key={group} style={{ marginBottom: 16 }}>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        letterSpacing: 0.8,
-                        textTransform: "uppercase",
-                        color: "#7A8899",
-                        padding: "0 4px 8px",
-                      }}
-                    >
-                      {group}
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(3, 1fr)",
-                        gap: 10,
-                      }}
-                    >
-                      {items.map((item) => {
-                        const ItemIcon = item.icon;
-                        return (
-                          <button
-                            key={item.key}
-                            type="button"
-                            onClick={() => {
-                              setQuickAddOpen(false);
-                              runQuickAdd(item.key);
-                            }}
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "flex-start",
-                              gap: 8,
-                              background: "#FFFFFF",
-                              border: "1px solid #E6EBF2",
-                              borderRadius: 12,
-                              padding: "14px 8px 12px",
-                              cursor: "pointer",
-                              fontFamily: "Poppins, sans-serif",
-                              minHeight: 110,
-                              WebkitTapHighlightColor: "transparent",
-                            }}
-                          >
-                            <span
-                              style={{
-                                width: 56,
-                                height: 56,
-                                borderRadius: 16,
-                                background: item.bg,
-                                display: "grid",
-                                placeItems: "center",
-                                flexShrink: 0,
-                                boxShadow: `0 6px 14px ${item.bg}33`,
-                              }}
-                            >
-                              <ItemIcon size={26} stroke={1.8} color="#FFFFFF" />
-                            </span>
-                            <span
-                              style={{
-                                fontSize: 12.5,
-                                fontWeight: 600,
-                                color: "#0B2341",
-                                textAlign: "center",
-                                lineHeight: 1.25,
-                              }}
-                            >
-                              {item.label}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={{ padding: "6px 16px 4px" }}>
-              <button
-                type="button"
-                onClick={() => setQuickAddOpen(false)}
-                style={{
-                  width: "100%",
-                  height: 50,
-                  background: "#FFFFFF",
-                  border: "1px solid #E6EBF2",
-                  borderRadius: 12,
-                  color: "#0B2341",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                Cancel
-              </button>
-            </div>
+            {[
+              { key: "lesson", label: "Add lesson", bg: "#2C97DE", Icon: IconCalendarPlus },
+              { key: "test", label: "Add test", bg: "#F59E0B", Icon: IconCalendarEvent },
+              { key: "pupil", label: "Add pupil", bg: "#18A999", Icon: IconUserPlus },
+              { key: "payment", label: "Take payment", bg: "#16A34A", Icon: IconCreditCard },
+              { key: "unavailability", label: "Add unavailability", bg: "#E53935", Icon: IconCalendarOff },
+              { key: "note", label: "Add note", bg: "#536579", Icon: IconNote },
+              { key: "eol", label: "End of lesson", bg: "#0B2341", Icon: IconFlagCheck },
+              { key: "enquiry", label: "Log enquiry", bg: "#7B61FF", Icon: IconMail },
+              { key: "call", label: "Log call", bg: "#16A34A", Icon: IconPhone },
+            ].map((item, index) => {
+              const { Icon } = item;
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => {
+                    setQuickAddOpen(false);
+                    runQuickAdd(item.key as QuickAddKey);
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    background: "#fff",
+                    borderRadius: 24,
+                    padding: "8px 14px 8px 8px",
+                    border: "1px solid #E4E8EF",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    animation: "dsmPillUp 0.2s ease-out forwards",
+                    animationDelay: `${index * 30}ms`,
+                    opacity: 0,
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: item.bg,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={16} stroke={2} color="#FFFFFF" />
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: "#0B2341",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         )}
 
