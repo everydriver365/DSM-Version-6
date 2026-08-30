@@ -911,6 +911,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
 }
 
 const NO_BACK_EXACT = new Set([
+  // Main tabs / entry screens
   "/",
   "/home",
   "/schedule",
@@ -923,7 +924,40 @@ const NO_BACK_EXACT = new Set([
   "/resetpassword",
   "/onboarding",
   "/pay",
+  // Screens that already draw their own back control
+  "/admin",
+  "/admin/applications",
+  "/admin/chat-rooms",
+  "/admin/featured",
+  "/admin/learn-videos",
+  "/admin/listings",
+  "/admin/terms",
+  "/availability-settings",
+  "/certifications",
+  "/coverage-areas",
+  "/ed-settings",
+  "/lessons/new",
+  "/live",
+  "/livesession",
+  "/pupils/new",
+  "/quotes",
+  "/radio",
+  "/rewards",
+  "/satnav",
+  "/square",
+  "/take-payment",
 ]);
+
+const NO_BACK_PREFIX = [
+  "/i/",
+  "/quote/",
+  "/terms/sign/",
+  "/dsm-live/",
+  "/marketplace/",
+  "/marketplace_",
+  "/messages/",
+  "/test-day/",
+];
 
 /**
  * Global back chip shown under the app header on any screen whose own page
@@ -935,9 +969,7 @@ function GlobalBackBar({ pathname }: { pathname: string }) {
 
   const excluded =
     NO_BACK_EXACT.has(pathname) ||
-    pathname.startsWith("/i/") ||
-    pathname.startsWith("/quote/") ||
-    pathname.startsWith("/terms/sign/");
+    NO_BACK_PREFIX.some((prefix) => pathname.startsWith(prefix));
 
   if (pageHasBack || excluded) return null;
 
