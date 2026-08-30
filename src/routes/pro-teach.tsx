@@ -7,10 +7,12 @@ import {
   IconArrowsLeftRight,
   IconBook,
   IconBox,
+  IconCards,
   IconDots,
   IconParking,
   IconRoad,
   IconRotateClockwise,
+  IconRoute,
   IconUser,
 } from "@tabler/icons-react";
 import { useGoBack } from "@/hooks/useGoBack";
@@ -77,6 +79,31 @@ type Favourite = {
   createdAt: string;
 };
 
+const FAV_TEMPLATE_KEY = "pro_teach_template_fav";
+const CUSTOM_TEMPLATE_PREFIX = "pro_teach_custom_";
+
+type CustomTemplate = { key: string; name: string; imageData: string; createdAt: string };
+
+function readCustomTemplates(): CustomTemplate[] {
+  const out: CustomTemplate[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key?.startsWith(CUSTOM_TEMPLATE_PREFIX)) continue;
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) ?? "");
+      out.push({
+        key,
+        name: parsed.name ?? key.replace(CUSTOM_TEMPLATE_PREFIX, ""),
+        imageData: parsed.imageData ?? "",
+        createdAt: parsed.createdAt ?? new Date().toISOString(),
+      });
+    } catch {
+      // ignore corrupt entries
+    }
+  }
+  return out.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
 function useRecentSketches(max = 3): Favourite[] {
   const [items, setItems] = React.useState<Favourite[]>([]);
   React.useEffect(() => {
@@ -114,6 +141,37 @@ function ProTeachPage() {
   const [pupilName, setPupilName] = React.useState<string | null>(null);
   const [shareTemplate, setShareTemplate] = React.useState<string | null>(null);
   const recent = useRecentSketches(3);
+
+  // GROUP G — favourite templates first
+  const [favourites, setFavourites] = React.useState<string[]>([]);
+  // GROUP H — custom templates saved from the sketch board
+  const [customTemplates, setCustomTemplates] = React.useState<CustomTemplate[]>([]);
+  const [deleteTemplate, setDeleteTemplate] = React.useState<CustomTemplate | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem(FAV_TEMPLATE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      setFavourites(Array.isArray(parsed) ? (parsed as string[]) : []);
+    } catch {
+      setFavourites([]);
+    }
+    setCustomTemplates(readCustomTemplates());
+  }, []);
+
+  const orderedTemplates = React.useMemo(
+    () =>
+      [...TEMPLATES].sort(
+        (a, b) => Number(favourites.includes(b.key)) - Number(favourites.includes(a.key)),
+      ),
+    [favourites],
+  );
+
+  const removeCustomTemplate = (item: CustomTemplate) => {
+    localStorage.removeItem(item.key);
+    setCustomTemplates((prev) => prev.filter((t) => t.key !== item.key));
+    setDeleteTemplate(null);
+  };
 
   React.useEffect(() => {
     if (!pupilId) {
@@ -337,8 +395,64 @@ function ProTeachPage() {
                 <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Draw on live map</div>
               </div>
             </div>
+
+            {/* Show Me Tell Me */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate({ to: "/pro-teach/smtm" as never })}
+              onKeyDown={(e) => e.key === "Enter" && navigate({ to: "/pro-teach/smtm" as never })}
+              style={bigCard}
+            >
+              <div
+                style={{
+                  height: 90,
+                  position: "relative",
+                  background: "linear-gradient(135deg, #F59E0B, #E53935)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconCards size={32} color="#fff" stroke={1.5} />
+                <span style={{ ...badge, background: "rgba(255,255,255,0.2)" }}>DVSA</span>
+              </div>
+              <div style={{ padding: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>Show Me Tell Me</div>
+                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Flashcard revision</div>
+              </div>
+            </div>
+
+            {/* AI Route Planner */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate({ to: "/pro-teach/route-planner" as never })}
+              onKeyDown={(e) => e.key === "Enter" && navigate({ to: "/pro-teach/route-planner" as never })}
+              style={bigCard}
+            >
+              <div
+                style={{
+                  height: 90,
+                  position: "relative",
+                  background: "linear-gradient(135deg, #7B61FF, #2C97DE)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconRoute size={32} color="#fff" stroke={1.5} />
+                <span style={{ ...badge, background: "rgba(255,255,255,0.2)" }}>ED AI</span>
+              </div>
+              <div style={{ padding: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>AI Route Planner</div>
+                <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Lesson route ideas</div>
+              </div>
+            </div>
           </div>
         </div>
+
+
 
         {/* Recent sketches */}
         {recent.length > 0 && (
@@ -415,7 +529,7 @@ function ProTeachPage() {
         <div>
           <SectionLabel text="Templates" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-            {TEMPLATES.map(({ key, label, Icon }) => {
+            {orderedTemplates.map(({ key, label, Icon }) => {
               let clearTimer: (() => void) | null = null;
               return (
                 <div
@@ -460,13 +574,149 @@ function ProTeachPage() {
                     <Icon size={20} color={BLUE} stroke={1.6} />
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, textAlign: "center" }}>
+                    {favourites.includes(key) ? "⭐ " : ""}
                     {label}
                   </div>
+
                 </div>
               );
             })}
           </div>
         </div>
+
+        {/* My templates (saved from the sketch board) */}
+        {customTemplates.length > 0 && (
+          <div>
+            <SectionLabel text="My templates" />
+            <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 4 }}>
+              {customTemplates.map((item) => (
+                <div
+                  key={item.key}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    navigate({
+                      to: "/pro-teach/sketch" as never,
+                      search: { template: item.key } as never,
+                    })
+                  }
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    navigate({
+                      to: "/pro-teach/sketch" as never,
+                      search: { template: item.key } as never,
+                    })
+                  }
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setDeleteTemplate(item);
+                  }}
+                  style={{
+                    flexShrink: 0,
+                    width: 120,
+                    borderRadius: 12,
+                    border: `1px solid ${BORDER}`,
+                    overflow: "hidden",
+                    background: "#fff",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ height: 80, background: "#F9FAFB" }}>
+                    {item.imageData ? (
+                      <img
+                        src={item.imageData}
+                        alt={item.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : null}
+                  </div>
+                  <div style={{ padding: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                    <div
+                      style={{
+                        flex: 1,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: NAVY,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.name}
+                    </div>
+                    <button
+                      type="button"
+                      aria-label={`Delete ${item.name}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteTemplate(item);
+                      }}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        color: MUTED,
+                        fontSize: 12,
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {deleteTemplate && (
+              <div
+                style={{
+                  marginTop: 8,
+                  background: "#fff",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 12,
+                  padding: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <div style={{ flex: 1, fontSize: 12, color: NAVY }}>
+                  Delete “{deleteTemplate.name}”?
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDeleteTemplate(null)}
+                  style={{
+                    borderRadius: 10,
+                    border: `1px solid ${BORDER}`,
+                    background: "#F4F6F8",
+                    color: MUTED,
+                    fontSize: 12,
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeCustomTemplate(deleteTemplate)}
+                  style={{
+                    borderRadius: 10,
+                    border: "none",
+                    background: "#FEE2E2",
+                    color: "#E53935",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
 
         {/* section 3 */}
         <div>

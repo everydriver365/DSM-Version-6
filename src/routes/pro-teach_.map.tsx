@@ -9,12 +9,15 @@ import {
   IconHeart,
   IconHeartFilled,
   IconMaximize,
+  IconMessageShare,
+  IconMicrophone,
   IconMinimize,
   IconMinus,
   IconPencil,
   IconPlus,
   IconRotate,
   IconRotateClockwise,
+  IconRoute,
   IconRuler2,
   IconShare,
   IconTextSize,
@@ -86,6 +89,22 @@ const ICON_EMOJI: Record<string, string> = {
 };
 
 type Tool = "draw" | "car" | "hazard" | "arrow" | "text" | "ruler";
+
+/** GROUP I — DVSA test routes, keyed by rounded "lat,lng" area. Populated as
+ *  local routes are contributed; the Static Maps URL accepts &path= overlays. */
+const TEST_ROUTES: Record<
+  string,
+  { name: string; color: string; points: [number, number][] }[]
+> = {};
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.readAsDataURL(blob);
+  });
+}
 
 /** Isolated overlay layer: placing/dragging an icon only re-renders this. */
 const IconOverlay = React.memo(function IconOverlay({
@@ -181,9 +200,17 @@ function MapDrawPage() {
   const [geoError, setGeoError] = React.useState<string | null>(null);
   const [savedFav, setSavedFav] = React.useState(false);
   const [pupilSheet, setPupilSheet] = React.useState(false);
+  const [pupilMode, setPupilMode] = React.useState<"save" | "send">("save");
   const [pupils, setPupils] = React.useState<Array<{ id: string; name: string | null }>>([]);
   const [loadingPupils, setLoadingPupils] = React.useState(false);
   const [savingPupil, setSavingPupil] = React.useState<string | null>(null);
+
+  // GROUP B — voice annotation
+  const [isRecording, setIsRecording] = React.useState(false);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+  const [audioBlob, setAudioBlob] = React.useState<Blob | null>(null);
+  const [hasAudio, setHasAudio] = React.useState(false);
 
   // undo state: bitmaps live in a ref (they are megabytes each) — state only tracks the count
   const strokesRef = React.useRef<ImageData[]>([]);
@@ -729,7 +756,8 @@ function MapDrawPage() {
     }
   };
 
-  const openPupilPicker = async () => {
+  const openPupilPicker = async (mode: "save" | "send" = "save") => {
+    setPupilMode(mode);
     setPupilSheet(true);
     setLoadingPupils(true);
     try {
@@ -760,12 +788,14 @@ function MapDrawPage() {
       const uid = auth?.user?.id;
       if (!uid) throw new Error("no user");
       const imageData = (await compositeDataUrl()) ?? "";
+      const audioData = audioBlob ? await blobToBase64(audioBlob) : null;
 
       const { error } = await supabase.from("teach_resources" as never).insert({
         instructor_id: uid,
         pupil_id: pupil.id,
         type: "map_draw",
         image_data: imageData,
+        audio_data: audioData,
         map_url: staticMapUrl,
         lat: coords?.lat ?? null,
         lng: coords?.lng ?? null,
@@ -796,7 +826,152 @@ function MapDrawPage() {
     }
   };
 
+  // ---- GROUP A: send the map straight to a pupil's chat ---------------------
+  const sendToPupil = async (pupil: { id: string; name: string | null }) => {
+    setSavingPupil(pupil.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const canvas = canvasRef.current;
+      const image = (await compositeDataUrl()) ?? canvas?.toDataURL("image/jpeg", 0.7) ?? "";
+      const payload = {
+        instructor_id: uid,
+        pupil_id: pupil.id,
+        content: "[PRO Teach sketch]",
+        body: "[PRO Teach sketch]",
+        image_data: image,
+        message_type: "teach_sketch",
+        sender_type: "instructor",
+        created_at: new Date().toISOString(),
+      };
+      const { error } = await supabase.from("chat_messages" as never).insert(payload as never);
+      if (error) {
+        const { error: altError } = await supabase
+          .from("instructor_messages" as never)
+          .insert(payload as never);
+        if (altError) throw altError;
+      }
+      toast.success(`Sent to ${pupil.name ?? "pupil"} ✅`);
+      setPupilSheet(false);
+    } catch {
+      toast.error("Could not send that map");
+    } finally {
+      setSavingPupil(null);
+    }
+  };
+
+  // ---- GROUP B: voice annotation -------------------------------------------
+  const startRecording = () => {
+    navigator.mediaDevices
+      ?.getUserMedia({ audio: true })
+      .then((stream) => {
+        const mr = new MediaRecorder(stream);
+        mediaRecorderRef.current = mr;
+        audioChunksRef.current = [];
+        mr.ondataavailable = (e) => audioChunksRef.current.push(e.data);
+        mr.onstop = () => {
+          const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          setAudioBlob(blob);
+          setHasAudio(true);
+          stream.getTracks().forEach((t) => t.stop());
+        };
+        mr.start();
+        setIsRecording(true);
+      })
+      .catch(() => toast.error("Microphone unavailable"));
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+  };
+
+  const playAudio = () => {
+    if (!audioBlob) return;
+    const url = URL.createObjectURL(audioBlob);
+    const audio = new Audio(url);
+    audio.onended = () => URL.revokeObjectURL(url);
+    void audio.play();
+  };
+
+  // ---- GROUP C: auto-save to lesson notes -----------------------------------
+  const canvasHasContent = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return false;
+    if (placedIcons.length > 0) return true;
+    try {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      return imageData.data.some((v, i) => i % 4 === 3 && v !== 0);
+    } catch {
+      return strokeCount > 0;
+    }
+  };
+
+  const saveToLessonNotes = async () => {
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await supabase
+        .from("lessons")
+        .select("id, pupil_id, notes, lesson_time")
+        .eq("instructor_id", uid)
+        .eq("lesson_date", today)
+        .neq("status", "cancelled")
+        .order("lesson_time")
+        .limit(1);
+      const lesson = (data ?? [])[0] as
+        | { id: string; pupil_id: string | null; notes: string | null }
+        | undefined;
+      if (!lesson) {
+        toast.error("No lesson today to attach this to");
+        return;
+      }
+      const stamp = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      await supabase
+        .from("lessons")
+        .update({ notes: `${lesson.notes ?? ""}\n[PRO Teach sketch - ${stamp}]`.trim() })
+        .eq("id", lesson.id);
+      await supabase.from("teach_resources" as never).insert({
+        instructor_id: uid,
+        pupil_id: lesson.pupil_id,
+        lesson_id: lesson.id,
+        type: "map_draw",
+        image_data: (await compositeDataUrl()) ?? "",
+        created_at: new Date().toISOString(),
+      } as never);
+      toast.success("Saved to lesson notes ✅");
+    } catch {
+      toast.error("Could not save to lesson notes");
+    }
+  };
+
+  const leaveWithPrompt = () => {
+    if (canvasHasContent()) {
+      toast("Save sketch to lesson notes?", {
+        duration: 5000,
+        action: { label: "Save", onClick: () => void saveToLessonNotes() },
+        cancel: { label: "Dismiss", onClick: () => undefined },
+      });
+    }
+    navigate({ to: "/pro-teach" as never });
+  };
+
+  // ---- GROUP I: DVSA test route overlay (infrastructure) --------------------
+  const showTestRoutes = () => {
+    const routes = TEST_ROUTES[`${coords?.lat?.toFixed(1) ?? ""},${coords?.lng?.toFixed(1) ?? ""}`];
+    if (routes && routes.length > 0) {
+      toast.success(`${routes.length} test route${routes.length === 1 ? "" : "s"} for your area`);
+      return;
+    }
+    toast("Test routes for your area coming soon. Contact us to add your local test routes.");
+  };
+
   const iconBtn: React.CSSProperties = {
+
     width: 34,
     height: 34,
     borderRadius: 10,
@@ -899,16 +1074,14 @@ function MapDrawPage() {
               <IconX size={20} color="#fff" />
             </button>
           ) : (
-            <button
-              type="button"
-              aria-label="Back"
-              style={iconBtn}
-              onClick={() => navigate({ to: "/pro-teach" as never })}
-            >
+            <button type="button" aria-label="Back" style={iconBtn} onClick={leaveWithPrompt}>
               <IconArrowLeft size={18} color="#fff" />
             </button>
           )}
           <div style={{ flex: 1, color: "#fff", fontSize: 15, fontWeight: 700 }}>Map Draw</div>
+          <button type="button" aria-label="Test routes" style={iconBtn} onClick={showTestRoutes}>
+            <IconRoute size={20} color="#fff" />
+          </button>
           <button
             type="button"
             aria-label={isFullScreen ? "Exit full screen" : "Enter full screen"}
@@ -917,9 +1090,18 @@ function MapDrawPage() {
           >
             {isFullScreen ? <IconMinimize size={20} color="#fff" /> : <IconMaximize size={20} color="#fff" />}
           </button>
+          <button
+            type="button"
+            aria-label="Send to pupil"
+            style={iconBtn}
+            onClick={() => void openPupilPicker("send")}
+          >
+            <IconMessageShare size={20} color="#fff" />
+          </button>
           <button type="button" aria-label="Share" style={iconBtn} onClick={shareMap}>
             <IconShare size={18} color="#fff" />
           </button>
+
           <button type="button" aria-label="Clear" style={iconBtn} onClick={() => setConfirmClear(true)}>
             <IconTrash size={18} color="#fff" />
           </button>
@@ -1441,8 +1623,45 @@ function MapDrawPage() {
           <button type="button" aria-label="Undo" onClick={undo} style={{ ...toolBtn, flexShrink: 0 }}>
             <IconArrowBackUp size={18} color={MUTED} />
           </button>
+
+          {/* GROUP B — voice annotation */}
+          <button
+            type="button"
+            aria-label={isRecording ? "Stop recording" : "Record voice note"}
+            onClick={isRecording ? stopRecording : startRecording}
+            style={{
+              ...toolBtn,
+              flexShrink: 0,
+              borderColor: isRecording ? "#E53935" : BORDER,
+              animation: isRecording ? "proTeachPulse 1s ease-in-out infinite" : undefined,
+            }}
+          >
+            <IconMicrophone size={20} color={isRecording ? "#E53935" : MUTED} />
+          </button>
+          {hasAudio && (
+            <button
+              type="button"
+              onClick={playAudio}
+              style={{
+                flexShrink: 0,
+                borderRadius: 20,
+                padding: "6px 10px",
+                fontSize: 11,
+                fontWeight: 700,
+                border: "1px solid #18A999",
+                background: "#E7F7F4",
+                color: "#0F7A6E",
+                cursor: "pointer",
+              }}
+            >
+              🎤 Voice note
+            </button>
+          )}
         </div>
       </div>
+
+      <style>{`@keyframes proTeachPulse { 0%,100% { opacity: 1 } 50% { opacity: 0.45 } }`}</style>
+
 
       {/* save row */}
       <div
@@ -1462,7 +1681,7 @@ function MapDrawPage() {
           )}
           <span style={{ fontSize: 12, color: MUTED }}>Save</span>
         </button>
-        <button type="button" onClick={openPupilPicker} style={saveBtn} aria-label="Save to pupil">
+        <button type="button" onClick={() => void openPupilPicker("save")} style={saveBtn} aria-label="Save to pupil">
           <IconUser size={18} color={MUTED} />
           <span style={{ fontSize: 12, color: MUTED }}>Save to pupil</span>
         </button>
@@ -1493,7 +1712,7 @@ function MapDrawPage() {
           >
             <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto 12px" }} />
             <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
-              Save to which pupil?
+              {pupilMode === "send" ? "Send to which pupil?" : "Save to which pupil?"}
             </div>
             {loadingPupils ? (
               <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>Loading pupils…</div>
@@ -1505,7 +1724,7 @@ function MapDrawPage() {
                   key={p.id}
                   type="button"
                   disabled={savingPupil !== null}
-                  onClick={() => saveToPupil(p)}
+                  onClick={() => (pupilMode === "send" ? void sendToPupil(p) : void saveToPupil(p))}
                   style={{
                     width: "100%",
                     display: "flex",
