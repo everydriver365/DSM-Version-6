@@ -127,6 +127,7 @@ import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as QuoteTokenRouteImport } from './routes/quote.$token'
 import { Route as PupilsNewRouteImport } from './routes/pupils.new'
 import { Route as PupilsIdRouteImport } from './routes/pupils.$id'
+import { Route as ProTeachSketchRouteImport } from './routes/pro-teach_.sketch'
 import { Route as PerksPerkIdRouteImport } from './routes/perks_.$perkId'
 import { Route as NotesIdRouteImport } from './routes/notes.$id'
 import { Route as NewsArticleIdRouteImport } from './routes/news.$articleId'
@@ -770,6 +771,11 @@ const PupilsIdRoute = PupilsIdRouteImport.update({
   path: '/pupils/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProTeachSketchRoute = ProTeachSketchRouteImport.update({
+  id: '/pro-teach_/sketch',
+  path: '/pro-teach/sketch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerksPerkIdRoute = PerksPerkIdRouteImport.update({
   id: '/perks_/$perkId',
   path: '/perks/$perkId',
@@ -1177,6 +1183,7 @@ export interface FileRoutesByFullPath {
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/perks/$perkId': typeof PerksPerkIdRoute
+  '/pro-teach/sketch': typeof ProTeachSketchRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quote/$token': typeof QuoteTokenRoute
@@ -1346,6 +1353,7 @@ export interface FileRoutesByTo {
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/perks/$perkId': typeof PerksPerkIdRoute
+  '/pro-teach/sketch': typeof ProTeachSketchRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quote/$token': typeof QuoteTokenRoute
@@ -1519,6 +1527,7 @@ export interface FileRoutesById {
   '/news/$articleId': typeof NewsArticleIdRoute
   '/notes/$id': typeof NotesIdRoute
   '/perks_/$perkId': typeof PerksPerkIdRoute
+  '/pro-teach_/sketch': typeof ProTeachSketchRoute
   '/pupils/$id': typeof PupilsIdRoute
   '/pupils/new': typeof PupilsNewRoute
   '/quote/$token': typeof QuoteTokenRoute
@@ -1693,6 +1702,7 @@ export interface FileRouteTypes {
     | '/news/$articleId'
     | '/notes/$id'
     | '/perks/$perkId'
+    | '/pro-teach/sketch'
     | '/pupils/$id'
     | '/pupils/new'
     | '/quote/$token'
@@ -1862,6 +1872,7 @@ export interface FileRouteTypes {
     | '/news/$articleId'
     | '/notes/$id'
     | '/perks/$perkId'
+    | '/pro-teach/sketch'
     | '/pupils/$id'
     | '/pupils/new'
     | '/quote/$token'
@@ -2034,6 +2045,7 @@ export interface FileRouteTypes {
     | '/news/$articleId'
     | '/notes/$id'
     | '/perks_/$perkId'
+    | '/pro-teach_/sketch'
     | '/pupils/$id'
     | '/pupils/new'
     | '/quote/$token'
@@ -2192,6 +2204,7 @@ export interface RootRouteChildren {
   NewsArticleIdRoute: typeof NewsArticleIdRoute
   NotesIdRoute: typeof NotesIdRoute
   PerksPerkIdRoute: typeof PerksPerkIdRoute
+  ProTeachSketchRoute: typeof ProTeachSketchRoute
   PupilsIdRoute: typeof PupilsIdRoute
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
@@ -3049,6 +3062,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PupilsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pro-teach_/sketch': {
+      id: '/pro-teach_/sketch'
+      path: '/pro-teach/sketch'
+      fullPath: '/pro-teach/sketch'
+      preLoaderRoute: typeof ProTeachSketchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perks_/$perkId': {
       id: '/perks_/$perkId'
       path: '/perks/$perkId'
@@ -3617,6 +3637,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsArticleIdRoute: NewsArticleIdRoute,
   NotesIdRoute: NotesIdRoute,
   PerksPerkIdRoute: PerksPerkIdRoute,
+  ProTeachSketchRoute: ProTeachSketchRoute,
   PupilsIdRoute: PupilsIdRoute,
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
