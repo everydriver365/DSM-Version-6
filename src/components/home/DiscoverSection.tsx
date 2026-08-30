@@ -10,7 +10,7 @@ import proLogoAsset from "@/assets/pro-image.png.asset.json";
 
 import {
   IconChevronRight,
-  IconBook,
+  IconDeviceTv,
   IconShoppingBag,
   IconBrowser,
   IconCar,
