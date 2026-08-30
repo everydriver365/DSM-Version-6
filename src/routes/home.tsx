@@ -9714,7 +9714,6 @@ function HomePage() {
                   key={item.key}
                   type="button"
                   onClick={() => {
-                    setQuickAddOpen(false);
                     runQuickAdd(item.key as QuickAddKey);
                   }}
                   style={{
