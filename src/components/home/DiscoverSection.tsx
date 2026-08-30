@@ -11,6 +11,7 @@ import proLogoAsset from "@/assets/pro-image.png.asset.json";
 import {
   IconChevronRight,
   IconBook,
+  IconDeviceTv,
   IconShoppingBag,
   IconBrowser,
   IconCar,
@@ -1123,7 +1124,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
 
         >
-          {/* open book motif */}
+          {/* TV motif */}
           <svg
             aria-hidden
             width={54}
@@ -1136,32 +1137,36 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               pointerEvents: "none",
             }}
           >
-            <path
-              d="M34 12 C28 8 18 8 12 12 L12 48 C18 44 28 44 34 48 C40 44 50 44 56 48 L56 12 C50 8 40 8 34 12 Z"
+            {/* screen */}
+            <rect
+              x="10"
+              y="16"
+              width="48"
+              height="32"
+              rx="4"
               stroke="#3B8B3B"
               strokeWidth={1.8}
               fill="none"
               opacity={0.3}
             />
-            <line
-              x1="34"
-              y1="12"
-              x2="34"
-              y2="48"
+            {/* stand neck */}
+            <line x1="34" y1="48" x2="34" y2="54" stroke="#3B8B3B" strokeWidth={1.8} opacity={0.3} />
+            {/* stand base */}
+            <line x1="26" y1="54" x2="42" y2="54" stroke="#3B8B3B" strokeWidth={1.8} opacity={0.3} />
+            {/* antenna left */}
+            <line x1="34" y1="16" x2="24" y2="6" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            {/* antenna right */}
+            <line x1="34" y1="16" x2="44" y2="6" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            {/* screen highlight */}
+            <path
+              d="M18 24 L28 40 L40 30 L50 40"
               stroke="#3B8B3B"
-              strokeWidth={1.8}
-              opacity={0.3}
+              strokeWidth={1.4}
+              fill="none"
+              opacity={0.2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-            {/* left page text lines */}
-            <line x1="17" y1="20" x2="30" y2="20" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            <line x1="17" y1="26" x2="30" y2="26" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            <line x1="17" y1="32" x2="28" y2="32" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            <line x1="17" y1="38" x2="26" y2="38" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            {/* right page text lines */}
-            <line x1="38" y1="20" x2="51" y2="20" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            <line x1="38" y1="26" x2="51" y2="26" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            <line x1="40" y1="32" x2="51" y2="32" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
-            <line x1="42" y1="38" x2="51" y2="38" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
           </svg>
 
           {(showcaseCount ?? 0) > 0 && (
@@ -1189,7 +1194,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 border: "1px solid #E8EEF4",
               }}
             >
-              <IconBook size={19} color="#16A34A" stroke={1.7} />
+              <IconDeviceTv size={19} color="#16A34A" stroke={1.7} />
             </span>
             <div
               style={{
