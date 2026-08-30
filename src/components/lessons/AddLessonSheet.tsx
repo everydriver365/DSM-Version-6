@@ -171,7 +171,6 @@ export function AddLessonSheet({
 }: AddLessonSheetProps) {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [pupilId, setPupilId] = useState(initialPupilId ?? "");
-  const [pupilQuery, setPupilQuery] = useState("");
   const [pupilListOpen, setPupilListOpen] = useState(false);
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
