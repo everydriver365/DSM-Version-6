@@ -77,6 +77,7 @@ export interface UnifiedPaymentSheetProps {
    */
   onSaved?: (info?: { updatedLessons: PaidLessonUpdate[] }) => void;
   initialPupilId?: string;
+  initialMethod?: PayMethod;
 }
 
 interface PupilRow {
