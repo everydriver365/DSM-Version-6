@@ -1135,6 +1135,7 @@ function MapDrawPage() {
       >
         {/* scrollable tool strip */}
         <div
+          className="pro-teach-toolbar-scroll"
           style={{
             display: "flex",
             alignItems: "center",
@@ -1146,9 +1147,6 @@ function MapDrawPage() {
             padding: "0 16px",
           }}
         >
-          <style>{`.pro-teach-toolbar-scroll::-webkit-scrollbar { display: none; }`}</style>
-          <div className="pro-teach-toolbar-scroll" style={{ display: "contents" }} />
-
           {SIZES.map((s) => (
             <button
               key={s.dot}
