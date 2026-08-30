@@ -1,8 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import {
   IconArrowBackUp,
-  IconArrowLeft,
   IconEraser,
   IconHeart,
   IconHeartFilled,
@@ -53,7 +52,6 @@ type Point = { x: number; y: number };
 type Stroke = { points: Point[]; colour: string; width: number };
 
 function MapDrawPage() {
-  const navigate = useNavigate();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const wrapRef = React.useRef<HTMLDivElement | null>(null);
   const rootRef = React.useRef<HTMLDivElement | null>(null);
@@ -436,14 +434,6 @@ function MapDrawPage() {
       {/* header */}
       <div style={{ background: NAVY, paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 16px 14px" }}>
-          <button
-            type="button"
-            aria-label="Back"
-            style={iconBtn}
-            onClick={() => navigate({ to: "/pro-teach" as never })}
-          >
-            <IconArrowLeft size={18} color="#fff" />
-          </button>
           <div style={{ flex: 1, color: "#fff", fontSize: 15, fontWeight: 700 }}>Map Draw</div>
           <button type="button" aria-label="Share" style={iconBtn} onClick={shareMap}>
             <IconShare size={18} color="#fff" />
