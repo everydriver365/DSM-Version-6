@@ -1187,14 +1187,30 @@ function MapDrawPage() {
       {/* map + canvas */}
       <div
         ref={wrapRef}
+        onPointerDown={panDown}
+        onPointerMove={panMove}
+        onPointerUp={panUp}
+        onPointerCancel={panUp}
         style={{
           flex: 1,
           position: "relative",
           overflow: "hidden",
-          background: staticMapUrl ? `url("${staticMapUrl}") center/cover no-repeat` : "#e8f0e8",
-          touchAction: mode === "draw" ? "none" : "auto",
+          background: "#e8f0e8",
+          touchAction: "none",
+          cursor: mode === "pan" ? "grab" : "default",
         }}
       >
+        {/* map imagery layer — transformed live while panning */}
+        <div
+          ref={mapLayerRef}
+          style={{
+            position: "absolute",
+            inset: -40,
+            background: staticMapUrl ? `url("${staticMapUrl}") center/cover no-repeat` : "#e8f0e8",
+            willChange: "transform",
+            pointerEvents: "none",
+          }}
+        />
         {!staticMapUrl && (
           <div
             style={{
