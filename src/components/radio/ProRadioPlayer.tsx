@@ -258,22 +258,57 @@ export function ProRadioPlayer() {
             <div style={{ padding: "14px 16px", borderBottom: "1px solid #F4F6F8" }}>
               <div
                 style={{
-                  fontSize: 11,
-                  color: "#536579",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.6px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                   marginBottom: 3,
                 }}
               >
-                Now playing
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "#536579",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.6px",
+                  }}
+                >
+                  Now playing
+                </span>
+                {radio.isLive ? (
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: "#E53935",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <LiveDot size={5} />
+                    {radio.isPlaying ? "LIVE" : "PAUSED"}
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: "#536579",
+                    }}
+                  >
+                    COMING SOON
+                  </span>
+                )}
               </div>
               <div style={{ fontSize: 16, fontWeight: 700, color: "#0B2341" }}>
                 {radio.showName}
               </div>
               <div style={{ fontSize: 13, color: "#536579", marginTop: 2 }}>
-                {radio.nowPlaying.artist
-                  ? `${radio.nowPlaying.title} · ${radio.nowPlaying.artist}`
-                  : radio.nowPlaying.title}
+                {radio.isLive
+                  ? radio.nowPlaying.artist
+                    ? `${radio.nowPlaying.title} · ${radio.nowPlaying.artist}`
+                    : radio.nowPlaying.title
+                  : "This station will be available soon"}
               </div>
             </div>
 
