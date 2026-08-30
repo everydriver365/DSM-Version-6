@@ -450,7 +450,7 @@ function ProTeachPage() {
           </div>
         </div>
 
-        </div>
+
 
         {/* Recent sketches */}
         {recent.length > 0 && (
