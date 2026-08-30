@@ -111,7 +111,7 @@ function ProTeachPage() {
         >
           <button
             type="button"
-            onClick={() => goBack()}
+            onClick={() => goBack("/home")}
             aria-label="Back"
             style={{
               width: 32,
