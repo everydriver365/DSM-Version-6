@@ -1190,7 +1190,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 border: "1px solid #E8EEF4",
               }}
             >
-              <IconBook size={19} color="#16A34A" stroke={1.7} />
+              <IconDeviceTv size={19} color="#16A34A" stroke={1.7} />
             </span>
             <div
               style={{
