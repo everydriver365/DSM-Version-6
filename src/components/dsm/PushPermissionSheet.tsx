@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { tokens } from "@/lib/tokens";
 import { IconBell } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { BottomSheet, PrimaryButton, GhostButton } from "./BottomSheetV2";
 import { pushSupported, subscribeToPush } from "../../lib/pushSubscription";
 

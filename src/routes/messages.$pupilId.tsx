@@ -3,7 +3,7 @@ import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";

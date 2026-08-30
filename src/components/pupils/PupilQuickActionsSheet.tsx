@@ -1,7 +1,7 @@
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import {
   BottomSheet,
   StatRow,

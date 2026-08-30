@@ -10,7 +10,7 @@ import {
   setPushEnabled as persistPushEnabled,
 } from "@/lib/calendarSyncPrefs";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SAVE_BUTTON_STYLE } from "@/components/dsm/SaveFooter";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";

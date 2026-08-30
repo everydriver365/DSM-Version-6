@@ -15,7 +15,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEvent, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconEdit, IconLock, IconMapPin, IconNavigation, IconPhone, IconPlus, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";

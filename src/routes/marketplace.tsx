@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
 import { IconBriefcase, IconCamera, IconCar, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTool } from "@tabler/icons-react";
 import { IconBook, IconSearch, IconSpeakerphone } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";

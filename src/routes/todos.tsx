@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconCheckbox, IconPlus, IconSquareCheck, IconTrash } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";

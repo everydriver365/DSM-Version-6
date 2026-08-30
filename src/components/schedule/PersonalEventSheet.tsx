@@ -1,7 +1,7 @@
 import { tokens } from "@/lib/tokens";
 import React, { useEffect, useMemo, useState } from "react";
 import { IconX, IconTrash } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 
 const navy = "#0B1F3A";

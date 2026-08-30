@@ -6,7 +6,7 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconArrowLeft, IconBook, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronLeft, IconChevronRight, IconCircleCheck, IconExternalLink, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconSpeakerphone, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {

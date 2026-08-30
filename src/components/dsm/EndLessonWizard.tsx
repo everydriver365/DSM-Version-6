@@ -33,7 +33,7 @@ function slugify(s: string) {
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_|_$/g, "");
 }
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { recordPayment, type RecordPaymentResult, type RecordRefundResult } from "@/lib/payments";

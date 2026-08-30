@@ -14,7 +14,7 @@ import {
   IconClock,
 
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";

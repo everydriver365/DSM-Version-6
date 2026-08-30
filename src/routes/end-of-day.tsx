@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconAlertTriangle, IconCalendar, IconCalendarOff, IconCar, IconChevronRight, IconFileText, IconMicrophone, IconMicrophoneOff, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "@/components/dsm/EmptyState";

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconCheck, IconChevronLeft, IconTrash } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
 

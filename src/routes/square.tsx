@@ -12,7 +12,7 @@ import {
   IconUnlink,
   IconChevronRight,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 
 export const Route = createFileRoute("/square")({

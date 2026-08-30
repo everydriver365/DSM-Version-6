@@ -1,6 +1,6 @@
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import {

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCalendarPlus, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import DSMToggle from "@/components/dsm/DSMToggle";

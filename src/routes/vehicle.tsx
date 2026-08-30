@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconGauge, IconPlus, IconReceipt, IconShield, IconTool, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/vehicle")({

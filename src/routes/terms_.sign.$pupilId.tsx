@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconArrowLeft, IconCircleCheck } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export const Route = createFileRoute("/terms_/sign/$pupilId")({
   component: SignTermsPage,

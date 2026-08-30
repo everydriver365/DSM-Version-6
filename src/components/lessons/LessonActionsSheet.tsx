@@ -2,7 +2,7 @@ import { tokens } from "@/lib/tokens";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import {
   IconAlertCircle,

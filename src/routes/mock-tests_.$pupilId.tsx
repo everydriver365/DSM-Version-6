@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconClipboardCheck, IconMicrophone, IconMicrophoneOff, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { supabase } from "../lib/supabaseClient";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";

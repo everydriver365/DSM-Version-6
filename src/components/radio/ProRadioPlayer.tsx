@@ -14,7 +14,7 @@ import {
   IconCar,
   IconMicrophone,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;

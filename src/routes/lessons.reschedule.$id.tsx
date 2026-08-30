@@ -3,7 +3,7 @@ import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";

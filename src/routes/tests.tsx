@@ -19,7 +19,7 @@ import {
 } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";

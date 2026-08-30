@@ -6,7 +6,7 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 import { useGoBack } from "@/hooks/useGoBack";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 

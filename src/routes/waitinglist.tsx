@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { IconClock, IconHourglass, IconPlus, IconUsers, IconX } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { z } from "zod";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";

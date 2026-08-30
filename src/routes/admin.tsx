@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { PartnerPreview, PerkPreview } from "@/components/admin/BenefitPreview";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPhoto, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import type React from "react";

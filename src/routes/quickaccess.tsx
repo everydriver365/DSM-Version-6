@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useMemo, useState } from "react";
 import { IconAlertCircle, IconAward, IconBell, IconBolt, IconBook, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCar, IconChartBar, IconClipboardCheck, IconClipboardList, IconClock, IconCrown, IconCurrencyPound, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeart, IconHelpCircle, IconInbox, IconLayoutGrid, IconMapPin, IconMessage, IconNavigation, IconPlayerPlay, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSignature, IconSquareCheck, IconStar, IconSun, IconToggleLeft, IconTrendingUp, IconTrophy, IconUpload, IconUserCircle, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 export const Route = createFileRoute("/quickaccess")({

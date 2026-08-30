@@ -5,7 +5,7 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";

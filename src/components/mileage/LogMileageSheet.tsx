@@ -1,6 +1,6 @@
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { BottomSheet, PrimaryButton } from "@/components/dsm/BottomSheetV2";
 import { Input } from "@/components/dsm/Input";

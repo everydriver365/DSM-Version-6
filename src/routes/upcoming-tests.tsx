@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconBell, IconCalendar, IconClock, IconDotsVertical, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { useNowTick } from "@/hooks/useNowTick";

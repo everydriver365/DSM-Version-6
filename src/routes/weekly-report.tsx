@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconCalendar, IconChevronLeft, IconChevronRight, IconDownload, IconStar, IconUsers } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";

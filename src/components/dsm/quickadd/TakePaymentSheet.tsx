@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { BottomSheet } from "../BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 import { recordPayment } from "@/lib/payments";

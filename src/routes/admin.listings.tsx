@@ -3,7 +3,7 @@ import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft, IconLoader2, IconPlus, IconStar, IconX } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/uploadFile";
 
