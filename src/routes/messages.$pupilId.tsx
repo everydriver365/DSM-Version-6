@@ -987,8 +987,8 @@ function PupilThreadPage() {
       className="flex flex-col"
       style={{
         ...POPPINS,
-        height: "calc(100vh - env(safe-area-inset-top, 0px))",
-        minHeight: "calc(100vh - env(safe-area-inset-top, 0px))",
+        height: "100dvh",
+        minHeight: 0,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
