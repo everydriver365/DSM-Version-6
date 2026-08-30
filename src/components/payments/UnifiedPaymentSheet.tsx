@@ -549,7 +549,7 @@ export function UnifiedPaymentSheet({
     setPaymentSuccess(null);
     setEditPayment(null);
     setDeletePayment(null);
-  }, [open, initialPupilId]);
+  }, [open, initialPupilId, initialMethod]);
 
   // ---- close QR fullscreen with Escape key --------------------------------
   useEffect(() => {
