@@ -1842,6 +1842,14 @@ function HomePage() {
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
 
+  // Quick-add bottom sheets (every FAB action opens a sheet except Add course)
+  const [unavailabilitySheetOpen, setUnavailabilitySheetOpen] = useState(false);
+  const [noteSheetOpen, setNoteSheetOpen] = useState(false);
+  const [enquirySheetOpen, setEnquirySheetOpen] = useState(false);
+  const [logCallSheetOpen, setLogCallSheetOpen] = useState(false);
+  const [quickPupilSheetOpen, setQuickPupilSheetOpen] = useState(false);
+  const [takePaymentSheetOpen, setTakePaymentSheetOpen] = useState(false);
+
   const runQuickAdd = (key: QuickAddKey) => {
     switch (key) {
       case "lesson":
@@ -1853,13 +1861,13 @@ function HomePage() {
         setAddLessonOpen(true);
         break;
       case "pupil":
-        navigate({ to: "/pupils/new" as never });
+        setQuickPupilSheetOpen(true);
         break;
       case "payment":
-        navigate({ to: "/take-payment" as never });
+        setTakePaymentSheetOpen(true);
         break;
       case "unavailability":
-        navigate({ to: "/quickavailability" as never });
+        setUnavailabilitySheetOpen(true);
         break;
       case "event":
         setEditingPersonal(null);
@@ -1869,7 +1877,7 @@ function HomePage() {
         navigate({ to: "/courses/new" as never });
         break;
       case "note":
-        navigate({ to: "/notes" as never });
+        setNoteSheetOpen(true);
         break;
       case "eol": {
         const candidate =
@@ -1879,10 +1887,10 @@ function HomePage() {
         break;
       }
       case "enquiry":
-        navigate({ to: "/enquiries" as never });
+        setEnquirySheetOpen(true);
         break;
       case "call":
-        navigate({ to: "/enquiries" as never });
+        setLogCallSheetOpen(true);
         break;
     }
   };
