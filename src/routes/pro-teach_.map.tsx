@@ -398,11 +398,12 @@ function MapDrawPage() {
     cursor: "pointer",
   };
   const zoomBtn: React.CSSProperties = {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: 10,
-    background: "rgba(255,255,255,0.92)",
+    background: "rgba(255,255,255,0.95)",
     border: `1px solid ${BORDER}`,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
