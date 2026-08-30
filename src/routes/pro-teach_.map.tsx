@@ -74,6 +74,7 @@ function MapDrawPage() {
 
   const [coords, setCoords] = React.useState<{ lat: number; lng: number } | null>(null);
   const [zoom, setZoom] = React.useState(16);
+  const [mapType, setMapType] = React.useState<"roadmap" | "satellite" | "hybrid">("hybrid");
   const [mode, setMode] = React.useState<"draw" | "pan">("draw");
   const [currentColor, setCurrentColor] = React.useState("#E53935");
   const [lineWidth, setLineWidth] = React.useState(3);
