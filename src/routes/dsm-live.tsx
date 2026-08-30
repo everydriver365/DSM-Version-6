@@ -446,8 +446,9 @@ function DsmLiveLayout() {
               margin: 0,
               color: "#FFFFFF",
               fontFamily: "Sora, sans-serif",
-              fontSize: tokens.fontSize.xxl,
-              lineHeight: "40px",
+              fontSize: tokens.fontSize.xl,
+              lineHeight: "32px",
+
               fontWeight: tokens.fontWeight.bold,
             }}
           >
