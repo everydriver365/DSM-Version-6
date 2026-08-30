@@ -16,6 +16,7 @@ import {
   IconTree,
 } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
+import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
