@@ -1881,6 +1881,9 @@ function HomePage() {
       case "availability":
         navigate({ to: "/availability-settings" as never });
         break;
+      case "proteach":
+        navigate({ to: "/pro-teach" as never });
+        break;
       case "event":
         setEditingPersonal(null);
         setPersonalSheetOpen(true);
