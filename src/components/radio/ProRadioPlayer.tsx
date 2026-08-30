@@ -48,6 +48,131 @@ function LiveDot({ size = 6 }: { size?: number }) {
   );
 }
 
+interface StationTileProps {
+  name: string;
+  Icon: React.ComponentType<{ size?: number; color?: string; stroke?: number }>;
+  bg: string;
+  isLive: boolean;
+  isPlaying: boolean;
+  isSelected: boolean;
+  isFavorite: boolean;
+  toastText?: string;
+  onToggle: () => void;
+  onToggleFavorite: () => void;
+}
+
+function StationTile({
+  name,
+  Icon,
+  bg,
+  isLive,
+  isPlaying,
+  isSelected,
+  isFavorite,
+  toastText,
+  onToggle,
+  onToggleFavorite,
+}: StationTileProps) {
+  const isDark = isLive;
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => {
+        if (!isLive && toastText) toast(toastText);
+        onToggle();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          if (!isLive && toastText) toast(toastText);
+          onToggle();
+        }
+      }}
+      style={{
+        position: "relative",
+        background: isDark ? "#0B2341" : "#FFFFFF",
+        borderRadius: 14,
+        padding: "14px 8px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 8,
+        border: isSelected
+          ? `2px solid ${isDark ? "#2C97DE" : "#2C97DE"}`
+          : isDark
+            ? "none"
+            : "1px solid #E4E8EF",
+        boxShadow: isDark
+          ? "0 4px 12px rgba(11,35,65,0.3)"
+          : "0 2px 0 #E4E4E8",
+        cursor: "pointer",
+      }}
+    >
+      <button
+        type="button"
+        aria-label={isFavorite ? `Remove ${name} from favourites` : `Add ${name} to favourites`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleFavorite();
+        }}
+        style={{
+          position: "absolute",
+          top: 6,
+          right: 6,
+          background: "transparent",
+          border: "none",
+          padding: 4,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconHeart
+          size={14}
+          color={isFavorite ? "#E53935" : isDark ? "rgba(255,255,255,0.5)" : "#D1D5DB"}
+          fill={isFavorite ? "#E53935" : "none"}
+          stroke={2}
+        />
+      </button>
+      <div
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 12,
+          background: bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Icon size={22} color="#FFFFFF" stroke={1.8} />
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: isDark ? 700 : 600,
+          color: isDark ? "#FFFFFF" : "#0B2341",
+        }}
+      >
+        {name}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {isLive ? (
+          <>
+            <LiveDot size={5} />
+            <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)" }}>
+              {isPlaying ? "LIVE" : "PAUSED"}
+            </span>
+          </>
+        ) : (
+          <span style={{ fontSize: 9, color: "#536579" }}>COMING SOON</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /**
  * Persistent PRO Radio player.
  * Renders nothing until playback has been started at least once, then keeps a
