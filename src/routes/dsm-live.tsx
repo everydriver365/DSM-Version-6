@@ -409,17 +409,18 @@ function DsmLiveLayout() {
         style={{
           flexShrink: 0,
           background: "#0B2341",
-          paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)",
-          paddingBottom: 28,
+          paddingTop: 10,
+          paddingBottom: 10,
           paddingLeft: tokens.pagePadding,
           paddingRight: tokens.pagePadding,
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
           justifyContent: "space-between",
+
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button
             type="button"
             aria-label="Go back"
@@ -445,8 +446,9 @@ function DsmLiveLayout() {
               margin: 0,
               color: "#FFFFFF",
               fontFamily: "Sora, sans-serif",
-              fontSize: tokens.fontSize.xxl,
-              lineHeight: "40px",
+              fontSize: tokens.fontSize.xl,
+              lineHeight: "32px",
+
               fontWeight: tokens.fontWeight.bold,
             }}
           >
