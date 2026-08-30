@@ -9684,7 +9684,7 @@ function HomePage() {
             aria-label="Quick add"
             style={{
               position: "fixed",
-              bottom: 148,
+              bottom: "calc(172px + env(safe-area-inset-bottom, 0px))",
               right: 20,
               zIndex: 99,
               display: "flex",
@@ -9692,6 +9692,9 @@ function HomePage() {
               alignItems: "flex-end",
               gap: 8,
               fontFamily: "Poppins, sans-serif",
+              maxHeight: "calc(100dvh - 188px - env(safe-area-inset-bottom, 0px))",
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
             }}
           >
             <style>{`@keyframes dsmPillUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}`}</style>
