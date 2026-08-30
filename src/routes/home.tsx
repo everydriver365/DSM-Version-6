@@ -9644,112 +9644,161 @@ function HomePage() {
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.3)",
-              zIndex: 99,
+              background: "rgba(11,35,65,0.45)",
+              zIndex: 199,
+              animation: "dsmQuickAddFade 160ms ease-out",
             }}
           />
         )}
 
         {quickAddOpen && (
           <div
+            role="dialog"
+            aria-label="Quick add"
             style={{
               position: "fixed",
-              right: 20,
-              bottom: "calc(80px + 56px + 12px + env(safe-area-inset-bottom, 0px))",
-              width: 244,
-              maxHeight: "calc(100vh - 180px)",
-              overflowY: "auto",
-              WebkitOverflowScrolling: "touch",
-              background: "#FFFFFF",
-              borderRadius: 16,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-              zIndex: 100,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "#F4F6F8",
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              zIndex: 200,
               fontFamily: "Poppins, sans-serif",
-              animation: "dsmQuickAddIn 160ms ease-out",
+              boxShadow: "0 -8px 30px rgba(11,35,65,0.22)",
+              animation: "dsmQuickAddUp 220ms cubic-bezier(0.22,1,0.36,1)",
+              paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 10px)",
+              maxHeight: "88vh",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <style>{`@keyframes dsmQuickAddIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+            <style>{`@keyframes dsmQuickAddUp{from{transform:translateY(100%)}to{transform:translateY(0)}}@keyframes dsmQuickAddFade{from{opacity:0}to{opacity:1}}`}</style>
+
+            <div style={{ padding: "10px 0 6px", display: "grid", placeItems: "center" }}>
+              <div style={{ width: 40, height: 5, borderRadius: 999, background: "#CBD5E1" }} />
+            </div>
+
             <div
               style={{
-                fontSize: 13,
+                padding: "2px 20px 12px",
+                fontSize: 18,
                 fontWeight: 700,
-                color: "#536579",
-                padding: "12px 16px 8px",
-                borderBottom: "1px solid #F4F6F8",
-                background: "#fff",
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
+                color: "#0B2341",
+                letterSpacing: -0.2,
               }}
             >
               Quick add
             </div>
-            {QUICK_ADD_ITEMS.map((item, i) => {
-              const ItemIcon = item.icon;
-              return (
-                <button
-                  key={item.label}
-                  type="button"
-                  onClick={() => {
-                    setQuickAddOpen(false);
-                    runQuickAdd(item.key);
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    width: "100%",
-                    background: "transparent",
-                    border: "none",
-                    borderBottom: i < QUICK_ADD_ITEMS.length - 1 ? "1px solid #F4F6F8" : "none",
-                    padding: "14px 20px",
-                    fontSize: 15,
-                    fontWeight: 500,
-                    color: "#0B2341",
-                    fontFamily: "Poppins, sans-serif",
-                    textAlign: "left",
-                    cursor: "pointer",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: 8,
-                      background: item.bg,
-                      display: "grid",
-                      placeItems: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <ItemIcon size={20} stroke={1.8} color="#FFFFFF" />
-                  </span>
-                  {item.label}
-                </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => setQuickAddOpen(false)}
-              style={{
-                width: "100%",
-                height: 44,
-                background: "#fff",
-                border: "none",
-                color: "#536579",
-                fontSize: 14,
-                fontWeight: 600,
-                borderTop: "1px solid #F4F6F8",
-                position: "sticky",
-                bottom: 0,
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              Cancel
-            </button>
+
+            <div style={{ overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 8px" }}>
+              {QUICK_ADD_GROUPS.map((group) => {
+                const items = QUICK_ADD_ITEMS.filter((it) => it.group === group);
+                if (!items.length) return null;
+                return (
+                  <div key={group} style={{ marginBottom: 16 }}>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: 0.8,
+                        textTransform: "uppercase",
+                        color: "#7A8899",
+                        padding: "0 4px 8px",
+                      }}
+                    >
+                      {group}
+                    </div>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: 10,
+                      }}
+                    >
+                      {items.map((item) => {
+                        const ItemIcon = item.icon;
+                        return (
+                          <button
+                            key={item.key}
+                            type="button"
+                            onClick={() => {
+                              setQuickAddOpen(false);
+                              runQuickAdd(item.key);
+                            }}
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              gap: 8,
+                              background: "#FFFFFF",
+                              border: "1px solid #E6EBF2",
+                              borderRadius: 12,
+                              padding: "14px 8px 12px",
+                              cursor: "pointer",
+                              fontFamily: "Poppins, sans-serif",
+                              minHeight: 110,
+                              WebkitTapHighlightColor: "transparent",
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 56,
+                                height: 56,
+                                borderRadius: 16,
+                                background: item.bg,
+                                display: "grid",
+                                placeItems: "center",
+                                flexShrink: 0,
+                                boxShadow: `0 6px 14px ${item.bg}33`,
+                              }}
+                            >
+                              <ItemIcon size={26} stroke={1.8} color="#FFFFFF" />
+                            </span>
+                            <span
+                              style={{
+                                fontSize: 12.5,
+                                fontWeight: 600,
+                                color: "#0B2341",
+                                textAlign: "center",
+                                lineHeight: 1.25,
+                              }}
+                            >
+                              {item.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{ padding: "6px 16px 4px" }}>
+              <button
+                type="button"
+                onClick={() => setQuickAddOpen(false)}
+                style={{
+                  width: "100%",
+                  height: 50,
+                  background: "#FFFFFF",
+                  border: "1px solid #E6EBF2",
+                  borderRadius: 12,
+                  color: "#0B2341",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
+
 
         <button
           type="button"
