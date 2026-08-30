@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -984,21 +984,24 @@ function PupilThreadPage() {
 
   return (
     <PageLayout
+      ref={pageRef}
       className="flex flex-col"
       style={{
         ...POPPINS,
-        height: "100dvh",
+        // Exactly the space left under the fixed app header (and above the
+        // bottom nav), so the body never scrolls and no navy band can appear
+        // between the app header and this screen's own header.
+        height: pageHeight ? `${pageHeight}px` : "100dvh",
         minHeight: 0,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
       }}
     >
-      {/* Header */}
+      {/* Header — in flow at the top of the fixed-height column */}
       <div
         style={{
-          position: "sticky",
-          top: 0,
+          position: "relative",
           zIndex: 60,
           background: tokens.navy,
         }}
