@@ -682,12 +682,33 @@ export function AddLessonSheet({
       subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
       onClose={onClose}
       footer={
-        <SaveButton
-          onClick={handleSave}
-          disabled={saving || !date || (!isEvent && !pupilId)}
-        >
-          {saving ? "Saving..." : editingLesson ? "Save changes" : "Add lesson"}
-        </SaveButton>
+        <>
+          <SaveButton
+            onClick={handleSave}
+            disabled={saving || !date || (!isEvent && !pupilId)}
+          >
+            {saving ? "Saving..." : editingLesson ? "Save changes" : "Add lesson"}
+          </SaveButton>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={saving}
+            style={{
+              width: "100%",
+              marginTop: 8,
+              height: 46,
+              background: "transparent",
+              border: "none",
+              color: "#6B7686",
+              fontSize: 15,
+              fontWeight: 600,
+              fontFamily: "Poppins, sans-serif",
+              cursor: "pointer",
+            }}
+          >
+            Cancel
+          </button>
+        </>
       }
     >
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
