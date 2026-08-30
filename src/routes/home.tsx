@@ -9936,6 +9936,7 @@ function HomePage() {
             setDetailsSheetForLesson(null);
             if (pupilId) {
               setUnifiedPayPupilId(pupilId);
+              setUnifiedPayInitialMethod(null);
               setUnifiedPayOpen(true);
             }
           }}
