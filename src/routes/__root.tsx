@@ -777,7 +777,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
         // No negative margin: the webview paints from y=0, so the safe-area
         // padding alone puts the navy behind the status bar while the header
         // still occupies its full height in flow (nothing hides underneath).
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 12px)",
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)",
         paddingLeft: "calc(env(safe-area-inset-left) + 16px)",
         paddingRight: "calc(env(safe-area-inset-right) + 16px)",
         paddingBottom: 10,
@@ -1054,7 +1054,9 @@ function RootComponent() {
 
   const showHeader = !hideNav;
 
-  const wrapperStyle: Record<string, string | number> = {};
+  const wrapperStyle: Record<string, string | number> = {
+    minHeight: "100vh",
+  };
   if (!showHeader) {
     // Sticky header already occupies its own space; only pad when it's absent.
     wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
