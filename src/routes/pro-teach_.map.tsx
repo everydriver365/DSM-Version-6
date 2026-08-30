@@ -52,7 +52,6 @@ type Point = { x: number; y: number };
 type Stroke = { points: Point[]; colour: string; width: number };
 
 function MapDrawPage() {
-  const navigate = useNavigate();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const wrapRef = React.useRef<HTMLDivElement | null>(null);
   const rootRef = React.useRef<HTMLDivElement | null>(null);
