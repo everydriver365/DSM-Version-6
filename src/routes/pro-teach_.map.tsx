@@ -252,7 +252,11 @@ function MapDrawPage() {
       return;
     }
     navigator.geolocation.getCurrentPosition(
-      (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      (pos) => {
+        const c = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setCoords(c);
+        setHomeCoords(c);
+      },
       () => setGeoError("Allow location access to load the map"),
       { enableHighAccuracy: true, timeout: 10000 },
     );
