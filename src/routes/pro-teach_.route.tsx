@@ -3,7 +3,7 @@ import * as React from "react";
 import { IconArrowLeft, IconMap, IconMessage, IconSend } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
-export const Route = createFileRoute("/pro-teach_/route")({
+export const Route = createFileRoute("/pro-teach_")({
   head: () => ({
     meta: [
       { title: "AI Route Planner — Every Driver Pro" },
