@@ -1332,7 +1332,7 @@ function MapDrawPage() {
             ...(activeTool === "ruler" ? toolPillActive : {}),
           }}
         >
-          <IconRuler size={18} color={activeTool === "ruler" ? "#2C97DE" : NAVY} />
+          <IconRuler2 size={18} color={activeTool === "ruler" ? "#2C97DE" : NAVY} />
         </button>
 
         <span style={{ flex: 1 }} />
