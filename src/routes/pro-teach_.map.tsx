@@ -358,18 +358,20 @@ function MapDrawPage() {
   };
 
   const addIcon = (x: number, y: number, category: "car" | "hazard", type: string) => {
-    setPlacedIcons((prev) => {
-      const next = [...prev, { id: Date.now().toString(), x, y, category, type, rotation: 0 }];
-      return next;
-    });
+    setPlacedIcons((prev) => [
+      ...prev,
+      { id: `${Date.now()}-${prev.length}`, x, y, category, type, rotation: 0 },
+    ]);
     if (!hasShownHintRef.current) {
       hasShownHintRef.current = true;
-      toast("Tap icon to select", { duration: 2000 });
+      // defer so the toast never competes with the placement frame
+      setTimeout(() => toast("Tap icon to select", { duration: 2000 }), 400);
     }
   };
 
   const findIconAt = (x: number, y: number) => {
-    return placedIcons.find((icon) => Math.abs(icon.x - x) < 30 && Math.abs(icon.y - y) < 30);
+    return placedIcons.find((icon) => Math.abs(icon.x - x) < 22 && Math.abs(icon.y - y) < 22);
+
   };
 
   const drawArrow = (startX: number, startY: number, endX: number, endY: number) => {
