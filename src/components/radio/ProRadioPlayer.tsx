@@ -80,12 +80,12 @@ function StationTile({
       role="button"
       tabIndex={0}
       onClick={() => {
-        if (!isLive) toast(toastText ?? ` coming soon`);
+        if (!isLive) toast(toastText ?? name + " coming soon");
         onToggle();
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
-          if (!isLive) toast(toastText ?? ` coming soon`);
+          if (!isLive) toast(toastText ?? name + " coming soon");
           onToggle();
         }
       }}
