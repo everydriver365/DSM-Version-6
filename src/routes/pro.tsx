@@ -156,7 +156,10 @@ function RadioCard() {
     setSelectedChip(name);
   };
 
-  const nowTitle = radio.nowPlaying?.title || "Groove Salad";
+  const station = radio.selectedStation || selectedChip;
+  const nowTitle = radio.isPlaying
+    ? radio.nowPlaying?.title || station
+    : station;
 
   return (
     <section style={{ ...POPPINS }}>
@@ -234,7 +237,7 @@ function RadioCard() {
               marginTop: 2,
             }}
           >
-            {radio.isPlaying ? "Now playing..." : "Tap play to listen"}
+            {radio.isPlaying ? `On ${station}` : "Tap play to listen"}
           </div>
         </div>
 
