@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IconBell,
-  IconBrandYoutube,
   IconChevronRight,
+  IconDeviceTv,
   IconGift,
   IconMessageCircle,
   IconPlayerPlay,
