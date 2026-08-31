@@ -1441,282 +1441,203 @@ function isLessonNow(
 }
 
 
-function ProTeaserTile() {
+function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [activeDot, setActiveDot] = useState(0);
 
-  const services = [
+  const tiles = [
     {
-      label: "PRO Radio",
-      sub: "Live & curated",
-      route: "/radio",
-      icon: IconRadio,
-      bg: "#EEF2FF",
-      iconColor: "#4F46E5",
-      badge: "LIVE",
-      badgeBg: "#FEE2E2",
-      badgeColor: "#DC2626",
-    },
-    {
-      label: "PRO TV",
-      sub: "Videos & guides",
+      label: "TV",
+      sub: "Guides, bitesize & exclusive videos",
       route: "/dsm-live",
       icon: IconDeviceTv,
-      bg: "#F5F0FF",
-      iconColor: "#7C3AED",
+      bg: "#E9F7EE",
+      color: "#22A45D",
+      live: true,
     },
     {
-      label: "PRO Learn",
-      sub: "Courses & CPD",
-      route: "/dsm-learn",
-      icon: IconSchool,
-      bg: "#ECFEFF",
-      iconColor: "#0891B2",
+      label: "Radio",
+      sub: "Live radio, podcasts & news",
+      route: "/radio",
+      icon: IconMicrophone,
+      bg: "#FDECEC",
+      color: "#E24B4B",
     },
     {
-      label: "PRO Perks",
-      sub: "Member offers",
-      route: "/perks",
-      icon: IconTag,
-      bg: "#FEFCE8",
-      iconColor: "#CA8A04",
-    },
-    {
-      label: "PRO Shop",
-      sub: "Products & deals",
+      label: "Shop",
+      sub: "Products, services & special offers",
       route: "/marketplace",
       icon: IconShoppingBag,
-      bg: "#FDF2F8",
-      iconColor: "#DB2777",
+      bg: "#E8F0FE",
+      color: "#1877D6",
+    },
+    {
+      label: "Perks",
+      sub: "Member benefits & discounts",
+      route: "/perks",
+      icon: IconGift,
+      bg: "#F1ECFD",
+      color: "#7C3AED",
     },
   ];
 
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    if (maxScroll <= 0) {
-      setActiveDot(0);
-      return;
-    }
-    const progress = Math.max(0, Math.min(1, el.scrollLeft / maxScroll));
-    const dot = Math.min(3, Math.floor(progress * 4));
-    setActiveDot(dot);
-  }, []);
+  const mini = [
+    { label: "PRO TV", icon: IconDeviceTv, color: "#22A45D" },
+    { label: "PRO Radio", icon: IconMicrophone, color: "#E24B4B" },
+    { label: "PRO Shop", icon: IconShoppingBag, color: "#1877D6" },
+    { label: "PRO Perks", icon: IconGift, color: "#7C3AED" },
+  ];
+
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 16,
+    border: "0.5px solid #E5E5EA",
+    boxShadow: "0 4px 0 #E4E4E8",
+  };
 
   return (
-    <div
-      onClick={() => go("/pro")}
-      style={{
-        background: "#fff",
-        borderRadius: 20,
-        border: "0.5px solid #E4E8EF",
-        overflow: "hidden",
-        cursor: "pointer",
-        fontFamily: "Poppins, sans-serif",
-        boxShadow: "0 4px 20px rgba(11,35,65,0.06)",
-      }}
-    >
-      {/* Hero */}
-      <div style={{ position: "relative", padding: "18px 16px 14px" }}>
-        <img
-          src={edp3dHero.url}
-          alt="Every Driver Pro"
-          width={120}
-          height={120}
-          loading="lazy"
-          style={{
-            position: "absolute",
-            top: 4,
-            right: -8,
-            width: 132,
-            height: 132,
-            objectFit: "contain",
-            pointerEvents: "none",
-          }}
-        />
-        <span
-          style={{
-            display: "inline-block",
-            background: "#7C3AED",
-            color: "#fff",
-            fontSize: 10,
-            fontWeight: 700,
-            padding: "3px 8px",
-            borderRadius: 6,
-            marginBottom: 10,
-          }}
-        >
-          PRO
+    <div style={{ fontFamily: "Poppins, sans-serif" }}>
+      {/* Section header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <div style={{ width: 3, height: 16, borderRadius: 2, background: "#1877D6" }} />
+        <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.6, color: "#1877D6" }}>
+          DISCOVER &amp; LEARN
         </span>
-        <h3
-          style={{
-            margin: 0,
-            fontSize: 19,
-            lineHeight: 1.2,
-            fontWeight: 700,
-            color: "#0B2341",
-            maxWidth: "calc(100% - 116px)",
-          }}
-        >
-          Unlock more with
-          <br />
-          EVERY DRIVER <span style={{ color: "#7C3AED" }}>PRO</span>
-        </h3>
-        <p
-          style={{
-            margin: "8px 0 0",
-            fontSize: 12,
-            lineHeight: 1.45,
-            color: "#536579",
-            maxWidth: "calc(100% - 116px)",
-          }}
-        >
-          Premium training, expert tools and member perks – all in one place.
-        </p>
-        <button
-          type="button"
-          onClick={(e) => { e.stopPropagation(); go("/pro"); }}
-          style={{
-            marginTop: 12,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: "#7C3AED",
-            color: "#fff",
-            border: "none",
-            borderRadius: 999,
-            padding: "8px 16px",
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Explore PRO <IconArrowRight size={14} stroke={2.5} />
-        </button>
       </div>
 
-      {/* Swipeable service tiles */}
+      {/* Main explore card */}
       <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        style={{
-          display: "flex",
-          gap: 10,
-          overflowX: "auto",
-          overflowY: "hidden",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-          padding: "0 16px 12px",
-        }}
+        onClick={() => go("/pro")}
+        style={{ ...cardStyle, padding: 16, cursor: "pointer", marginBottom: 12 }}
       >
-        {services.map((s) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <img
+            src={proLogo.url}
+            alt="EDP PRO"
+            width={64}
+            height={64}
+            loading="lazy"
+            style={{ width: 64, height: 64, objectFit: "contain", flexShrink: 0 }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.15 }}>
+                  Explore
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.15 }}>
+                  <span style={{ color: "#1877D6" }}>EDP </span>
+                  <span style={{ color: "#22A6A0" }}>PRO</span>
+                </div>
+              </div>
+              <IconArrowRight size={22} stroke={2} color="#1877D6" />
+            </div>
+            <div style={{ fontSize: 12, color: "#5A6B80", marginTop: 6, lineHeight: 1.4 }}>
+              Your hub for exclusive TV, Radio, Shop &amp; member perks.
+            </div>
+          </div>
+        </div>
+
+        <div style={{ height: 1, background: "#E5E5EA", margin: "14px 0 12px" }} />
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
+          {mini.map((m, i) => (
+            <div
+              key={m.label}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 6,
+                borderRight: i < mini.length - 1 ? "1px solid #EFEFF3" : "none",
+              }}
+            >
+              <m.icon size={24} stroke={1.7} color={m.color} />
+              <span style={{ fontSize: 10, fontWeight: 500, color: "#0B1F3A" }}>{m.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onExploreSwipe) onExploreSwipe();
+            else go("/pro");
+          }}
+          style={{
+            marginTop: 14,
+            background: "#F3EFFD",
+            borderRadius: 12,
+            padding: "12px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#5B3FD6" }}>
+            Swipe left for more content
+          </span>
+          <IconArrowRight size={18} stroke={2} color="#5B3FD6" />
+        </div>
+      </div>
+
+      {/* 2x2 feature grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        {tiles.map((t) => (
           <div
-            key={s.label}
-            onClick={(e) => { e.stopPropagation(); go(s.route); }}
-            style={{
-              flex: "0 0 auto",
-              width: 104,
-              scrollSnapAlign: "start",
-              cursor: "pointer",
-            }}
+            key={t.label}
+            onClick={() => go(t.route)}
+            style={{ ...cardStyle, padding: 14, cursor: "pointer", position: "relative", overflow: "hidden" }}
           >
+            {t.live && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#22A45D",
+                }}
+              />
+            )}
             <div
               style={{
-                position: "relative",
-                height: 76,
-                borderRadius: 16,
-                background: s.bg,
+                width: 46,
+                height: 46,
+                borderRadius: 12,
+                background: t.bg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 8,
+                marginBottom: 12,
               }}
             >
-              {s.badge && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 6,
-                    right: 6,
-                    fontSize: 8,
-                    fontWeight: 700,
-                    color: s.badgeColor,
-                    background: s.badgeBg,
-                    padding: "2px 5px",
-                    borderRadius: 4,
-                  }}
-                >
-                  {s.badge}
-                </span>
-              )}
-              <s.icon size={28} color={s.iconColor} stroke={1.8} />
+              <t.icon size={24} stroke={1.7} color={t.color} />
             </div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#0B2341" }}>{s.label}</div>
-            <div style={{ fontSize: 10, color: "#6B7686", marginTop: 1 }}>{s.sub}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <img
+                src={proLogo.url}
+                alt=""
+                width={26}
+                height={16}
+                loading="lazy"
+                style={{ width: 26, height: 16, objectFit: "contain" }}
+              />
+              <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A" }}>{t.label}</span>
+            </div>
+            <div style={{ fontSize: 11, color: "#5A6B80", marginTop: 4, lineHeight: 1.35 }}>
+              {t.sub}
+            </div>
           </div>
-        ))}
-      </div>
-
-      {/* Bottom promo row */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 16px",
-          borderTop: "0.5px solid #F4F6F8",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <IconStar size={14} fill="#7C3AED" color="#7C3AED" />
-          <span style={{ fontSize: 11, color: "#0B2341" }}>
-            More value. More knowledge. More{" "}
-            <span style={{ color: "#7C3AED", fontWeight: 700 }}>PRO</span>.
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
-            fontSize: 10,
-            color: "#6B7686",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Swipe for more <IconArrowRight size={12} stroke={2} />
-        </div>
-      </div>
-
-      {/* Pagination dots */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 5,
-          padding: "0 0 12px",
-        }}
-      >
-        {[0, 1, 2, 3].map((i) => (
-          <div
-            key={i}
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: i === activeDot ? "#7C3AED" : "#E4E8EF",
-              transition: "background 0.2s ease",
-            }}
-          />
         ))}
       </div>
     </div>
   );
 }
+
 
 
 function HomePage() {
