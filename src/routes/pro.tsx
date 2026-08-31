@@ -928,7 +928,7 @@ function ProPage() {
           sbGet<
             ShopListing[]
           >(
-            "marketplace_listings?is_featured=eq.true&is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,marketplace_suppliers(name,logo_url,is_verified)&limit=6"
+            "marketplace_listings?is_active=eq.true&deleted_at=is.null&order=created_at.desc&select=id,title,price_display,image_urls,marketplace_suppliers(name,logo_url,is_verified)&limit=10"
           ),
         ]);
 
