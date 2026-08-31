@@ -933,7 +933,7 @@ function SettingsPage() {
           <MenuRow
             icon={<IconShoppingBag size={18} color="#2C97DE" />}
             iconBg="#EAF5FC"
-            label="Marketplace listing"
+            label="PRO Shop listing"
             subLabel="How you appear in EveryDriver search"
             onClick={() => navigate({ to: "/marketplace/edit" as never })}
           />

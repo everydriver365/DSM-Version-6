@@ -19,7 +19,7 @@ const POPPINS = "Poppins, sans-serif";
 export const Route = createFileRoute("/marketplace")({
   head: () => ({
     meta: [
-      { title: "EDP Marketplace" },
+      { title: "EDP PRO Shop" },
       {
         name: "description",
         content:
@@ -231,7 +231,7 @@ function MarketplacePage() {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId: id } as never });
 
   return (
-    <DSMTopSheet title="Marketplace">
+    <DSMTopSheet title="PRO Shop">
       <div {...pullToRefreshProps} style={{ fontFamily: POPPINS }}>
 
       <div style={{ padding: "16px 0 8px" }}>
@@ -341,7 +341,7 @@ function MarketplacePage() {
           }}
         >
           <h2 style={{ margin: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, fontFamily: POPPINS }}>
-            Top marketplace
+            Top PRO Shop
           </h2>
           <button
             type="button"
@@ -379,7 +379,7 @@ function MarketplacePage() {
           <EmptyState
             icon={IconShoppingBag}
             title="Nothing here yet"
-            subtitle="Marketplace listings will appear here."
+            subtitle="PRO Shop listings will appear here."
           />
         ) : (
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -547,7 +547,7 @@ function FeaturedCard({
             marginBottom: 8,
           }}
         >
-          {cat?.name || "Marketplace"}
+          {cat?.name || "PRO Shop"}
         </span>
         <div
           style={{
@@ -656,7 +656,7 @@ function ProductCard({
             whiteSpace: "nowrap",
           }}
         >
-          {cat?.name || "Marketplace"}
+          {cat?.name || "PRO Shop"}
         </span>
         <div
           style={{

@@ -1122,7 +1122,7 @@ function CourseDetailPage() {
                     />
                   </div>
                   <ToggleRow
-                    label="Publish to marketplace"
+                    label="Publish to PRO Shop"
                     value={form.publish_marketplace}
                     onChange={(v) => setForm({ ...form, publish_marketplace: v })}
                   />

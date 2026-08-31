@@ -4962,7 +4962,7 @@ function HomePage() {
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
     { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Outstanding", route: "/outstanding" },
-    { icon: <IconPlayerPlay size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "TV", route: "/learn" },
+    { icon: <IconSparkles size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "PRO", route: "/pro" },
 
   ] as const;
 

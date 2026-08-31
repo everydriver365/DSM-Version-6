@@ -261,7 +261,7 @@ function getNotificationAction(
     };
   }
 
-  // DSM Live — "The Waiting Room starts in 30 minutes"
+  // PRO TV — "The Waiting Room starts in 30 minutes"
   if (type === "live_starting_soon") {
     return {
       isDSMLive: true,

@@ -230,7 +230,7 @@ function MarketplaceListPage() {
               cursor: "pointer",
             }}
           >
-            Back to marketplace
+            Back to PRO Shop
           </button>
         </div>
       </div>

@@ -627,7 +627,7 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
           cursor: "pointer",
         }}
       >
-        Back to marketplace
+        Back to PRO Shop
       </button>
       <style>{`@keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }`}</style>
     </div>
@@ -651,7 +651,7 @@ function ExistingStatus({
         border="#FCD34D"
         title="Application under review"
         body="We've received your application and will get back to you within 2 business days."
-        actionLabel="Back to marketplace"
+        actionLabel="Back to PRO Shop"
         onAction={onBack}
       />
     );
@@ -664,7 +664,7 @@ function ExistingStatus({
         border="#86EFAC"
         title="You're featured! ✓"
         body={app.featured_until ? `Featured until ${new Date(app.featured_until).toLocaleDateString()}` : "Your featured listing is live on EveryDriver."}
-        actionLabel="Back to marketplace"
+        actionLabel="Back to PRO Shop"
         onAction={onBack}
       />
     );

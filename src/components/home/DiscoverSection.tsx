@@ -487,7 +487,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     imageUrl: listing.imageUrl,
     badge: "FOR SALE",
     badgeColor: "#2C97DE",
-    footer: "EDP Marketplace",
+    footer: "EDP PRO Shop",
     Icon: categoryIcon(listing.category),
     onOpen: () =>
       navigate({
@@ -506,7 +506,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     imageUrl: null,
     badge: "FOR SALE",
     badgeColor: "#2C97DE",
-    footer: "EDP Marketplace",
+    footer: "EDP PRO Shop",
     Icon: categoryIcon(null),
     onOpen: () => navigate({ to: "/marketplace" as never }),
   };

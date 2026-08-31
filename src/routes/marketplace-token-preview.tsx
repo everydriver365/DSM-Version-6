@@ -9,17 +9,17 @@ export const Route = createFileRoute("/marketplace-token-preview")({
   component: MarketplaceTokenPreview,
   head: () => ({
     meta: [
-      { title: "Marketplace Promo Token Preview | EDP" },
+      { title: "PRO Shop Promo Token Preview | EDP" },
       {
         name: "description",
         content:
-          "Preview of the EDP marketplace promotional banner token before it goes live in the Discover feed.",
+          "Preview of the EDP PRO Shop promotional banner token before it goes live in the Discover feed.",
       },
-      { property: "og:title", content: "Marketplace Promo Token Preview | EDP" },
+      { property: "og:title", content: "PRO Shop Promo Token Preview | EDP" },
       {
         property: "og:description",
         content:
-          "Preview of the EDP marketplace promotional banner token before it goes live in the Discover feed.",
+          "Preview of the EDP PRO Shop promotional banner token before it goes live in the Discover feed.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -77,7 +77,7 @@ function MarketplaceTokenPreview() {
           margin: "8px 0 4px",
         }}
       >
-        Marketplace promo token
+        PRO Shop promo token
       </h1>
       <p style={{ fontSize: tokens.fontSize.base, color: "#64748B", margin: "0 0 16px" }}>
         Mock-up only — not wired into Discover yet.

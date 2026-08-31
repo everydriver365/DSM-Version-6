@@ -45,7 +45,7 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
     items: [
       {
         icon: IconShoppingBag,
-        title: "Marketplace",
+        title: "PRO Shop",
         description: "Sell courses, resources and services to other ADIs.",
         route: "/marketplace",
       },
