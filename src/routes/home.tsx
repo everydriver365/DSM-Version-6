@@ -16,7 +16,7 @@ import { toast } from "@/lib/toast";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
-import edpProLogo from "@/assets/ed-pro-logo-app.png.asset.json";
+
 import availabilityIcon from "@/assets/availability-icon.png.asset.json";
 import fuelIcon from "@/assets/fuel-icon.png.asset.json";
 import paymentsIcon from "@/assets/payments-icon.png.asset.json";
