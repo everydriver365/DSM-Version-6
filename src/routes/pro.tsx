@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IconBell,
-  IconBrandYoutube,
   IconChevronRight,
+  IconDeviceTv,
   IconGift,
   IconMessageCircle,
   IconPlayerPlay,
@@ -327,13 +327,14 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
   const v = video ?? {
     id: "mock",
     title: "How to pass your standards check",
+    description: "A step-by-step guide to help you prepare, stay calm and pass with confidence.",
     duration_seconds: 1080,
     categories: ["Training"],
   } as LearnVideo;
 
   const thumb = videoThumbnail(v) || proImage.url;
-  const duration = formatVideoDuration(v);
-  const category = (v.categories?.[0] || v.source || "PRO TV").toUpperCase();
+  const duration = formatVideoDuration(v) || "18 min";
+  const category = sentenceCase(v.categories?.[0] || v.source || "PRO TV");
 
   return (
     <section style={{ ...POPPINS }}>
@@ -345,118 +346,155 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
           overflow: "hidden",
           cursor: "pointer",
           position: "relative",
+          padding: 16,
         }}
       >
+        {/* Header */}
         <div
           style={{
-            height: 170,
-            background: thumb
-              ? `linear-gradient(rgba(11,31,58,0.35), rgba(11,31,58,0.55)), url(${thumb}) center/cover`
-              : "linear-gradient(135deg, #0B2341, #1a3a6b)",
-            position: "relative",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            marginBottom: 14,
           }}
         >
           <div
             style={{
-              position: "absolute",
-              top: 12,
-              left: 12,
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              color: "rgba(255,255,255,0.85)",
-              fontSize: 12,
-              fontWeight: 600,
+              gap: 8,
+              color: "#fff",
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: -0.2,
             }}
           >
-            <IconBrandYoutube size={16} stroke={1.8} />
+            <IconDeviceTv size={22} stroke={1.8} />
             PRO TV
           </div>
 
           <span
             style={{
-              position: "absolute",
-              top: 12,
-              right: 12,
               background: BLUE,
               color: "#fff",
-              fontSize: 9,
+              fontSize: 10,
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: 0.4,
-              padding: "3px 7px",
-              borderRadius: 4,
+              padding: "4px 8px",
+              borderRadius: 999,
             }}
           >
             NEW
           </span>
+        </div>
 
+        {/* Body */}
+        <div style={{ display: "flex", gap: 14, alignItems: "stretch" }}>
+          {/* Thumbnail */}
           <div
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.18)",
-              border: "2px solid rgba(255,255,255,0.35)",
+              position: "relative",
+              width: "48%",
+              minWidth: 140,
+              aspectRatio: "16 / 10",
+              borderRadius: 12,
+              overflow: "hidden",
+              background: thumb ? `url(${thumb}) center/cover` : "linear-gradient(135deg, #0B2341, #1a3a6b)",
+              flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlay size={22} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
-          </div>
-
-          <span
-            style={{
-              position: "absolute",
-              bottom: 12,
-              right: 12,
-              background: "rgba(0,0,0,0.55)",
-              color: "#fff",
-              fontSize: 11,
-              fontWeight: 600,
-              padding: "3px 7px",
-              borderRadius: 4,
-            }}
-          >
-            {duration || "18 min"}
-          </span>
-        </div>
-
-        <div
-          style={{
-            background: "#fff",
-            padding: "14px 16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 15,
-                fontWeight: 600,
-                color: NAVY,
-                lineHeight: 1.3,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                position: "absolute",
+                inset: 0,
+                background: "rgba(11,31,58,0.22)",
+              }}
+            />
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.22)",
+                border: "2px solid rgba(255,255,255,0.45)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              <IconPlayerPlay size={18} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
+            </div>
+          </div>
+
+          {/* Info */}
+          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+            <h3
+              style={{
+                margin: 0,
+                color: "#fff",
+                fontSize: 17,
+                fontWeight: 700,
+                lineHeight: 1.25,
+                letterSpacing: -0.2,
               }}
             >
               {v.title}
+            </h3>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                color: "rgba(255,255,255,0.65)",
+                fontSize: 13,
+                fontWeight: 500,
+                marginTop: 6,
+              }}
+            >
+              <span>{category}</span>
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: "rgba(255,255,255,0.5)" }} />
+              <span>{duration}</span>
             </div>
-            <div style={{ fontSize: 12, color: TEXT_SECONDARY, marginTop: 3 }}>
-              {category} · {duration || "18 mins"}
+
+            <p
+              style={{
+                margin: "10px 0 0",
+                color: "rgba(255,255,255,0.75)",
+                fontSize: 13,
+                lineHeight: 1.45,
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {v.description || "A step-by-step guide to help you prepare, stay calm and pass with confidence."}
+            </p>
+
+            <div style={{ flex: 1 }} />
+
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+              <span
+                style={{
+                  background: "rgba(255,255,255,0.14)",
+                  color: "#fff",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: "5px 10px",
+                  borderRadius: 999,
+                }}
+              >
+                {duration}
+              </span>
             </div>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: BLUE, flexShrink: 0 }}>
-            More <IconChevronRight size={14} stroke={2} style={{ verticalAlign: "middle" }} />
-          </span>
         </div>
       </div>
     </section>
