@@ -5457,11 +5457,26 @@ function HomePage() {
           display: "flex",
           width: "200vw",
           height: "100%",
-          transition: "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          transform: activePage === 0 ? "translateX(0)" : "translateX(-100vw)",
-          willChange: "transform",
+          position: "relative",
+          transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          left: activePage === 0 ? 0 : "-100vw",
+          willChange: "left",
         }}
         onTouchStart={(e) => {
+          // Ignore swipes that start inside a nested horizontal scroller (e.g. quick-access pager)
+          let node = e.target as HTMLElement | null;
+          while (node && node !== e.currentTarget) {
+            if (node.scrollWidth > node.clientWidth + 1) {
+              const ox = window.getComputedStyle(node).overflowX;
+              if (ox === "auto" || ox === "scroll") {
+                swipeDisabled.current = true;
+                isDragging.current = false;
+                return;
+              }
+            }
+            node = node.parentElement;
+          }
+          swipeDisabled.current = false;
           touchStartX.current = e.touches[0]?.clientX ?? 0;
           touchStartY.current = e.touches[0]?.clientY ?? 0;
           touchStartTime.current = Date.now();
