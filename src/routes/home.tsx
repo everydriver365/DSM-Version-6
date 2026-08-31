@@ -1884,6 +1884,14 @@ function DiscoverAndLearnPromo() {
 function HomePage() {
   const navigate = useNavigate();
 
+  // Full-screen HOME ↔ PRO swipe state
+  const [activePage, setActivePage] = useState(0);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
+  const isDragging = useRef(false);
+
+
   // Universal search bottom sheet
   const [universalSearchOpen, setUniversalSearchOpen] = useState(false);
   useEffect(() => {
