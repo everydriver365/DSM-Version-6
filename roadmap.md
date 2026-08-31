@@ -1,5 +1,9 @@
 # Task Roadmap
 
+- [ ] Redesign pupil selection and messaging flow in gaps.tsx
+  - [ ] Tap-to-select ranked pupil rows with blue checkmark / empty circle
+  - [ ] Preview card below pupil list with message editor and send buttons
+  - [ ] Keep ranked pupil list visible after sending (do not setRanked(null))
 - [x] Add PRO Xmas station tile to ProRadioPlayer and radio page
 - [x] Close home pill menu automatically when any pill onClick navigates away
 - [x] Remove PRO Talk radio tile
