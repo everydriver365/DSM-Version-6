@@ -1538,25 +1538,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           </div>
         </div>
 
-        <div style={{ height: 1, background: "#E5E5EA", margin: "14px 0 12px" }} />
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
-          {mini.map((m, i) => (
-            <div
-              key={m.label}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-                borderRight: i < mini.length - 1 ? "1px solid #EFEFF3" : "none",
-              }}
-            >
-              <m.icon size={24} stroke={1.7} color={m.color} />
-              <span style={{ fontSize: 10, fontWeight: 500, color: "#0B1F3A" }}>{m.label}</span>
-            </div>
-          ))}
-        </div>
 
         <div
           onClick={(e) => {
