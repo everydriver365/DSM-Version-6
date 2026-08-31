@@ -331,7 +331,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
     categories: ["Training"],
   } as LearnVideo;
 
-  const thumb = video ? videoThumbnail(video) : null;
+  const thumb = videoThumbnail(v) || proImage.url;
   const duration = formatVideoDuration(v);
   const category = (v.categories?.[0] || v.source || "PRO TV").toUpperCase();
 
