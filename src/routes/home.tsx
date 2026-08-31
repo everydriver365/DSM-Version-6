@@ -10911,14 +10911,107 @@ function HomePage() {
         </div>
       )}
 
-    </PageLayout>
+          </PageLayout>
+        </div>
+        <div
+          style={{
+            width: "100vw",
+            height: "100%",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            flexShrink: 0,
+          }}
+        >
+          <ProPage />
+        </div>
+      </div>
 
+      {/* TODAY / PRO pill tabs */}
+      <div
+        style={{
+          position: "fixed",
+          top: "calc(env(safe-area-inset-top) + 8px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 100,
+          display: "flex",
+          gap: 6,
+          background: "rgba(11,35,65,0.6)",
+          borderRadius: 20,
+          padding: 3,
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setActivePage(0)}
+          style={{
+            padding: "5px 16px",
+            borderRadius: 18,
+            fontSize: 11,
+            fontWeight: 700,
+            border: "none",
+            background: activePage === 0 ? "#fff" : "transparent",
+            color: activePage === 0 ? "#0B2341" : "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+          }}
+        >
+          TODAY
+        </button>
+        <button
+          type="button"
+          onClick={() => setActivePage(1)}
+          style={{
+            padding: "5px 16px",
+            borderRadius: 18,
+            fontSize: 11,
+            fontWeight: 700,
+            border: "none",
+            background: activePage === 1 ? "#fff" : "transparent",
+            color: activePage === 1 ? "#0B2341" : "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+          }}
+        >
+          PRO
+        </button>
+      </div>
 
+      {/* Page dots */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "calc(env(safe-area-inset-bottom) + 80px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 6,
+          zIndex: 100,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            width: activePage === 0 ? 20 : 8,
+            height: 4,
+            borderRadius: 2,
+            background: activePage === 0 ? "#0B2341" : "rgba(11,35,65,0.2)",
+          }}
+        />
+        <div
+          style={{
+            width: activePage === 1 ? 20 : 8,
+            height: 4,
+            borderRadius: 2,
+            background: activePage === 1 ? "#0B2341" : "rgba(11,35,65,0.2)",
+          }}
+        />
+      </div>
+    </div>
   );
 
 
 
 }
+
 
 function HeroExpandedPanel({
   lesson,
