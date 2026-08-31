@@ -16,6 +16,7 @@ import { toast } from "@/lib/toast";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
+import edpProLogo from "@/assets/ed-pro-logo-app.png.asset.json";
 import availabilityIcon from "@/assets/availability-icon.png.asset.json";
 import fuelIcon from "@/assets/fuel-icon.png.asset.json";
 import paymentsIcon from "@/assets/payments-icon.png.asset.json";
@@ -31,7 +32,7 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
-import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
+
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
@@ -43,7 +44,7 @@ import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconCards, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconRoute, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconCards, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDeviceTv, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHandFinger, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconRoute, IconSchool, IconSearch, IconSend, IconSettings, IconShoppingBag, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -1560,6 +1561,128 @@ function ProRadioHomeCard() {
           </button>
 
           <IconChevronRight size={18} color="#C7CDD9" stroke={1.5} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DiscoverAndLearnPromo() {
+  const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || el.clientWidth === 0) return;
+    const next = Math.round(el.scrollLeft / el.clientWidth);
+    if (next !== activeIndex && next >= 0 && next <= 1) {
+      setActiveIndex(next);
+    }
+  }, [activeIndex]);
+
+  const tileBase: React.CSSProperties = {
+    flex: "0 0 100%",
+    width: "100%",
+    minWidth: "100%",
+    scrollSnapAlign: "start",
+    borderRadius: 16,
+    overflow: "hidden",
+    cursor: "pointer",
+  };
+
+  return (
+    <div style={{ fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ ...SECTION_HEADER_STYLE, marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+          <span style={SECTION_TITLE_TEXT_STYLE}>Discover & Learn</span>
+        </div>
+      </div>
+
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        {/* Page 1 */}
+        <div
+          onClick={() => navigate({ to: "/pro" as never })}
+          style={{
+            ...tileBase,
+            background: "#FFFFFF",
+            border: "0.5px solid #E4E8EF",
+            boxShadow: "0 4px 20px rgba(11,35,65,0.08)",
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <img
+              src={edpProLogo.url}
+              alt="EDP PRO"
+              style={{ width: 60, height: 60, objectFit: "contain" }}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#0B2341", lineHeight: 1.2 }}>
+                Explore EDP PRO →
+              </div>
+              <div style={{ fontSize: 12, color: "#536579", marginTop: 4, lineHeight: 1.4 }}>
+                Your hub for exclusive TV, Radio, Shop & member perks.
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#EAF5FC", color: "#2C97DE" }}>
+                  <IconDeviceTv size={12} stroke={2} /> PRO TV
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#FEE2E2", color: "#E53935" }}>
+                  <IconRadio size={12} stroke={2} /> PRO Radio
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#FEF3C7", color: "#F59E0B" }}>
+                  <IconShoppingBag size={12} stroke={2} /> PRO Shop
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#F0EBFF", color: "#7B61FF" }}>
+                  <IconGift size={12} stroke={2} /> PRO Perks
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto", paddingTop: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <IconHandFinger size={14} color="#D1D5DB" />
+              <span style={{ fontSize: 11, color: "#D1D5DB" }}>Swipe for PRO →</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ width: activeIndex === 0 ? 16 : 6, height: 4, borderRadius: 2, background: activeIndex === 0 ? "#0B2341" : "#D1D5DB", transition: "width 0.2s ease" }} />
+              <span style={{ width: activeIndex === 1 ? 16 : 6, height: 4, borderRadius: 2, background: activeIndex === 1 ? "#0B2341" : "#D1D5DB", transition: "width 0.2s ease" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Page 2 */}
+        <div
+          style={{
+            ...tileBase,
+            background: "#F4F6F8",
+            border: "0.5px solid #E4E8EF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <IconSparkles size={32} color="#D1D5DB" />
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#D1D5DB" }}>EDP PRO</div>
+          <div style={{ fontSize: 12, color: "#D1D5DB" }}>Coming soon</div>
         </div>
       </div>
     </div>
@@ -9654,7 +9777,7 @@ function HomePage() {
 
             {/* ===== DISCOVER SECTION ===== */}
             <div style={SECTION_WRAPPER_STYLE}>
-              <DiscoverGrid />
+              <DiscoverAndLearnPromo />
             </div>
 
             {/* ===== PRO RADIO CARD ===== */}
