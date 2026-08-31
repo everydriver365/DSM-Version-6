@@ -562,7 +562,7 @@ function ProPage() {
         <button
           type="button"
           aria-label="Go back"
-          onClick={() => navigate({ from: "/pro", to: ".." })}
+          onClick={() => navigate({ to: "/home" as never })}
           style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex" }}
         >
           <IconArrowLeft size={22} color="#fff" stroke={2} />
