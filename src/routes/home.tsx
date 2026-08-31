@@ -5743,7 +5743,53 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: GLOBAL_HEADER_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <div style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          width: "200vw",
+          height: "100%",
+          transition: "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          transform: activePage === 0 ? "translateX(0)" : "translateX(-100vw)",
+          willChange: "transform",
+        }}
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0]?.clientX ?? 0;
+          touchStartY.current = e.touches[0]?.clientY ?? 0;
+          touchStartTime.current = Date.now();
+          isDragging.current = false;
+        }}
+        onTouchMove={(e) => {
+          const dx = (e.touches[0]?.clientX ?? 0) - touchStartX.current;
+          const dy = (e.touches[0]?.clientY ?? 0) - touchStartY.current;
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+            isDragging.current = true;
+          }
+        }}
+        onTouchEnd={(e) => {
+          if (!isDragging.current) return;
+          const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
+          const dt = Date.now() - touchStartTime.current;
+          const threshold = dt < 300 ? 30 : 80;
+          if (dx < -threshold && activePage === 0) {
+            setActivePage(1);
+          } else if (dx > threshold && activePage === 1) {
+            setActivePage(0);
+          }
+          isDragging.current = false;
+        }}
+      >
+        <div
+          style={{
+            width: "100vw",
+            height: "100%",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            flexShrink: 0,
+          }}
+        >
+          <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: GLOBAL_HEADER_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
