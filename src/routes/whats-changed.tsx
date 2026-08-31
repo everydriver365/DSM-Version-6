@@ -395,7 +395,7 @@ function WhatsChangedPage() {
             id: String(r.id),
             kind: "marketplace" as const,
             title: r.title || "Listing",
-            subtitle: r.price_display ? String(r.price_display) : "Marketplace",
+            subtitle: r.price_display ? String(r.price_display) : "PRO Shop",
             raw: r,
           })),
         },

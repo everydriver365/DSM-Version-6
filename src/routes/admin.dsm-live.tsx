@@ -580,7 +580,7 @@ function AdminDsmLive() {
   if (status === "denied") return null;
 
   return (
-    <DSMTopSheet title="DSM Live Admin">
+    <DSMTopSheet title="PRO TV Admin">
       <div style={{ background: "#F4F6FA", minHeight: "100vh", paddingBottom: 40, ...POPPINS }}>
       {/* Action row */}
       <div
