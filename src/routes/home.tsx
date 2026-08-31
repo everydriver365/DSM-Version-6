@@ -6833,11 +6833,6 @@ function HomePage() {
 
 
 
-            {/* ============ PRO TEASER / DISCOVER ============ */}
-            <div style={SECTION_WRAPPER_STYLE}>
-              <ProTeaserTile />
-            </div>
-
             {/* 3. TIMELINE with TABS */}
             <div style={SECTION_WRAPPER_STYLE}>
               <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
