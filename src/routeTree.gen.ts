@@ -46,6 +46,7 @@ import { Route as QuickavailabilityRouteImport } from './routes/quickavailabilit
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProTeachRouteImport } from './routes/pro-teach'
+import { Route as ProRouteImport } from './routes/pro'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PostcodeRatesRouteImport } from './routes/postcode-rates'
 import { Route as PipelineRouteImport } from './routes/pipeline'
@@ -367,6 +368,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const ProTeachRoute = ProTeachRouteImport.update({
   id: '/pro-teach',
   path: '/pro-teach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProRoute = ProRouteImport.update({
+  id: '/pro',
+  path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -1132,6 +1138,7 @@ export interface FileRoutesByFullPath {
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
+  '/pro': typeof ProRoute
   '/pro-teach': typeof ProTeachRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
@@ -1306,6 +1313,7 @@ export interface FileRoutesByTo {
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
+  '/pro': typeof ProRoute
   '/pro-teach': typeof ProTeachRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
@@ -1482,6 +1490,7 @@ export interface FileRoutesById {
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
+  '/pro': typeof ProRoute
   '/pro-teach': typeof ProTeachRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
@@ -1660,6 +1669,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
+    | '/pro'
     | '/pro-teach'
     | '/profile'
     | '/quickaccess'
@@ -1834,6 +1844,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
+    | '/pro'
     | '/pro-teach'
     | '/profile'
     | '/quickaccess'
@@ -2009,6 +2020,7 @@ export interface FileRouteTypes {
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
+    | '/pro'
     | '/pro-teach'
     | '/profile'
     | '/quickaccess'
@@ -2186,6 +2198,7 @@ export interface RootRouteChildren {
   PipelineRoute: typeof PipelineRoute
   PostcodeRatesRoute: typeof PostcodeRatesRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProRoute: typeof ProRoute
   ProTeachRoute: typeof ProTeachRoute
   ProfileRoute: typeof ProfileRoute
   QuickaccessRoute: typeof QuickaccessRoute
@@ -2532,6 +2545,13 @@ declare module '@tanstack/react-router' {
       path: '/pro-teach'
       fullPath: '/pro-teach'
       preLoaderRoute: typeof ProTeachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro': {
+      id: '/pro'
+      path: '/pro'
+      fullPath: '/pro'
+      preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -3643,6 +3663,7 @@ const rootRouteChildren: RootRouteChildren = {
   PipelineRoute: PipelineRoute,
   PostcodeRatesRoute: PostcodeRatesRoute,
   PrivacyRoute: PrivacyRoute,
+  ProRoute: ProRoute,
   ProTeachRoute: ProTeachRoute,
   ProfileRoute: ProfileRoute,
   QuickaccessRoute: QuickaccessRoute,
