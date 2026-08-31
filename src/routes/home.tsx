@@ -5501,23 +5501,14 @@ function HomePage() {
           data-workspace="today"
           data-ws-index={0}
           style={{
-            minWidth: '100vw',
-            width: '100vw',
-            maxWidth: '100vw',
-            height: '100%',
-            scrollSnapAlign: 'start',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            flexShrink: 0,
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
             background: PAGE_BACKGROUND,
-            WebkitOverflowScrolling: 'touch',
-            touchAction: 'pan-y',
-            overscrollBehaviorX: 'none',
-            // Outer fixed container already reserves 60px + safe-area for the
-            // bottom nav, so only a small breathing gap is needed here.
             paddingBottom: 24,
           }}
         >
+
       {/* ============ NAVY HEADER BLOCK ============ */}
       <div
         style={{
