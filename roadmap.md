@@ -15,3 +15,4 @@
   - [ ] Tap-to-select ranked pupil rows with blue checkmark / empty circle
   - [ ] Preview card below pupil list with message editor and send buttons
   - [ ] Keep ranked pupil list visible after sending (do not setRanked(null))
+- [ ] Put “Explore EDP PRO” teaser title on one line
