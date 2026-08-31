@@ -32,17 +32,17 @@ const SUPABASE_ANON_KEY =
 export const Route = createFileRoute("/marketplace_/$listingId")({
   head: () => ({
     meta: [
-      { title: "Marketplace listing — Driving School Manager" },
+      { title: "PRO Shop listing — Driving School Manager" },
       {
         name: "description",
         content:
-          "Supplier details, pricing and instructor offers from the Driving School Manager marketplace.",
+          "Supplier details, pricing and instructor offers from the Driving School Manager PRO Shop.",
       },
-      { property: "og:title", content: "Marketplace listing — Driving School Manager" },
+      { property: "og:title", content: "PRO Shop listing — Driving School Manager" },
       {
         property: "og:description",
         content:
-          "Supplier details, pricing and instructor offers from the Driving School Manager marketplace.",
+          "Supplier details, pricing and instructor offers from the Driving School Manager PRO Shop.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -358,7 +358,7 @@ function ListingDetailPage() {
               cursor: "pointer",
             }}
           >
-            Back to marketplace
+            Back to PRO Shop
           </button>
         </div>
       ) : (
@@ -1384,7 +1384,7 @@ function EnquirySheet({
         tasks.push(
           Promise.resolve(notifyInstructors({
             instructor_id: listing.instructor_id,
-            title: "New marketplace enquiry 📬",
+            title: "New PRO Shop enquiry 📬",
             body: `Someone enquired about your listing: '${listing.title}'`,
             type: "marketplace_enquiry",
             read: false,
@@ -1411,7 +1411,7 @@ function EnquirySheet({
           listing.marketplace_suppliers?.email || "info@everydriver.co.uk";
         tasks.push(
           callNotify({
-            name: "EDP Marketplace",
+            name: "EDP PRO Shop",
             email: supplierEmail,
             subject: `New enquiry: ${listing.title}`,
             message: `New enquiry from ${contactEmail}:\n\n${msgBody}\n\nContact: ${contactEmail} ${contactPhone}`,
@@ -1422,9 +1422,9 @@ function EnquirySheet({
       // 3. Admin notification (always)
       tasks.push(
         callNotify({
-          name: "EDP Marketplace",
+          name: "EDP PRO Shop",
           email: "info@everydriver.co.uk",
-          subject: `New marketplace enquiry — ${listing.title}`,
+          subject: `New PRO Shop enquiry — ${listing.title}`,
           message: `Listing: ${listing.title} (${listing.id})\nType: ${
             listing.listing_type ?? "—"
           }\nFrom: ${contactEmail}${contactPhone ? ` / ${contactPhone}` : ""}\n\n${msgBody}`,
@@ -1977,7 +1977,7 @@ function WebsiteUpgradeSections() {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          name: "EDP Marketplace",
+          name: "EDP PRO Shop",
           email: "info@everydriver.co.uk",
           subject: `New managed website enquiry from ${who}`,
           message: `${who} is interested in EDP Managed Website (£29.99/month).\n\nInstructor ID: ${userId ?? "unknown"}\n\nPlease contact them within 24 hours.`,
