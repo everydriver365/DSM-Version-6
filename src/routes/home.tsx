@@ -10700,6 +10700,11 @@ function HomePage() {
         </div>
       )}
 
+            {/* ============ PRO TEASER / DISCOVER ============ */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <ProTeaserTile />
+            </div>
+
           </PageLayout>
         </div>
         <div
