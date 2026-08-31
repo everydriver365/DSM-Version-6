@@ -1596,6 +1596,7 @@ function HomePage() {
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
   const isDragging = useRef(false);
+  const swipeDisabled = useRef(false);
 
 
   // Universal search bottom sheet
@@ -5457,17 +5458,33 @@ function HomePage() {
           display: "flex",
           width: "200vw",
           height: "100%",
-          transition: "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          transform: activePage === 0 ? "translateX(0)" : "translateX(-100vw)",
-          willChange: "transform",
+          position: "relative",
+          transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          left: activePage === 0 ? 0 : "-100vw",
+          willChange: "left",
         }}
         onTouchStart={(e) => {
+          // Ignore swipes that start inside a nested horizontal scroller (e.g. quick-access pager)
+          let node = e.target as HTMLElement | null;
+          while (node && node !== e.currentTarget) {
+            if (node.scrollWidth > node.clientWidth + 1) {
+              const ox = window.getComputedStyle(node).overflowX;
+              if (ox === "auto" || ox === "scroll") {
+                swipeDisabled.current = true;
+                isDragging.current = false;
+                return;
+              }
+            }
+            node = node.parentElement;
+          }
+          swipeDisabled.current = false;
           touchStartX.current = e.touches[0]?.clientX ?? 0;
           touchStartY.current = e.touches[0]?.clientY ?? 0;
           touchStartTime.current = Date.now();
           isDragging.current = false;
         }}
         onTouchMove={(e) => {
+          if (swipeDisabled.current) return;
           const dx = (e.touches[0]?.clientX ?? 0) - touchStartX.current;
           const dy = (e.touches[0]?.clientY ?? 0) - touchStartY.current;
           if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
@@ -5475,7 +5492,7 @@ function HomePage() {
           }
         }}
         onTouchEnd={(e) => {
-          if (!isDragging.current) return;
+          if (swipeDisabled.current || !isDragging.current) return;
           const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
           const dt = Date.now() - touchStartTime.current;
           const threshold = dt < 300 ? 30 : 80;
