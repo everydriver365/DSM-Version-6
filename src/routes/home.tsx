@@ -10701,9 +10701,10 @@ function HomePage() {
       )}
 
             {/* ============ PRO TEASER / DISCOVER ============ */}
-            <div style={{ ...SECTION_WRAPPER_STYLE, paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))" }}>
+            <div style={SECTION_WRAPPER_STYLE}>
               <ProTeaserTile />
             </div>
+            <div style={{ height: "calc(80px + env(safe-area-inset-bottom, 0px))" }} />
 
           </PageLayout>
         </div>
