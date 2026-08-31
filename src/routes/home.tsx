@@ -1444,247 +1444,275 @@ function isLessonNow(
 function ProTeaserTile() {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [activeDot, setActiveDot] = useState(0);
+
+  const services = [
+    {
+      label: "PRO Radio",
+      sub: "Live & curated",
+      route: "/radio",
+      icon: IconRadio,
+      bg: "#EEF2FF",
+      iconColor: "#4F46E5",
+      badge: "LIVE",
+      badgeBg: "#FEE2E2",
+      badgeColor: "#DC2626",
+    },
+    {
+      label: "PRO TV",
+      sub: "Videos & guides",
+      route: "/dsm-live",
+      icon: IconDeviceTv,
+      bg: "#F5F0FF",
+      iconColor: "#7C3AED",
+    },
+    {
+      label: "PRO Learn",
+      sub: "Courses & CPD",
+      route: "/dsm-learn",
+      icon: IconSchool,
+      bg: "#ECFEFF",
+      iconColor: "#0891B2",
+    },
+    {
+      label: "PRO Perks",
+      sub: "Member offers",
+      route: "/perks",
+      icon: IconTag,
+      bg: "#FEFCE8",
+      iconColor: "#CA8A04",
+    },
+    {
+      label: "PRO Shop",
+      sub: "Products & deals",
+      route: "/marketplace",
+      icon: IconShoppingBag,
+      bg: "#FDF2F8",
+      iconColor: "#DB2777",
+    },
+  ];
+
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) {
+      setActiveDot(0);
+      return;
+    }
+    const progress = Math.max(0, Math.min(1, el.scrollLeft / maxScroll));
+    const dot = Math.min(3, Math.floor(progress * 4));
+    setActiveDot(dot);
+  }, []);
 
   return (
     <div
       onClick={() => go("/pro")}
       style={{
         background: "#fff",
-        borderRadius: 14,
+        borderRadius: 20,
         border: "0.5px solid #E4E8EF",
         overflow: "hidden",
-        boxShadow: "0 4px 20px rgba(11,35,65,0.06)",
         cursor: "pointer",
         fontFamily: "Poppins, sans-serif",
+        boxShadow: "0 4px 20px rgba(11,35,65,0.06)",
       }}
     >
-      {/* Header row */}
-      <div
-        style={{
-          background: "#0B2341",
-          padding: "10px 14px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      {/* Hero */}
+      <div style={{ position: "relative", padding: "18px 16px 14px" }}>
         <img
-          src={proLogo.url}
+          src={edp3dHero.url}
           alt="Every Driver Pro"
-          style={{ height: 24, objectFit: "contain" }}
+          width={120}
+          height={120}
+          loading="lazy"
+          style={{
+            position: "absolute",
+            top: 4,
+            right: -8,
+            width: 132,
+            height: 132,
+            objectFit: "contain",
+            pointerEvents: "none",
+          }}
         />
-        <div
+        <span
           style={{
-            background: "rgba(255,255,255,0.12)",
-            borderRadius: 20,
-            padding: "3px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
+            display: "inline-block",
+            background: "#7C3AED",
+            color: "#fff",
+            fontSize: 10,
+            fontWeight: 700,
+            padding: "3px 8px",
+            borderRadius: 6,
+            marginBottom: 10,
           }}
         >
-          <IconHandFinger size={12} color="rgba(255,255,255,0.7)" stroke={1.8} />
-          <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>
-            Swipe to explore
-          </span>
-          <IconArrowRight size={12} color="rgba(255,255,255,0.7)" stroke={2} />
-        </div>
-      </div>
-
-      {/* PRO Radio hero row */}
-      <div
-        onClick={(e) => { e.stopPropagation(); go("/radio"); }}
-        style={{
-          padding: "12px 14px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          borderBottom: "0.5px solid #F4F6F8",
-        }}
-      >
-        <div
+          PRO
+        </span>
+        <h3
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 10,
-            background: "#0B2341",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
+            margin: 0,
+            fontSize: 19,
+            lineHeight: 1.2,
+            fontWeight: 700,
+            color: "#0B2341",
+            maxWidth: "calc(100% - 116px)",
           }}
         >
-          <IconRadio size={22} color="#2C97DE" stroke={1.8} />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2341" }}>PRO Radio</span>
-            <span
-              style={{
-                background: "#FEE2E2",
-                borderRadius: 20,
-                padding: "2px 7px",
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-              }}
-            >
-              <span
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: "50%",
-                  background: "#E53935",
-                }}
-              />
-              <span style={{ fontSize: 9, fontWeight: 700, color: "#E53935" }}>LIVE</span>
-            </span>
-          </div>
-          <div style={{ fontSize: 11, color: "#536579", marginTop: 2 }}>
-            Groove Salad · Now playing
-          </div>
-        </div>
+          Unlock more with
+          <br />
+          EVERY DRIVER <span style={{ color: "#7C3AED" }}>PRO</span>
+        </h3>
+        <p
+          style={{
+            margin: "8px 0 0",
+            fontSize: 12,
+            lineHeight: 1.45,
+            color: "#536579",
+            maxWidth: "calc(100% - 116px)",
+          }}
+        >
+          Premium training, expert tools and member perks – all in one place.
+        </p>
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); go("/radio"); }}
+          onClick={(e) => { e.stopPropagation(); go("/pro"); }}
           style={{
-            width: 34,
-            height: 34,
-            borderRadius: "50%",
-            background: "#2C97DE",
-            border: "none",
-            display: "flex",
+            marginTop: 12,
+            display: "inline-flex",
             alignItems: "center",
-            justifyContent: "center",
+            gap: 6,
+            background: "#7C3AED",
+            color: "#fff",
+            border: "none",
+            borderRadius: 999,
+            padding: "8px 16px",
+            fontSize: 12,
+            fontWeight: 600,
             cursor: "pointer",
-            flexShrink: 0,
           }}
         >
-          <IconPlayerPlay
-            size={15}
-            color="#fff"
-            fill="#fff"
-            stroke={1.5}
-            style={{ marginLeft: 2 }}
-          />
+          Explore PRO <IconArrowRight size={14} stroke={2.5} />
         </button>
       </div>
 
-      {/* PRO TV + PRO Shop row */}
+      {/* Swipeable service tiles */}
       <div
+        ref={scrollRef}
+        onScroll={handleScroll}
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          borderBottom: "0.5px solid #F4F6F8",
+          display: "flex",
+          gap: 10,
+          overflowX: "auto",
+          overflowY: "hidden",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          padding: "0 16px 12px",
         }}
       >
-        <div
-          onClick={(e) => { e.stopPropagation(); go("/dsm-live"); }}
-          style={{
-            padding: "10px 14px",
-            borderRight: "0.5px solid #F4F6F8",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            cursor: "pointer",
-          }}
-        >
+        {services.map((s) => (
           <div
+            key={s.label}
+            onClick={(e) => { e.stopPropagation(); go(s.route); }}
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "#FEE2E2",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
+              flex: "0 0 auto",
+              width: 104,
+              scrollSnapAlign: "start",
+              cursor: "pointer",
             }}
           >
-            <IconDeviceTv size={16} color="#E53935" stroke={1.8} />
+            <div
+              style={{
+                position: "relative",
+                height: 76,
+                borderRadius: 16,
+                background: s.bg,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 8,
+              }}
+            >
+              {s.badge && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 6,
+                    right: 6,
+                    fontSize: 8,
+                    fontWeight: 700,
+                    color: s.badgeColor,
+                    background: s.badgeBg,
+                    padding: "2px 5px",
+                    borderRadius: 4,
+                  }}
+                >
+                  {s.badge}
+                </span>
+              )}
+              <s.icon size={28} color={s.iconColor} stroke={1.8} />
+            </div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#0B2341" }}>{s.label}</div>
+            <div style={{ fontSize: 10, color: "#6B7686", marginTop: 1 }}>{s.sub}</div>
           </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#0B2341" }}>PRO TV</div>
-            <div style={{ fontSize: 10, color: "#2C97DE", marginTop: 1 }}>New episode</div>
-          </div>
+        ))}
+      </div>
+
+      {/* Bottom promo row */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 16px",
+          borderTop: "0.5px solid #F4F6F8",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <IconStar size={14} fill="#7C3AED" color="#7C3AED" />
+          <span style={{ fontSize: 11, color: "#0B2341" }}>
+            More value. More knowledge. More{" "}
+            <span style={{ color: "#7C3AED", fontWeight: 700 }}>PRO</span>.
+          </span>
         </div>
         <div
-          onClick={(e) => { e.stopPropagation(); go("/marketplace"); }}
           style={{
-            padding: "10px 14px",
             display: "flex",
             alignItems: "center",
-            gap: 8,
-            cursor: "pointer",
+            gap: 3,
+            fontSize: 10,
+            color: "#6B7686",
+            whiteSpace: "nowrap",
           }}
         >
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "#FEF3C7",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <IconShoppingBag size={16} color="#F59E0B" stroke={1.8} />
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#0B1F3A" }}>PRO Shop</div>
-            <div style={{ fontSize: 10, color: "#F59E0B", marginTop: 1 }}>25% off today</div>
-          </div>
+          Swipe for more <IconArrowRight size={12} stroke={2} />
         </div>
       </div>
 
-      {/* PRO Perks row */}
+      {/* Pagination dots */}
       <div
-        onClick={(e) => { e.stopPropagation(); go("/perks"); }}
         style={{
-          padding: "10px 14px",
           display: "flex",
-          alignItems: "center",
-          gap: 10,
-          cursor: "pointer",
+          justifyContent: "center",
+          gap: 5,
+          padding: "0 0 12px",
         }}
       >
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            background: "#F0EBFF",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <IconGift size={16} color="#7B61FF" stroke={1.8} />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#0B2341" }}>PRO Perks</span>
-            <span
-              style={{
-                background: "#F0EBFF",
-                color: "#7B61FF",
-                fontSize: 9,
-                fontWeight: 700,
-                borderRadius: 4,
-                padding: "1px 5px",
-              }}
-            >
-              NEW
-            </span>
-          </div>
-          <div style={{ fontSize: 10, color: "#536579", marginTop: 1 }}>
-            AA breakdown · 10% off
-          </div>
-        </div>
-        <IconChevronRight size={18} color="#D1D5DB" stroke={2} style={{ flexShrink: 0 }} />
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: i === activeDot ? "#7C3AED" : "#E4E8EF",
+              transition: "background 0.2s ease",
+            }}
+          />
+        ))}
       </div>
     </div>
   );
