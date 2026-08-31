@@ -106,19 +106,17 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
 
         if (cancelled) return;
 
-        const rows = (unpaidRes.data ?? []) as Array<{
+        const rows = ((unpaidRes.data ?? []) as Array<{
           amount_due: number | null;
           paid_amount: number | null;
-          pupils?: { first_name?: string | null; name?: string | null } | null;
-        }>;
-        const total = rows.reduce(
-          (s, r) => s + Math.max(0, Number(r.amount_due || 0) - Number(r.paid_amount || 0)),
-          0,
-        );
-        const first = rows[0]?.pupils;
+          pupils?: { name?: string | null } | null;
+        }>).filter((r) => Math.max(0, Number(r.amount_due || 0) - Number(r.paid_amount || 0)) > 0);
+        const total = calculateOutstandingOwed(rows);
+        const names = new Set(rows.map((r) => r.pupils?.name).filter(Boolean) as string[]);
+        const firstName = rows[0]?.pupils?.name ?? null;
         setOwed({
           total,
-          name: first?.first_name || first?.name?.split(" ")[0] || null,
+          name: names.size === 1 && firstName ? firstName : null,
           count: rows.length,
         });
         setUnread(unreadRes.count ?? 0);
