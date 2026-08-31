@@ -10655,7 +10655,7 @@ function HomePage() {
 
             {/* ============ PRO TEASER / DISCOVER ============ */}
             <div style={SECTION_WRAPPER_STYLE}>
-              <ProTeaserTile />
+              <ProTeaserTile onExploreSwipe={() => setActivePage(1)} />
             </div>
             <div style={{ height: "calc(80px + env(safe-area-inset-bottom, 0px))" }} />
 
