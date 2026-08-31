@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  IconCash,
-  IconCalendarCheck,
+  IconReceipt,
+  IconCalendar,
   IconMessage,
   IconChevronRight,
+  IconCar,
   IconListCheck,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -14,10 +15,8 @@ import { tokens } from "@/lib/tokens";
 const PF = "Poppins, sans-serif";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
-const RED = "#CC2229";
-const AMBER = "#D68A1B";
-const GREY = "#9CA3AF";
-const BORDER = "#EDF1F6";
+const HAIRLINE = "#E5E5EA";
+const SHADOW = "#E4E4E8";
 
 export type TaskTone = "danger" | "warning" | "muted";
 
@@ -37,9 +36,9 @@ export type TaskItem = {
 };
 
 const toneColor: Record<TaskTone, string> = {
-  danger: RED,
-  warning: AMBER,
-  muted: GREY,
+  danger: "#A32D2D",
+  warning: "#854F0B",
+  muted: "#6B7686",
 };
 
 function money(n: number) {
@@ -143,9 +142,9 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
             : `Confirm payment – ${owed.name}`,
         value: money(owed.total),
         tone: "danger",
-        Icon: IconCash,
-        iconColor: "#FFFFFF",
-        iconBg: "#F5A524",
+        Icon: IconReceipt,
+        iconColor: "#854F0B",
+        iconBg: "#FAEEDA",
         weight: 1,
         onPress: () => navigate({ to: "/payments" as never }),
       });
@@ -159,9 +158,9 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
         title: t.title,
         value: d.value,
         tone: d.tone,
-        Icon: IconCalendarCheck,
-        iconColor: NAVY,
-        iconBg: "#F2F5F9",
+        Icon: IconCalendar,
+        iconColor: "#185FA5",
+        iconBg: "#E6F1FB",
         weight: d.weight,
         onPress: () => navigate({ to: "/todos" as never }),
       });
@@ -173,8 +172,8 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
         title: `${unread} unread message${unread === 1 ? "" : "s"}`,
         tone: "muted",
         Icon: IconMessage,
-        iconColor: BLUE,
-        iconBg: "#EAF2FE",
+        iconColor: "#185FA5",
+        iconBg: "#E6F1FB",
         weight: 4,
         onPress: () => navigate({ to: "/messages" as never }),
       });
@@ -208,27 +207,25 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 10,
+          marginBottom: 8,
         }}
       >
         <span
           style={{
-            fontSize: tokens.fontSize.sm,
-            fontWeight: tokens.fontWeight.bold,
+            fontSize: 13,
+            fontWeight: 500,
             color: NAVY,
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
             fontFamily: PF,
           }}
         >
-          Tasks &amp; Actions
+          Tasks and actions
         </span>
         <button
           type="button"
           onClick={() => (onSeeAll ? onSeeAll() : navigate({ to: "/todos" as never }))}
           style={{
-            fontSize: tokens.fontSize.sm,
-            fontWeight: tokens.fontWeight.semibold,
+            fontSize: 13,
+            fontWeight: 500,
             color: BLUE,
             background: "none",
             border: "none",
@@ -244,15 +241,17 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
       <div
         style={{
           background: "#FFFFFF",
-          borderRadius: 16,
-          border: `0.5px solid ${BORDER}`,
-          boxShadow: "0 1px 2px rgba(11,31,58,0.04), 0 4px 12px rgba(11,31,58,0.06)",
+          borderRadius: 12,
+          border: `0.5px solid ${HAIRLINE}`,
+          boxShadow: `0 4px 0 ${SHADOW}`,
           overflow: "hidden",
           fontFamily: PF,
         }}
       >
         {rows.map((item, i) => {
           const Icon = item.Icon ?? IconListCheck;
+          const fallbackIconBg = item.id === "owed" ? "#FAEEDA" : "#F1EFE8";
+          const fallbackIconColor = item.id === "owed" ? "#854F0B" : "#5F5E5A";
           return (
             <button
               key={item.id}
@@ -262,11 +261,11 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                gap: 14,
-                padding: "14px 16px",
+                gap: 12,
+                padding: "12px 14px",
                 background: "transparent",
                 border: "none",
-                borderTop: i === 0 ? "none" : `0.5px solid ${BORDER}`,
+                borderTop: i === 0 ? "none" : `0.5px solid ${HAIRLINE}`,
                 textAlign: "left",
                 cursor: "pointer",
                 fontFamily: PF,
@@ -274,25 +273,25 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
             >
               <span
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 10,
+                  width: 34,
+                  height: 34,
+                  borderRadius: 9,
                   flexShrink: 0,
-                  background: item.iconBg ?? "#F2F5F9",
+                  background: item.iconBg ?? fallbackIconBg,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Icon size={20} color={item.iconColor ?? NAVY} stroke={1.7} />
+                <Icon size={18} color={item.iconColor ?? fallbackIconColor} stroke={1.8} />
               </span>
 
               <span
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  fontSize: 15,
-                  fontWeight: tokens.fontWeight.semibold,
+                  fontSize: 14,
+                  fontWeight: 500,
                   color: NAVY,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
@@ -306,7 +305,7 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                 <span
                   style={{
                     fontSize: 14,
-                    fontWeight: tokens.fontWeight.bold,
+                    fontWeight: 500,
                     color: toneColor[item.tone],
                     flexShrink: 0,
                   }}

@@ -16,7 +16,7 @@ import { toast } from "@/lib/toast";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
-import proLogo from "@/assets/ed-pro-logo-transparent.png.asset.json";
+import proLogo from "@/assets/pro-logo.png.asset.json";
 
 
 import availabilityIcon from "@/assets/availability-icon.png.asset.json";
@@ -2929,7 +2929,7 @@ function HomePage() {
           }))
           .catch((error: unknown) => ({ timedOut: false, user: null, error })),
         new Promise<{ timedOut: true; user: null; error: null }>((resolve) => {
-          setTimeout(() => resolve({ timedOut: true, user: null, error: null }), 3500);
+          setTimeout(() => resolve({ timedOut: true, user: null, error: null }), 1500);
         }),
       ]);
       if (cancelled) return;
@@ -2946,49 +2946,52 @@ function HomePage() {
         return;
       }
       setUserId(u.id);
+      setAuthChecked(true);
 
-      const { data: instructor, error: instErr } = await supabase
-        .from("instructors")
-        .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal, lesson_buffer_after")
-        .eq("id", u.id)
-        .maybeSingle();
-      if (instErr) console.error("[home] instructors fetch error", instErr);
-      if (!instructor) {
-        console.log("[home] no instructor found, checking admin for:", u.id);
-        const { data: adminRows, error: adminErr } = await supabase
-          .from("admin_users")
-          .select("role")
-          .eq("user_id", u.id)
-          .limit(1);
-        const adminRow = adminRows?.[0] ?? null;
-        console.log("[home] admin check result:", adminRow, "error:", adminErr);
-        if (adminRow) {
-          console.log("[home] admin confirmed, navigating to /admin");
-          setAuthChecked(true);
-          navigate({ to: "/admin" });
+      try {
+        const { data: instructor, error: instErr } = await supabase
+          .from("instructors")
+          .select("name, profile_image_url, weekly_lesson_goal, weekly_earnings_goal, lesson_buffer_after")
+          .eq("id", u.id)
+          .maybeSingle();
+        if (instErr) console.error("[home] instructors fetch error", instErr);
+        if (!instructor) {
+          console.log("[home] no instructor found, checking admin for:", u.id);
+          const { data: adminRows, error: adminErr } = await supabase
+            .from("admin_users")
+            .select("role")
+            .eq("user_id", u.id)
+            .limit(1);
+          if (adminErr) console.error("[home] admin check error", adminErr);
+          const adminRow = adminRows?.[0] ?? null;
+          console.log("[home] admin check result:", adminRow);
+          if (adminRow) {
+            console.log("[home] admin confirmed, navigating to /admin");
+            navigate({ to: "/admin" });
+            return;
+          }
+          console.log("[home] not admin, going to onboarding");
+          console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
+          navigate({ to: "/onboarding", replace: true });
           return;
         }
-        console.log("[home] not admin, going to onboarding");
-        console.warn("[home] no instructor row for user, redirecting to onboarding", u.id);
-        setAuthChecked(true);
-        navigate({ to: "/onboarding", replace: true });
-        return;
+        const fullName =
+          (instructor?.name as string | undefined) ??
+          u.email?.split("@")[0] ??
+          "there";
+        const first = fullName.trim().split(/\s+/)[0] || "there";
+        setFirstName(capitalize(first));
+        setInstructorFullName(fullName);
+
+        const wlGoal = Number((instructor as any)?.weekly_lesson_goal);
+        const weGoal = Number((instructor as any)?.weekly_earnings_goal);
+        if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
+        if (Number.isFinite(weGoal) && weGoal > 0) setWeeklyEarningsGoal(weGoal);
+        const iba = Number((instructor as any)?.lesson_buffer_after);
+        if (Number.isFinite(iba)) setInstructorBufferAfter(iba);
+      } catch (err) {
+        console.error("[home] post-auth profile lookup failed", err);
       }
-      const fullName =
-        (instructor?.name as string | undefined) ??
-        u.email?.split("@")[0] ??
-        "there";
-      const first = fullName.trim().split(/\s+/)[0] || "there";
-      setFirstName(capitalize(first));
-      setInstructorFullName(fullName);
-      
-      const wlGoal = Number((instructor as any)?.weekly_lesson_goal);
-      const weGoal = Number((instructor as any)?.weekly_earnings_goal);
-      if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
-      if (Number.isFinite(weGoal) && weGoal > 0) setWeeklyEarningsGoal(weGoal);
-      const iba = Number((instructor as any)?.lesson_buffer_after);
-      if (Number.isFinite(iba)) setInstructorBufferAfter(iba);
-      setAuthChecked(true);
     })();
     return () => { cancelled = true; };
   }, []);
