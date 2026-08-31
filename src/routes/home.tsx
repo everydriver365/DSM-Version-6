@@ -5484,6 +5484,7 @@ function HomePage() {
           isDragging.current = false;
         }}
         onTouchMove={(e) => {
+          if (swipeDisabled.current) return;
           const dx = (e.touches[0]?.clientX ?? 0) - touchStartX.current;
           const dy = (e.touches[0]?.clientY ?? 0) - touchStartY.current;
           if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
@@ -5491,7 +5492,7 @@ function HomePage() {
           }
         }}
         onTouchEnd={(e) => {
-          if (!isDragging.current) return;
+          if (swipeDisabled.current || !isDragging.current) return;
           const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
           const dt = Date.now() - touchStartTime.current;
           const threshold = dt < 300 ? 30 : 80;
