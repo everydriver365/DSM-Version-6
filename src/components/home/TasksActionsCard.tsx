@@ -81,14 +81,12 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
         const [unpaidRes, unreadRes, todoRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("amount_due, paid_amount, pupils(first_name, name)")
+            .select("amount_due, paid_amount, pupils(name)")
             .eq("instructor_id", userId)
-            .eq("payment_status", "unpaid")
-            .neq("status", "cancelled")
-            .gt("amount_due", 0)
+            .in("payment_status", ["unpaid", "partial"])
+            .not("lesson_type", "eq", "event")
             .is("deleted_at", null)
-            .order("lesson_date", { ascending: false })
-            .limit(50),
+            .limit(200),
           supabase
             .from("chat_messages")
             .select("id", { count: "exact", head: true })
