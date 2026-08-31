@@ -16,7 +16,7 @@ import { toast } from "@/lib/toast";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
-import edpProLogo from "@/assets/ed-pro-logo-app.png.asset.json";
+
 import availabilityIcon from "@/assets/availability-icon.png.asset.json";
 import fuelIcon from "@/assets/fuel-icon.png.asset.json";
 import paymentsIcon from "@/assets/payments-icon.png.asset.json";
@@ -34,6 +34,7 @@ import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
+import ProPage from "@/routes/pro.tsx";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
@@ -44,7 +45,7 @@ import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconCards, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDeviceTv, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHandFinger, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconRoute, IconSchool, IconSearch, IconSend, IconSettings, IconShoppingBag, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconCards, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDeviceTv, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconRoute, IconSchool, IconSearch, IconSend, IconSettings, IconShoppingBag, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -1567,130 +1568,17 @@ function ProRadioHomeCard() {
   );
 }
 
-function DiscoverAndLearnPromo() {
-  const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el || el.clientWidth === 0) return;
-    const next = Math.round(el.scrollLeft / el.clientWidth);
-    if (next !== activeIndex && next >= 0 && next <= 1) {
-      setActiveIndex(next);
-    }
-  }, [activeIndex]);
-
-  const tileBase: React.CSSProperties = {
-    flex: "0 0 100%",
-    width: "100%",
-    minWidth: "100%",
-    scrollSnapAlign: "start",
-    borderRadius: 16,
-    overflow: "hidden",
-    cursor: "pointer",
-  };
-
-  return (
-    <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      <div style={{ ...SECTION_HEADER_STYLE, marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-          <span style={SECTION_TITLE_TEXT_STYLE}>Discover & Learn</span>
-        </div>
-      </div>
-
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        style={{
-          display: "flex",
-          overflowX: "auto",
-          overflowY: "hidden",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {/* Page 1 */}
-        <div
-          onClick={() => navigate({ to: "/pro" as never })}
-          style={{
-            ...tileBase,
-            background: "#FFFFFF",
-            border: "0.5px solid #E4E8EF",
-            boxShadow: "0 4px 20px rgba(11,35,65,0.08)",
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <img
-              src={edpProLogo.url}
-              alt="EDP PRO"
-              style={{ width: 60, height: 60, objectFit: "contain" }}
-            />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#0B2341", lineHeight: 1.2 }}>
-                Explore EDP PRO →
-              </div>
-              <div style={{ fontSize: 12, color: "#536579", marginTop: 4, lineHeight: 1.4 }}>
-                Your hub for exclusive TV, Radio, Shop & member perks.
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#EAF5FC", color: "#2C97DE" }}>
-                  <IconDeviceTv size={12} stroke={2} /> PRO TV
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#FEE2E2", color: "#E53935" }}>
-                  <IconRadio size={12} stroke={2} /> PRO Radio
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#FEF3C7", color: "#F59E0B" }}>
-                  <IconShoppingBag size={12} stroke={2} /> PRO Shop
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#F0EBFF", color: "#7B61FF" }}>
-                  <IconGift size={12} stroke={2} /> PRO Perks
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto", paddingTop: 14 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <IconHandFinger size={14} color="#D1D5DB" />
-              <span style={{ fontSize: 11, color: "#D1D5DB" }}>Swipe for PRO →</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ width: activeIndex === 0 ? 16 : 6, height: 4, borderRadius: 2, background: activeIndex === 0 ? "#0B2341" : "#D1D5DB", transition: "width 0.2s ease" }} />
-              <span style={{ width: activeIndex === 1 ? 16 : 6, height: 4, borderRadius: 2, background: activeIndex === 1 ? "#0B2341" : "#D1D5DB", transition: "width 0.2s ease" }} />
-            </div>
-          </div>
-        </div>
-
-        {/* Page 2 */}
-        <div
-          style={{
-            ...tileBase,
-            background: "#F4F6F8",
-            border: "0.5px solid #E4E8EF",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          <IconSparkles size={32} color="#D1D5DB" />
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#D1D5DB" }}>EDP PRO</div>
-          <div style={{ fontSize: 12, color: "#D1D5DB" }}>Coming soon</div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function HomePage() {
   const navigate = useNavigate();
+
+  // Full-screen HOME ↔ PRO swipe state
+  const [activePage, setActivePage] = useState(0);
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
+  const isDragging = useRef(false);
+
 
   // Universal search bottom sheet
   const [universalSearchOpen, setUniversalSearchOpen] = useState(false);
@@ -5543,7 +5431,54 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: GLOBAL_HEADER_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <div style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          width: "200vw",
+          height: "100%",
+          transition: "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          transform: activePage === 0 ? "translateX(0)" : "translateX(-100vw)",
+          willChange: "transform",
+        }}
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0]?.clientX ?? 0;
+          touchStartY.current = e.touches[0]?.clientY ?? 0;
+          touchStartTime.current = Date.now();
+          isDragging.current = false;
+        }}
+        onTouchMove={(e) => {
+          const dx = (e.touches[0]?.clientX ?? 0) - touchStartX.current;
+          const dy = (e.touches[0]?.clientY ?? 0) - touchStartY.current;
+          if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+            isDragging.current = true;
+          }
+        }}
+        onTouchEnd={(e) => {
+          if (!isDragging.current) return;
+          const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
+          const dt = Date.now() - touchStartTime.current;
+          const threshold = dt < 300 ? 30 : 80;
+          if (dx < -threshold && activePage === 0) {
+            setActivePage(1);
+          } else if (dx > threshold && activePage === 1) {
+            setActivePage(0);
+          }
+          isDragging.current = false;
+        }}
+      >
+        <div
+          style={{
+            width: "100vw",
+            height: "100%",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            flexShrink: 0,
+          }}
+        >
+          <PageLayout className="pb-safe" style={{ ...POPPINS, minHeight: '100%', display: 'flex', flexDirection: 'column', paddingTop: GLOBAL_HEADER_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+
+
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
@@ -5566,23 +5501,14 @@ function HomePage() {
           data-workspace="today"
           data-ws-index={0}
           style={{
-            minWidth: '100vw',
-            width: '100vw',
-            maxWidth: '100vw',
-            height: '100%',
-            scrollSnapAlign: 'start',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            flexShrink: 0,
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
             background: PAGE_BACKGROUND,
-            WebkitOverflowScrolling: 'touch',
-            touchAction: 'pan-y',
-            overscrollBehaviorX: 'none',
-            // Outer fixed container already reserves 60px + safe-area for the
-            // bottom nav, so only a small breathing gap is needed here.
             paddingBottom: 24,
           }}
         >
+
       {/* ============ NAVY HEADER BLOCK ============ */}
       <div
         style={{
@@ -9775,10 +9701,6 @@ function HomePage() {
               <TasksActionsCard userId={userId} />
             </div>
 
-            {/* ===== DISCOVER SECTION ===== */}
-            <div style={SECTION_WRAPPER_STYLE}>
-              <DiscoverAndLearnPromo />
-            </div>
 
             {/* ===== PRO RADIO CARD ===== */}
             <div style={SECTION_WRAPPER_STYLE}>
@@ -10665,14 +10587,107 @@ function HomePage() {
         </div>
       )}
 
-    </PageLayout>
+          </PageLayout>
+        </div>
+        <div
+          style={{
+            width: "100vw",
+            height: "100%",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            flexShrink: 0,
+          }}
+        >
+          <ProPage />
+        </div>
+      </div>
 
+      {/* TODAY / PRO pill tabs */}
+      <div
+        style={{
+          position: "fixed",
+          top: "calc(env(safe-area-inset-top) + 8px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 100,
+          display: "flex",
+          gap: 6,
+          background: "rgba(11,35,65,0.6)",
+          borderRadius: 20,
+          padding: 3,
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setActivePage(0)}
+          style={{
+            padding: "5px 16px",
+            borderRadius: 18,
+            fontSize: 11,
+            fontWeight: 700,
+            border: "none",
+            background: activePage === 0 ? "#fff" : "transparent",
+            color: activePage === 0 ? "#0B2341" : "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+          }}
+        >
+          TODAY
+        </button>
+        <button
+          type="button"
+          onClick={() => setActivePage(1)}
+          style={{
+            padding: "5px 16px",
+            borderRadius: 18,
+            fontSize: 11,
+            fontWeight: 700,
+            border: "none",
+            background: activePage === 1 ? "#fff" : "transparent",
+            color: activePage === 1 ? "#0B2341" : "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+          }}
+        >
+          PRO
+        </button>
+      </div>
 
+      {/* Page dots */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "calc(env(safe-area-inset-bottom) + 80px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 6,
+          zIndex: 100,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            width: activePage === 0 ? 20 : 8,
+            height: 4,
+            borderRadius: 2,
+            background: activePage === 0 ? "#0B2341" : "rgba(11,35,65,0.2)",
+          }}
+        />
+        <div
+          style={{
+            width: activePage === 1 ? 20 : 8,
+            height: 4,
+            borderRadius: 2,
+            background: activePage === 1 ? "#0B2341" : "rgba(11,35,65,0.2)",
+          }}
+        />
+      </div>
+    </div>
   );
 
 
 
 }
+
 
 function HeroExpandedPanel({
   lesson,
@@ -12323,223 +12338,8 @@ function TestsBreakdownModal({
 
 
 
-const DISCOVER_SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-const DISCOVER_SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-
-const DISCOVER_HEADERS = {
-  apikey: DISCOVER_SUPABASE_ANON_KEY,
-  Authorization: `Bearer ${DISCOVER_SUPABASE_ANON_KEY}`,
-};
-
-type DiscoverListing = {
-  id: string;
-  title: string;
-  price_display: string | null;
-  price_amount: number | null;
-  image_urls: string[] | null;
-  is_featured: boolean;
-  marketplace_categories: { name: string; slug: string } | null;
-};
-
-function formatDiscoverDay(dateStr: string): string {
-  try {
-    const d = new Date(dateStr + "T00:00:00");
-    return String(d.getDate());
-  } catch {
-    return "–";
-  }
-}
-
-function formatDiscoverMonth(dateStr: string): string {
-  try {
-    const d = new Date(dateStr + "T00:00:00");
-    return d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
-  } catch {
-    return "";
-  }
-}
-
-function formatDiscoverTime(timeStr: string): string {
-  if (!timeStr) return "";
-  const [h, m] = timeStr.split(":");
-  const hh = String(Number(h) || 0).padStart(2, "0");
-  const mm = (m ?? "00").padStart(2, "0");
-  return `${hh}:${mm}`;
-}
 
 
-function DiscoverSection() {
-  const navigate = useNavigate();
-  const [sessions, setSessions] = useState<LiveSession[] | null>(null);
-
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch(
-          `${DISCOVER_SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&order=session_date.asc&order=session_time.asc`,
-          { headers: DISCOVER_HEADERS },
-        );
-        const data = (await res.json()) as LiveSession[];
-        if (!cancelled) setSessions(Array.isArray(data) ? data : []);
-      } catch {
-        if (!cancelled) setSessions([]);
-      }
-
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const upcoming = useMemo(() => {
-    if (!sessions) return [];
-    const now = Date.now();
-    return sessions
-      .filter((s) => {
-        const dt = new Date(
-          `${s.session_date}T${s.session_time || "00:00"}:00`,
-        ).getTime();
-        return Number.isFinite(dt) ? dt >= now : true;
-      })
-      .slice(0, 2);
-  }, [sessions]);
-
-  const hasLive = upcoming.length > 0;
-  if (!hasLive) return null;
-
-
-  const headerTitle = {
-    fontSize: tokens.fontSize.xl,
-    fontWeight: tokens.fontWeight.bold,
-    color: tokens.navy,
-    fontFamily: "Poppins, sans-serif",
-  } as const;
-
-  const viewAllBtn = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 4,
-    fontSize: tokens.fontSize.base,
-    fontWeight: tokens.fontWeight.semibold,
-    color: tokens.blue,
-    background: "none",
-    border: "none",
-    padding: 0,
-    cursor: "pointer",
-    fontFamily: "Poppins, sans-serif",
-  } as const;
-
-  const cardShell: React.CSSProperties = {
-    background: tokens.white,
-    borderRadius: tokens.radiusCard,
-    boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
-    overflow: "hidden",
-    cursor: "pointer",
-  };
-
-  const gradientLive = "linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)";
-  const gradientMarket = "linear-gradient(135deg, #6B4FD6 0%, #1877D6 100%)";
-
-  const truncate: React.CSSProperties = {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  };
-
-  return (
-    <div style={{ margin: "20px -16px 0", padding: "0 16px", fontFamily: "Poppins, sans-serif" }}>
-
-      {hasLive && (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 14,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#C23B3B",
-                }}
-              />
-              <div style={headerTitle}>EDP Live</div>
-            </div>
-            <button
-              type="button"
-              style={viewAllBtn}
-              onClick={() => navigate({ to: "/dsm-live" })}
-            >
-              View all
-              <IconArrowRight stroke={1.5} size={14} />
-            </button>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {upcoming.map((s) => {
-              const isToday = (() => {
-                try {
-                  const d = new Date(`${s.session_date}T00:00:00`);
-                  const t = new Date();
-                  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
-                } catch { return false; }
-              })();
-              return (
-                <div
-                  key={s.id}
-                  style={{ ...cardShell, display: 'flex', alignItems: 'stretch' }}
-                  onClick={() =>
-                    navigate({
-                      to: "/dsm-live/$sessionId",
-                      params: { sessionId: s.id },
-                    })
-                  }
-                >
-                  <div
-                    style={{
-                      width: 56,
-                      height: 56,
-                      background: s.image_url ? `url(${s.image_url}) center/cover` : gradientLive,
-                      backgroundColor: "#EEF1F6",
-                      position: 'relative',
-                      flexShrink: 0,
-                    }}
-                  >
-                    {isToday && (
-                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: tokens.fontWeight.bold, padding: '2px 5px', borderRadius: tokens.radiusCard, letterSpacing: 0.4 }}>
-                        LIVE
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ flex: 1, padding: '8px 10px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ fontSize: 8, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.3 }}>
-                      {formatDiscoverDay(s.session_date)} {formatDiscoverMonth(s.session_date)} · {formatDiscoverTime(s.session_time)}
-                    </div>
-                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
-                    <div style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#3B6D11', marginTop: 3 }}>Free</div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
-                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: '6px 10px', borderRadius: 8}}>Join</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-
-
-    </div>
-  );
-}
 
 
 
