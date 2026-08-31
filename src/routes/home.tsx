@@ -1445,48 +1445,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
 
-  const tiles = [
-    {
-      label: "TV",
-      sub: "Guides, bitesize & exclusive videos",
-      route: "/dsm-live",
-      icon: IconDeviceTv,
-      bg: "#E9F7EE",
-      color: "#22A45D",
-      live: true,
-    },
-    {
-      label: "Radio",
-      sub: "Live radio, podcasts & news",
-      route: "/radio",
-      icon: IconMicrophone,
-      bg: "#FDECEC",
-      color: "#E24B4B",
-    },
-    {
-      label: "Shop",
-      sub: "Products, services & special offers",
-      route: "/marketplace",
-      icon: IconShoppingBag,
-      bg: "#E8F0FE",
-      color: "#1877D6",
-    },
-    {
-      label: "Perks",
-      sub: "Member benefits & discounts",
-      route: "/perks",
-      icon: IconGift,
-      bg: "#F1ECFD",
-      color: "#7C3AED",
-    },
-  ];
-
-  const mini = [
-    { label: "PRO TV", icon: IconDeviceTv, color: "#22A45D" },
-    { label: "PRO Radio", icon: IconMicrophone, color: "#E24B4B" },
-    { label: "PRO Shop", icon: IconShoppingBag, color: "#1877D6" },
-    { label: "PRO Perks", icon: IconGift, color: "#7C3AED" },
-  ];
 
   const cardStyle: React.CSSProperties = {
     background: "#fff",
@@ -1538,25 +1496,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           </div>
         </div>
 
-        <div style={{ height: 1, background: "#E5E5EA", margin: "14px 0 12px" }} />
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
-          {mini.map((m, i) => (
-            <div
-              key={m.label}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-                borderRight: i < mini.length - 1 ? "1px solid #EFEFF3" : "none",
-              }}
-            >
-              <m.icon size={24} stroke={1.7} color={m.color} />
-              <span style={{ fontSize: 10, fontWeight: 500, color: "#0B1F3A" }}>{m.label}</span>
-            </div>
-          ))}
-        </div>
 
         <div
           onClick={(e) => {
@@ -1582,58 +1521,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
         </div>
       </div>
 
-      {/* 2x2 feature grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        {tiles.map((t) => (
-          <div
-            key={t.label}
-            onClick={() => go(t.route)}
-            style={{ ...cardStyle, padding: 14, cursor: "pointer", position: "relative", overflow: "hidden" }}
-          >
-            {t.live && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#22A45D",
-                }}
-              />
-            )}
-            <div
-              style={{
-                width: 46,
-                height: 46,
-                borderRadius: 12,
-                background: t.bg,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 12,
-              }}
-            >
-              <t.icon size={24} stroke={1.7} color={t.color} />
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <img
-                src={proLogo.url}
-                alt=""
-                width={26}
-                height={16}
-                loading="lazy"
-                style={{ width: 26, height: 16, objectFit: "contain" }}
-              />
-              <span style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A" }}>{t.label}</span>
-            </div>
-            <div style={{ fontSize: 11, color: "#5A6B80", marginTop: 4, lineHeight: 1.35 }}>
-              {t.sub}
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
