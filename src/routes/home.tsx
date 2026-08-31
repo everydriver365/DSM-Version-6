@@ -16,6 +16,8 @@ import { toast } from "@/lib/toast";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
+import proLogo from "@/assets/ed-pro-logo-transparent.png.asset.json";
+
 
 import availabilityIcon from "@/assets/availability-icon.png.asset.json";
 import fuelIcon from "@/assets/fuel-icon.png.asset.json";
@@ -45,7 +47,7 @@ import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconCards, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDeviceTv, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconRoute, IconSchool, IconSearch, IconSend, IconSettings, IconShoppingBag, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconCards, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDeviceTv, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHandFinger, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconQrcode, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconRoute, IconSchool, IconSearch, IconSend, IconSettings, IconShoppingBag, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -1437,6 +1439,255 @@ function isLessonNow(
   }
 }
 
+
+function ProTeaserTile() {
+  const navigate = useNavigate();
+  const go = (to: string) => navigate({ to: to as never });
+
+  return (
+    <div
+      onClick={() => go("/pro")}
+      style={{
+        background: "#fff",
+        borderRadius: 14,
+        border: "0.5px solid #E4E8EF",
+        overflow: "hidden",
+        boxShadow: "0 4px 20px rgba(11,35,65,0.06)",
+        cursor: "pointer",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      {/* Header row */}
+      <div
+        style={{
+          background: "#0B2341",
+          padding: "10px 14px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <img
+          src={proLogo.url}
+          alt="Every Driver Pro"
+          style={{ height: 24, objectFit: "contain" }}
+        />
+        <div
+          style={{
+            background: "rgba(255,255,255,0.12)",
+            borderRadius: 20,
+            padding: "3px 10px",
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          <IconHandFinger size={12} color="rgba(255,255,255,0.7)" stroke={1.8} />
+          <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>
+            Swipe to explore
+          </span>
+          <IconArrowRight size={12} color="rgba(255,255,255,0.7)" stroke={2} />
+        </div>
+      </div>
+
+      {/* PRO Radio hero row */}
+      <div
+        onClick={(e) => { e.stopPropagation(); go("/radio"); }}
+        style={{
+          padding: "12px 14px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          borderBottom: "0.5px solid #F4F6F8",
+        }}
+      >
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 10,
+            background: "#0B2341",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <IconRadio size={22} color="#2C97DE" stroke={1.8} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2341" }}>PRO Radio</span>
+            <span
+              style={{
+                background: "#FEE2E2",
+                borderRadius: 20,
+                padding: "2px 7px",
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+              }}
+            >
+              <span
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: "#E53935",
+                }}
+              />
+              <span style={{ fontSize: 9, fontWeight: 700, color: "#E53935" }}>LIVE</span>
+            </span>
+          </div>
+          <div style={{ fontSize: 11, color: "#536579", marginTop: 2 }}>
+            Groove Salad · Now playing
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); go("/radio"); }}
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            background: "#2C97DE",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <IconPlayerPlay
+            size={15}
+            color="#fff"
+            fill="#fff"
+            stroke={1.5}
+            style={{ marginLeft: 2 }}
+          />
+        </button>
+      </div>
+
+      {/* PRO TV + PRO Shop row */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          borderBottom: "0.5px solid #F4F6F8",
+        }}
+      >
+        <div
+          onClick={(e) => { e.stopPropagation(); go("/dsm-live"); }}
+          style={{
+            padding: "10px 14px",
+            borderRight: "0.5px solid #F4F6F8",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: "#FEE2E2",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconDeviceTv size={16} color="#E53935" stroke={1.8} />
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#0B2341" }}>PRO TV</div>
+            <div style={{ fontSize: 10, color: "#2C97DE", marginTop: 1 }}>New episode</div>
+          </div>
+        </div>
+        <div
+          onClick={(e) => { e.stopPropagation(); go("/marketplace"); }}
+          style={{
+            padding: "10px 14px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: "#FEF3C7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconShoppingBag size={16} color="#F59E0B" stroke={1.8} />
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#0B1F3A" }}>PRO Shop</div>
+            <div style={{ fontSize: 10, color: "#F59E0B", marginTop: 1 }}>25% off today</div>
+          </div>
+        </div>
+      </div>
+
+      {/* PRO Perks row */}
+      <div
+        onClick={(e) => { e.stopPropagation(); go("/perks"); }}
+        style={{
+          padding: "10px 14px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          cursor: "pointer",
+        }}
+      >
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: "#F0EBFF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <IconGift size={16} color="#7B61FF" stroke={1.8} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#0B2341" }}>PRO Perks</span>
+            <span
+              style={{
+                background: "#F0EBFF",
+                color: "#7B61FF",
+                fontSize: 9,
+                fontWeight: 700,
+                borderRadius: 4,
+                padding: "1px 5px",
+              }}
+            >
+              NEW
+            </span>
+          </div>
+          <div style={{ fontSize: 10, color: "#536579", marginTop: 1 }}>
+            AA breakdown · 10% off
+          </div>
+        </div>
+        <IconChevronRight size={18} color="#D1D5DB" stroke={2} style={{ flexShrink: 0 }} />
+      </div>
+    </div>
+  );
+}
 
 
 function HomePage() {
@@ -6581,6 +6832,11 @@ function HomePage() {
 
 
 
+
+            {/* ============ PRO TEASER / DISCOVER ============ */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <ProTeaserTile />
+            </div>
 
             {/* 3. TIMELINE with TABS */}
             <div style={SECTION_WRAPPER_STYLE}>
