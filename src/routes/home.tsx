@@ -10021,10 +10021,6 @@ function HomePage() {
               <TasksActionsCard userId={userId} />
             </div>
 
-            {/* ===== DISCOVER SECTION ===== */}
-            <div style={SECTION_WRAPPER_STYLE}>
-              <DiscoverAndLearnPromo />
-            </div>
 
             {/* ===== PRO RADIO CARD ===== */}
             <div style={SECTION_WRAPPER_STYLE}>
