@@ -1515,7 +1515,6 @@ function HomePage() {
 
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
-  const radio = useProRadioContext();
 
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
@@ -9570,13 +9569,6 @@ function HomePage() {
             <div style={SECTION_WRAPPER_STYLE}>
               <TasksActionsCard userId={userId} />
             </div>
-
-
-            {/* ===== PRO RADIO CARD ===== */}
-            <div style={SECTION_WRAPPER_STYLE}>
-              <ProRadioHomeCard />
-            </div>
-
 
 
           </div>
