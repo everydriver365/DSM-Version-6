@@ -1443,12 +1443,109 @@ function GapsPage() {
     }
   }
 
+  async function handleSendTextToSelected() {
+    if (selectedPupilIds.size === 0 || !ranked || !userId) return;
+    setSendingText(true);
+    try {
+      const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
+      const withBodies = selected.map((r) => {
+        const first = firstNameOf(r.pupil);
+        const body = messageTemplate
+          .replace(/\{name\}/g, first)
+          .replace(/\{instructor_name\}/g, instructorName);
+        return { pupil: r.pupil, body };
+      });
 
+      const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
+      const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
 
+      for (const { pupil } of withBodies) {
+        for (const s of slotsForOffer) {
+          void logOffer(pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
+        }
+      }
 
+      const phoneCandidates = withBodies.filter((x) => !!x.pupil.phone);
+      const noPhone = withBodies.filter((x) => !x.pupil.phone);
 
+      let smsQueuedCount = 0;
+      if (phoneCandidates.length > 0) {
+        const smsRows = phoneCandidates.map((x) => ({
+          instructor_id: userId,
+          pupil_phone: x.pupil.phone!,
+          message: x.body,
+        }));
+        const { error: smsErr } = await supabase.from("sms_queue").insert(smsRows);
+        if (smsErr) {
+          console.error("[gaps] sms_queue insert failed:", smsErr);
+          toast.error("Failed to queue texts");
+        } else {
+          smsQueuedCount = phoneCandidates.length;
+          void supabase.functions.invoke("send-sms", { body: {} });
+        }
+      }
 
+      if (noPhone.length > 0) {
+        toast.info(`${noPhone.length} pupil${noPhone.length === 1 ? "" : "s"} had no phone number`, {
+          description: "Send an in-app message to reach them",
+        });
+      }
 
+      const count = withBodies.length;
+      toast.success(`Message sent to ${count} pupil${count === 1 ? "" : "s"} ✅`);
+      setSelectedPupilIds(new Set());
+    } finally {
+      setSendingText(false);
+    }
+  }
+
+  async function handleSendInAppToSelected() {
+    if (selectedPupilIds.size === 0 || !ranked || !userId) return;
+    setSendingInApp(true);
+    try {
+      const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
+      const withBodies = selected.map((r) => {
+        const first = firstNameOf(r.pupil);
+        const body = messageTemplate
+          .replace(/\{name\}/g, first)
+          .replace(/\{instructor_name\}/g, instructorName);
+        return { pupil: r.pupil, body };
+      });
+
+      const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
+      const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
+
+      for (const { pupil, body } of withBodies) {
+        const { error: chatErr } = await supabase.from("chat_messages").insert({
+          instructor_id: userId,
+          pupil_id: pupil.id,
+          sender_type: "instructor",
+          sender_id: userId,
+          body,
+        });
+        if (chatErr) {
+          console.error("[gaps] chat_messages insert failed:", chatErr);
+        }
+        for (const s of slotsForOffer) {
+          void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
+        }
+      }
+
+      await notifyInstructors({
+        instructor_id: userId,
+        type: "gap_message_sent",
+        title: "Gap filler messages sent",
+        body: `Message sent to ${withBodies.length} pupil${withBodies.length === 1 ? "" : "s"} for ${slotsForOffer.length} slot${slotsForOffer.length === 1 ? "" : "s"}.`,
+        read: false,
+      });
+
+      const count = withBodies.length;
+      toast.success(`Message sent to ${count} pupil${count === 1 ? "" : "s"} ✅`);
+      setSelectedPupilIds(new Set());
+    } finally {
+      setSendingInApp(false);
+    }
+  }
 
   function handleMessage(r: Ranked) {
     const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
