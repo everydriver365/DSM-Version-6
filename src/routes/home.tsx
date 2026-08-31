@@ -32,6 +32,7 @@ import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
+import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
