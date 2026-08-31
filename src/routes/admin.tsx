@@ -1119,7 +1119,7 @@ function AdminHub() {
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 80px)" }}>
         <div style={{ padding: 16 }}>
-          <AdminGroupLabel first>Marketplace</AdminGroupLabel>
+          <AdminGroupLabel first>PRO Shop</AdminGroupLabel>
           <AdminGroupCard>
             <AdminSectionTile
               first
@@ -1129,7 +1129,7 @@ function AdminHub() {
             />
             <AdminSectionTile
               icon={<IconShoppingBag size={18} color="#000" />}
-              label="Marketplace listings"
+              label="PRO Shop listings"
               onClick={() => navigate({ to: "/admin/listings" as never })}
             />
             <AdminSectionTile

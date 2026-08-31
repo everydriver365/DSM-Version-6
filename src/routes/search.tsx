@@ -60,7 +60,7 @@ const NAV_PAGES = [
   { label: "Payments", route: "/payments", keywords: "payments money finance" },
   { label: "Enquiries", route: "/enquiries", keywords: "enquiries leads pipeline" },
   { label: "Courses", route: "/courses", keywords: "courses intensive lessons" },
-  { label: "Marketplace", route: "/marketplace", keywords: "marketplace shop services" },
+  { label: "PRO Shop", route: "/marketplace", keywords: "marketplace shop services" },
   { label: "Profile", route: "/profile", keywords: "profile settings account" },
   { label: "Reports", route: "/reports", keywords: "reports earnings income tax" },
   { label: "Community", route: "/community", keywords: "community alerts local" },

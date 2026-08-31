@@ -1860,7 +1860,7 @@ function Step3(props: {
       </div>
 
       <ToggleRow
-        label="Publish to EveryDriver marketplace"
+        label="Publish to EveryDriver PRO Shop"
         value={props.publishMarketplace}
         onChange={props.setPublishMarketplace}
       />

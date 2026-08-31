@@ -72,7 +72,7 @@ const allTools: Tool[] = [
   { icon: IconActivity, colour: '#CC2229', label: 'Business health', sub: 'Key metrics', route: '/business-health', group: 'Reports' },
   // Community
   { icon: IconRadio, colour: '#CC2229', label: 'EDP Live', sub: 'Sessions & podcasts', route: '/dsm-live', group: 'Community' },
-  { icon: IconShoppingBag, colour: '#1A52A0', label: 'Marketplace', sub: 'Products & services', route: '/marketplace', group: 'Community' },
+  { icon: IconShoppingBag, colour: '#1A52A0', label: 'PRO Shop', sub: 'Products & services', route: '/marketplace', group: 'Community' },
   { icon: IconUsers, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
   { icon: IconRosetteDiscount, colour: '#1877D6', label: 'Member Benefits', sub: 'Perks and rewards', route: '/benefits', group: 'Community' },
 ];

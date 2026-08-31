@@ -355,7 +355,7 @@ function AdminListingsPage() {
       await restPatch(l.id, { is_active: true });
       await notify(
         l.instructor_id,
-        `✓ Your listing '${l.title}' is now live on the EDP Marketplace!`,
+        `✓ Your listing '${l.title}' is now live on the EDP PRO Shop!`,
       );
       setListings((prev) =>
         prev.map((x) => (x.id === l.id ? { ...x, is_active: true } : x)),
@@ -518,7 +518,7 @@ function AdminListingsPage() {
         >
           <IconChevronLeft size={18} stroke={2} />
         </button>
-        <span style={{ fontSize: 26, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.5px" }}>Marketplace listings</span>
+        <span style={{ fontSize: 26, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.5px" }}>PRO Shop listings</span>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
