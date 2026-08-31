@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconCash,
-  IconCalendarEvent,
-  IconMessageCircle,
+  IconCalendarCheck,
+  IconMessage,
   IconChevronRight,
   IconListCheck,
 } from "@tabler/icons-react";
@@ -159,7 +159,7 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
         title: t.title,
         value: d.value,
         tone: d.tone,
-        Icon: IconCalendarEvent,
+        Icon: IconCalendarCheck,
         iconColor: NAVY,
         iconBg: "#F2F5F9",
         weight: d.weight,
@@ -172,7 +172,7 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
         id: "unread",
         title: `${unread} unread message${unread === 1 ? "" : "s"}`,
         tone: "muted",
-        Icon: IconMessageCircle,
+        Icon: IconMessage,
         iconColor: BLUE,
         iconBg: "#EAF2FE",
         weight: 4,
@@ -208,34 +208,21 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 8,
+          marginBottom: 10,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            aria-hidden
-            style={{
-              display: "inline-block",
-              width: 3,
-              height: 12,
-              borderRadius: 12,
-              backgroundColor: BLUE,
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              fontSize: tokens.fontSize.sm,
-              fontWeight: tokens.fontWeight.semibold,
-              color: BLUE,
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              fontFamily: PF,
-            }}
-          >
-            Tasks &amp; Actions
-          </span>
-        </div>
+        <span
+          style={{
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.bold,
+            color: NAVY,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            fontFamily: PF,
+          }}
+        >
+          Tasks &amp; Actions
+        </span>
         <button
           type="button"
           onClick={() => (onSeeAll ? onSeeAll() : navigate({ to: "/todos" as never }))}
@@ -257,7 +244,7 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
       <div
         style={{
           background: "#FFFFFF",
-          borderRadius: 12,
+          borderRadius: 16,
           border: `0.5px solid ${BORDER}`,
           boxShadow: "0 1px 2px rgba(11,31,58,0.04), 0 4px 12px rgba(11,31,58,0.06)",
           overflow: "hidden",
@@ -275,8 +262,8 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                padding: "13px 14px",
+                gap: 14,
+                padding: "14px 16px",
                 background: "transparent",
                 border: "none",
                 borderTop: i === 0 ? "none" : `0.5px solid ${BORDER}`,
@@ -287,9 +274,9 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
             >
               <span
                 style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 9,
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
                   flexShrink: 0,
                   background: item.iconBg ?? "#F2F5F9",
                   display: "inline-flex",
@@ -297,14 +284,14 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                   justifyContent: "center",
                 }}
               >
-                <Icon size={16} color={item.iconColor ?? NAVY} stroke={1.8} />
+                <Icon size={20} color={item.iconColor ?? NAVY} stroke={1.7} />
               </span>
 
               <span
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: tokens.fontWeight.semibold,
                   color: NAVY,
                   whiteSpace: "nowrap",
@@ -318,7 +305,7 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
               {item.value ? (
                 <span
                   style={{
-                    fontSize: 13.5,
+                    fontSize: 14,
                     fontWeight: tokens.fontWeight.bold,
                     color: toneColor[item.tone],
                     flexShrink: 0,
@@ -327,7 +314,7 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                   {item.value}
                 </span>
               ) : (
-                <IconChevronRight size={17} color="#C7CDD9" stroke={1.8} style={{ flexShrink: 0 }} />
+                <IconChevronRight size={18} color="#C7CDD9" stroke={1.8} style={{ flexShrink: 0 }} />
               )}
             </button>
           );

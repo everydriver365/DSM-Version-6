@@ -38,7 +38,7 @@ import ProPage from "@/routes/pro.tsx";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
-import { useProRadioContext } from "@/hooks/useProRadio";
+
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
 import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
@@ -1437,136 +1437,6 @@ function isLessonNow(
   }
 }
 
-function ProRadioHomeCard() {
-  const navigate = useNavigate();
-  const radio = useProRadioContext();
-
-  return (
-    <div
-      onClick={() => navigate({ to: '/radio' as never })}
-      style={{
-        background: tokens.white,
-        borderRadius: tokens.radiusCard,
-        boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        fontFamily: 'Poppins, sans-serif',
-      }}
-    >
-      {/* Navy accent bar */}
-      <div style={{ height: 4, background: tokens.navy }} />
-
-      {/* Live indicator */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '10px 14px 0',
-          fontSize: tokens.fontSize.xs,
-          fontWeight: tokens.fontWeight.bold,
-          color: '#CC2229',
-          textTransform: 'uppercase',
-          letterSpacing: 0.4,
-        }}
-      >
-        <span
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: '#CC2229',
-          }}
-        />
-        Live now · PRO Radio
-      </div>
-
-      {/* Card body */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          padding: '10px 14px 14px',
-        }}
-      >
-        {/* Artwork */}
-        <div
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: 10,
-            background: 'linear-gradient(135deg, #1877D6 0%, #0B1F3A 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <IconRadio size={26} color="#FFFFFF" stroke={1.5} />
-        </div>
-
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: tokens.fontSize.base,
-              fontWeight: tokens.fontWeight.bold,
-              color: tokens.navy,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {radio.showName ?? 'The Instructor Show'}
-          </div>
-          <div
-            style={{
-              fontSize: tokens.fontSize.sm,
-              color: tokens.textSecondary,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              marginTop: 2,
-            }}
-          >
-            {radio.nowPlaying?.title ?? 'PRO Radio'}
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              radio.toggle();
-            }}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              background: '#EAF5FC',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            {radio.isPlaying ? (
-              <IconPlayerPause size={18} color="#1877D6" stroke={2} />
-            ) : (
-              <IconPlayerPlay size={18} color="#1877D6" stroke={2} />
-            )}
-          </button>
-
-          <IconChevronRight size={18} color="#C7CDD9" stroke={1.5} />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 
 function HomePage() {
