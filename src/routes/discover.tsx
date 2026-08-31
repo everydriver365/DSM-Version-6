@@ -19,13 +19,13 @@ export const Route = createFileRoute("/discover")({
       {
         name: "description",
         content:
-          "Live sessions, learning videos and marketplace listings for driving instructors, all in one place.",
+          "Live sessions, learning videos and PRO Shop listings for driving instructors, all in one place.",
       },
       { property: "og:title", content: "Discover — EDP" },
       {
         property: "og:description",
         content:
-          "Live sessions, learning videos and marketplace listings for driving instructors, all in one place.",
+          "Live sessions, learning videos and PRO Shop listings for driving instructors, all in one place.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -333,7 +333,7 @@ function TabBar({
   const tabs: { id: "live" | "learn" | "market"; label: string }[] = [
     { id: "live", label: "Live" },
     { id: "learn", label: "Learn" },
-    { id: "market", label: "Marketplace" },
+    { id: "market", label: "PRO Shop" },
   ];
   return (
     <div
@@ -478,7 +478,7 @@ function DiscoverPage() {
           Discover
         </h1>
         <p style={{ fontSize: tokens.fontSize.md, color: "#6B7A90", margin: "4px 0 0" }}>
-          Live sessions, learning and the marketplace — all in one place.
+          Live sessions, learning and PRO Shop — all in one place.
         </p>
       </div>
 
@@ -585,7 +585,7 @@ function DiscoverPage() {
       {activeTab === "market" && (
         <div ref={marketRef} id="discover-market">
           <SectionBlock
-            title="EDP Marketplace"
+            title="EDP PRO Shop"
             subtitle="Cars, kit and services for instructors"
             actionLabel="See all"
             onAction={() => navigate({ to: "/marketplace" as never })}
