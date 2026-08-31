@@ -1496,7 +1496,7 @@ function GapsPage() {
 
   return (
     <DSMTopSheet title="Available Gaps">
-      <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
+      <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden", paddingBottom: 80 }}>
       {/* Pulse animation for the freed-slot highlight */}
       <style>{`
         @keyframes gapsPrefilterPulse {
@@ -2573,47 +2573,35 @@ function GapsPage() {
         </div>
       )}
       {selectedSlots.length > 0 && ranked === null && (
-        <div
+        <button
+          onClick={() => void findPupils()}
+          disabled={loading}
           style={{
             position: "fixed",
-            bottom: 80,
-            left: 0,
-            right: 0,
-            padding: "14px 20px",
-            background: "rgba(255,255,255,0.92)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            borderTop: `1px solid ${BORDER}`,
+            bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+            left: 16,
+            right: 16,
             zIndex: 50,
+            width: "calc(100% - 32px)",
+            height: 52,
+            borderRadius: 14,
+            background: "#2C97DE",
+            color: "#fff",
+            fontSize: 15,
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            border: "none",
+            cursor: "pointer",
+            opacity: loading ? 0.6 : 1,
+            boxShadow: "0 4px 16px rgba(44,151,222,0.4)",
           }}
         >
-          <button
-            onClick={() => void findPupils()}
-            disabled={loading}
-            style={{
-              width: "100%",
-              background: BLUE_BRIGHT,
-              color: tokens.white,
-              fontWeight: tokens.fontWeight.bold,
-              fontSize: 15,
-              borderRadius: tokens.radiusCard,
-              border: "none",
-              padding: "14px 16px",
-              cursor: "pointer",
-              opacity: loading ? 0.6 : 1,
-              boxShadow:
-                "0 8px 20px rgba(59, 130, 246, 0.28)",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            {loading
-              ? "Finding…"
-              : `Find pupils for ${selectedSlots.length} slot${selectedSlots.length === 1 ? "" : "s"} →`}
-          </button>
-        </div>
+          <IconUsers size={20} color="#fff" />
+          {loading ? "Finding pupils…" : "Find pupils for this slot"}
+        </button>
       )}
 
       <BottomSheet
