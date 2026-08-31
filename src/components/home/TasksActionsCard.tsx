@@ -4,11 +4,11 @@ import {
   IconCash,
   IconCalendarEvent,
   IconMessageCircle,
-  IconClipboardCheck,
   IconChevronRight,
   IconListCheck,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
+import { calculateOutstandingOwed } from "@/lib/paymentsOwed";
 import { tokens } from "@/lib/tokens";
 
 const PF = "Poppins, sans-serif";
@@ -81,14 +81,12 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
         const [unpaidRes, unreadRes, todoRes] = await Promise.all([
           supabase
             .from("lessons")
-            .select("amount_due, paid_amount, pupils(first_name, name)")
+            .select("amount_due, paid_amount, pupils(name)")
             .eq("instructor_id", userId)
-            .eq("payment_status", "unpaid")
-            .neq("status", "cancelled")
-            .gt("amount_due", 0)
+            .in("payment_status", ["unpaid", "partial"])
+            .not("lesson_type", "eq", "event")
             .is("deleted_at", null)
-            .order("lesson_date", { ascending: false })
-            .limit(50),
+            .limit(200),
           supabase
             .from("chat_messages")
             .select("id", { count: "exact", head: true })
@@ -108,19 +106,17 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
 
         if (cancelled) return;
 
-        const rows = (unpaidRes.data ?? []) as Array<{
+        const rows = ((unpaidRes.data ?? []) as Array<{
           amount_due: number | null;
           paid_amount: number | null;
-          pupils?: { first_name?: string | null; name?: string | null } | null;
-        }>;
-        const total = rows.reduce(
-          (s, r) => s + Math.max(0, Number(r.amount_due || 0) - Number(r.paid_amount || 0)),
-          0,
-        );
-        const first = rows[0]?.pupils;
+          pupils?: { name?: string | null } | null;
+        }>).filter((r) => Math.max(0, Number(r.amount_due || 0) - Number(r.paid_amount || 0)) > 0);
+        const total = calculateOutstandingOwed(rows);
+        const names = new Set(rows.map((r) => r.pupils?.name).filter(Boolean) as string[]);
+        const firstName = rows[0]?.pupils?.name ?? null;
         setOwed({
           total,
-          name: first?.first_name || first?.name?.split(" ")[0] || null,
+          name: names.size === 1 && firstName ? firstName : null,
           count: rows.length,
         });
         setUnread(unreadRes.count ?? 0);
@@ -340,52 +336,5 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
     </>
   );
 }
-
-/** Static rows matching the design mock-up — handy for visual review. */
-export const MOCK_TASK_ITEMS: TaskItem[] = [
-  {
-    id: "m1",
-    title: "Confirm payment – Emily Davis",
-    value: "£45.00",
-    tone: "danger",
-    Icon: IconCash,
-    iconColor: "#FFFFFF",
-    iconBg: "#F5A524",
-    weight: 1,
-    onPress: () => {},
-  },
-  {
-    id: "m2",
-    title: "Upload ADI standards CPD evidence",
-    value: "Due today",
-    tone: "danger",
-    Icon: IconCalendarEvent,
-    iconColor: NAVY,
-    iconBg: "#F2F5F9",
-    weight: 2,
-    onPress: () => {},
-  },
-  {
-    id: "m3",
-    title: "2 unread messages",
-    tone: "muted",
-    Icon: IconMessageCircle,
-    iconColor: BLUE,
-    iconBg: "#EAF2FE",
-    weight: 4,
-    onPress: () => {},
-  },
-  {
-    id: "m4",
-    title: "Vehicle check reminder",
-    value: "Due tomorrow",
-    tone: "warning",
-    Icon: IconClipboardCheck,
-    iconColor: NAVY,
-    iconBg: "#F2F5F9",
-    weight: 5,
-    onPress: () => {},
-  },
-];
 
 export default TasksActionsCard;
