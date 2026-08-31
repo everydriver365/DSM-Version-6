@@ -1596,6 +1596,7 @@ function HomePage() {
   const touchStartY = useRef(0);
   const touchStartTime = useRef(0);
   const isDragging = useRef(false);
+  const swipeDisabled = useRef(false);
 
 
   // Universal search bottom sheet
