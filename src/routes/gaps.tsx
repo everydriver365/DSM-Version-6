@@ -446,6 +446,10 @@ function GapsPage() {
   const [messageSheetOpen, setMessageSheetOpen] = useState(false);
   const [confirmSendOpen, setConfirmSendOpen] = useState(false);
   const [messageTemplate, setMessageTemplate] = useState("");
+  const [sendingText, setSendingText] = useState(false);
+  const [sendingInApp, setSendingInApp] = useState(false);
+
+  const pupilListRef = useRef<HTMLDivElement | null>(null);
 
   const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
   const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
