@@ -1569,30 +1569,48 @@ function ProRadioHomeCard() {
 
 function DiscoverAndLearnPromo() {
   const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
-  const handleScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el || el.clientWidth === 0) return;
-    const next = Math.round(el.scrollLeft / el.clientWidth);
-    if (next !== activeIndex && next >= 0 && next <= 1) {
-      setActiveIndex(next);
-    }
-  }, [activeIndex]);
+  const goToPro = useCallback(() => {
+    navigate({ to: "/pro" as never });
+  }, [navigate]);
 
-  const tileBase: React.CSSProperties = {
-    flex: "0 0 100%",
-    width: "100%",
-    minWidth: "100%",
-    scrollSnapAlign: "start",
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+    touchStartY.current = e.touches[0]?.clientY ?? null;
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const startX = touchStartX.current;
+      const startY = touchStartY.current;
+      const endX = e.changedTouches[0]?.clientX ?? null;
+      const endY = e.changedTouches[0]?.clientY ?? null;
+      touchStartX.current = null;
+      touchStartY.current = null;
+      if (startX == null || endX == null || startY == null || endY == null) return;
+      const dx = endX - startX;
+      const dy = endY - startY;
+      // Left swipe on the section navigates to the PRO page.
+      if (dx < -60 && Math.abs(dx) > Math.abs(dy)) {
+        goToPro();
+      }
+    },
+    [goToPro],
+  );
+
+  const cardBase: React.CSSProperties = {
+    background: "#FFFFFF",
     borderRadius: 16,
+    border: "1px solid #EEF2F7",
+    boxShadow: "0 1px 2px rgba(11,31,58,0.05), 0 8px 24px -12px rgba(11,31,58,0.10)",
     overflow: "hidden",
     cursor: "pointer",
   };
 
   return (
-    <div style={{ fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ fontFamily: "Poppins, sans-serif" }} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div style={{ ...SECTION_HEADER_STYLE, marginBottom: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
@@ -1601,89 +1619,262 @@ function DiscoverAndLearnPromo() {
       </div>
 
       <div
-        ref={scrollRef}
-        onScroll={handleScroll}
         style={{
-          display: "flex",
-          overflowX: "auto",
-          overflowY: "hidden",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1.15fr) minmax(0, 1fr)",
+          gap: 12,
         }}
       >
-        {/* Page 1 */}
+        {/* Main PRO taster card */}
         <div
-          onClick={() => navigate({ to: "/pro" as never })}
+          onClick={goToPro}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") goToPro();
+          }}
           style={{
-            ...tileBase,
-            background: "#FFFFFF",
-            border: "0.5px solid #E4E8EF",
-            boxShadow: "0 4px 20px rgba(11,35,65,0.08)",
+            ...cardBase,
+            gridRow: "span 2",
             padding: 16,
             display: "flex",
             flexDirection: "column",
+            justifyContent: "space-between",
+            minHeight: 240,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <img
-              src={edpProLogo.url}
-              alt="EDP PRO"
-              style={{ width: 60, height: 60, objectFit: "contain" }}
+          <div>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <img
+                src={edpProLogo.url}
+                alt="EDP PRO"
+                style={{ width: 56, height: 56, objectFit: "contain", flexShrink: 0 }}
+              />
+              <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.15 }}>Explore</div>
+                <div
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 800,
+                    lineHeight: 1.1,
+                    background: "linear-gradient(90deg, #1877D6 0%, #00A6A6 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    display: "inline-block",
+                  }}
+                >
+                  EDP PRO
+                </div>
+              </div>
+              <IconArrowRight size={20} color="#7C3AED" stroke={2.5} style={{ flexShrink: 0, marginTop: 4 }} />
+            </div>
+            <div style={{ fontSize: 12, color: "#6B7686", marginTop: 8, lineHeight: 1.45 }}>
+              Your hub for exclusive TV, Radio, Shop & member perks.
+            </div>
+          </div>
+
+          {/* Category quick links */}
+          <div style={{ marginTop: 12 }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1px 1fr 1px 1fr 1px 1fr",
+                alignItems: "center",
+                gap: 4,
+                padding: "10px 0",
+                borderTop: "1px solid #EEF2F7",
+              }}
+            >
+              {[
+                { icon: IconDeviceTv, color: "#10B981", bg: "#D1FAE5", label: "PRO TV", route: "/learn" },
+                { icon: IconRadio, color: "#EF4444", bg: "#FEE2E2", label: "PRO Radio", route: "/radio" },
+                { icon: IconShoppingBag, color: "#1877D6", bg: "#DBEAFE", label: "PRO Shop", route: "/marketplace" },
+                { icon: IconGift, color: "#7C3AED", bg: "#EDE9FE", label: "PRO Perks", route: "/benefits" },
+              ].map((item, i, arr) => (
+                <Fragment key={item.label}>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate({ to: item.route as never });
+                    }}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 6,
+                      background: "transparent",
+                      border: "none",
+                      padding: "4px 0",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 10,
+                        background: item.bg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <item.icon size={18} color={item.color} stroke={2} />
+                    </span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap" }}>{item.label}</span>
+                  </button>
+                  {i < arr.length - 1 && <span style={{ background: "#EEF2F7", height: 24, width: 1 }} />}
+                </Fragment>
+              ))}
+            </div>
+
+            {/* Swipe hint */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: 10,
+                padding: "8px 12px",
+                borderRadius: 12,
+                background: "#F0EBFF",
+              }}
+            >
+              <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED" }}>Swipe left for more content</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <IconArrowRight size={14} color="#7C3AED" />
+                <IconHandFinger size={16} color="#7C3AED" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right-hand taster tiles */}
+        {[
+          {
+            title: "TV",
+            subtitle: "Guides, bitesize & exclusive videos",
+            icon: IconDeviceTv,
+            iconBg: "#D1FAE5",
+            iconColor: "#10B981",
+            route: "/learn",
+            live: true,
+            watermark: IconDeviceTv,
+          },
+          {
+            title: "Radio",
+            subtitle: "Live radio, podcasts & news",
+            icon: IconRadio,
+            iconBg: "#FEE2E2",
+            iconColor: "#EF4444",
+            route: "/radio",
+            live: false,
+            watermark: IconRadio,
+          },
+          {
+            title: "Shop",
+            subtitle: "Products, services & special offers",
+            icon: IconShoppingBag,
+            iconBg: "#DBEAFE",
+            iconColor: "#1877D6",
+            route: "/marketplace",
+            live: false,
+            watermark: IconShoppingBag,
+          },
+          {
+            title: "Perks",
+            subtitle: "Member benefits & discounts",
+            icon: IconGift,
+            iconBg: "#EDE9FE",
+            iconColor: "#7C3AED",
+            route: "/benefits",
+            live: false,
+            watermark: IconGift,
+          },
+        ].map((tile) => (
+          <div
+            key={tile.title}
+            onClick={() => navigate({ to: tile.route as never })}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") navigate({ to: tile.route as never });
+            }}
+            style={{
+              ...cardBase,
+              padding: 14,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              position: "relative",
+              minHeight: 114,
+            }}
+          >
+            {/* Watermark */}
+            <tile.watermark
+              size={64}
+              color={tile.iconColor}
+              stroke={1}
+              style={{
+                position: "absolute",
+                right: -10,
+                bottom: -10,
+                opacity: 0.08,
+                pointerEvents: "none",
+              }}
             />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#0B2341", lineHeight: 1.2 }}>
-                Explore EDP PRO →
+
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <span
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  background: tile.iconBg,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <tile.icon size={18} color={tile.iconColor} stroke={2} />
+              </span>
+              {tile.live && (
+                <span
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: "#22C55E",
+                    boxShadow: "0 0 0 2px #fff",
+                  }}
+                  aria-label="Live"
+                />
+              )}
+            </div>
+
+            <div style={{ marginTop: "auto", position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+                <span
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: "#fff",
+                    background: "#1877D6",
+                    borderRadius: 4,
+                    padding: "2px 4px",
+                    lineHeight: 1,
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  EDP
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>{tile.title}</span>
               </div>
-              <div style={{ fontSize: 12, color: "#536579", marginTop: 4, lineHeight: 1.4 }}>
-                Your hub for exclusive TV, Radio, Shop & member perks.
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#EAF5FC", color: "#2C97DE" }}>
-                  <IconDeviceTv size={12} stroke={2} /> PRO TV
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#FEE2E2", color: "#E53935" }}>
-                  <IconRadio size={12} stroke={2} /> PRO Radio
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#FEF3C7", color: "#F59E0B" }}>
-                  <IconShoppingBag size={12} stroke={2} /> PRO Shop
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 4, borderRadius: 20, padding: "4px 10px", fontSize: 11, fontWeight: 600, background: "#F0EBFF", color: "#7B61FF" }}>
-                  <IconGift size={12} stroke={2} /> PRO Perks
-                </span>
-              </div>
+              <div style={{ fontSize: 10, color: "#6B7686", lineHeight: 1.35 }}>{tile.subtitle}</div>
             </div>
           </div>
-
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto", paddingTop: 14 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <IconHandFinger size={14} color="#D1D5DB" />
-              <span style={{ fontSize: 11, color: "#D1D5DB" }}>Swipe for PRO →</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ width: activeIndex === 0 ? 16 : 6, height: 4, borderRadius: 2, background: activeIndex === 0 ? "#0B2341" : "#D1D5DB", transition: "width 0.2s ease" }} />
-              <span style={{ width: activeIndex === 1 ? 16 : 6, height: 4, borderRadius: 2, background: activeIndex === 1 ? "#0B2341" : "#D1D5DB", transition: "width 0.2s ease" }} />
-            </div>
-          </div>
-        </div>
-
-        {/* Page 2 */}
-        <div
-          style={{
-            ...tileBase,
-            background: "#F4F6F8",
-            border: "0.5px solid #E4E8EF",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          <IconSparkles size={32} color="#D1D5DB" />
-          <div style={{ fontSize: 15, fontWeight: 700, color: "#D1D5DB" }}>EDP PRO</div>
-          <div style={{ fontSize: 12, color: "#D1D5DB" }}>Coming soon</div>
-        </div>
+        ))}
       </div>
     </div>
   );
