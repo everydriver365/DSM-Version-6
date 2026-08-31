@@ -997,7 +997,7 @@ function ProPage() {
     <PageLayout style={{ backgroundColor: PAGE_BG, ...POPPINS }}>
       <div
         style={{
-          paddingTop: "calc(env(safe-area-inset-top, 0px) + 52px)",
+          paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)",
           paddingLeft: 16,
           paddingRight: 16,
           paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
