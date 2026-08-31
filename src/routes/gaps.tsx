@@ -2910,50 +2910,8 @@ function GapsPage() {
         )}
       </div>
 
-      {(selectedSlots.length > 0 || selectedPupilIds.size > 0) && (
-        <div style={{ height: selectedPupilIds.size > 0 ? 168 : 108 }} />
-      )}
-      {selectedPupilIds.size > 0 && (
-        <div
-          style={{
-            position: "fixed",
-            left: "50%",
-            transform: "translateX(-50%)",
-            bottom: 80,
-            width: "70%",
-            background: NAVY,
-            borderRadius: tokens.radiusCard,
-            padding: 16,
-            boxShadow: "0 8px 24px rgba(11,31,58,0.3)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-            zIndex: 50,
-            boxSizing: "border-box",
-          }}
-        >
-          <button
-            onClick={openMessageSheet}
-            style={{
-              width: "100%",
-              background: tokens.white,
-              color: NAVY,
-              fontWeight: tokens.fontWeight.bold,
-              fontSize: 15,
-              borderRadius: tokens.radiusCard,
-              border: "none",
-              padding: "14px 16px",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            <IconSend size={18} />
-            IconSend message
-          </button>
-        </div>
+      {selectedSlots.length > 0 && ranked === null && (
+        <div style={{ height: 108 }} />
       )}
       {selectedSlots.length > 0 && ranked === null && (
         <button
