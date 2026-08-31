@@ -9,6 +9,7 @@ import {
   IconListCheck,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
+import { calculateOutstandingOwed } from "@/lib/paymentsOwed";
 import { tokens } from "@/lib/tokens";
 
 const PF = "Poppins, sans-serif";
