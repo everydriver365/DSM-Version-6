@@ -1445,48 +1445,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
 
-  const tiles = [
-    {
-      label: "TV",
-      sub: "Guides, bitesize & exclusive videos",
-      route: "/dsm-live",
-      icon: IconDeviceTv,
-      bg: "#E9F7EE",
-      color: "#22A45D",
-      live: true,
-    },
-    {
-      label: "Radio",
-      sub: "Live radio, podcasts & news",
-      route: "/radio",
-      icon: IconMicrophone,
-      bg: "#FDECEC",
-      color: "#E24B4B",
-    },
-    {
-      label: "Shop",
-      sub: "Products, services & special offers",
-      route: "/marketplace",
-      icon: IconShoppingBag,
-      bg: "#E8F0FE",
-      color: "#1877D6",
-    },
-    {
-      label: "Perks",
-      sub: "Member benefits & discounts",
-      route: "/perks",
-      icon: IconGift,
-      bg: "#F1ECFD",
-      color: "#7C3AED",
-    },
-  ];
-
-  const mini = [
-    { label: "PRO TV", icon: IconDeviceTv, color: "#22A45D" },
-    { label: "PRO Radio", icon: IconMicrophone, color: "#E24B4B" },
-    { label: "PRO Shop", icon: IconShoppingBag, color: "#1877D6" },
-    { label: "PRO Perks", icon: IconGift, color: "#7C3AED" },
-  ];
 
   const cardStyle: React.CSSProperties = {
     background: "#fff",
