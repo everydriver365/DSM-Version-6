@@ -15,3 +15,12 @@
 - [x] Move FAB quick-add pill menu up so bottom items aren't obscured
 - [x] Auto-refresh payment history after taking a payment
 - [x] Show a success toast after taking a payment
+- [ ] Implement full-screen two-page swipe between HOME and PRO screens in home.tsx
+  - [ ] Read home.tsx and pro.tsx fully
+  - [ ] Add activePage state and touch refs at top of HomePage
+  - [ ] Wrap home page in swipeable outer wrapper + sliding container
+  - [ ] Screen 1 contains existing home PageLayout content unchanged
+  - [ ] Screen 2 embeds ProPage inline
+  - [ ] Add fixed TODAY/PRO pill tabs at top
+  - [ ] Add fixed dot indicators at bottom
+  - [ ] Remove DiscoverAndLearnPromo and DiscoverSection components/usage
