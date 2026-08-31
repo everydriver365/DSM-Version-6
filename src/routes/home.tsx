@@ -12346,50 +12346,6 @@ function TestsBreakdownModal({
 
 
 
-const DISCOVER_SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-const DISCOVER_SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-
-const DISCOVER_HEADERS = {
-  apikey: DISCOVER_SUPABASE_ANON_KEY,
-  Authorization: `Bearer ${DISCOVER_SUPABASE_ANON_KEY}`,
-};
-
-type DiscoverListing = {
-  id: string;
-  title: string;
-  price_display: string | null;
-  price_amount: number | null;
-  image_urls: string[] | null;
-  is_featured: boolean;
-  marketplace_categories: { name: string; slug: string } | null;
-};
-
-function formatDiscoverDay(dateStr: string): string {
-  try {
-    const d = new Date(dateStr + "T00:00:00");
-    return String(d.getDate());
-  } catch {
-    return "–";
-  }
-}
-
-function formatDiscoverMonth(dateStr: string): string {
-  try {
-    const d = new Date(dateStr + "T00:00:00");
-    return d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
-  } catch {
-    return "";
-  }
-}
-
-function formatDiscoverTime(timeStr: string): string {
-  if (!timeStr) return "";
-  const [h, m] = timeStr.split(":");
-  const hh = String(Number(h) || 0).padStart(2, "0");
-  const mm = (m ?? "00").padStart(2, "0");
-  return `${hh}:${mm}`;
-}
 
 
 
