@@ -727,16 +727,22 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
   const [activeIndex, setActiveIndex] = useState(0);
 
   const products = listings.length
-    ? listings.slice(0, 5)
+    ? listings
     : ([
         { id: "1", title: "Garmin Dash Cam 67W", price_display: "£259.99", image_urls: [] },
+        { id: "2", title: "Dash Cam Hardwire Kit", price_display: "£29.99", image_urls: [] },
+        { id: "3", title: "ADI Badge Holder", price_display: "£8.99", image_urls: [] },
       ] as ShopListing[]);
+
+  const GAP = 12;
 
   const handleScroll = () => {
     const el = containerRef.current;
     if (!el) return;
-    const idx = Math.round(el.scrollLeft / (el.offsetWidth * 0.72));
-    setActiveIndex(idx);
+    const card = el.firstElementChild as HTMLElement | null;
+    const cardWidth = card ? card.getBoundingClientRect().width : el.offsetWidth / 2;
+    const idx = Math.round(el.scrollLeft / (cardWidth + GAP));
+    setActiveIndex(Math.min(idx, Math.max(0, products.length - 1)));
   };
 
   return (
@@ -776,7 +782,7 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
         onScroll={handleScroll}
         style={{
           display: "flex",
-          gap: 12,
+          gap: GAP,
           overflowX: "auto",
           scrollSnapType: "x mandatory",
           WebkitOverflowScrolling: "touch",
@@ -793,8 +799,7 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
               onClick={() => onNavigate(`/marketplace`)}
               style={{
                 flex: "0 0 auto",
-                width: "72%",
-                maxWidth: 260,
+                width: `calc(50% - ${GAP / 2}px)`,
                 scrollSnapAlign: "start",
                 background: "#fff",
                 borderRadius: CARD_RADIUS,
