@@ -1463,127 +1463,63 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
         </span>
       </div>
 
-      {/* PRO service cards */}
+      {/* Main explore card */}
       <div
-        style={{
-          display: "flex",
-          gap: 10,
-          overflowX: "auto",
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          paddingBottom: 4,
-        }}
+        onClick={() => go("/pro")}
+        style={{ ...cardStyle, padding: 16, cursor: "pointer", marginBottom: 12 }}
       >
-        <style>{`
-          .pro-service-row::-webkit-scrollbar { display: none; }
-        `}</style>
-        {[
-          {
-            label: "PRO Radio",
-            sub: "Live & curated driving radio",
-            route: "/radio",
-            icon: IconRadio,
-            bg: "#E8F2FC",
-            color: "#1877D6",
-            live: true,
-          },
-          {
-            label: "PRO TV",
-            sub: "Training videos & guides",
-            route: "/dsm-live",
-            icon: IconDeviceTv,
-            bg: "#F3E8FF",
-            color: "#7C3AED",
-          },
-          {
-            label: "PRO Learn",
-            sub: "Courses & CPD content",
-            route: "/dsm-learn",
-            icon: IconSchool,
-            bg: "#E6F6F4",
-            color: "#22A6A0",
-          },
-          {
-            label: "PRO Perks",
-            sub: "Member offers & discounts",
-            route: "/perks",
-            icon: IconTag,
-            bg: "#FEF6E0",
-            color: "#F59E0B",
-          },
-          {
-            label: "PRO Shop",
-            sub: "Products & deals",
-            route: "/marketplace",
-            icon: IconShoppingBag,
-            bg: "#FCE8F3",
-            color: "#EC4899",
-          },
-        ].map((s) => (
-          <div
-            key={s.label}
-            onClick={() => go(s.route)}
-            className="pro-service-row"
-            style={{
-              flex: "0 0 auto",
-              width: 140,
-              minHeight: 148,
-              background: s.bg,
-              borderRadius: 16,
-              border: "0.5px solid rgba(0,0,0,0.04)",
-              padding: 14,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              cursor: "pointer",
-              position: "relative",
-            }}
-          >
-            {s.live && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  background: "#DC2626",
-                  color: "#fff",
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: 0.4,
-                  padding: "2px 6px",
-                  borderRadius: 4,
-                }}
-              >
-                LIVE
-              </span>
-            )}
-            <div
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: 12,
-                background: "rgba(255,255,255,0.85)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <s.icon size={24} stroke={1.6} color={s.color} />
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <img
+            src={proLogo.url}
+            alt="EDP PRO"
+            width={64}
+            height={64}
+            loading="lazy"
+            style={{ width: 64, height: 64, objectFit: "contain", flexShrink: 0 }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.15 }}>
+                  Explore
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.15 }}>
+                  <span style={{ color: "#1877D6" }}>EDP </span>
+                  <span style={{ color: "#22A6A0" }}>PRO</span>
+                </div>
+              </div>
+              <IconArrowRight size={22} stroke={2} color="#1877D6" />
             </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
-                {s.label}
-              </div>
-              <div style={{ fontSize: 11, fontWeight: 500, color: "#5A6B80", marginTop: 4, lineHeight: 1.35 }}>
-                {s.sub}
-              </div>
+            <div style={{ fontSize: 12, color: "#5A6B80", marginTop: 6, lineHeight: 1.4 }}>
+              Your hub for exclusive TV, Radio, Shop &amp; member perks.
             </div>
           </div>
-        ))}
-      </div>
+        </div>
 
+
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onExploreSwipe) onExploreSwipe();
+            else go("/pro");
+          }}
+          style={{
+            marginTop: 14,
+            background: "#F3EFFD",
+            borderRadius: 12,
+            padding: "12px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#5B3FD6" }}>
+            Swipe left for more content
+          </span>
+          <IconArrowRight size={18} stroke={2} color="#5B3FD6" />
+        </div>
+      </div>
 
     </div>
   );
