@@ -159,7 +159,7 @@ function MarketplaceProductPage() {
             to="/marketplace"
             style={{ color: tokens.blue, fontWeight: tokens.fontWeight.semibold, fontSize: 14 }}
           >
-            Back to marketplace
+            Back to PRO Shop
           </Link>
         </div>
       ) : (

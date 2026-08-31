@@ -12,17 +12,17 @@ const SUPABASE_ANON_KEY =
 export const Route = createFileRoute("/marketplace_/seller/$supplierId")({
   head: () => ({
     meta: [
-      { title: "Seller profile — EDP Marketplace" },
+      { title: "Seller profile — EDP PRO Shop" },
       {
         name: "description",
         content:
-          "View a marketplace seller's profile and browse all of their active listings on Driving School Manager.",
+          "View a PRO Shop seller's profile and browse all of their active listings on Driving School Manager.",
       },
-      { property: "og:title", content: "Seller profile — EDP Marketplace" },
+      { property: "og:title", content: "Seller profile — EDP PRO Shop" },
       {
         property: "og:description",
         content:
-          "View a marketplace seller's profile and browse all of their active listings.",
+          "View a PRO Shop seller's profile and browse all of their active listings.",
       },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary" },
