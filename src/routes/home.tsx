@@ -1454,11 +1454,10 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
   };
 
   const proShortcuts = [
-    { label: "TV", route: "/dsm-live", icon: IconDeviceTv, color: "#7C3AED", bg: "#F5F0FF" },
-    { label: "Radio", route: "/radio", icon: IconRadio, color: "#0891B2", bg: "#ECFEFF" },
-    { label: "Learn", route: "/dsm-learn", icon: IconSchool, color: "#22A6A0", bg: "#E6F7F6" },
-    { label: "Shop", route: "/marketplace", icon: IconShoppingBag, color: "#DB2777", bg: "#FDF2F8" },
-    { label: "Perks", route: "/perks", icon: IconTag, color: "#F59E0B", bg: "#FEF3C7" },
+    { label: "PRO TV", route: "/dsm-live", icon: IconDeviceTv, color: "#22C55E" },
+    { label: "PRO Radio", route: "/radio", icon: IconMicrophone, color: "#EF4444" },
+    { label: "PRO Shop", route: "/marketplace", icon: IconShoppingBag, color: "#1877D6" },
+    { label: "PRO Perks", route: "/perks", icon: IconGift, color: "#7C3AED" },
   ];
 
   return (
@@ -1504,6 +1503,57 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           </div>
         </div>
 
+        {/* PRO shortcut icons */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            marginTop: 16,
+            paddingTop: 16,
+            borderTop: "0.5px solid #E5E5EA",
+          }}
+        >
+          {proShortcuts.map((s, index) => {
+            const Icon = s.icon;
+            return (
+              <React.Fragment key={s.label}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    go(s.route);
+                  }}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: 0,
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    flex: "1 1 0",
+                    minWidth: 0,
+                  }}
+                >
+                  <Icon size={24} color={s.color} stroke={1.8} />
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "#0B1F3A" }}>{s.label}</span>
+                </button>
+                {index < proShortcuts.length - 1 && (
+                  <div
+                    style={{
+                      width: "0.5px",
+                      height: 36,
+                      background: "#E5E5EA",
+                      flexShrink: 0,
+                    }}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
 
         <div
           onClick={(e) => {
@@ -1512,7 +1562,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
             else go("/pro");
           }}
           style={{
-            marginTop: 14,
+            marginTop: 16,
             background: "#F3EFFD",
             borderRadius: 12,
             padding: "12px 14px",
@@ -1528,56 +1578,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           <IconArrowRight size={18} stroke={2} color="#5B3FD6" />
         </div>
       </div>
-
-      {/* Compact PRO shortcut icons */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 8,
-          padding: "0 4px",
-        }}
-      >
-        {proShortcuts.map((s) => {
-          const Icon = s.icon;
-          return (
-            <button
-              key={s.label}
-              type="button"
-              onClick={() => go(s.route)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-                padding: 0,
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                flex: "1 1 0",
-                minWidth: 0,
-              }}
-            >
-              <span
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
-                  background: s.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon size={22} color={s.color} stroke={1.8} />
-              </span>
-              <span style={{ fontSize: 11, fontWeight: 500, color: "#4A5568" }}>{s.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
     </div>
   );
 }
