@@ -16,6 +16,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
 import { formatVideoDuration, videoThumbnail } from "@/lib/learnVideos";
+import proImage from "@/assets/pro-image.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const PAGE_BG = "#F4F6F8";
@@ -155,7 +156,10 @@ function RadioCard() {
     setSelectedChip(name);
   };
 
-  const nowTitle = radio.nowPlaying?.title || "Groove Salad";
+  const station = selectedChip;
+  const nowTitle = radio.isPlaying
+    ? radio.nowPlaying?.title || station
+    : station;
 
   return (
     <section style={{ ...POPPINS }}>
@@ -233,7 +237,7 @@ function RadioCard() {
               marginTop: 2,
             }}
           >
-            {radio.isPlaying ? "Now playing..." : "Tap play to listen"}
+            {radio.isPlaying ? `On ${station}` : "Tap play to listen"}
           </div>
         </div>
 
@@ -327,7 +331,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
     categories: ["Training"],
   } as LearnVideo;
 
-  const thumb = video ? videoThumbnail(video) : null;
+  const thumb = videoThumbnail(v) || proImage.url;
   const duration = formatVideoDuration(v);
   const category = (v.categories?.[0] || v.source || "PRO TV").toUpperCase();
 
@@ -727,16 +731,22 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
   const [activeIndex, setActiveIndex] = useState(0);
 
   const products = listings.length
-    ? listings.slice(0, 5)
+    ? listings
     : ([
         { id: "1", title: "Garmin Dash Cam 67W", price_display: "£259.99", image_urls: [] },
+        { id: "2", title: "Dash Cam Hardwire Kit", price_display: "£29.99", image_urls: [] },
+        { id: "3", title: "ADI Badge Holder", price_display: "£8.99", image_urls: [] },
       ] as ShopListing[]);
+
+  const GAP = 12;
 
   const handleScroll = () => {
     const el = containerRef.current;
     if (!el) return;
-    const idx = Math.round(el.scrollLeft / (el.offsetWidth * 0.72));
-    setActiveIndex(idx);
+    const card = el.firstElementChild as HTMLElement | null;
+    const cardWidth = card ? card.getBoundingClientRect().width : el.offsetWidth / 2;
+    const idx = Math.round(el.scrollLeft / (cardWidth + GAP));
+    setActiveIndex(Math.min(idx, Math.max(0, products.length - 1)));
   };
 
   return (
@@ -776,7 +786,7 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
         onScroll={handleScroll}
         style={{
           display: "flex",
-          gap: 12,
+          gap: GAP,
           overflowX: "auto",
           scrollSnapType: "x mandatory",
           WebkitOverflowScrolling: "touch",
@@ -793,8 +803,7 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
               onClick={() => onNavigate(`/marketplace`)}
               style={{
                 flex: "0 0 auto",
-                width: "72%",
-                maxWidth: 260,
+                width: `calc(50% - ${GAP / 2}px)`,
                 scrollSnapAlign: "start",
                 background: "#fff",
                 borderRadius: CARD_RADIUS,
@@ -928,7 +937,7 @@ function ProPage() {
           sbGet<
             ShopListing[]
           >(
-            "marketplace_listings?is_featured=eq.true&is_active=eq.true&deleted_at=is.null&select=id,title,price_display,image_urls,marketplace_suppliers(name,logo_url,is_verified)&limit=6"
+            "marketplace_listings?is_active=eq.true&deleted_at=is.null&order=created_at.desc&select=id,title,price_display,image_urls,marketplace_suppliers(name,logo_url,is_verified)&limit=10"
           ),
         ]);
 
