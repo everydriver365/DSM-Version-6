@@ -9646,6 +9646,11 @@ function HomePage() {
           </div>
         )}
 
+            {/* ===== TASKS & ACTIONS ===== */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <TasksActionsCard userId={userId} />
+            </div>
+
             {/* ===== DISCOVER SECTION ===== */}
             <div style={SECTION_WRAPPER_STYLE}>
               <DiscoverGrid />
