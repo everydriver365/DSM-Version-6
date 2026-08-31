@@ -346,7 +346,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
           overflow: "hidden",
           cursor: "pointer",
           position: "relative",
-          padding: "6px 16px",
+          padding: "4px 16px",
         }}
       >
         {/* Header */}
@@ -355,7 +355,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 10,
+            marginBottom: 8,
           }}
         >
           <div
@@ -397,7 +397,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
               position: "relative",
               width: "48%",
               minWidth: 140,
-              aspectRatio: "16 / 10",
+              aspectRatio: "16 / 8.5",
               borderRadius: 12,
               overflow: "hidden",
               background: thumb ? `url(${thumb}) center/cover` : "linear-gradient(135deg, #0B2341, #1a3a6b)",

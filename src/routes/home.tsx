@@ -1486,14 +1486,17 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <div>
-                <div style={{ fontSize: 18, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.15 }}>
-                  Explore
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 600, lineHeight: 1.15 }}>
-                  <span style={{ color: "#1877D6" }}>EDP </span>
-                  <span style={{ color: "#22A6A0" }}>PRO</span>
-                </div>
+              <div
+                style={{
+                  fontSize: 18,
+                  fontWeight: 600,
+                  lineHeight: 1.15,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <span style={{ color: "#0B1F3A" }}>Explore </span>
+                <span style={{ color: "#1877D6" }}>EDP </span>
+                <span style={{ color: "#22A6A0" }}>PRO</span>
               </div>
               <IconArrowRight size={22} stroke={2} color="#1877D6" />
             </div>
