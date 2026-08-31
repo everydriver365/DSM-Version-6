@@ -4,7 +4,6 @@ import {
   IconCash,
   IconCalendarEvent,
   IconMessageCircle,
-  IconClipboardCheck,
   IconChevronRight,
   IconListCheck,
 } from "@tabler/icons-react";
@@ -337,52 +336,5 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
     </>
   );
 }
-
-/** Static rows matching the design mock-up — handy for visual review. */
-export const MOCK_TASK_ITEMS: TaskItem[] = [
-  {
-    id: "m1",
-    title: "Confirm payment – Emily Davis",
-    value: "£45.00",
-    tone: "danger",
-    Icon: IconCash,
-    iconColor: "#FFFFFF",
-    iconBg: "#F5A524",
-    weight: 1,
-    onPress: () => {},
-  },
-  {
-    id: "m2",
-    title: "Upload ADI standards CPD evidence",
-    value: "Due today",
-    tone: "danger",
-    Icon: IconCalendarEvent,
-    iconColor: NAVY,
-    iconBg: "#F2F5F9",
-    weight: 2,
-    onPress: () => {},
-  },
-  {
-    id: "m3",
-    title: "2 unread messages",
-    tone: "muted",
-    Icon: IconMessageCircle,
-    iconColor: BLUE,
-    iconBg: "#EAF2FE",
-    weight: 4,
-    onPress: () => {},
-  },
-  {
-    id: "m4",
-    title: "Vehicle check reminder",
-    value: "Due tomorrow",
-    tone: "warning",
-    Icon: IconClipboardCheck,
-    iconColor: NAVY,
-    iconBg: "#F2F5F9",
-    weight: 5,
-    onPress: () => {},
-  },
-];
 
 export default TasksActionsCard;
