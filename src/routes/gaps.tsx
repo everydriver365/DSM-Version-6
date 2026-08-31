@@ -2443,35 +2443,111 @@ function GapsPage() {
                 return next;
               });
 
+            const selectedList = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
+            const selectedNames = selectedList.map((r) => firstNameOf(r.pupil));
+            const selectedNamesLabel =
+              selectedNames.length === 0
+                ? ""
+                : selectedNames.length <= 3
+                  ? selectedNames.join(", ")
+                  : `${selectedNames.slice(0, 3).join(", ")} +${selectedNames.length - 3} more`;
+
             return (
-              <SheetGroup>
-                <SheetSearchRow
-                  value={pupilSearchQuery}
-                  onChange={setPupilSearchQuery}
-                  placeholder="Search pupils…"
-                />
-                {filteredRanked.length === 0 ? (
-                  <SheetRow>
-                    <div style={{ color: MUTED, fontSize: 13 }}>
-                      No pupils match "{pupilSearchQuery}"
+              <>
+                <div ref={pupilListRef}>
+                  <SheetGroup>
+                    <SheetSearchRow
+                      value={pupilSearchQuery}
+                      onChange={setPupilSearchQuery}
+                      placeholder="Search pupils…"
+                    />
+                  </SheetGroup>
+
+                  {filteredRanked.length === 0 ? (
+                    <div
+                      style={{
+                        margin: "0 16px 12px",
+                        padding: 16,
+                        border: `0.5px solid ${BORDER}`,
+                        borderRadius: 8,
+                        background: tokens.white,
+                      }}
+                    >
+                      <div style={{ color: MUTED, fontSize: 13 }}>
+                        No pupils match "{pupilSearchQuery}"
+                      </div>
                     </div>
-                  </SheetRow>
-                ) : (
-                  filteredRanked.map((r) => {
-                    const name = fullNameOf(r.pupil);
-                    const parts = name.trim().split(/\s+/);
-                    const initials =
-                      ((parts[0]?.[0] ?? "") +
-                        (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
-                      "?";
-                    const checked = selectedPupilIds.has(r.pupil.id);
-                    return (
-                      <SheetRadioRow
-                        key={r.pupil.id}
-                        title={name}
-                        selected={checked}
-                        onSelect={() => toggle(r.pupil.id)}
-                        leading={
+                  ) : (
+                    filteredRanked.map((r) => {
+                      const name = fullNameOf(r.pupil);
+                      const parts = name.trim().split(/\s+/);
+                      const initials =
+                        ((parts[0]?.[0] ?? "") +
+                          (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
+                        "?";
+                      const checked = selectedPupilIds.has(r.pupil.id);
+                      const availLabel =
+                        r.dayMatch === "yes"
+                          ? `✓ Available ${dayOfWeekLabel}s`
+                          : r.dayMatch === "no"
+                            ? `⚠ Usually busy ${dayOfWeekLabel}s`
+                            : "✗ No availability set";
+                      const last =
+                        r.lastLesson && r.daysSince !== null
+                          ? `Last lesson: ${r.daysSince} day${r.daysSince === 1 ? "" : "s"} ago`
+                          : "New pupil";
+
+                      return (
+                        <button
+                          key={r.pupil.id}
+                          type="button"
+                          onClick={() => toggle(r.pupil.id)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12,
+                            padding: "14px 16px",
+                            margin: "0 16px 8px",
+                            borderRadius: 8,
+                            border: checked
+                              ? `0.5px solid #E2E6ED`
+                              : `0.5px solid #E2E6ED`,
+                            borderLeft: checked
+                              ? "2px solid #2C97DE"
+                              : `0.5px solid #E2E6ED`,
+                            background: checked ? "#EAF5FC" : "#FFFFFF",
+                            textAlign: "left",
+                            cursor: "pointer",
+                            width: "calc(100% - 32px)",
+                            boxSizing: "border-box",
+                          }}
+                        >
+                          {checked ? (
+                            <div
+                              style={{
+                                width: 24,
+                                height: 24,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexShrink: 0,
+                              }}
+                            >
+                              <IconCheck size={20} color="#2C97DE" stroke={2.5} />
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: 999,
+                                border: "1.5px solid #D1D5DB",
+                                background: "#FFFFFF",
+                                flexShrink: 0,
+                              }}
+                            />
+                          )}
+
                           <div
                             style={{
                               width: 32,
@@ -2489,12 +2565,218 @@ function GapsPage() {
                           >
                             {initials}
                           </div>
+
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div
+                              style={{
+                                fontSize: 14,
+                                fontWeight: tokens.fontWeight.bold,
+                                color: "#0B1F3A",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {name}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: 12,
+                                color: "#6B7280",
+                                marginTop: 2,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {availLabel} · {last}
+                            </div>
+                          </div>
+
+                          <span
+                            style={{
+                              background: "#E0F4FF",
+                              color: BLUE,
+                              fontWeight: tokens.fontWeight.bold,
+                              fontSize: tokens.fontSize.sm,
+                              padding: "2px 8px",
+                              borderRadius: 999,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {r.score}%
+                          </span>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+
+                {selectedPupilIds.size > 0 && (
+                  <div
+                    style={{
+                      background: "#FFFFFF",
+                      borderRadius: 14,
+                      border: "1px solid #E4E8EF",
+                      padding: 16,
+                      margin: "16px",
+                      boxShadow: "0 4px 0 #E4E4E8",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        gap: 12,
+                      }}
+                    >
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "#536579",
+                            fontWeight: tokens.fontWeight.bold,
+                            marginBottom: 4,
+                          }}
+                        >
+                          Send to:
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: tokens.fontWeight.bold,
+                            color: "#0B2341",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {selectedNamesLabel}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          pupilListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
                         }
+                        style={{
+                          fontSize: 12,
+                          color: "#2C97DE",
+                          background: "transparent",
+                          border: "none",
+                          padding: 0,
+                          cursor: "pointer",
+                          fontWeight: tokens.fontWeight.semibold,
+                          flexShrink: 0,
+                        }}
+                      >
+                        Change selection
+                      </button>
+                    </div>
+
+                    <div
+                      style={{
+                        height: 1,
+                        background: "#F4F6F8",
+                        margin: "14px 0",
+                      }}
+                    />
+
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: 12,
+                          color: "#536579",
+                          fontWeight: tokens.fontWeight.bold,
+                          marginBottom: 6,
+                        }}
+                      >
+                        Message preview
+                      </label>
+                      <textarea
+                        value={messageTemplate}
+                        onChange={(e) => setMessageTemplate(e.target.value)}
+                        style={{
+                          background: "#F4F6F8",
+                          borderRadius: 10,
+                          border: "1px solid #E4E8EF",
+                          padding: 12,
+                          fontSize: 13,
+                          color: "#0B2341",
+                          lineHeight: 1.5,
+                          minHeight: 100,
+                          width: "100%",
+                          resize: "none",
+                          fontFamily: "inherit",
+                        }}
                       />
-                    );
-                  })
+                      <p
+                        style={{
+                          fontSize: 11,
+                          color: "#536579",
+                          marginTop: 6,
+                          marginBottom: 0,
+                        }}
+                      >
+                        {"{name}"} will be replaced with each pupil's first name
+                      </p>
+                    </div>
+
+                    <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
+                      <button
+                        type="button"
+                        onClick={() => void handleSendTextToSelected()}
+                        disabled={sendingText || sendingInApp}
+                        style={{
+                          flex: 1,
+                          height: 48,
+                          borderRadius: 12,
+                          background: "#0B2341",
+                          color: "#FFFFFF",
+                          fontSize: 14,
+                          fontWeight: tokens.fontWeight.bold,
+                          border: "none",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          opacity: sendingText || sendingInApp ? 0.6 : 1,
+                        }}
+                      >
+                        <IconDeviceMobile size={18} color="#FFFFFF" />
+                        {sendingText ? "Sending…" : "Send text"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleSendInAppToSelected()}
+                        disabled={sendingText || sendingInApp}
+                        style={{
+                          flex: 1,
+                          height: 48,
+                          borderRadius: 12,
+                          background: "#2C97DE",
+                          color: "#FFFFFF",
+                          fontSize: 14,
+                          fontWeight: tokens.fontWeight.bold,
+                          border: "none",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          opacity: sendingText || sendingInApp ? 0.6 : 1,
+                        }}
+                      >
+                        <IconMessage size={18} color="#FFFFFF" />
+                        {sendingInApp ? "Sending…" : "In-app"}
+                      </button>
+                    </div>
+                  </div>
                 )}
-              </SheetGroup>
+              </>
             );
           })()}
 
