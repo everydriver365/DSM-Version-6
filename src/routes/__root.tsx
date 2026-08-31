@@ -617,6 +617,42 @@ function GlobalMenu() {
           </button>
           <button
             type="button"
+            onClick={() => go("/pro")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "14px 16px",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #E4E8EF",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "#F0EBFF",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconSparkles size={18} stroke={1.8} color="#7B61FF" />
+            </span>
+            <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
+              <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>PRO</span>
+              <span style={{ fontSize: 11, color: "#536579" }}>Your professional hub</span>
+            </div>
+            <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
+          </button>
+          <button
+            type="button"
             onClick={() => go("/settings")}
             style={{
               width: "100%",
