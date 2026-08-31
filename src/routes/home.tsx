@@ -6833,11 +6833,6 @@ function HomePage() {
 
 
 
-            {/* ============ PRO TEASER / DISCOVER ============ */}
-            <div style={SECTION_WRAPPER_STYLE}>
-              <ProTeaserTile />
-            </div>
-
             {/* 3. TIMELINE with TABS */}
             <div style={SECTION_WRAPPER_STYLE}>
               <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
@@ -10704,6 +10699,12 @@ function HomePage() {
           </div>
         </div>
       )}
+
+            {/* ============ PRO TEASER / DISCOVER ============ */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <ProTeaserTile />
+            </div>
+            <div style={{ height: "calc(80px + env(safe-area-inset-bottom, 0px))" }} />
 
           </PageLayout>
         </div>
