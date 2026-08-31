@@ -156,7 +156,7 @@ function RadioCard() {
     setSelectedChip(name);
   };
 
-  const station = radio.selectedStation || selectedChip;
+  const station = selectedChip;
   const nowTitle = radio.isPlaying
     ? radio.nowPlaying?.title || station
     : station;
