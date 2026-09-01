@@ -723,8 +723,12 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
       <div
         onClick={() => {
           if (video) {
-            const tab = video.source === "bitesize" ? "bitesize" : "learn";
-            onNavigate(`/dsm-learn?tab=${tab}&video=${encodeURIComponent(video.id)}`);
+            if (video.source === "howto") {
+              onNavigate(`/dsm-live?video=${encodeURIComponent(video.id)}`);
+            } else {
+              const tab = video.source === "bitesize" ? "bitesize" : "learn";
+              onNavigate(`/dsm-learn?tab=${tab}&video=${encodeURIComponent(video.id)}`);
+            }
           } else {
             onNavigate("/dsm-live");
           }
