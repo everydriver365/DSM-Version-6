@@ -155,11 +155,11 @@ function SquareTile({
         fontWeight: 700,
         lineHeight: 1.1,
         textAlign: "center",
-        background: selected ? BLUE : "#fff",
+        background: selected ? selectedColor || BLUE : "#fff",
         color: selected ? "#fff" : "rgba(11,31,58,0.62)",
         border: selected ? "none" : `1px solid ${HAIRLINE}`,
         boxShadow: selected
-          ? "0 8px 18px -8px rgba(24,119,214,0.8)"
+          ? `0 8px 18px -8px ${selectedColor ? `${selectedColor}99` : "rgba(24,119,214,0.8)"}`
           : "0 1px 2px rgba(11,31,58,0.05)",
         opacity: disabled ? 0.75 : 1,
       }}
