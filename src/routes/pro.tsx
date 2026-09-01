@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  IconAlertTriangle,
   IconBell,
   IconChevronRight,
   IconDeviceTv,
   IconGift,
   IconMessageCircle,
+  IconMessages,
   IconPlayerPlay,
   IconRadio,
   IconSearch,
