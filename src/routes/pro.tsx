@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IconAlertTriangle,
   IconBell,
+  IconBook,
+
   IconChevronRight,
   IconDeviceTv,
   IconGift,
@@ -82,14 +84,17 @@ type ShopListing = {
   marketplace_suppliers?: { name: string; logo_url: string | null; is_verified: boolean } | null;
 };
 
-type CommunityComment = {
+type FeedItem = {
   id: string;
+  type: "chat" | "alert" | "video" | "bitesize" | "perk" | "shop";
+  title: string;
   body: string;
+  author: string | null;
+  source: string;
+  route: string;
   created_at: string;
-  author_name: string | null;
-  instructor_name: string | null;
-  source?: string;
 };
+
 
 /* ------------------------------------------------------------------ */
 // Helpers
@@ -683,14 +688,17 @@ function PerksCard({
 }
 
 /* ------------------------------------------------------------------ */
-// Community card
+// What's happening feed
 /* ------------------------------------------------------------------ */
 
 const SOURCE_BADGES: Record<string, { label: string; icon: React.ReactNode; bg: string; color: string }> = {
   "Chat room": { label: "Chat room", icon: <IconMessages size={10} />, bg: "#EAF5FC", color: "#2C97DE" },
-  "Video comment": { label: "Video comment", icon: <IconDeviceTv size={10} />, bg: "#FEE2E2", color: "#E53935" },
-  "Community post": { label: "Community post", icon: <IconUsers size={10} />, bg: "#DCFCE7", color: "#16A34A" },
   "Local alert": { label: "Local alert", icon: <IconAlertTriangle size={10} />, bg: "#FEF3C7", color: "#F59E0B" },
+  "PRO TV": { label: "PRO TV", icon: <IconDeviceTv size={10} />, bg: "#FEE2E2", color: "#E53935" },
+  Bitesize: { label: "Bitesize", icon: <IconBook size={10} />, bg: "#F0EBFF", color: "#7B61FF" },
+  "PRO Perks": { label: "PRO Perks", icon: <IconGift size={10} />, bg: "#DCFCE7", color: "#16A34A" },
+  "PRO Shop": { label: "PRO Shop", icon: <IconShoppingBag size={10} />, bg: "#FEF3C7", color: "#F59E0B" },
+  "Community post": { label: "Community post", icon: <IconUsers size={10} />, bg: "#DCFCE7", color: "#16A34A" },
 };
 
 function SourceBadge({ source }: { source?: string }) {
@@ -715,22 +723,51 @@ function SourceBadge({ source }: { source?: string }) {
   );
 }
 
-function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
-  const rows = comments.slice(0, 7);
+const TYPE_ICONS: Record<FeedItem["type"], { bg: string; node: React.ReactNode }> = {
+  chat: { bg: "#EAF5FC", node: <IconMessages size={18} color="#2C97DE" /> },
+  alert: { bg: "#FEF3C7", node: <IconAlertTriangle size={18} color="#F59E0B" /> },
+  video: { bg: "#FEE2E2", node: <IconDeviceTv size={18} color="#E53935" /> },
+  bitesize: { bg: "#F0EBFF", node: <IconBook size={18} color="#7B61FF" /> },
+  perk: { bg: "#DCFCE7", node: <IconGift size={18} color="#16A34A" /> },
+  shop: { bg: "#FEF3C7", node: <IconShoppingBag size={18} color="#F59E0B" /> },
+};
 
-  const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
+const FEED_FALLBACK: FeedItem[] = [
+  {
+    id: "1",
+    type: "chat",
+    title: "Winchester chat room",
+    body: "Anyone covering Winchester this week?",
+    author: "Dave M",
+    source: "Chat room",
+    route: "/community",
+    created_at: new Date(Date.now() - 2 * 60000).toISOString(),
+  },
+  {
+    id: "2",
+    type: "alert",
+    title: "Roadworks — Bar End Road",
+    body: "Expect delays near the test centre",
+    author: null,
+    source: "Local alert",
+    route: "/community",
+    created_at: new Date(Date.now() - 60 * 60000).toISOString(),
+  },
+  {
+    id: "3",
+    type: "video",
+    title: "New video: Getting started with EDP",
+    body: "Getting started",
+    author: null,
+    source: "PRO TV",
+    route: "/dsm-live",
+    created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString(),
+  },
+];
 
-  const fallbackRows: CommunityComment[] = [
-    { id: "1", body: "Anyone covering Winchester?", author_name: "Dave M", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 2 * 60000).toISOString() },
-    { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 14 * 60000).toISOString() },
-    { id: "3", body: "Anyone done their standards check recently?", author_name: "Mark R", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 60 * 60000).toISOString() },
-    { id: "4", body: "Best route for roundabout practice near Southampton?", author_name: "Emma W", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString() },
-    { id: "5", body: "Pupil passed first time today! 🎉", author_name: "James P", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 3 * 60 * 60000).toISOString() },
-    { id: "6", body: "Anyone know the Bar End pass rate this month?", author_name: "Lisa K", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 5 * 60 * 60000).toISOString() },
-    { id: "7", body: "Reminder: CPD hours deadline end of month", author_name: "Tom B", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 8 * 60 * 60000).toISOString() },
-  ];
-
-  const displayRows = rows.length > 0 ? rows : fallbackRows;
+function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNavigate: (to: string) => void }) {
+  const newCount = items.filter((i) => Date.now() - new Date(i.created_at).getTime() < 86400000).length;
+  const displayRows = items.length > 0 ? items.slice(0, 7) : FEED_FALLBACK;
 
   return (
     <section style={{ ...POPPINS }}>
@@ -744,7 +781,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <IconUsers size={20} color={NAVY} stroke={1.8} />
-          <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>Community</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>What's happening</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {newCount > 0 && (
@@ -790,13 +827,11 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
         }}
       >
         {displayRows.map((row, idx) => {
-
-          const name = row.author_name || "Member";
-          const color = communityAvatarColor(name);
+          const icon = TYPE_ICONS[row.type];
           return (
             <div
-              key={row.id}
-              onClick={() => onNavigate("/community")}
+              key={`${row.type}-${row.id}`}
+              onClick={() => onNavigate(row.route)}
               style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -811,7 +846,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
-                  background: color,
+                  background: row.author ? communityAvatarColor(row.author) : icon.bg,
                   color: "#fff",
                   fontSize: 13,
                   fontWeight: 700,
@@ -821,7 +856,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
                   flexShrink: 0,
                 }}
               >
-                {firstInitial(name)}
+                {row.author ? firstInitial(row.author) : icon.node}
               </div>
               <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
                 <div
@@ -832,7 +867,18 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
                     gap: 8,
                   }}
                 >
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#0B2341" }}>{name}</span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: "#0B2341",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.author || row.title}
+                  </span>
                   <span style={{ fontSize: 10, color: "#D1D5DB", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
                 </div>
                 <div
@@ -860,6 +906,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 // PRO Shop card
@@ -1038,14 +1085,16 @@ function ProPage() {
   const [video, setVideo] = useState<LearnVideo | null>(null);
   const [perk, setPerk] = useState<FeaturedPerk | null>(null);
   const [perkCategories, setPerkCategories] = useState<string[]>([]);
-  const [comments, setComments] = useState<CommunityComment[]>([]);
+  const [feed, setFeed] = useState<FeedItem[]>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const [videoRes, perkRes, commentsRes, listingsRes] = await Promise.allSettled([
+        const [videoRes, perkRes, chatRes, listingsRes, alertsRes, tvRes, bitesizeRes, perkFeedRes, shopFeedRes] =
+          await Promise.allSettled([
+
           supabase
             .from("howto_videos")
             .select(
@@ -1067,14 +1116,45 @@ function ProPage() {
             .select("id, message, created_at, instructors(name)")
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
-            .limit(7),
+            .limit(3),
 
           sbGet<
             ShopListing[]
           >(
             "marketplace_listings?is_active=eq.true&deleted_at=is.null&order=created_at.desc&select=id,title,price_display,image_urls,marketplace_suppliers(name,logo_url,is_verified)&limit=10"
           ),
+          supabase
+            .from("local_alerts")
+            .select("id, title, body, created_at, alert_type")
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("howto_videos")
+            .select("id, title, category, created_at")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("bitesize_videos")
+            .select("id, title, category, created_at")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("benefit_perks")
+            .select("id, name, saving, created_at")
+            .eq("active", true)
+            .order("created_at", { ascending: false })
+            .limit(1),
+          supabase
+            .from("marketplace_listings")
+            .select("id, title, price_display, created_at")
+            .eq("is_active", true)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(1),
         ]);
+
 
         if (cancelled) return;
 
@@ -1111,18 +1191,77 @@ function ProPage() {
           setPerkCategories(cats);
         }
 
-        if (commentsRes.status === "fulfilled" && commentsRes.value.data) {
-          setComments(
-            (commentsRes.value.data as any[]).map((r) => ({
-              id: r.id,
-              body: r.message,
-              created_at: r.created_at,
-              author_name: r.instructors?.name || "Member",
-              instructor_name: r.instructors?.name || null,
-            }))
+        const rowsOf = (res: PromiseSettledResult<any>): any[] =>
+          res.status === "fulfilled" && Array.isArray(res.value?.data) ? res.value.data : [];
 
-          );
-        }
+        const feedItems: FeedItem[] = [
+          ...rowsOf(chatRes).map((r) => ({
+            id: String(r.id),
+            type: "chat" as const,
+            title: "Chat room",
+            body: r.message ?? r.body ?? "",
+            author: r.instructors?.name ?? null,
+            source: "Chat room",
+            route: "/community",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(alertsRes).map((r) => ({
+            id: String(r.id),
+            type: "alert" as const,
+            title: r.title ?? "Local alert",
+            body: r.body ?? "",
+            author: null,
+            source: "Local alert",
+            route: "/community",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(tvRes).map((r) => ({
+            id: String(r.id),
+            type: "video" as const,
+            title: `New video: ${r.title}`,
+            body: r.category || "PRO TV",
+            author: null,
+            source: "PRO TV",
+            route: "/dsm-live",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(bitesizeRes).map((r) => ({
+            id: String(r.id),
+            type: "bitesize" as const,
+            title: `New: ${r.title}`,
+            body: r.category || "Bitesize",
+            author: null,
+            source: "Bitesize",
+            route: "/bitesize",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(perkFeedRes).map((r) => ({
+            id: String(r.id),
+            type: "perk" as const,
+            title: `New perk: ${r.name}`,
+            body: r.saving || "New deal",
+            author: null,
+            source: "PRO Perks",
+            route: "/perks",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(shopFeedRes).map((r) => ({
+            id: String(r.id),
+            type: "shop" as const,
+            title: r.title,
+            body: r.price_display || "PRO Shop",
+            author: null,
+            source: "PRO Shop",
+            route: "/marketplace",
+            created_at: r.created_at,
+          })),
+        ]
+          .filter((i) => !!i.created_at)
+          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .slice(0, 7);
+
+        setFeed(feedItems);
+
 
         if (listingsRes.status === "fulfilled") {
           setListings(listingsRes.value);
@@ -1154,7 +1293,7 @@ function ProPage() {
         <RadioCard />
         <ProTvCard video={video} onNavigate={go} />
         <PerksCard perk={perk} categories={perkCategories} onNavigate={go} />
-        <CommunityCard comments={comments} onNavigate={go} />
+        <WhatsHappeningCard items={feed} onNavigate={go} />
         <ShopCard listings={listings} onNavigate={go} />
       </div>
     </PageLayout>
