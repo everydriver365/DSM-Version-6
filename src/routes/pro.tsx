@@ -671,14 +671,10 @@ function PerksCard({
 /* ------------------------------------------------------------------ */
 
 function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
-  const rows = comments.length
-    ? comments.slice(0, 2)
-    : [
-        { id: "1", body: "Anyone covering Winchester this week?", author_name: "Dave M", created_at: new Date(Date.now() - 2 * 60000).toISOString() },
-        { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", created_at: new Date(Date.now() - 14 * 60000).toISOString() },
-      ];
+  const rows = comments.slice(0, 2);
 
-  const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length || 3;
+  const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
+
 
   return (
     <section style={{ ...POPPINS }}>
@@ -695,18 +691,21 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>Community</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span
-            style={{
-              background: "#E53935",
-              color: "#fff",
-              fontSize: 11,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 999,
-            }}
-          >
-            {newCount} new
-          </span>
+          {newCount > 0 && (
+            <span
+              style={{
+                background: "#E53935",
+                color: "#fff",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "3px 8px",
+                borderRadius: 999,
+              }}
+            >
+              {newCount} new
+            </span>
+          )}
+
           <button
             type="button"
             onClick={() => onNavigate("/community")}
@@ -734,7 +733,21 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           overflow: "hidden",
         }}
       >
+        {rows.length === 0 && (
+          <div
+            style={{
+              padding: 20,
+              textAlign: "center",
+              fontSize: 13,
+              fontStyle: "italic",
+              color: "#9CA3AF",
+            }}
+          >
+            No recent posts yet
+          </div>
+        )}
         {rows.map((row, idx) => {
+
           const name = row.author_name || "Member";
           const color = avatarColor(name);
           return (
@@ -993,14 +1006,12 @@ function ProPage() {
             .order("sort_order", { ascending: true })
             .limit(1),
           supabase
-            .from("showcase_comments")
-            .select(
-              "id, body, created_at, author_name, instructor:instructors!instructor_id(id, name)"
-            )
+            .from("local_chat_messages")
+            .select("id, message, created_at, instructors(name)")
             .is("deleted_at", null)
-            .is("parent_id", null)
             .order("created_at", { ascending: false })
-            .limit(5),
+            .limit(2),
+
           sbGet<
             ShopListing[]
           >(
@@ -1047,11 +1058,12 @@ function ProPage() {
           setComments(
             (commentsRes.value.data as any[]).map((r) => ({
               id: r.id,
-              body: r.body,
+              body: r.message,
               created_at: r.created_at,
-              author_name: r.author_name || r.instructor?.name || "Member",
-              instructor_name: r.instructor?.name || null,
+              author_name: r.instructors?.name || "Member",
+              instructor_name: r.instructors?.name || null,
             }))
+
           );
         }
 
