@@ -9765,7 +9765,24 @@ function HomePage() {
 
             {/* ===== TASKS & ACTIONS ===== */}
             <div style={SECTION_WRAPPER_STYLE}>
-              <TasksActionsCard userId={userId} />
+              <TasksActionsCard
+                userId={userId}
+                header={(
+                  <div style={SECTION_HEADER_STYLE}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                      <span style={SECTION_TITLE_TEXT_STYLE}>Tasks & actions</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: '/todos' })}
+                      style={SECTION_LINK_STYLE}
+                    >
+                      See all <IconChevronRight size={14} stroke={2.2} />
+                    </button>
+                  </div>
+                )}
+              />
             </div>
 
 
