@@ -205,7 +205,8 @@ type Props = {
   items?: TaskItem[];
   /** Max rows shown before "See all". Defaults to 2 to match the compact reference design. */
   limit?: number;
-  onSeeAll?: () => void;
+  /** Section header rendered above the tile, only when rows exist. */
+  header?: React.ReactNode;
 };
 
 function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
