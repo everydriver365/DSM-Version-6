@@ -691,18 +691,21 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>Community</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span
-            style={{
-              background: "#E53935",
-              color: "#fff",
-              fontSize: 11,
-              fontWeight: 700,
-              padding: "3px 8px",
-              borderRadius: 999,
-            }}
-          >
-            {newCount} new
-          </span>
+          {newCount > 0 && (
+            <span
+              style={{
+                background: "#E53935",
+                color: "#fff",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "3px 8px",
+                borderRadius: 999,
+              }}
+            >
+              {newCount} new
+            </span>
+          )}
+
           <button
             type="button"
             onClick={() => onNavigate("/community")}
