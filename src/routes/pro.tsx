@@ -250,7 +250,7 @@ function PerksSection({
   return (
     <section>
       <SectionHeader
-        eyebrow="Perks"
+        eyebrow="PRO PERKS"
         title="Your exclusive member benefits"
         actionLabel="See all perks"
         onAction={() => onNavigate("/perks")}
@@ -1027,7 +1027,7 @@ function PodcastsSection({
   if (episodes.length === 0) return null;
   return (
     <section>
-      <SectionHeader eyebrow="Podcasts" title="Listen on the road" onAction={onOpen} />
+      <SectionHeader eyebrow="PRO PODCASTS" title="Listen on the road" onAction={onOpen} />
       <div style={SCROLL_ROW}>
         {episodes.slice(0, 8).map((ep) => (
           <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}>
