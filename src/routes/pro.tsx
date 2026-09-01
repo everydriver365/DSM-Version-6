@@ -1191,18 +1191,77 @@ function ProPage() {
           setPerkCategories(cats);
         }
 
-        if (commentsRes.status === "fulfilled" && commentsRes.value.data) {
-          setComments(
-            (commentsRes.value.data as any[]).map((r) => ({
-              id: r.id,
-              body: r.message,
-              created_at: r.created_at,
-              author_name: r.instructors?.name || "Member",
-              instructor_name: r.instructors?.name || null,
-            }))
+        const rowsOf = (res: PromiseSettledResult<any>): any[] =>
+          res.status === "fulfilled" && Array.isArray(res.value?.data) ? res.value.data : [];
 
-          );
-        }
+        const feedItems: FeedItem[] = [
+          ...rowsOf(chatRes).map((r) => ({
+            id: String(r.id),
+            type: "chat" as const,
+            title: "Chat room",
+            body: r.message ?? r.body ?? "",
+            author: r.instructors?.name ?? null,
+            source: "Chat room",
+            route: "/community",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(alertsRes).map((r) => ({
+            id: String(r.id),
+            type: "alert" as const,
+            title: r.title ?? "Local alert",
+            body: r.body ?? "",
+            author: null,
+            source: "Local alert",
+            route: "/community",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(tvRes).map((r) => ({
+            id: String(r.id),
+            type: "video" as const,
+            title: `New video: ${r.title}`,
+            body: r.category || "PRO TV",
+            author: null,
+            source: "PRO TV",
+            route: "/dsm-live",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(bitesizeRes).map((r) => ({
+            id: String(r.id),
+            type: "bitesize" as const,
+            title: `New: ${r.title}`,
+            body: r.category || "Bitesize",
+            author: null,
+            source: "Bitesize",
+            route: "/bitesize",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(perkFeedRes).map((r) => ({
+            id: String(r.id),
+            type: "perk" as const,
+            title: `New perk: ${r.name}`,
+            body: r.saving || "New deal",
+            author: null,
+            source: "PRO Perks",
+            route: "/perks",
+            created_at: r.created_at,
+          })),
+          ...rowsOf(shopFeedRes).map((r) => ({
+            id: String(r.id),
+            type: "shop" as const,
+            title: r.title,
+            body: r.price_display || "PRO Shop",
+            author: null,
+            source: "PRO Shop",
+            route: "/marketplace",
+            created_at: r.created_at,
+          })),
+        ]
+          .filter((i) => !!i.created_at)
+          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .slice(0, 7);
+
+        setFeed(feedItems);
+
 
         if (listingsRes.status === "fulfilled") {
           setListings(listingsRes.value);
