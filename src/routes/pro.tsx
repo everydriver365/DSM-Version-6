@@ -728,7 +728,14 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
             <img
               src={thumb}
               alt={v.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: hasThumb ? "cover" : "contain",
+                padding: hasThumb ? 0 : 12,
+                background: hasThumb ? "transparent" : "#FFFFFF",
+                display: "block",
+              }}
             />
 
             {/* Play button */}
