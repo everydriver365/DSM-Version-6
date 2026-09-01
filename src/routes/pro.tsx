@@ -123,6 +123,7 @@ function SquareTile({
   selected,
   disabled,
   fillIcon,
+  selectedColor,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -130,6 +131,7 @@ function SquareTile({
   selected?: boolean;
   disabled?: boolean;
   fillIcon?: boolean;
+  selectedColor?: string;
 }) {
   return (
     <button
@@ -153,11 +155,11 @@ function SquareTile({
         fontWeight: 700,
         lineHeight: 1.1,
         textAlign: "center",
-        background: selected ? BLUE : "#fff",
+        background: selected ? selectedColor || BLUE : "#fff",
         color: selected ? "#fff" : "rgba(11,31,58,0.62)",
         border: selected ? "none" : `1px solid ${HAIRLINE}`,
         boxShadow: selected
-          ? "0 8px 18px -8px rgba(24,119,214,0.8)"
+          ? `0 8px 18px -8px ${selectedColor ? `${selectedColor}99` : "rgba(24,119,214,0.8)"}`
           : "0 1px 2px rgba(11,31,58,0.05)",
         opacity: disabled ? 0.75 : 1,
       }}
@@ -386,10 +388,11 @@ function DecadeIcon({ label, from, to }: { label: string; from: string; to: stri
   );
 }
 
-const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean }[] = [
+const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; selectedColor?: string }[] = [
   {
     name: "PRO Live",
     fillIcon: true,
+    selectedColor: "#22C55E",
     icon: (
       <img
         src={proRadio2.url}
@@ -589,6 +592,7 @@ function RadioCard() {
               icon={s.icon}
               label={s.name}
               fillIcon={s.fillIcon}
+              selectedColor={s.selectedColor}
               selected={selected}
               disabled={comingSoon && !selected}
               onClick={() => handleChip(s.name)}
