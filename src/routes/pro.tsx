@@ -256,7 +256,7 @@ function RadioCard() {
             <div
               style={{
                 color: TEXT_SECONDARY,
-                fontSize: 13,
+                fontSize: 10,
                 marginTop: 2,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
