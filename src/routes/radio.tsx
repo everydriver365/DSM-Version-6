@@ -578,11 +578,6 @@ function RadioPage() {
           ))}
         </div>
 
-        {/* Recently played — only shown when the hook provides history */}
-        {radio.hasStarted && (
-          <SectionLabel>Recently played</SectionLabel>
-          // Horizontal scroll of recent stations would go here when data exists.
-        )}
       </div>
     </div>
   );
