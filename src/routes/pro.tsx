@@ -553,53 +553,56 @@ function PerksCard({
     <section style={{ ...POPPINS }}>
       <div
         style={{
-          background: "linear-gradient(135deg, #6B4FD6 0%, #8B5CF6 100%)",
-          borderRadius: CARD_RADIUS,
+          background: "linear-gradient(135deg, #EDE9FE 0%, #E3DCFB 55%, #F1EEFE 100%)",
+          borderRadius: 8,
           padding: 14,
           display: "flex",
           alignItems: "center",
           gap: 12,
+          border: "0.5px solid #D9D0F7",
+          boxShadow: "0 2px 10px rgba(107,79,214,0.08)",
         }}
       >
         <div
           style={{
             width: 48,
             height: 48,
-            borderRadius: 12,
-            background: "rgba(255,255,255,0.2)",
+            borderRadius: 8,
+            background: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            boxShadow: "0 1px 4px rgba(107,79,214,0.12)",
           }}
         >
-          <IconGift size={24} color="#fff" stroke={1.6} />
+          <IconGift size={24} color="#7C3AED" stroke={1.8} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 11,
+              fontSize: 10.5,
               fontWeight: 700,
-              color: "rgba(255,255,255,0.75)",
+              color: "#7C3AED",
               textTransform: "uppercase",
               letterSpacing: 0.6,
-              marginBottom: 4,
+              marginBottom: 3,
             }}
           >
-            PRO PERKS · FEATURED
+            PRO PERKS
           </div>
           <div
             style={{
               fontSize: 16,
               fontWeight: 700,
-              color: "#fff",
+              color: NAVY,
               lineHeight: 1.25,
             }}
           >
             {p.name}
           </div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", marginTop: 3 }}>
+          <div style={{ fontSize: 13, color: "#5B5473", marginTop: 3 }}>
             {p.saving}
           </div>
         </div>
@@ -609,20 +612,22 @@ function PerksCard({
           onClick={() => onNavigate("/perks")}
           style={{
             flexShrink: 0,
-            background: "rgba(255,255,255,0.25)",
-            color: "#fff",
-            border: "none",
+            background: "#fff",
+            color: "#7C3AED",
+            border: "0.5px solid #D9D0F7",
             borderRadius: 8,
-            padding: "8px 14px",
-            fontSize: 13,
-            fontWeight: 600,
+            padding: "9px 16px",
+            fontSize: 14,
+            fontWeight: 700,
             cursor: "pointer",
             fontFamily: POPPINS.fontFamily,
+            boxShadow: "0 1px 4px rgba(107,79,214,0.12)",
           }}
         >
           Claim
         </button>
       </div>
+
 
       <div
         style={{
