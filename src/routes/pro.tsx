@@ -381,6 +381,11 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
 function RadioSection() {
   const radio = useProRadioContext();
   const selected = radio.selectedStation || "PRO Live";
+  const [artworkFailed, setArtworkFailed] = useState(false);
+  useEffect(() => {
+    setArtworkFailed(false);
+  }, [radio.nowPlaying?.artwork]);
+
 
   const handleStation = (s: (typeof STATIONS)[number]) => {
     if (s.comingSoon) {
