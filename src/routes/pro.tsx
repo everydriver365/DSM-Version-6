@@ -458,10 +458,11 @@ function PerksSection({
   onNavigate: (to: string) => void;
 }) {
   if (perks.length === 0) return <EmptyState label="No perks available right now." />;
-  const withImage = perks.filter((p) => !!p.hero_image_url?.trim());
-  const withoutImage = perks.filter((p) => !p.hero_image_url?.trim());
+  const withImage = perks.filter((p) => !!perkImage(p).src);
+  const withoutImage = perks.filter((p) => !perkImage(p).src);
   const ordered = [...withImage, ...withoutImage];
   const [hero, ...rest] = ordered;
+  const heroImg = hero ? perkImage(hero) : null;
   return (
     <section>
       <SectionHeader
@@ -477,7 +478,8 @@ function PerksSection({
             oneLine(hero.description) ||
             [hero.partner?.name, hero.category].filter(Boolean).join(" · ")
           }
-          image={hero.hero_image_url ?? null}
+          image={heroImg?.src ?? null}
+          imageContain={heroImg?.contain}
           initial={(hero.partner?.name || hero.name).trim().charAt(0).toUpperCase()}
           tint={perkTint(hero.id)}
           badge="Featured perk"
@@ -495,6 +497,7 @@ function PerksSection({
       >
         {rest.map((p) => {
           const label = p.partner?.name || p.name;
+          const img = perkImage(p);
           return (
             <GridCard
               key={p.id}
@@ -505,7 +508,8 @@ function PerksSection({
                 [p.partner?.name, p.category].filter(Boolean).join(" · ") ||
                 `${shortSaving(p.saving)} for PRO members`
               }
-              image={p.hero_image_url}
+              image={img.src}
+              imageContain={img.contain}
               chip={shortSaving(p.saving)}
               onClick={() => onNavigate(`/perks/${p.id}`)}
             />
@@ -513,6 +517,7 @@ function PerksSection({
         })}
       </div>
     </section>
+
   );
 }
 
