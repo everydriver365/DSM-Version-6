@@ -379,15 +379,15 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
       <div
         onClick={() => onNavigate("/dsm-live")}
         style={{
-          background: "linear-gradient(160deg, #0E2647 0%, #0B1F3A 100%)",
+          background: "#fff",
           borderRadius: 8,
           overflow: "hidden",
           cursor: "pointer",
           position: "relative",
-          padding: "8px 12px 10px",
-          boxShadow: "0 6px 18px rgba(11,31,58,0.18)",
+          padding: 12,
+          border: `0.5px solid ${HAIRLINE}`,
+          boxShadow: "0 2px 10px rgba(11,31,58,0.06)",
         }}
-
       >
         {/* Header */}
         <div
@@ -395,7 +395,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 6,
+            marginBottom: 10,
           }}
         >
           <div
@@ -403,13 +403,13 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
               display: "flex",
               alignItems: "center",
               gap: 8,
-              color: "#fff",
+              color: NAVY,
               fontSize: 16,
               fontWeight: 700,
               letterSpacing: -0.2,
             }}
           >
-            <IconDeviceTv size={20} stroke={1.8} />
+            <IconDeviceTv size={20} color={NAVY} stroke={1.8} />
             PRO TV
           </div>
 
@@ -430,13 +430,14 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
         </div>
 
         {/* Body */}
-        <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
           {/* Thumbnail */}
           <div
             style={{
               position: "relative",
-              width: "38%",
+              width: "36%",
               minWidth: 112,
+              maxWidth: 130,
               aspectRatio: "16 / 10",
               borderRadius: 8,
               overflow: "hidden",
@@ -456,8 +457,8 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             />
             <div
               style={{
-                width: 38,
-                height: 38,
+                width: 36,
+                height: 36,
                 borderRadius: "50%",
                 background: "rgba(255,255,255,0.22)",
                 border: "2px solid rgba(255,255,255,0.45)",
@@ -468,16 +469,16 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 zIndex: 1,
               }}
             >
-              <IconPlayerPlay size={16} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
+              <IconPlayerPlay size={15} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
             </div>
           </div>
 
           {/* Info */}
-          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <h3
               style={{
                 margin: 0,
-                color: "#fff",
+                color: NAVY,
                 fontSize: 15,
                 fontWeight: 700,
                 lineHeight: 1.25,
@@ -492,23 +493,23 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                color: "rgba(255,255,255,0.65)",
+                color: TEXT_SECONDARY,
                 fontSize: 12,
                 fontWeight: 500,
                 marginTop: 4,
               }}
             >
               <span>{category}</span>
-              <span style={{ width: 4, height: 4, borderRadius: "50%", background: "rgba(255,255,255,0.5)" }} />
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#C5CDD8" }} />
               <span>{duration}</span>
             </div>
 
             <p
               style={{
                 margin: "6px 0 0",
-                color: "rgba(255,255,255,0.75)",
+                color: TEXT_SECONDARY,
                 fontSize: 12,
-                lineHeight: 1.4,
+                lineHeight: 1.45,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
@@ -517,23 +518,6 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             >
               {v.description || "A step-by-step guide to help you prepare, stay calm and pass with confidence."}
             </p>
-
-            <div style={{ flex: 1 }} />
-
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 4 }}>
-              <span
-                style={{
-                  background: "rgba(255,255,255,0.14)",
-                  color: "#fff",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  padding: "4px 8px",
-                  borderRadius: 999,
-                }}
-              >
-                {duration}
-              </span>
-            </div>
           </div>
         </div>
       </div>
