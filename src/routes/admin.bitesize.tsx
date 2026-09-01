@@ -957,7 +957,12 @@ function AdminBitesizePage() {
             <button
               type="button"
               onClick={handleUpload}
-              disabled={!videoFile || !title.trim() || uploading}
+              disabled={
+                (!title.trim() ||
+                  (source === "upload" && !videoFile) ||
+                  (source === "youtube" && !youtubeUrl.trim()) ||
+                  uploading)
+              }
               style={{
                 width: "100%",
                 background: "#7C3AED",
@@ -968,10 +973,19 @@ function AdminBitesizePage() {
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
                 cursor:
-                  !videoFile || !title.trim() || uploading
+                  !title.trim() ||
+                    (source === "upload" && !videoFile) ||
+                    (source === "youtube" && !youtubeUrl.trim()) ||
+                    uploading
                     ? "not-allowed"
                     : "pointer",
-                opacity: !videoFile || !title.trim() || uploading ? 0.5 : 1,
+                opacity:
+                  !title.trim() ||
+                    (source === "upload" && !videoFile) ||
+                    (source === "youtube" && !youtubeUrl.trim()) ||
+                    uploading
+                    ? 0.5
+                    : 1,
                 ...POPPINS,
               }}
             >
