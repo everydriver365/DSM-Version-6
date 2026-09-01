@@ -297,151 +297,208 @@ function RadioCard() {
 
   return (
     <section style={{ ...POPPINS }}>
+      <SectionHead
+        title="PRO Radio"
+        right={
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "rgba(229,57,53,0.10)",
+              color: "#E53935",
+              fontSize: 10,
+              fontWeight: 800,
+              letterSpacing: 1.2,
+              padding: "3px 8px",
+              borderRadius: 6,
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#E53935",
+                display: "inline-block",
+              }}
+            />
+            LIVE
+          </span>
+        }
+      />
+
+      {/* Navy hero player */}
       <div
         style={{
-          background: "linear-gradient(135deg, #EAF3FC 0%, #DCEBFB 55%, #E8F1FD 100%)",
-          borderRadius: 8,
-          padding: 14,
-          border: "0.5px solid #CFE0F5",
-          boxShadow: "0 2px 10px rgba(11,31,58,0.06)",
+          position: "relative",
+          overflow: "hidden",
+          borderRadius: 24,
+          padding: 20,
+          background: `linear-gradient(150deg, ${NAVY} 0%, #10305C 60%, #0B1F3A 100%)`,
+          boxShadow: "0 18px 40px -18px rgba(11,31,58,0.65)",
+          color: "#fff",
         }}
       >
-        {/* Top row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            right: -30,
+            top: -40,
+            width: 160,
+            height: 160,
+            borderRadius: "50%",
+            background: BLUE,
+            opacity: 0.22,
+            filter: "blur(46px)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ position: "relative", zIndex: 1 }}>
           <div
             style={{
-              width: 46,
-              height: 46,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 2,
+              textTransform: "uppercase",
+              color: "#7FB6EE",
             }}
           >
-            <img
-              src={proLogo}
-              alt="PRO"
-              style={{ width: 42, height: 42, objectFit: "contain" }}
-            />
+            {selectedChip}
           </div>
 
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: NAVY, fontSize: 17, fontWeight: 700, letterSpacing: -0.2 }}>
-                PRO Radio
-              </span>
-              <span
-                style={{
-                  background: "#E53935",
-                  color: "#fff",
-                  fontSize: 9,
-                  fontWeight: 800,
-                  letterSpacing: 0.4,
-                  padding: "2px 6px",
-                  borderRadius: 4,
-                }}
-              >
-                LIVE
-              </span>
-            </div>
-            <div
+          <h3
+            style={{
+              ...SORA,
+              margin: "8px 0 18px",
+              fontSize: 17,
+              fontWeight: 700,
+              lineHeight: 1.3,
+              letterSpacing: -0.2,
+            }}
+          >
+            {radio.isPlaying ? nowTitle : "Ad free radio, made for driving instructors."}
+          </h3>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <button
+              type="button"
+              aria-label={radio.isPlaying ? "Pause" : "Play"}
+              onClick={() => {
+                if (radio.isPlaying) radio.pause();
+                else radio.play();
+                setSelectedChip("PRO Live");
+              }}
               style={{
-                color: TEXT_SECONDARY,
-                fontSize: 10,
-                marginTop: 2,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                width: 52,
+                height: 52,
+                borderRadius: "50%",
+                background: "#fff",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                cursor: "pointer",
+                boxShadow: "0 10px 24px rgba(0,0,0,0.35)",
               }}
             >
-              {radio.isPlaying ? nowTitle : "Ad Ad FREE radio for Instructors."}
-            </div>
-          </div>
+              {radio.isPlaying ? (
+                <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ width: 4, height: 17, background: NAVY, borderRadius: 2 }} />
+                  <span style={{ width: 4, height: 17, background: NAVY, borderRadius: 2 }} />
+                </span>
+              ) : (
+                <IconPlayerPlay size={22} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 3 }} />
+              )}
+            </button>
 
-          <button
-            type="button"
-            aria-label={radio.isPlaying ? "Pause" : "Play"}
-            onClick={() => {
-              if (radio.isPlaying) {
-                radio.pause();
-              } else {
-                radio.play();
-              }
-              setSelectedChip("PRO Live");
-            }}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: "50%",
-              background: BLUE,
-              border: "3px solid #fff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(24,119,214,0.3)",
-            }}
-          >
-            {radio.isPlaying ? (
-              <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                <span style={{ width: 4, height: 16, background: "#fff", borderRadius: 2 }} />
-                <span style={{ width: 4, height: 16, background: "#fff", borderRadius: 2 }} />
-              </span>
-            ) : (
-              <IconPlayerPlay size={20} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
-            )}
-          </button>
-        </div>
-
-        {/* Stations */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "stretch",
-            marginTop: 12,
-            paddingTop: 10,
-            borderTop: "0.5px solid rgba(11,31,58,0.08)",
-          }}
-        >
-          {STATION_TILES.map((s) => {
-            const station = STATIONS[s.name];
-            const selected = selectedChip === s.name;
-            const comingSoon = station?.comingSoon ?? true;
-            return (
-              <button
-                key={s.name}
-                type="button"
-                onClick={() => handleChip(s.name)}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
                 style={{
-                  flex: 1,
-                  minWidth: 0,
-                  background: selected ? "#0B2341" : "#F4F6F8",
-                  color: selected ? "#fff" : "#536579",
-                  borderRadius: 8,
-                  border: selected ? "none" : "0.5px solid #E4E8EF",
-                  padding: "6px 2px",
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 5,
-                  cursor: "pointer",
-                  fontFamily: POPPINS.fontFamily,
-                  opacity: comingSoon && !selected ? 0.7 : 1,
+                  justifyContent: "space-between",
+                  fontSize: 10,
+                  fontWeight: 500,
+                  color: "#9DC5EC",
+                  marginBottom: 6,
                 }}
               >
-                <span style={{ height: 26, display: "flex", alignItems: "center" }}>{s.icon}</span>
-                <span style={{ fontSize: 10.5, fontWeight: 600, color: "inherit", whiteSpace: "nowrap" }}>
-                  {s.name}
-                </span>
-              </button>
-            );
-          })}
+                <span>{radio.isPlaying ? "On air now" : "Tap to tune in"}</span>
+                <span>24/7</span>
+              </div>
+              <div style={{ height: 4, borderRadius: 999, background: "rgba(255,255,255,0.12)" }}>
+                <div
+                  style={{
+                    height: "100%",
+                    width: radio.isPlaying ? "66%" : "12%",
+                    borderRadius: 999,
+                    background: BLUE,
+                    transition: "width 400ms ease",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Station pills */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginTop: 14,
+          overflowX: "auto",
+          paddingBottom: 2,
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        {STATION_TILES.map((s) => {
+          const stationCfg = STATIONS[s.name];
+          const selected = selectedChip === s.name;
+          const comingSoon = stationCfg?.comingSoon ?? true;
+          return (
+            <button
+              key={s.name}
+              type="button"
+              onClick={() => handleChip(s.name)}
+              style={{
+                ...POPPINS,
+                flexShrink: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 14px",
+                borderRadius: 999,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                fontSize: 11.5,
+                fontWeight: 700,
+                background: selected ? BLUE : "#fff",
+                color: selected ? "#fff" : "rgba(11,31,58,0.62)",
+                border: selected ? "none" : `1px solid ${HAIRLINE}`,
+                boxShadow: selected
+                  ? "0 8px 18px -8px rgba(24,119,214,0.8)"
+                  : "0 1px 2px rgba(11,31,58,0.05)",
+                opacity: comingSoon && !selected ? 0.75 : 1,
+              }}
+            >
+              <span style={{ display: "flex", alignItems: "center", height: 18, overflow: "hidden" }}>
+                {s.icon}
+              </span>
+              {s.name}
+            </button>
+          );
+        })}
       </div>
     </section>
   );
 }
+
 
 
 /* ------------------------------------------------------------------ */
