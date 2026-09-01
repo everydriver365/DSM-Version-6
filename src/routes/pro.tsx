@@ -701,7 +701,7 @@ function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string
           position: "absolute",
           inset: 0,
           background:
-            "radial-gradient(90% 120% at 88% 15%, rgba(168,85,247,0.38) 0%, rgba(168,85,247,0) 62%)",
+            "radial-gradient(90% 120% at 88% 15%, rgba(24,119,214,0.45) 0%, rgba(24,119,214,0) 62%)",
           pointerEvents: "none",
         }}
       />
