@@ -661,7 +661,7 @@ function PerksCard({
         <span style={{ fontSize: 13, color: TEXT_SECONDARY }}>{categoryLine}</span>
         <button
           type="button"
-          onClick={() => onNavigate("/benefits")}
+          onClick={() => onNavigate("/perks")}
           style={{
             background: "none",
             border: "none",
@@ -723,7 +723,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           </span>
           <button
             type="button"
-            onClick={() => onNavigate("/dsm-learn?tab=showcase")}
+            onClick={() => onNavigate("/community")}
             style={{
               background: "none",
               border: "none",
@@ -754,7 +754,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           return (
             <div
               key={row.id}
-              onClick={() => onNavigate("/dsm-learn?tab=showcase")}
+              onClick={() => onNavigate("/community")}
               style={{
                 display: "flex",
                 alignItems: "center",
