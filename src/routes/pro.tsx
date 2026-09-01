@@ -29,6 +29,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "@/lib/toast";
+import { formatVideoDuration, videoMinutes, type LearnVideo } from "@/lib/learnVideos";
 
 import proImage from "@/assets/pro-image.png.asset.json";
 import proLogo from "@/assets/pro-logo-padded.png";
@@ -200,17 +201,55 @@ async function sbGet<T>(path: string): Promise<T> {
 // Types
 /* ------------------------------------------------------------------ */
 
-type LearnVideo = {
+type ProTvVideo = {
   id: string;
   title: string;
   description: string | null;
-  video_url: string | null;
-  video_embed_url: string | null;
   thumbnail_url: string | null;
   category: string | null;
-  is_published: boolean;
-  sort_order: number | null;
+  duration_label: string | null;
+  duration_minutes: number | null;
+  created_at: string;
+  source: "learn" | "bitesize";
 };
+
+function normalizeLearnForTv(row: LearnVideo & { created_at: string }): ProTvVideo {
+  const minutes = videoMinutes(row);
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description ?? null,
+    thumbnail_url: row.thumbnail_url ?? null,
+    category: row.categories?.[0] ?? row.source ?? "Learn",
+    duration_label: formatVideoDuration(row) || null,
+    duration_minutes: minutes,
+    created_at: row.created_at,
+    source: "learn",
+  };
+}
+
+function normalizeBitesizeForTv(row: {
+  id: string;
+  title: string;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  category?: string | null;
+  duration_mins?: number | null;
+  created_at: string;
+}): ProTvVideo {
+  const mins = row.duration_mins ?? null;
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description ?? null,
+    thumbnail_url: row.thumbnail_url ?? null,
+    category: row.category ?? "Bitesize",
+    duration_label: mins != null ? `${mins} min` : null,
+    duration_minutes: mins,
+    created_at: row.created_at,
+    source: "bitesize",
+  };
+}
 
 type FeaturedPerk = {
   id: string;
@@ -579,21 +618,23 @@ const SHOP_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
   { name: "Books", to: "/marketplace", icon: <IconBook size={24} color="#18A999" stroke={2} /> },
 ];
 
-function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate: (to: string) => void }) {
+function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate: (to: string) => void }) {
   const v = video ?? {
     id: "mock",
     title: "How to pass your standards check",
     description: "A step-by-step guide to help you prepare, stay calm and pass with confidence.",
-    video_url: null,
-    video_embed_url: null,
     thumbnail_url: null,
     category: "Training",
-    is_published: true,
-    sort_order: null,
-  } as LearnVideo;
+    duration_label: "18 min",
+    duration_minutes: 18,
+    created_at: new Date().toISOString(),
+    source: "learn",
+  } as ProTvVideo;
 
   const thumb = v.thumbnail_url || proImage.url;
   const categoryLabel = (v.category || "Training").toUpperCase();
+  const thumbDuration = v.duration_minutes != null ? `${v.duration_minutes}:00` : "18:00";
+  const sourceLabel = v.source === "bitesize" ? "Bitesize" : "EDP Learn";
 
   return (
     <section style={{ ...POPPINS }}>
@@ -719,7 +760,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 borderRadius: 4,
               }}
             >
-              18:00
+              {thumbDuration}
             </div>
           </div>
 
@@ -787,9 +828,9 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
-              <span>18 min</span>
+              <span>{v.duration_label ?? "18 min"}</span>
               <span style={{ color: HAIRLINE }}>·</span>
-              <span>Beginner</span>
+              <span>{sourceLabel}</span>
             </div>
 
             {v.description && (
@@ -1461,7 +1502,7 @@ function ProPage() {
   const go = (to: string) => navigate({ to: to as never });
 
   const [loading, setLoading] = useState(true);
-  const [video, setVideo] = useState<LearnVideo | null>(null);
+  const [video, setVideo] = useState<ProTvVideo | null>(null);
   const [perks, setPerks] = useState<FeaturedPerk[]>([]);
   const [perkCategories, setPerkCategories] = useState<string[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
@@ -1474,14 +1515,43 @@ function ProPage() {
         const [videoRes, perkRes, chatRes, listingsRes, alertsRes, tvRes, bitesizeRes, perkFeedRes, shopFeedRes] =
           await Promise.allSettled([
 
-          supabase
-            .from("howto_videos")
-            .select(
-              "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order"
-            )
-            .eq("is_published", true)
-            .order("sort_order", { ascending: true })
-            .limit(1),
+          (async () => {
+            const [learnRes, bitesizeRes] = await Promise.allSettled([
+              supabase
+                .from("learn_videos")
+                .select(
+                  "id, title, description, url, embed_url, thumbnail_url, categories, source, duration, duration_seconds, is_published, created_at"
+                )
+                .eq("is_published", true)
+                .order("created_at", { ascending: false })
+                .limit(1),
+              supabase
+                .from("bitesize_videos")
+                .select(
+                  "id, title, description, video_url, thumbnail_url, category, duration_mins, is_published, deleted_at, created_at"
+                )
+                .eq("is_published", true)
+                .is("deleted_at", null)
+                .order("created_at", { ascending: false })
+                .limit(1),
+            ]);
+            const learnRow =
+              learnRes.status === "fulfilled" && Array.isArray(learnRes.value?.data)
+                ? (learnRes.value.data[0] as LearnVideo & { created_at: string })
+                : undefined;
+            const bitesizeRow =
+              bitesizeRes.status === "fulfilled" && Array.isArray(bitesizeRes.value?.data)
+                ? bitesizeRes.value.data[0]
+                : undefined;
+            const learnVideo = learnRow ? normalizeLearnForTv(learnRow) : undefined;
+            const bitesizeVideo = bitesizeRow ? normalizeBitesizeForTv(bitesizeRow) : undefined;
+            if (!learnVideo && !bitesizeVideo) return null;
+            if (!learnVideo) return bitesizeVideo as ProTvVideo;
+            if (!bitesizeVideo) return learnVideo;
+            return new Date(learnVideo.created_at).getTime() >= new Date(bitesizeVideo.created_at).getTime()
+              ? learnVideo
+              : bitesizeVideo;
+          })(),
           supabase
             .from("benefit_perks")
             .select(
@@ -1538,8 +1608,8 @@ function ProPage() {
 
         if (cancelled) return;
 
-        if (videoRes.status === "fulfilled" && videoRes.value.data && videoRes.value.data.length > 0) {
-          setVideo(videoRes.value.data[0] as LearnVideo);
+        if (videoRes.status === "fulfilled" && videoRes.value) {
+          setVideo(videoRes.value);
         }
 
         let perkRows: any[] =
