@@ -524,154 +524,138 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
 
   return (
     <section style={{ ...POPPINS }}>
+      <SectionHead title="PRO TV" actionLabel="All episodes" onAction={() => onNavigate("/dsm-live")} />
+
       <div
         onClick={() => onNavigate("/dsm-live")}
         style={{
-          background: "#fff",
-          borderRadius: 8,
+          position: "relative",
+          borderRadius: 20,
           overflow: "hidden",
           cursor: "pointer",
-          position: "relative",
-          padding: 12,
-          border: `0.5px solid ${HAIRLINE}`,
-          boxShadow: "0 2px 10px rgba(11,31,58,0.06)",
+          background: NAVY,
+          boxShadow: "0 16px 34px -20px rgba(11,31,58,0.7)",
         }}
       >
-        {/* Header */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 10,
+            position: "relative",
+            width: "100%",
+            aspectRatio: "16 / 10",
+            background: `url(${thumb}) center/cover no-repeat`,
           }}
         >
+          {/* semi-transparent navy overlay */}
           <div
             style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(180deg, rgba(11,31,58,0.15) 0%, rgba(11,31,58,0.55) 55%, rgba(11,31,58,0.95) 100%)",
+            }}
+          />
+
+          <div
+            style={{
+              position: "absolute",
+              top: 12,
+              left: 12,
               display: "flex",
-              alignItems: "center",
-              gap: 8,
-              color: NAVY,
-              fontSize: 16,
-              fontWeight: 700,
-              letterSpacing: -0.2,
+              gap: 6,
             }}
           >
-            <IconDeviceTv size={20} color={NAVY} stroke={1.8} />
-            PRO TV
+            <span
+              style={{
+                background: "rgba(255,255,255,0.16)",
+                backdropFilter: "blur(8px)",
+                color: "#fff",
+                fontSize: 9.5,
+                fontWeight: 800,
+                letterSpacing: 1.1,
+                textTransform: "uppercase",
+                padding: "4px 8px",
+                borderRadius: 6,
+              }}
+            >
+              {category}
+            </span>
+            <span
+              style={{
+                background: "rgba(255,255,255,0.16)",
+                backdropFilter: "blur(8px)",
+                color: "#fff",
+                fontSize: 9.5,
+                fontWeight: 700,
+                padding: "4px 8px",
+                borderRadius: 6,
+              }}
+            >
+              {duration}
+            </span>
           </div>
 
-          <span
-            style={{
-              background: BLUE,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: 0.4,
-              padding: "3px 7px",
-              borderRadius: 999,
-            }}
-          >
-            NEW
-          </span>
-        </div>
-
-        {/* Body */}
-        <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
-          {/* Thumbnail */}
           <div
             style={{
-              position: "relative",
-              width: "36%",
-              minWidth: 112,
-              maxWidth: 130,
-              aspectRatio: "16 / 10",
-              borderRadius: 8,
-              overflow: "hidden",
-              background: thumb ? `url(${thumb}) center/cover no-repeat` : "linear-gradient(135deg, #0B2341, #1a3a6b)",
-              flexShrink: 0,
+              position: "absolute",
+              inset: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <div
+            <span
               style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(11,31,58,0.22)",
-              }}
-            />
-            <div
-              style={{
-                width: 36,
-                height: 36,
+                width: 58,
+                height: 58,
                 borderRadius: "50%",
-                background: "rgba(255,255,255,0.22)",
-                border: "2px solid rgba(255,255,255,0.45)",
+                background: "rgba(255,255,255,0.92)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                position: "relative",
-                zIndex: 1,
+                boxShadow: "0 10px 26px rgba(0,0,0,0.4)",
               }}
             >
-              <IconPlayerPlay size={15} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
-            </div>
+              <IconPlayerPlay size={24} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 3 }} />
+            </span>
           </div>
 
-          {/* Info */}
-          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
             <h3
               style={{
+                ...SORA,
                 margin: 0,
-                color: NAVY,
-                fontSize: 15,
+                color: "#fff",
+                fontSize: 18,
                 fontWeight: 700,
                 lineHeight: 1.25,
-                letterSpacing: -0.2,
+                letterSpacing: -0.3,
               }}
             >
               {v.title}
             </h3>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                color: TEXT_SECONDARY,
-                fontSize: 12,
-                fontWeight: 500,
-                marginTop: 4,
-              }}
-            >
-              <span>{category}</span>
-              <span style={{ width: 4, height: 4, borderRadius: "50%", background: "#C5CDD8" }} />
-              <span>{duration}</span>
-            </div>
-
-            <p
-              style={{
-                margin: "6px 0 0",
-                color: TEXT_SECONDARY,
-                fontSize: 12,
-                lineHeight: 1.45,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              {v.description || "A step-by-step guide to help you prepare, stay calm and pass with confidence."}
-            </p>
+            {v.description && (
+              <p
+                style={{
+                  margin: "6px 0 0",
+                  color: "rgba(255,255,255,0.75)",
+                  fontSize: 12,
+                  lineHeight: 1.45,
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                }}
+              >
+                {v.description}
+              </p>
+            )}
           </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 // PRO Perks card
