@@ -1098,59 +1098,37 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
 
   return (
     <section style={{ ...POPPINS }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 10,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <IconUsers size={20} color={NAVY} stroke={1.8} />
-          <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>What's happening</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {newCount > 0 && (
+      <SectionHead
+        title="What's happening"
+        right={
+          newCount > 0 ? (
             <span
               style={{
-                background: "#E53935",
-                color: "#fff",
-                fontSize: 11,
-                fontWeight: 700,
+                background: "rgba(229,57,53,0.10)",
+                color: "#E53935",
+                fontSize: 10,
+                fontWeight: 800,
+                letterSpacing: 0.6,
                 padding: "3px 8px",
-                borderRadius: 999,
+                borderRadius: 6,
+                textTransform: "uppercase",
               }}
             >
               {newCount} new
             </span>
-          )}
-
-          <button
-            type="button"
-            onClick={() => onNavigate("/community")}
-            style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 600,
-              color: BLUE,
-              fontFamily: POPPINS.fontFamily,
-            }}
-          >
-            See all <IconChevronRight size={14} stroke={2} style={{ verticalAlign: "middle" }} />
-          </button>
-        </div>
-      </div>
+          ) : undefined
+        }
+        actionLabel="See all"
+        onAction={() => onNavigate("/community")}
+      />
 
       <div
         style={{
           background: "#fff",
-          borderRadius: CARD_RADIUS,
+          borderRadius: 18,
           border: `0.5px solid ${HAIRLINE}`,
           overflow: "hidden",
+          boxShadow: "0 6px 18px -12px rgba(11,31,58,0.35)",
         }}
       >
         {displayRows.map((row, idx) => {
