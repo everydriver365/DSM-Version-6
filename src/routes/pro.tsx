@@ -1259,6 +1259,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
         </header>
 
         <PerksSection perks={perks} onNavigate={go} />
+        <RadioHeroCard onNavigate={go} />
         <FeaturedCard video={featured} onOpen={openMedia} />
         <ProTvSection videos={rest.length > 0 ? rest : videos} onOpen={openMedia} />
         <RadioSection onNavigate={go} />
