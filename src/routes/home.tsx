@@ -5508,10 +5508,10 @@ function HomePage() {
           const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
           const dt = Date.now() - touchStartTime.current;
           const threshold = dt < 300 ? 30 : 80;
-          if (dx < -threshold && activePage === 0) {
-            setActivePage(1);
-          } else if (dx > threshold && activePage === 1) {
-            setActivePage(0);
+          if (dx < -threshold && activePage < 2) {
+            setActivePage(activePage + 1);
+          } else if (dx > threshold && activePage > 0) {
+            setActivePage(activePage - 1);
           }
           isDragging.current = false;
         }}
