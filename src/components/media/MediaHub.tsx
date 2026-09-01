@@ -829,31 +829,31 @@ function PodcastsTab() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (filter === "All") return episodes.filter((e) => !e.showInteresting);
-    if (filter === "Interesting") return episodes.filter((e) => e.showInteresting);
+    if (filter === "All") return episodes.filter((e) => e.showInteresting !== true);
+    if (filter === "Interesting") return episodes.filter((e) => e.showInteresting === true);
     if (filter === "Featured") {
-      return episodes.filter((e) => e.showFeatured && !e.showInteresting);
+      return episodes.filter((e) => e.showFeatured && e.showInteresting !== true);
     }
     const term = filter.toLowerCase();
     return episodes.filter(
       (e) =>
-        !e.showInteresting &&
+        e.showInteresting !== true &&
         e.showCategories.some((c) => c.toLowerCase().includes(term.split(" ")[0] ?? term)),
     );
   }, [episodes, filter]);
 
   const featured = useMemo(() => {
     if (filter === "Interesting") {
-      return filtered.find((e) => e.showInteresting) ?? filtered[0];
+      return filtered.find((e) => e.showInteresting === true) ?? filtered[0];
     }
-    return filtered.find((e) => e.showFeatured) ?? filtered[0];
+    return filtered.find((e) => e.showInteresting !== true && e.showFeatured) ?? filtered[0];
   }, [filtered, filter]);
 
   const latest = filtered.filter((e) => e.id !== featured?.id).slice(0, 8);
 
   const shows = useMemo(() => {
-    if (filter === "Interesting") return PODCAST_SHOWS.filter((s) => s.interesting);
-    return PODCAST_SHOWS.filter((s) => !s.interesting);
+    if (filter === "Interesting") return PODCAST_SHOWS.filter((s) => s.interesting === true);
+    return PODCAST_SHOWS.filter((s) => s.interesting !== true);
   }, [filter]);
 
   const open = (url: string | null | undefined) => {
