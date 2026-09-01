@@ -51,13 +51,13 @@ export type VideoCategory = (typeof VIDEO_CATEGORIES)[number];
 
 export const VIDEO_CATEGORY_EMOJI: Record<string, string> = {
   "Getting started": "🚀",
-  Training: "🎓",
-  News: "📰",
-  CPD: "📋",
-  Business: "💼",
-  Wellbeing: "🌿",
-  Bitesize: "📚",
-  Showcase: "🏆",
+  "Training": "🎓",
+  "News": "📰",
+  "CPD": "📋",
+  "Business": "💼",
+  "Wellbeing": "🌿",
+  "Bitesize": "📚",
+  "Showcase": "🏆",
 };
 
 export const BITESIZE_CATEGORIES = [
