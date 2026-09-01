@@ -628,11 +628,12 @@ function PerksCard({
         </button>
       </div>
 
-
       <div
         style={{
           background: "#fff",
-          borderRadius: "0 0 " + CARD_RADIUS + "px " + CARD_RADIUS + "px",
+          borderRadius: 8,
+          marginTop: 8,
+
           padding: "12px 16px",
           display: "flex",
           alignItems: "center",
