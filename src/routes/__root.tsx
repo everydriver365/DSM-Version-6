@@ -286,6 +286,7 @@ type MenuTile = {
 
 const ACTION_TILES: MenuTile[] = [
   { label: "Schedule", icon: IconCalendar, to: "/schedule", bg: "#0B2341" },
+  { label: "Pupils", icon: IconUsers, to: "/pupils", bg: "#1877D6" },
   { label: "Calls", icon: IconPhone, to: "/calls", bg: "#16A34A" },
   { label: "Payment", icon: IconCreditCard, to: "/take-payment", bg: "#2C97DE" },
   { label: "Tracking", icon: IconMapPin, to: "/live", bg: "#E53935" },
