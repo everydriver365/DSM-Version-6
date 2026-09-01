@@ -211,55 +211,24 @@ async function sbGet<T>(path: string): Promise<T> {
 // Types
 /* ------------------------------------------------------------------ */
 
-type ProTvVideo = {
+interface LearnVideo {
   id: string;
   title: string;
   description: string | null;
+  video_url: string | null;
+  video_embed_url: string | null;
   thumbnail_url: string | null;
   category: string | null;
-  duration_label: string | null;
-  duration_minutes: number | null;
+  is_published: boolean;
+  sort_order: number | null;
+}
+
+type ProTvVideo = LearnVideo & {
   created_at: string;
-  source: "learn" | "bitesize";
+  source: "howto";
+  duration_label?: string | null;
+  duration_minutes?: number | null;
 };
-
-function normalizeLearnForTv(row: LearnVideo & { created_at: string }): ProTvVideo {
-  const minutes = videoMinutes(row);
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description ?? null,
-    thumbnail_url: row.thumbnail_url ?? null,
-    category: row.categories?.[0] ?? row.source ?? "Learn",
-    duration_label: formatVideoDuration(row) || null,
-    duration_minutes: minutes,
-    created_at: row.created_at,
-    source: "learn",
-  };
-}
-
-function normalizeBitesizeForTv(row: {
-  id: string;
-  title: string;
-  description?: string | null;
-  thumbnail_url?: string | null;
-  category?: string | null;
-  duration_mins?: number | null;
-  created_at: string;
-}): ProTvVideo {
-  const mins = row.duration_mins ?? null;
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description ?? null,
-    thumbnail_url: row.thumbnail_url ?? null,
-    category: row.category ?? "Bitesize",
-    duration_label: mins != null ? `${mins} min` : null,
-    duration_minutes: mins,
-    created_at: row.created_at,
-    source: "bitesize",
-  };
-}
 
 type FeaturedPerk = {
   id: string;
