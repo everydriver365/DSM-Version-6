@@ -29,7 +29,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "@/lib/toast";
-import { formatVideoDuration, videoMinutes, type LearnVideo } from "@/lib/learnVideos";
+
 
 import proImage from "@/assets/pro-image.png.asset.json";
 import proLogo from "@/assets/pro-logo-padded.png";
