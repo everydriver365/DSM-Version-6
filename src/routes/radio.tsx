@@ -107,7 +107,6 @@ function StationTile({
         background: "#FFFFFF",
         borderRadius: 14,
         border: "0.5px solid #E4E8EF",
-        boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
         padding: "14px 8px",
         display: "flex",
         flexDirection: "column",
@@ -229,7 +228,7 @@ function StationTile({
         ) : (
           <span
             style={{
-              fontSize: 8,
+              fontSize: 9,
               fontWeight: 600,
               color: "#536579",
               borderRadius: 10,
@@ -242,6 +241,18 @@ function StationTile({
       </div>
     </div>
   );
+}
+
+function RecentlyPlayedSection() {
+  // The existing useProRadio hook does not expose a recently-played history
+  // list, so this section is intentionally omitted per the "if exists" rule.
+  return null;
+}
+
+function FeaturedShowsSection() {
+  // The existing useProRadio hook does not expose programme/schedule data,
+  // so this section is intentionally omitted per the "if exists" rule.
+  return null;
 }
 
 function HeroCard() {
@@ -257,6 +268,7 @@ function HeroCard() {
         background: "#FFFFFF",
         borderRadius: 16,
         overflow: "hidden",
+        border: "0.5px solid #E4E8EF",
         boxShadow: "0 8px 32px rgba(11,35,65,0.15)",
       }}
     >
@@ -578,6 +590,8 @@ function RadioPage() {
           ))}
         </div>
 
+        <RecentlyPlayedSection />
+        <FeaturedShowsSection />
       </div>
     </div>
   );
