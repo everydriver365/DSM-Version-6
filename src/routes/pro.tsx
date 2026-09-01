@@ -396,7 +396,7 @@ const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; 
     selectedColor: "#22C55E",
     icon: (
       <img
-        src={proRadio2.url}
+        src={proRadio3.url}
         alt=""
         style={{ width: "100%", height: "100%", objectFit: "contain" }}
       />
