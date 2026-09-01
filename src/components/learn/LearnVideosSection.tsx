@@ -310,18 +310,28 @@ function VideoCard({
   );
 }
 
-export default function LearnVideosSection() {
+export default function LearnVideosSection({ videoId }: { videoId?: string } = {}) {
   const [videos, setVideos] = useState<LearnVideo[]>([]);
   const [filter, setFilter] = useState<Filter>("All");
   const [query, setQuery] = useState("");
   const [saved, setSaved] = useState<string[]>([]);
   const [seen, setSeen] = useState<string[]>([]);
   const [playing, setPlaying] = useState<LearnVideo | null>(null);
+  const [autoOpenedVideoId, setAutoOpenedVideoId] = useState<string | null>(null);
 
   useEffect(() => {
     setSaved(loadSaved());
     setSeen(loadSeen());
   }, []);
+
+  useEffect(() => {
+    if (!videoId || autoOpenedVideoId === videoId || videos.length === 0) return;
+    const match = videos.find((video) => video.id === videoId);
+    if (!match) return;
+    setPlaying(match);
+    setSeen(markSeen(videoKey(match.id)));
+    setAutoOpenedVideoId(videoId);
+  }, [videoId, videos, autoOpenedVideoId]);
 
   useEffect(() => {
     let cancelled = false;
