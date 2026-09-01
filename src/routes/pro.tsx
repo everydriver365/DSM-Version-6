@@ -34,6 +34,7 @@ import { formatVideoDuration, videoMinutes, type LearnVideo } from "@/lib/learnV
 import proImage from "@/assets/pro-image.png.asset.json";
 import proLogo from "@/assets/pro-logo-padded.png";
 import proRadioLogo from "@/assets/pro-radio-logo.png.asset.json";
+import proRadio2 from "@/assets/pro-radio-2.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
@@ -604,7 +605,17 @@ const TV_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
   { name: "PRO Learn", to: "/dsm-learn", icon: <IconBook size={24} color="#1877D6" stroke={2} /> },
   { name: "Showcase", to: "/showcase", icon: <IconUsers size={24} color="#7C3AED" stroke={2} /> },
   { name: "Bitesize", to: "/bitesize", icon: <IconPlayerPlay size={24} color="#18A999" stroke={2} /> },
-  { name: "Live", to: "/dsm-live", icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} /> },
+  {
+    name: "Live",
+    to: "/dsm-live",
+    icon: (
+      <img
+        src={proRadio2.url}
+        alt=""
+        style={{ width: 26, height: 26, objectFit: "contain" }}
+      />
+    ),
+  },
 ];
 
 const PERK_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
