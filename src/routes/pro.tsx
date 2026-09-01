@@ -381,6 +381,11 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
 function RadioSection() {
   const radio = useProRadioContext();
   const selected = radio.selectedStation || "PRO Live";
+  const [artworkFailed, setArtworkFailed] = useState(false);
+  useEffect(() => {
+    setArtworkFailed(false);
+  }, [radio.nowPlaying?.artwork]);
+
 
   const handleStation = (s: (typeof STATIONS)[number]) => {
     if (s.comingSoon) {
@@ -420,10 +425,21 @@ function RadioSection() {
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            overflow: "hidden",
           }}
         >
-          <IconRadio size={26} color={BLUE} stroke={2} />
+          {radio.nowPlaying?.artwork && !artworkFailed ? (
+            <img
+              src={radio.nowPlaying.artwork}
+              alt={radio.nowPlaying.title || "Now playing artwork"}
+              onError={() => setArtworkFailed(true)}
+              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8 }}
+            />
+          ) : (
+            <IconRadio size={26} color={BLUE} stroke={2} />
+          )}
         </div>
+
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -457,9 +473,21 @@ function RadioSection() {
               ? radio.nowPlaying?.title || "On air now"
               : "Ad free radio for ADIs and PDIs"}
           </div>
-          <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, marginTop: 1 }}>
-            {radio.showName || selected}
+          <div
+            style={{
+              color: "rgba(255,255,255,0.35)",
+              fontSize: 11,
+              marginTop: 1,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {radio.isPlaying && radio.nowPlaying?.artist
+              ? radio.nowPlaying.artist
+              : radio.showName || selected}
           </div>
+
         </div>
 
         <button
