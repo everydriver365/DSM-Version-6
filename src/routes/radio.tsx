@@ -243,6 +243,18 @@ function StationTile({
   );
 }
 
+function RecentlyPlayedSection() {
+  // The existing useProRadio hook does not expose a recently-played history
+  // list, so this section is intentionally omitted per the "if exists" rule.
+  return null;
+}
+
+function FeaturedShowsSection() {
+  // The existing useProRadio hook does not expose programme/schedule data,
+  // so this section is intentionally omitted per the "if exists" rule.
+  return null;
+}
+
 function HeroCard() {
   const radio = useProRadioContext();
   const PlayIcon = radio.isPlaying ? IconPlayerPause : IconPlayerPlay;
