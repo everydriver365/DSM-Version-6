@@ -336,7 +336,64 @@ function PerksSection({
 /* ------------------------------------------------------------------ */
 
 function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () => void }) {
-  if (!video) return null;
+  if (!video) {
+    return (
+      <section>
+        <SectionHeader eyebrow="Featured" />
+        <div
+          onClick={onOpen}
+          style={{
+            margin: `0 ${PAD}px`,
+            borderRadius: 16,
+            padding: "26px 18px 24px",
+            background: "linear-gradient(135deg,#0B2341,#1F4E86)",
+            boxShadow: "0 6px 22px rgba(11,35,65,0.12)",
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              background: BLUE,
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              borderRadius: 4,
+              padding: "3px 8px",
+              marginBottom: 10,
+            }}
+          >
+            FEATURED
+          </span>
+          <div style={{ color: "#fff", fontSize: 20, fontWeight: 700, lineHeight: 1.25 }}>
+            New PRO TV episodes are on the way
+          </div>
+          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginTop: 6, lineHeight: 1.4 }}>
+            Nothing published yet. Browse the media library for the latest training and live shows.
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16 }}>
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                background: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconPlayerPlay size={16} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 2 }} />
+            </span>
+            <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Open PRO TV</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section>
       <SectionHeader eyebrow="Featured" />
