@@ -107,7 +107,6 @@ function StationTile({
         background: "#FFFFFF",
         borderRadius: 14,
         border: "0.5px solid #E4E8EF",
-        boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
         padding: "14px 8px",
         display: "flex",
         flexDirection: "column",
