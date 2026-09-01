@@ -829,22 +829,22 @@ function PodcastsTab() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (filter === "All") return episodes.filter((e) => !e.showCategories.includes("Interesting"));
-    if (filter === "Interesting") return episodes.filter((e) => e.showCategories.includes("Interesting"));
+    if (filter === "All") return episodes.filter((e) => !e.showInteresting);
+    if (filter === "Interesting") return episodes.filter((e) => e.showInteresting);
     if (filter === "Featured") {
-      return episodes.filter((e) => e.showFeatured && !e.showCategories.includes("Interesting"));
+      return episodes.filter((e) => e.showFeatured && !e.showInteresting);
     }
     const term = filter.toLowerCase();
     return episodes.filter(
       (e) =>
-        !e.showCategories.includes("Interesting") &&
+        !e.showInteresting &&
         e.showCategories.some((c) => c.toLowerCase().includes(term.split(" ")[0] ?? term)),
     );
   }, [episodes, filter]);
 
   const featured = useMemo(() => {
     if (filter === "Interesting") {
-      return filtered.find((e) => e.showCategories.includes("Interesting")) ?? filtered[0];
+      return filtered.find((e) => e.showInteresting) ?? filtered[0];
     }
     return filtered.find((e) => e.showFeatured) ?? filtered[0];
   }, [filtered, filter]);

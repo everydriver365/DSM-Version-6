@@ -30,6 +30,7 @@ export type PodcastEpisode = {
   showFeatured: boolean;
   showRecommended: boolean;
   showCategories: string[];
+  showInteresting?: boolean;
 };
 
 export const PODCAST_SHOWS: PodcastShow[] = [
@@ -311,6 +312,7 @@ export function parseFeed(xml: string, show: PodcastShow, limit: number): Podcas
       showFeatured: show.featured,
       showRecommended: show.recommended,
       showCategories: show.categories,
+      showInteresting: show.interesting,
     };
   });
 }
