@@ -520,6 +520,13 @@ function RadioCard() {
 // PRO TV card
 /* ------------------------------------------------------------------ */
 
+const TV_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "PRO Learn", to: "/dsm-learn", icon: <IconBook size={24} color="#1877D6" stroke={2} /> },
+  { name: "Showcase", to: "/showcase", icon: <IconUsers size={24} color="#7C3AED" stroke={2} /> },
+  { name: "Bitesize", to: "/bitesize", icon: <IconPlayerPlay size={24} color="#18A999" stroke={2} /> },
+  { name: "Live", to: "/dsm-live", icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} /> },
+];
+
 function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate: (to: string) => void }) {
   const v = video ?? {
     id: "mock",
