@@ -2,9 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
+  IconHeart,
   IconPlayerPause,
   IconPlayerPlay,
   IconRadio,
+  IconRewindBackward15,
+  IconRewindForward15,
+  IconShare,
   IconShoppingBag,
 } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
