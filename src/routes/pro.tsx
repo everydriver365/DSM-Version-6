@@ -837,7 +837,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
     <PageLayout style={{ backgroundColor: PAGE_BG, ...POPPINS }}>
       <div
         style={{
-          paddingTop: "calc(env(safe-area-inset-top, 0px) + 48px)",
+          paddingTop: "calc(env(safe-area-inset-top, 0px) + 8px)",
           paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
         }}
       >
