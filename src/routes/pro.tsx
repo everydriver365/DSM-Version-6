@@ -272,7 +272,7 @@ function PerksSection({
               onClick={() => onNavigate(`/perks/${p.id}`)}
               style={{
                 background: "#fff",
-                borderRadius: 14,
+                borderRadius: 8,
                 border: `0.5px solid ${HAIRLINE}`,
                 boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
                 overflow: "hidden",
@@ -300,7 +300,7 @@ function PerksSection({
                     color: BLUE,
                     fontSize: 10,
                     fontWeight: 700,
-                    borderRadius: 6,
+                    borderRadius: 8,
                     padding: "3px 7px",
                     boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
                     textTransform: "uppercase",
@@ -408,7 +408,7 @@ function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
       <div
         style={{
           margin: `0 ${PAD}px`,
-          borderRadius: 16,
+          borderRadius: 8,
           overflow: "hidden",
           background: "linear-gradient(135deg,#0B2341 0%,#123763 55%,#0B2341 100%)",
           boxShadow: "0 6px 22px rgba(11,35,65,0.18)",
@@ -595,7 +595,7 @@ function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
               style={{
                 ...CARD_SNAP,
                 width: 190,
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: 12,
                 background: active ? NAVY : "#fff",
                 border: `1px solid ${active ? NAVY : HAIRLINE}`,
@@ -608,7 +608,7 @@ function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
                   style={{
                     width: 46,
                     height: 46,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     flexShrink: 0,
                     background: s.color,
                     display: "flex",
@@ -690,7 +690,7 @@ function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
             <div
               style={{
                 height: 106,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: show.gradient,
                 display: "flex",
                 alignItems: "flex-end",
@@ -728,7 +728,7 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
           onClick={onOpen}
           style={{
             margin: `0 ${PAD}px`,
-            borderRadius: 16,
+            borderRadius: 8,
             padding: "26px 18px 24px",
             background: "linear-gradient(135deg,#0B2341,#1F4E86)",
             boxShadow: "0 6px 22px rgba(11,35,65,0.12)",
@@ -743,7 +743,7 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.08em",
-              borderRadius: 4,
+              borderRadius: 8,
               padding: "3px 8px",
               marginBottom: 10,
             }}
@@ -785,7 +785,7 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
         onClick={onOpen}
         style={{
           margin: `0 ${PAD}px`,
-          borderRadius: 16,
+          borderRadius: 8,
           overflow: "hidden",
           position: "relative",
           background: NAVY,
@@ -822,7 +822,7 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.08em",
-              borderRadius: 4,
+              borderRadius: 8,
               padding: "3px 8px",
               marginBottom: 8,
             }}
@@ -886,7 +886,7 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
           onClick={onOpen}
           style={{
             margin: `0 ${PAD}px`,
-            borderRadius: 14,
+            borderRadius: 8,
             border: `0.5px solid ${HAIRLINE}`,
             background: "#fff",
             padding: "20px 16px",
@@ -900,7 +900,7 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
             style={{
               width: 42,
               height: 42,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "#EAF3FB",
               display: "flex",
               alignItems: "center",
@@ -939,7 +939,7 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
             <div
               style={{
                 height: 100,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: NAVY,
                 position: "relative",
                 overflow: "hidden",
@@ -987,7 +987,7 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
-                  borderRadius: 3,
+                  borderRadius: 8,
                   padding: "2px 6px",
                   textTransform: "uppercase",
                 }}
@@ -1038,7 +1038,7 @@ function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
       <div
         style={{
           margin: `0 ${PAD}px`,
-          borderRadius: 14,
+          borderRadius: 8,
           background: NAVY,
           padding: 14,
           display: "flex",
@@ -1050,7 +1050,7 @@ function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
           style={{
             width: 54,
             height: 54,
-            borderRadius: 10,
+            borderRadius: 8,
             background: "rgba(255,255,255,0.08)",
             display: "flex",
             alignItems: "center",
@@ -1080,7 +1080,7 @@ function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
                   color: "#fff",
                   fontSize: 9,
                   fontWeight: 700,
-                  borderRadius: 4,
+                  borderRadius: 8,
                   padding: "1px 6px",
                 }}
               >
@@ -1175,7 +1175,7 @@ function PodcastsSection({
             <div
               style={{
                 height: 100,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: "#EAF5FC",
                 position: "relative",
                 overflow: "hidden",
@@ -1218,7 +1218,7 @@ function PodcastsSection({
                       background: "rgba(0,0,0,0.55)",
                       color: "#fff",
                       fontSize: 10,
-                      borderRadius: 4,
+                      borderRadius: 8,
                       padding: "2px 6px",
                     }}
                   >
@@ -1277,7 +1277,7 @@ function ShopSection({
                 ...CARD_SNAP,
                 width: 142,
                 background: "#fff",
-                borderRadius: 12,
+                borderRadius: 8,
                 border: `0.5px solid ${HAIRLINE}`,
                 overflow: "hidden",
                 cursor: "pointer",
