@@ -243,8 +243,7 @@ function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
   );
 }
 
-export function TasksActionsCard({ userId, items, limit = 2, onSeeAll }: Props) {
-  const navigate = useNavigate();
+export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
   const live = useTaskItems(items ? null : userId);
   const all = items ?? live;
   const rows = all.slice(0, limit);
@@ -252,58 +251,18 @@ export function TasksActionsCard({ userId, items, limit = 2, onSeeAll }: Props) 
   if (rows.length === 0) return null;
 
   return (
-    <div
-      style={{
-        background: "#FFFFFF",
-        borderRadius: 30,
-        border: `0.5px solid ${HAIRLINE}`,
-        boxShadow: "0 8px 24px rgba(11,31,58,0.06)",
-        padding: "20px 20px 22px",
-        fontFamily: PF,
-      }}
-    >
+    <>
+      {header}
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 18,
-          paddingLeft: 4,
-          paddingRight: 4,
+          background: "#FFFFFF",
+          borderRadius: 8,
+          border: `0.5px solid ${HAIRLINE}`,
+          boxShadow: "0 8px 24px rgba(11,31,58,0.06)",
+          padding: 0,
+          fontFamily: PF,
         }}
       >
-        <span
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            color: NAVY,
-            fontFamily: HF,
-            letterSpacing: "-0.3px",
-          }}
-        >
-          Tasks & actions
-        </span>
-        <button
-          type="button"
-          onClick={() => (onSeeAll ? onSeeAll() : navigate({ to: "/todos" as never }))}
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: BLUE,
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            fontFamily: PF,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          See all
-          <IconChevronRight size={16} stroke={2.5} />
-        </button>
-      </div>
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         {rows.map((item, i) => {
