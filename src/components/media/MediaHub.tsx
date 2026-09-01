@@ -1084,7 +1084,8 @@ export function MediaHub({ onNavigate }: MediaHubProps) {
       <div
         style={{
           background: NAVY,
-          paddingTop: "calc(env(safe-area-inset-top) + 44px)",
+          paddingTop:
+            "calc(var(--dsm-safe-top, env(safe-area-inset-top, 0px)) + 44px)",
           paddingLeft: 16,
           paddingRight: 16,
           paddingBottom: 0,
