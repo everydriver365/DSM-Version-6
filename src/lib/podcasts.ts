@@ -216,6 +216,7 @@ export const CURATED_EPISODES: PodcastEpisode[] = [
     showName: "TED Talks Daily",
     showFeatured: true,
     showRecommended: true,
+    showInteresting: true,
     showCategories: ["TED", "Ideas", "Learning", "General"],
   },
   {
@@ -237,6 +238,7 @@ export const CURATED_EPISODES: PodcastEpisode[] = [
     showName: "TED Talks Daily",
     showFeatured: true,
     showRecommended: true,
+    showInteresting: true,
     showCategories: ["TED", "Ideas", "Learning", "General"],
   },
 ];
@@ -312,7 +314,7 @@ export function parseFeed(xml: string, show: PodcastShow, limit: number): Podcas
       showFeatured: show.featured,
       showRecommended: show.recommended,
       showCategories: show.categories,
-      showInteresting: show.interesting,
+      showInteresting: show.interesting ?? false,
     };
   });
 }
