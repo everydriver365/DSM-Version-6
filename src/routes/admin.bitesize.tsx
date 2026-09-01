@@ -138,6 +138,14 @@ function AdminBitesizePage() {
     setYoutubeUrl("");
   }
 
+  useEffect(() => {
+    if (source === "youtube" && youtubeUrl.trim() && !thumbFile) {
+      setThumbPreview(youtubeThumbnail(youtubeUrl.trim()));
+    } else if (source === "upload") {
+      if (!thumbFile) setThumbPreview(null);
+    }
+  }, [source, youtubeUrl, thumbFile]);
+
   function openEdit(video: any) {
     setTitle(video.title ?? "");
     setDescription(video.description ?? "");
