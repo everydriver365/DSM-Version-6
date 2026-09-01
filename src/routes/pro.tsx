@@ -139,6 +139,43 @@ function formatMoneyDisplay(raw: string | null): string {
 
 const STATIONS = ["PRO Live", "PRO 80s", "PRO 90s", "PRO Chill", "PRO Drive"];
 
+function WaveformIcon() {
+  const bars = [10, 18, 24, 18, 10];
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+      {bars.map((h, i) => (
+        <span key={i} style={{ width: 3, height: h, borderRadius: 2, background: BLUE }} />
+      ))}
+    </span>
+  );
+}
+
+function DecadeIcon({ label, from, to }: { label: string; from: string; to: string }) {
+  return (
+    <span
+      style={{
+        fontSize: 19,
+        fontWeight: 800,
+        letterSpacing: -0.5,
+        backgroundImage: `linear-gradient(135deg, ${from}, ${to})`,
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        color: "transparent",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+const STATION_TILES: { name: string; icon: React.ReactNode }[] = [
+  { name: "PRO Live", icon: <WaveformIcon /> },
+  { name: "PRO 80s", icon: <DecadeIcon label="80s" from="#F59E0B" to="#E53935" /> },
+  { name: "PRO 90s", icon: <DecadeIcon label="90s" from="#7B61FF" to="#2C97DE" /> },
+  { name: "PRO Chill", icon: <IconWaveSine size={24} color="#18A999" stroke={2.2} /> },
+  { name: "PRO Drive", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
+];
+
 function RadioCard() {
   const radio = useProRadioContext();
   const [selectedChip, setSelectedChip] = useState<string>(radio.selectedStation || "PRO Live");
