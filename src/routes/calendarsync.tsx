@@ -421,9 +421,17 @@ function CalendarSyncPage() {
             }
           })();
         }
+      } else if (
+        String(data.error ?? "").includes("calendar_blocks_external_unique") ||
+        String(data.error ?? "").includes("duplicate key")
+      ) {
+        // Events already imported by a previous sync — not a real failure.
+        toast.info("Calendar already up to date");
+        setLastSynced(new Date().toISOString());
       } else {
         toast.error(data.message ?? data.error ?? "Sync failed");
       }
+
     } catch {
       toast.error("Sync failed");
     } finally {
