@@ -1,25 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import {
-  IconHeart,
-  IconPlayerPause,
-  IconPlayerPlay,
-  IconRadio,
-  IconRewindBackward15,
-  IconRewindForward15,
-  IconShare,
-  IconShoppingBag,
-} from "@tabler/icons-react";
+import { IconShoppingBag } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
-import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
-import { type PodcastEpisode } from "@/lib/podcasts";
-import { getPodcastEpisodes } from "@/lib/podcasts.functions";
-import { toast } from "@/lib/toast";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const PAGE_BG = "#F7F8FA";
+const PAGE_BG = "#F4F6F8";
 const NAVY = "#0B2341";
 const BLUE = "#2C97DE";
 const MUTED = "#536579";
@@ -35,34 +21,9 @@ const CLAMP = (lines: number) =>
     overflow: "hidden",
   }) as const;
 
-const SCROLL_ROW = {
-  display: "flex",
-  gap: 12,
-  overflowX: "auto" as const,
-  WebkitOverflowScrolling: "touch" as const,
-  scrollbarWidth: "none" as const,
-  scrollSnapType: "x proximity" as const,
-  scrollPaddingLeft: PAD,
-  padding: `0 ${PAD}px 4px`,
-};
-
-const CARD_SNAP = { scrollSnapAlign: "start" as const, flexShrink: 0 };
-
 /* ------------------------------------------------------------------ */
 // Types
 /* ------------------------------------------------------------------ */
-
-interface HowtoVideo {
-  id: string;
-  title: string;
-  description: string | null;
-  video_url: string | null;
-  video_embed_url: string | null;
-  thumbnail_url: string | null;
-  category: string | null;
-  is_published: boolean;
-  sort_order: number | null;
-}
 
 type ShopListing = {
   id: string;
@@ -95,15 +56,6 @@ function formatMoneyDisplay(raw: string | null): string {
   return raw;
 }
 
-function formatDuration(secs: number | null): string {
-  if (!secs || secs <= 0) return "";
-  return `${Math.round(secs / 60)} min`;
-}
-
-/* ------------------------------------------------------------------ */
-// Shared bits
-/* ------------------------------------------------------------------ */
-
 function SectionHeader({
   eyebrow,
   title,
@@ -120,7 +72,7 @@ function SectionHeader({
   return (
     <div
       style={{
-        padding: `26px ${PAD}px 12px`,
+        padding: `18px ${PAD}px 12px`,
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "space-between",
@@ -175,8 +127,24 @@ function SectionHeader({
   );
 }
 
+function EmptyState({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        padding: "32px 16px",
+        textAlign: "center",
+        color: MUTED,
+        fontSize: 12,
+        ...POPPINS,
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
-// 1 — Perks rail
+// Perks
 /* ------------------------------------------------------------------ */
 
 function shortSaving(raw: string | null): string {
@@ -243,10 +211,10 @@ function PerksSection({
   perks: Perk[];
   onNavigate: (to: string) => void;
 }) {
-  if (perks.length === 0) return null;
+  if (perks.length === 0) return <EmptyState label="No perks available right now." />;
   const withImage = perks.filter((p) => !!p.hero_image_url?.trim());
   const withoutImage = perks.filter((p) => !p.hero_image_url?.trim());
-  const topFour = [...withImage, ...withoutImage].slice(0, 4);
+  const ordered = [...withImage, ...withoutImage];
   return (
     <section>
       <SectionHeader
@@ -263,7 +231,7 @@ function PerksSection({
           padding: `0 ${PAD}px`,
         }}
       >
-        {topFour.map((p) => {
+        {ordered.map((p) => {
           const [c1, c2] = perkTint(p.id);
           const label = p.partner?.name || p.name;
           return (
@@ -290,7 +258,11 @@ function PerksSection({
                   position: "relative",
                 }}
               >
-                <PerkHeroImage src={p.hero_image_url} alt={p.name} initial={label.trim().charAt(0).toUpperCase()} />
+                <PerkHeroImage
+                  src={p.hero_image_url}
+                  alt={p.name}
+                  initial={label.trim().charAt(0).toUpperCase()}
+                />
                 <span
                   style={{
                     position: "absolute",
@@ -336,778 +308,8 @@ function PerksSection({
   );
 }
 
-
 /* ------------------------------------------------------------------ */
-// 1.5 — PRO Radio hero tile
-/* ------------------------------------------------------------------ */
-
-type ProStation = {
-  name: string;
-  subtitle: string;
-  badge: string;
-  color: string;
-  isLive: boolean;
-  toastText?: string;
-};
-
-/** Mirrors the station list on /radio (src/routes/radio.tsx). */
-const PRO_STATIONS: ProStation[] = [
-  { name: "PRO Live", subtitle: "Live now", badge: "PRO", color: BLUE, isLive: true },
-  { name: "PRO 80s", subtitle: "The best of the 80s", badge: "80s", color: "#12A594", isLive: false },
-  { name: "PRO 90s", subtitle: "The best of the 90s", badge: "90s", color: "#7C5CFA", isLive: false },
-  { name: "PRO 00s", subtitle: "The best of the 00s", badge: "00s", color: "#E5762F", isLive: false },
-  { name: "PRO 70s", subtitle: "The best of the 70s", badge: "70s", color: "#C0398B", isLive: false },
-  { name: "PRO 60s", subtitle: "The best of the 60s", badge: "60s", color: "#2E7D32", isLive: false },
-  { name: "PRO Chill", subtitle: "Easy listening", badge: "CHL", color: "#0E7490", isLive: false },
-  { name: "PRO Drive", subtitle: "Drive time energy", badge: "DRV", color: "#B4232A", isLive: false },
-  { name: "PRO Xmas", subtitle: "Festive favourites", badge: "XMS", color: "#C62828", isLive: false, toastText: "PRO Xmas coming soon! 🎄" },
-];
-
-/** Static schedule copy — no programme data source exists yet. */
-const PRO_SHOWS = [
-  { title: "The Morning Drive", schedule: "Weekdays, 6:00 – 10:00", gradient: "linear-gradient(160deg,#F2994A,#0B2341)" },
-  { title: "Driving Home", schedule: "Weekdays, 16:00 – 19:00", gradient: "linear-gradient(160deg,#E5762F,#241539)" },
-  { title: "Weekend Vibes", schedule: "Saturdays, 9:00 – 13:00", gradient: "linear-gradient(160deg,#7C5CFA,#0B2341)" },
-  { title: "The Sunday Session", schedule: "Sundays, 10:00 – 14:00", gradient: "linear-gradient(160deg,#1F7A8C,#0B2341)" },
-];
-
-
-// 1.5 — PRO Radio hero tile
-/* ------------------------------------------------------------------ */
-
-function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
-  const radio = useProRadioContext();
-  const [artworkFailed, setArtworkFailed] = useState(false);
-  useEffect(() => {
-    setArtworkFailed(false);
-  }, [radio.nowPlaying?.artwork]);
-
-  const station = radio.selectedStation || "PRO Live";
-  const artwork = radio.nowPlaying?.artwork;
-  const subtitle = radio.nowPlaying?.artist || radio.showName || "Groove Salad · SomaFM";
-
-  const ctrl = {
-    background: "transparent",
-    border: "none",
-    padding: 0,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "rgba(255,255,255,0.85)",
-  } as const;
-
-  return (
-    <section>
-      <SectionHeader
-        eyebrow="Pro Radio"
-        title="The best driving radio"
-        actionLabel="Listen in your car"
-        onAction={() => onNavigate("/radio")}
-      />
-      <div
-        style={{
-          margin: `0 ${PAD}px`,
-          borderRadius: 8,
-          overflow: "hidden",
-          background: "linear-gradient(135deg,#0B2341 0%,#123763 55%,#0B2341 100%)",
-          boxShadow: "0 6px 22px rgba(11,35,65,0.18)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 14px 12px" }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 5,
-                  background: "#E53935",
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  borderRadius: 999,
-                  padding: "3px 9px",
-                }}
-              >
-                <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#fff" }} />
-                LIVE
-              </span>
-            </div>
-
-            <div
-              style={{
-                color: BLUE,
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                marginTop: 10,
-              }}
-            >
-              Now on air
-            </div>
-            <div style={{ color: "#fff", fontSize: 20, fontWeight: 700, lineHeight: 1.2, marginTop: 2 }}>
-              {station}
-            </div>
-            <div style={{ color: "rgba(255,255,255,0.82)", fontSize: 12, marginTop: 3, ...CLAMP(1) }}>
-              {subtitle}
-            </div>
-            <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 8, ...CLAMP(2) }}>
-              The perfect mix of chill beats and driving vibes all day long.
-            </div>
-            <button
-              type="button"
-              onClick={() => onNavigate("/radio")}
-              style={{
-                ...ctrl,
-                color: BLUE,
-                fontSize: 12,
-                fontWeight: 600,
-                marginTop: 10,
-                gap: 5,
-              }}
-            >
-              View schedule →
-            </button>
-          </div>
-
-          <div
-            style={{
-              width: 118,
-              height: 118,
-              borderRadius: "50%",
-              flexShrink: 0,
-              background: "radial-gradient(circle at 50% 45%, #123763 0%, #061529 75%)",
-              border: "1px solid rgba(44,151,222,0.35)",
-              boxShadow: "0 0 0 8px rgba(44,151,222,0.07)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-            }}
-          >
-            {artwork && !artworkFailed ? (
-              <img
-                src={artwork}
-                alt={radio.nowPlaying?.title || station}
-                onError={() => setArtworkFailed(true)}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              <>
-                <IconRadio size={20} color={BLUE} stroke={2} />
-                <div style={{ color: "#fff", fontSize: 26, fontWeight: 800, lineHeight: 1, marginTop: 4 }}>
-                  PRO
-                </div>
-                <div style={{ color: BLUE, fontSize: 15, fontWeight: 700, lineHeight: 1.1 }}>LIVE</div>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "10px 20px 14px",
-            background: "rgba(255,255,255,0.05)",
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <button
-            type="button"
-            aria-label="Favourite"
-            onClick={() => radio.toggleFavorite(station)}
-            style={ctrl}
-          >
-            <IconHeart
-              size={22}
-              stroke={1.6}
-              color={radio.favorites?.includes(station) ? "#E53935" : "rgba(255,255,255,0.85)"}
-              fill={radio.favorites?.includes(station) ? "#E53935" : "none"}
-            />
-          </button>
-          <button type="button" aria-label="Back 15 seconds" onClick={() => onNavigate("/radio")} style={ctrl}>
-            <IconRewindBackward15 size={24} stroke={1.6} />
-          </button>
-          <button
-            type="button"
-            aria-label={radio.isPlaying ? "Pause" : "Play"}
-            onClick={() => radio.toggle()}
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: "50%",
-              background: BLUE,
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(44,151,222,0.4)",
-            }}
-          >
-            {radio.isPlaying ? (
-              <IconPlayerPause size={22} color="#fff" fill="#fff" stroke={1} />
-            ) : (
-              <IconPlayerPlay size={22} color="#fff" fill="#fff" stroke={1} style={{ marginLeft: 2 }} />
-            )}
-          </button>
-          <button type="button" aria-label="Forward 15 seconds" onClick={() => onNavigate("/radio")} style={ctrl}>
-            <IconRewindForward15 size={24} stroke={1.6} />
-          </button>
-          <button type="button" aria-label="Share" onClick={() => onNavigate("/radio")} style={ctrl}>
-            <IconShare size={22} stroke={1.6} />
-          </button>
-        </div>
-      </div>
-
-      {/* All stations */}
-      <div
-        style={{
-          padding: `18px ${PAD}px 8px`,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: NAVY,
-        }}
-      >
-        All stations
-      </div>
-      <div style={SCROLL_ROW}>
-        {PRO_STATIONS.map((s) => {
-          const active = s.isLive && station === s.name;
-          return (
-            <div
-              key={s.name}
-              onClick={() => {
-                if (!s.isLive) {
-                  toast(s.toastText ?? `${s.name} coming soon!`);
-                  return;
-                }
-                radio.play();
-              }}
-              style={{
-                ...CARD_SNAP,
-                width: 190,
-                borderRadius: 8,
-                padding: 12,
-                background: active ? NAVY : "#fff",
-                border: `1px solid ${active ? NAVY : HAIRLINE}`,
-                boxShadow: "0 2px 10px rgba(11,35,65,0.06)",
-                cursor: "pointer",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div
-                  style={{
-                    width: 46,
-                    height: 46,
-                    borderRadius: 8,
-                    flexShrink: 0,
-                    background: s.color,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#fff",
-                    fontSize: 14,
-                    fontWeight: 800,
-                  }}
-                >
-                  {s.isLive ? <IconRadio size={22} color="#fff" stroke={2} /> : s.badge}
-                </div>
-                <div style={{ minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: active ? "#fff" : NAVY,
-                      ...CLAMP(1),
-                    }}
-                  >
-                    {s.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: active ? "rgba(255,255,255,0.65)" : MUTED,
-                      marginTop: 2,
-                      ...CLAMP(1),
-                    }}
-                  >
-                    {s.subtitle}
-                  </div>
-                </div>
-              </div>
-              <div
-                style={{
-                  marginTop: 10,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  color: s.isLive ? (active ? "#fff" : BLUE) : s.color,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                }}
-              >
-                {s.isLive ? (
-                  <>
-                    <span
-                      style={{
-                        width: 5,
-                        height: 5,
-                        borderRadius: "50%",
-                        background: radio.isPlaying ? "#E53935" : "rgba(255,255,255,0.5)",
-                      }}
-                    />
-                    {radio.isPlaying ? "LIVE" : "PAUSED"}
-                  </>
-                ) : (
-                  "COMING SOON"
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-
-      {/* Featured shows */}
-      <SectionHeader eyebrow="Featured shows" actionLabel="View all" onAction={() => onNavigate("/radio")} />
-      <div style={SCROLL_ROW}>
-        {PRO_SHOWS.map((show) => (
-          <div
-            key={show.title}
-            onClick={() => onNavigate("/radio")}
-            style={{ ...CARD_SNAP, width: 150, cursor: "pointer" }}
-          >
-            <div
-              style={{
-                height: 106,
-                borderRadius: 8,
-                background: show.gradient,
-                display: "flex",
-                alignItems: "flex-end",
-                padding: 10,
-                color: "#fff",
-                fontSize: 15,
-                fontWeight: 800,
-                lineHeight: 1.15,
-                textTransform: "uppercase",
-              }}
-            >
-              <span style={CLAMP(2)}>{show.title}</span>
-            </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8, ...CLAMP(1) }}>
-              {show.title}
-            </div>
-            <div style={{ fontSize: 11, color: MUTED, marginTop: 2, ...CLAMP(1) }}>{show.schedule}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-// 2 — Featured hero
-/* ------------------------------------------------------------------ */
-
-function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () => void }) {
-  if (!video) {
-    return (
-      <section>
-        <div
-          onClick={onOpen}
-          style={{
-            margin: `0 ${PAD}px`,
-            borderRadius: 8,
-            padding: "26px 18px 24px",
-            background: "linear-gradient(135deg,#0B2341,#1F4E86)",
-            boxShadow: "0 6px 22px rgba(11,35,65,0.12)",
-            cursor: "pointer",
-          }}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              background: BLUE,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              borderRadius: 8,
-              padding: "3px 8px",
-              marginBottom: 10,
-            }}
-          >
-            FEATURED
-          </span>
-          <div style={{ color: "#fff", fontSize: 20, fontWeight: 700, lineHeight: 1.25 }}>
-            New PRO TV episodes are on the way
-          </div>
-          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginTop: 6, lineHeight: 1.4 }}>
-            Nothing published yet. Browse the media library for the latest training and live shows.
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16 }}>
-            <span
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                background: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconPlayerPlay size={16} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 2 }} />
-            </span>
-            <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Open PRO TV</span>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  return (
-    <section>
-      <div
-        onClick={onOpen}
-        style={{
-          margin: `0 ${PAD}px`,
-          borderRadius: 8,
-          overflow: "hidden",
-          position: "relative",
-          background: NAVY,
-          boxShadow: "0 6px 22px rgba(11,35,65,0.12)",
-          cursor: "pointer",
-        }}
-      >
-        <div style={{ height: 230, background: "linear-gradient(135deg,#0B2341,#1a3a6b)" }}>
-          {video.thumbnail_url && (
-            <img
-              src={video.thumbnail_url}
-              alt={video.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            />
-          )}
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            padding: "56px 16px 16px",
-            background:
-              "linear-gradient(to bottom, rgba(11,35,65,0) 0%, rgba(11,35,65,0.85) 45%, #0B2341 100%)",
-          }}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              background: BLUE,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              borderRadius: 8,
-              padding: "3px 8px",
-              marginBottom: 8,
-            }}
-          >
-            FEATURED
-          </span>
-          <div style={{ color: "#fff", fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>
-            {video.title}
-          </div>
-          {video.description && (
-            <div
-              style={{
-                color: "rgba(255,255,255,0.7)",
-                fontSize: 13,
-                lineHeight: 1.4,
-                marginTop: 6,
-                ...CLAMP(2),
-              }}
-            >
-              {video.description}
-            </div>
-          )}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
-            <span
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                background: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconPlayerPlay size={16} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 2 }} />
-            </span>
-            <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Watch now</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-// 3 — PRO TV
-/* ------------------------------------------------------------------ */
-
-function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => void }) {
-  if (videos.length === 0) {
-    return (
-      <section>
-        <SectionHeader
-          eyebrow="Pro TV"
-          title="Watch and learn"
-          subtitle="Helpful videos to make you a better driver."
-          onAction={onOpen}
-        />
-        <div
-          onClick={onOpen}
-          style={{
-            margin: `0 ${PAD}px`,
-            borderRadius: 8,
-            border: `0.5px solid ${HAIRLINE}`,
-            background: "#fff",
-            padding: "20px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-          }}
-        >
-          <span
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: 8,
-              background: "#EAF3FB",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <IconPlayerPlay size={18} color={BLUE} fill={BLUE} stroke={1.2} style={{ marginLeft: 2 }} />
-          </span>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>No episodes published yet</div>
-            <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
-              Tap to browse the full media library.
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-  return (
-    <section>
-      <SectionHeader
-        eyebrow="Pro TV"
-        title="Watch and learn"
-        subtitle="Helpful videos to make you a better driver."
-        onAction={onOpen}
-      />
-
-      <div style={SCROLL_ROW}>
-        {videos.map((v) => (
-          <div
-            key={v.id}
-            onClick={onOpen}
-            style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}
-          >
-            <div
-              style={{
-                height: 100,
-                borderRadius: 8,
-                background: NAVY,
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              {v.thumbnail_url && (
-                <img
-                  src={v.thumbnail_url}
-                  alt={v.title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              )}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "rgba(11,35,65,0.18)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <span
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    border: "2px solid rgba(255,255,255,0.85)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <IconPlayerPlay size={14} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
-                </span>
-              </div>
-            </div>
-            {v.category && (
-              <span
-                style={{
-                  display: "inline-block",
-                  marginTop: 8,
-                  background: BLUE,
-                  color: "#fff",
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  borderRadius: 8,
-                  padding: "2px 6px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {v.category}
-              </span>
-            )}
-            <div
-              style={{
-                marginTop: 6,
-                fontSize: 13,
-                fontWeight: 600,
-                color: NAVY,
-                lineHeight: 1.3,
-                ...CLAMP(2),
-              }}
-            >
-              {v.title}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-
-/* ------------------------------------------------------------------ */
-// 5 — Podcasts
-/* ------------------------------------------------------------------ */
-
-function PodcastsSection({
-  episodes,
-  onOpen,
-}: {
-  episodes: PodcastEpisode[];
-  onOpen: () => void;
-}) {
-  if (episodes.length === 0) return null;
-  return (
-    <section>
-      <SectionHeader eyebrow="PRO PODCASTS" title="Listen on the road" onAction={onOpen} />
-      <div style={SCROLL_ROW}>
-        {episodes.slice(0, 8).map((ep) => (
-          <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}>
-            <div
-              style={{
-                height: 100,
-                borderRadius: 8,
-                background: "#EAF5FC",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              {ep.imageUrl && (
-                <img
-                  src={ep.imageUrl}
-                  alt={ep.showName}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              )}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "rgba(11,35,65,0.25)",
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "space-between",
-                  padding: 8,
-                }}
-              >
-                <span
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.9)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <IconPlayerPlay size={12} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 1 }} />
-                </span>
-                {formatDuration(ep.durationSecs) && (
-                  <span
-                    style={{
-                      background: "rgba(0,0,0,0.55)",
-                      color: "#fff",
-                      fontSize: 10,
-                      borderRadius: 8,
-                      padding: "2px 6px",
-                    }}
-                  >
-                    {formatDuration(ep.durationSecs)}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div style={{ fontSize: 11, color: MUTED, marginTop: 8, ...CLAMP(1) }}>{ep.showName}</div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: NAVY,
-                marginTop: 2,
-                lineHeight: 1.3,
-                ...CLAMP(2),
-              }}
-            >
-              {ep.title}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-// 6 — PRO Shop
+// PRO Shop
 /* ------------------------------------------------------------------ */
 
 function ShopSection({
@@ -1117,11 +319,11 @@ function ShopSection({
   listings: ShopListing[];
   onNavigate: (to: string) => void;
 }) {
-  if (listings.length === 0) return null;
+  if (listings.length === 0) return <EmptyState label="No shop listings available right now." />;
   return (
     <section>
       <SectionHeader
-        eyebrow="Pro Shop"
+        eyebrow="PRO SHOP"
         title="Kit for your car"
         onAction={() => onNavigate("/marketplace")}
       />
@@ -1130,9 +332,6 @@ function ShopSection({
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
           gap: 12,
-          maxHeight: 360,
-          overflowY: "auto",
-          WebkitOverflowScrolling: "touch" as const,
           padding: `0 ${PAD}px 4px`,
         }}
       >
@@ -1198,13 +397,13 @@ export const Route = createFileRoute("/pro")({
       {
         name: "description",
         content:
-          "Your PRO membership: exclusive perks, featured videos, PRO Radio, podcasts and the PRO Shop for driving instructors.",
+          "Your PRO membership: exclusive member perks and the PRO Shop for driving instructors.",
       },
       { property: "og:title", content: "PRO — Every Driver Pro" },
       {
         property: "og:description",
         content:
-          "Your PRO membership: exclusive perks, featured videos, PRO Radio, podcasts and the PRO Shop for driving instructors.",
+          "Your PRO membership: exclusive member perks and the PRO Shop for driving instructors.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -1213,52 +412,41 @@ export const Route = createFileRoute("/pro")({
   component: () => <ProPage />,
 });
 
-export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void } = {}) {
+type ProTabKey = "perks" | "shop";
+
+const TABS: { key: ProTabKey; label: string }[] = [
+  { key: "perks", label: "PERKS" },
+  { key: "shop", label: "PRO SHOP" },
+];
+
+export function ProPage(_props: { onNavigateToMedia?: () => void } = {}) {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
-  const openMedia = () => {
-    if (onNavigateToMedia) onNavigateToMedia();
-    else go("/dsm-live");
-  };
 
-  const loadEpisodes = useServerFn(getPodcastEpisodes);
-
-  const [videos, setVideos] = useState<HowtoVideo[]>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
-  const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
   const [perks, setPerks] = useState<Perk[]>([]);
+  const [activeTab, setActiveTab] = useState<ProTabKey>("perks");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [videoRes, shopRes, perkRes] = await Promise.allSettled([
-        supabase
-          .from("howto_videos")
-          .select(
-            "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order",
-          )
-          .eq("is_published", true)
-          .order("sort_order", { ascending: true })
-          .limit(10),
+      const [shopRes, perkRes] = await Promise.allSettled([
         supabase
           .from("marketplace_listings")
           .select("id, title, price_display, image_urls")
           .eq("is_active", true)
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
-          .limit(6),
+          .limit(20),
         supabase
           .from("benefit_perks")
           .select("id, name, description, category, saving, hero_image_url, partner:benefit_partners(name)")
           .eq("active", true)
           .order("sort_order", { ascending: true })
-          .limit(12),
+          .limit(30),
       ]);
       if (cancelled) return;
 
-      if (videoRes.status === "fulfilled" && Array.isArray(videoRes.value.data)) {
-        setVideos(videoRes.value.data as unknown as HowtoVideo[]);
-      }
       if (shopRes.status === "fulfilled" && Array.isArray(shopRes.value.data)) {
         setListings(shopRes.value.data as unknown as ShopListing[]);
       }
@@ -1271,47 +459,72 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
     };
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const eps = await loadEpisodes();
-        if (!cancelled && Array.isArray(eps)) setEpisodes(eps);
-      } catch {
-        /* podcasts unavailable */
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [loadEpisodes]);
-
-  const featured = videos[0] ?? null;
-  const rest = videos.slice(1);
-
   return (
     <PageLayout style={{ backgroundColor: PAGE_BG, ...POPPINS }}>
       <div
         style={{
-          paddingTop: "calc(env(safe-area-inset-top, 0px) + 8px)",
-          paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
+          minHeight: "100%",
+          display: "flex",
+          flexDirection: "column",
+          background: PAGE_BG,
         }}
       >
-        <header style={{ padding: `18px ${PAD}px 2px` }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: MUTED }}>
-            Your PRO membership
+        <div
+          style={{
+            background: NAVY,
+            paddingTop: "calc(var(--dsm-safe-top, env(safe-area-inset-top, 0px)) + 44px)",
+            paddingLeft: 16,
+            paddingRight: 16,
+            paddingBottom: 0,
+            position: "sticky",
+            top: 0,
+            zIndex: 5,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 0,
+              borderBottom: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            {TABS.map((t) => {
+              const active = activeTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => setActiveTab(t.key)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: `2px solid ${active ? BLUE : "transparent"}`,
+                    color: active ? "#fff" : "rgba(255,255,255,0.5)",
+                    fontWeight: active ? 700 : 500,
+                    fontSize: 13,
+                    padding: "10px 16px",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                >
+                  {t.label}
+                </button>
+              );
+            })}
           </div>
-          <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.4, maxWidth: 280 }}>
-            Premium exclusive perks for members.
-          </div>
-        </header>
+        </div>
 
-        <PerksSection perks={perks} onNavigate={go} />
-        <RadioHeroCard onNavigate={go} />
-        <PodcastsSection episodes={episodes} onOpen={openMedia} />
-        <FeaturedCard video={featured} onOpen={openMedia} />
-        <ProTvSection videos={rest.length > 0 ? rest : videos} onOpen={openMedia} />
-        <ShopSection listings={listings} onNavigate={go} />
+        <div
+          style={{
+            background: PAGE_BG,
+            flex: 1,
+            overflowY: "auto",
+            paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
+          }}
+        >
+          {activeTab === "perks" ? <PerksSection perks={perks} onNavigate={go} /> : null}
+          {activeTab === "shop" ? <ShopSection listings={listings} onNavigate={go} /> : null}
+        </div>
       </div>
     </PageLayout>
   );
