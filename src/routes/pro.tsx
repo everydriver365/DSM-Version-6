@@ -122,6 +122,19 @@ function avatarColor(name: string): string {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
+function firstInitial(name: string): string {
+  return name.trim()[0]?.toUpperCase() ?? "?";
+}
+
+function communityAvatarColor(name: string): string {
+  const initial = firstInitial(name);
+  if (initial >= "A" && initial <= "E") return "#2C97DE";
+  if (initial >= "F" && initial <= "J") return "#18A999";
+  if (initial >= "K" && initial <= "O") return "#7B61FF";
+  if (initial >= "P" && initial <= "T") return "#F59E0B";
+  return "#E53935";
+}
+
 function sentenceCase(s: string): string {
   if (!s) return "";
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
