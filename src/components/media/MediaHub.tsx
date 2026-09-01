@@ -1,0 +1,941 @@
+import { useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  IconChevronRight,
+  IconDeviceTv,
+  IconMicrophone,
+  IconPlayerPlay,
+} from "@tabler/icons-react";
+
+import { supabase } from "@/lib/supabaseClient";
+import { sanitizeNewsTitle } from "@/lib/newsText";
+import { PODCAST_SHOWS, type PodcastEpisode } from "@/lib/podcasts";
+import { getPodcastEpisodes } from "@/lib/podcasts.functions";
+
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+const NAVY = "#0B2341";
+const BLUE = "#2C97DE";
+const MUTED = "#536579";
+const LINE = "#E4E8EF";
+
+export type MediaTabKey = "news" | "tv" | "podcasts";
+
+interface MediaHubProps {
+  onNavigate?: (to: string) => void;
+}
+
+/* ---------------------------------- utils --------------------------------- */
+
+function timeAgo(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const ms = Date.now() - new Date(iso).getTime();
+  if (Number.isNaN(ms)) return "";
+  const mins = Math.floor(ms / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function formatDuration(secs: number | null): string {
+  if (!secs || secs <= 0) return "";
+  const m = Math.round(secs / 60);
+  if (m < 60) return `${m} min`;
+  return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+
+function FilterPills({
+  options,
+  value,
+  onChange,
+}: {
+  options: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 8,
+        overflowX: "auto",
+        padding: 12,
+        scrollbarWidth: "none",
+      }}
+    >
+      {options.map((opt) => {
+        const active = opt === value;
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onChange(opt)}
+            style={{
+              flexShrink: 0,
+              border: `0.5px solid ${LINE}`,
+              borderRadius: 20,
+              padding: "5px 14px",
+              fontSize: 11,
+              fontWeight: 600,
+              background: active ? NAVY : "#fff",
+              color: active ? "#fff" : MUTED,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            {opt}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        padding: "32px 16px",
+        textAlign: "center",
+        color: MUTED,
+        fontSize: 12,
+        ...POPPINS,
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+/* --------------------------------- NEWS ---------------------------------- */
+
+interface NewsRow {
+  id: string;
+  title: string | null;
+  description: string | null;
+  image_url: string | null;
+  category: string | null;
+  source: string | null;
+  published_at: string | null;
+  read_time_mins: number | null;
+}
+
+const NEWS_FILTERS = ["All", "Top Stories", "Latest", "Road Safety", "Motoring"];
+
+function NewsTab({ onNavigate }: { onNavigate: (to: string) => void }) {
+  const [rows, setRows] = useState<NewsRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("news_articles")
+        .select(
+          "id, title, description, image_url, category, source, published_at, read_time_mins",
+        )
+        .eq("is_hidden", false)
+        .order("published_at", { ascending: false })
+        .limit(20);
+      if (cancelled) return;
+      setRows((data ?? []) as NewsRow[]);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (filter === "All" || filter === "Top Stories" || filter === "Latest") return rows;
+    const term = filter.toLowerCase();
+    return rows.filter((r) => {
+      const cat = (r.category ?? "").toLowerCase();
+      if (term === "road safety") return cat.includes("road") || cat.includes("safety");
+      return cat.includes("car") || cat.includes("ev") || cat.includes("motor");
+    });
+  }, [rows, filter]);
+
+  const [hero, ...rest] = filtered;
+
+  return (
+    <div style={{ paddingBottom: 24 }}>
+      <FilterPills options={NEWS_FILTERS} value={filter} onChange={setFilter} />
+
+      {loading ? (
+        <EmptyState label="Loading news…" />
+      ) : !hero ? (
+        <EmptyState label="No stories yet." />
+      ) : (
+        <>
+          <div
+            onClick={() => onNavigate(`/news/${hero.id}`)}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              margin: "0 16px 12px",
+              overflow: "hidden",
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ width: "100%", height: 180, background: LINE }}>
+              {hero.image_url ? (
+                <img
+                  src={hero.image_url}
+                  alt=""
+                  style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+                />
+              ) : null}
+            </div>
+            <div style={{ background: NAVY, padding: "12px 14px" }}>
+              <span
+                style={{
+                  display: "inline-block",
+                  background: BLUE,
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  borderRadius: 4,
+                  padding: "2px 7px",
+                  marginBottom: 6,
+                  textTransform: "uppercase",
+                  ...POPPINS,
+                }}
+              >
+                {hero.category ?? "News"}
+              </span>
+              <div
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  lineHeight: 1.3,
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
+                {sanitizeNewsTitle(hero.title)}
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, ...POPPINS }}>
+                {timeAgo(hero.published_at)}
+                {hero.read_time_mins ? ` · ${hero.read_time_mins} min read` : ""}
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+              padding: "0 16px 16px",
+            }}
+          >
+            {rest.map((a) => (
+              <div
+                key={a.id}
+                onClick={() => onNavigate(`/news/${a.id}`)}
+                style={{
+                  background: "#fff",
+                  borderRadius: 12,
+                  border: `0.5px solid ${LINE}`,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ width: "100%", height: 90, background: LINE }}>
+                  {a.image_url ? (
+                    <img
+                      src={a.image_url}
+                      alt=""
+                      style={{ width: "100%", height: 90, objectFit: "cover", display: "block" }}
+                    />
+                  ) : null}
+                </div>
+                <div style={{ padding: "8px 10px" }}>
+                  <div
+                    style={{
+                      color: BLUE,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      marginBottom: 4,
+                      textTransform: "uppercase",
+                      ...POPPINS,
+                    }}
+                  >
+                    {a.category ?? "News"}
+                  </div>
+                  <div
+                    style={{
+                      color: NAVY,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      lineHeight: 1.3,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      ...POPPINS,
+                    }}
+                  >
+                    {sanitizeNewsTitle(a.title)}
+                  </div>
+                  <div style={{ color: MUTED, fontSize: 10, marginTop: 4, ...POPPINS }}>
+                    {timeAgo(a.published_at)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ---------------------------------- TV ----------------------------------- */
+
+interface VideoRow {
+  id: string;
+  title: string | null;
+  description: string | null;
+  video_url: string | null;
+  video_embed_url: string | null;
+  thumbnail_url: string | null;
+  category: string | null;
+  is_published: boolean | null;
+  sort_order: number | null;
+}
+
+const TV_FILTERS = ["All", "How To", "Bitesize", "Road Stories", "Instructor", "Exclusives"];
+
+function PlayOverlay({ size = 48 }: { size?: number }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        style={{
+          width: size,
+          height: size,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.15)",
+          border: "2px solid rgba(255,255,255,0.3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconPlayerPlay size={size < 40 ? 14 : 20} color="#fff" fill="#fff" />
+      </div>
+    </div>
+  );
+}
+
+function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
+  const [rows, setRows] = useState<VideoRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("howto_videos")
+        .select(
+          "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order",
+        )
+        .eq("is_published", true)
+        .order("sort_order", { ascending: true })
+        .limit(20);
+      if (cancelled) return;
+      setRows((data ?? []) as VideoRow[]);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (filter === "All") return rows;
+    const term = filter.toLowerCase();
+    return rows.filter((r) => (r.category ?? "").toLowerCase().includes(term));
+  }, [rows, filter]);
+
+  const [featured, ...rest] = filtered;
+
+  return (
+    <div style={{ paddingBottom: 24 }}>
+      <FilterPills options={TV_FILTERS} value={filter} onChange={setFilter} />
+
+      {loading ? (
+        <EmptyState label="Loading PRO TV…" />
+      ) : !featured ? (
+        <EmptyState label="No videos yet." />
+      ) : (
+        <>
+          <div
+            onClick={() => onNavigate("/dsm-live")}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              margin: "0 16px 12px",
+              overflow: "hidden",
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                height: 180,
+                background: NAVY,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {featured.thumbnail_url ? (
+                <img
+                  src={featured.thumbnail_url}
+                  alt=""
+                  style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+                />
+              ) : (
+                <IconDeviceTv size={60} color="rgba(255,255,255,0.2)" />
+              )}
+              <PlayOverlay />
+              <span
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  left: 10,
+                  background: BLUE,
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  borderRadius: 4,
+                  padding: "2px 7px",
+                  textTransform: "uppercase",
+                  ...POPPINS,
+                }}
+              >
+                {featured.category ?? "PRO TV"}
+              </span>
+              <span
+                style={{
+                  position: "absolute",
+                  bottom: 10,
+                  right: 10,
+                  background: "rgba(0,0,0,0.5)",
+                  color: "#fff",
+                  fontSize: 10,
+                  borderRadius: 4,
+                  padding: "2px 7px",
+                  ...POPPINS,
+                }}
+              >
+                Watch
+              </span>
+            </div>
+            <div style={{ padding: "12px 14px" }}>
+              <div style={{ color: NAVY, fontSize: 15, fontWeight: 700, ...POPPINS }}>
+                {sanitizeNewsTitle(featured.title)}
+              </div>
+              {featured.description ? (
+                <div
+                  style={{
+                    color: MUTED,
+                    fontSize: 12,
+                    marginTop: 4,
+                    lineHeight: 1.4,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    ...POPPINS,
+                  }}
+                >
+                  {featured.description}
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+              padding: "0 16px 16px",
+            }}
+          >
+            {rest.map((v) => (
+              <div
+                key={v.id}
+                onClick={() => onNavigate("/dsm-live")}
+                style={{
+                  background: "#fff",
+                  borderRadius: 12,
+                  border: `0.5px solid ${LINE}`,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    position: "relative",
+                    height: 80,
+                    background: NAVY,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {v.thumbnail_url ? (
+                    <img
+                      src={v.thumbnail_url}
+                      alt=""
+                      style={{ width: "100%", height: 80, objectFit: "cover", display: "block" }}
+                    />
+                  ) : (
+                    <IconDeviceTv size={28} color="rgba(255,255,255,0.2)" />
+                  )}
+                  <PlayOverlay size={32} />
+                </div>
+                <div style={{ padding: "8px 10px" }}>
+                  <div
+                    style={{
+                      color: BLUE,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      marginBottom: 4,
+                      textTransform: "uppercase",
+                      ...POPPINS,
+                    }}
+                  >
+                    {v.category ?? "PRO TV"}
+                  </div>
+                  <div
+                    style={{
+                      color: NAVY,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      lineHeight: 1.3,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      ...POPPINS,
+                    }}
+                  >
+                    {sanitizeNewsTitle(v.title)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------- PODCASTS -------------------------------- */
+
+const PODCAST_FILTERS = ["All", "Featured", "Driving Tips", "Road Stories", "Interviews"];
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        fontSize: 11,
+        color: MUTED,
+        textTransform: "uppercase",
+        letterSpacing: ".6px",
+        fontWeight: 600,
+        padding: "0 16px 8px",
+        ...POPPINS,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Artwork({
+  src,
+  size,
+  radius,
+}: {
+  src: string | null | undefined;
+  size: number;
+  radius: number;
+}) {
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: radius,
+        background: "#EAF5FC",
+        flexShrink: 0,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {src ? (
+        <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : (
+        <IconMicrophone size={size / 2.4} color={BLUE} />
+      )}
+    </div>
+  );
+}
+
+function PodcastsTab() {
+  const loadEpisodes = useServerFn(getPodcastEpisodes);
+  const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const eps = await loadEpisodes();
+        if (!cancelled) setEpisodes(eps ?? []);
+      } catch {
+        if (!cancelled) setEpisodes([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (filter === "All") return episodes;
+    if (filter === "Featured") return episodes.filter((e) => e.showFeatured);
+    const term = filter.toLowerCase();
+    return episodes.filter((e) =>
+      e.showCategories.some((c) => c.toLowerCase().includes(term.split(" ")[0] ?? term)),
+    );
+  }, [episodes, filter]);
+
+  const featured = filtered.find((e) => e.showFeatured) ?? filtered[0];
+  const latest = filtered.filter((e) => e.id !== featured?.id).slice(0, 8);
+  const shows = PODCAST_SHOWS.filter((s) => s.featured);
+
+  const open = (url: string | null | undefined) => {
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <div style={{ paddingBottom: 24 }}>
+      <FilterPills options={PODCAST_FILTERS} value={filter} onChange={setFilter} />
+
+      {loading ? (
+        <EmptyState label="Loading podcasts…" />
+      ) : (
+        <>
+          {featured ? (
+            <div
+              onClick={() => open(featured.link ?? featured.audioUrl)}
+              style={{
+                background: "#fff",
+                borderRadius: 14,
+                margin: "0 16px 12px",
+                overflow: "hidden",
+                padding: "12px 14px",
+                display: "flex",
+                gap: 12,
+                cursor: "pointer",
+              }}
+            >
+              <Artwork src={featured.imageUrl} size={80} radius={10} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: BLUE,
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 4,
+                    padding: "2px 7px",
+                    marginBottom: 6,
+                    ...POPPINS,
+                  }}
+                >
+                  NEW EPISODE
+                </span>
+                <div style={{ color: NAVY, fontSize: 14, fontWeight: 700, ...POPPINS }}>
+                  {featured.title}
+                </div>
+                <div
+                  style={{
+                    color: MUTED,
+                    fontSize: 12,
+                    marginTop: 4,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    ...POPPINS,
+                  }}
+                >
+                  {featured.description}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: 8,
+                  }}
+                >
+                  <span style={{ color: MUTED, fontSize: 11, ...POPPINS }}>
+                    {formatDuration(featured.durationSecs) || featured.showName}
+                  </span>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: NAVY,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconPlayerPlay size={14} color="#fff" fill="#fff" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <EmptyState label="No episodes yet." />
+          )}
+
+          {latest.length > 0 ? (
+            <>
+              <SectionLabel>Latest episodes</SectionLabel>
+              {latest.map((ep) => (
+                <div
+                  key={ep.id}
+                  onClick={() => open(ep.link ?? ep.audioUrl)}
+                  style={{
+                    background: "#fff",
+                    padding: "12px 14px",
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                    margin: "0 16px 8px",
+                    borderRadius: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Artwork src={ep.imageUrl} size={52} radius={8} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: MUTED, fontSize: 10, ...POPPINS }}>{ep.showName}</div>
+                    <div
+                      style={{
+                        color: NAVY,
+                        fontSize: 13,
+                        fontWeight: 700,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        ...POPPINS,
+                      }}
+                    >
+                      {ep.title}
+                    </div>
+                    <div style={{ color: MUTED, fontSize: 11, ...POPPINS }}>
+                      {formatDuration(ep.durationSecs) || timeAgo(ep.pubDate)}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: NAVY,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconPlayerPlay size={14} color="#fff" fill="#fff" />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : null}
+
+          <div style={{ height: 8 }} />
+          <SectionLabel>Popular shows</SectionLabel>
+          {shows.map((s) => {
+            const count = episodes.filter((e) => e.showId === s.id).length;
+            return (
+              <div
+                key={s.id}
+                onClick={() => open(s.siteUrl)}
+                style={{
+                  background: "#fff",
+                  padding: "12px 14px",
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                  margin: "0 16px 8px",
+                  borderRadius: 12,
+                  cursor: "pointer",
+                }}
+              >
+                <Artwork src={s.artworkUrl} size={52} radius={8} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: NAVY, fontSize: 13, fontWeight: 700, ...POPPINS }}>
+                    {s.name}
+                  </div>
+                  <div
+                    style={{
+                      color: MUTED,
+                      fontSize: 11,
+                      marginTop: 2,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      ...POPPINS,
+                    }}
+                  >
+                    {s.recommendedNote ?? s.categories.join(" · ")}
+                  </div>
+                  {count > 0 ? (
+                    <div style={{ color: MUTED, fontSize: 10, marginTop: 2, ...POPPINS }}>
+                      {count} episode{count === 1 ? "" : "s"}
+                    </div>
+                  ) : null}
+                </div>
+                <IconChevronRight size={18} color="#D1D5DB" />
+              </div>
+            );
+          })}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------- MediaHub -------------------------------- */
+
+const TABS: { key: MediaTabKey; label: string }[] = [
+  { key: "news", label: "NEWS" },
+  { key: "tv", label: "PRO TV" },
+  { key: "podcasts", label: "PODCASTS" },
+];
+
+export function MediaHub({ onNavigate }: MediaHubProps) {
+  const [activeTab, setActiveTab] = useState<MediaTabKey>("news");
+  const go = (to: string) => onNavigate?.(to);
+
+  return (
+    <div
+      style={{
+        minHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+        background: "#F4F6F8",
+        ...POPPINS,
+      }}
+    >
+      <div
+        style={{
+          background: NAVY,
+          paddingTop: "calc(env(safe-area-inset-top, 0px) + 44px)",
+          padding: "calc(env(safe-area-inset-top, 0px) + 44px) 16px 0",
+          position: "sticky",
+          top: 0,
+          zIndex: 5,
+        }}
+      >
+        <div
+          style={{
+            color: "#fff",
+            fontSize: 20,
+            fontWeight: 700,
+            letterSpacing: 1,
+            paddingBottom: 6,
+          }}
+        >
+          MEDIA
+        </div>
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          {TABS.map((t) => {
+            const active = activeTab === t.key;
+            return (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setActiveTab(t.key)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: `2px solid ${active ? BLUE : "transparent"}`,
+                  color: active ? "#fff" : "rgba(255,255,255,0.5)",
+                  fontWeight: active ? 700 : 500,
+                  fontSize: 13,
+                  padding: "10px 16px",
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div
+        style={{
+          background: "#F4F6F8",
+          flex: 1,
+          overflowY: "auto",
+          paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
+        }}
+      >
+        {activeTab === "news" ? <NewsTab onNavigate={go} /> : null}
+        {activeTab === "tv" ? <TvTab onNavigate={go} /> : null}
+        {activeTab === "podcasts" ? <PodcastsTab /> : null}
+      </div>
+    </div>
+  );
+}
+
+export default MediaHub;
