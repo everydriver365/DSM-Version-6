@@ -1579,7 +1579,7 @@ function ProPage() {
           paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
           flexDirection: "column",
-          gap: 20,
+          gap: 26,
         }}
       >
         <RadioCard />
