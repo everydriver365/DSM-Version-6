@@ -113,6 +113,73 @@ function SectionHead({
   );
 }
 
+function SquareTile({
+  icon,
+  label,
+  onClick,
+  selected,
+  disabled,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  selected?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...POPPINS,
+        flex: "1 1 0",
+        minWidth: 0,
+        aspectRatio: "1 / 1",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 5,
+        padding: 6,
+        borderRadius: 8,
+        cursor: "pointer",
+        fontSize: "clamp(8px, 2.3vw, 9.5px)",
+        fontWeight: 700,
+        lineHeight: 1.1,
+        textAlign: "center",
+        background: selected ? BLUE : "#fff",
+        color: selected ? "#fff" : "rgba(11,31,58,0.62)",
+        border: selected ? "none" : `1px solid ${HAIRLINE}`,
+        boxShadow: selected
+          ? "0 8px 18px -8px rgba(24,119,214,0.8)"
+          : "0 1px 2px rgba(11,31,58,0.05)",
+        opacity: disabled ? 0.75 : 1,
+      }}
+    >
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          width: 22,
+          height: 22,
+          overflow: "hidden",
+          transform: "scale(0.88)",
+        }}
+      >
+        {icon}
+      </span>
+      <span style={{ width: "100%", wordBreak: "break-word" }}>{label}</span>
+    </button>
+  );
+}
+
+function TileRow({ children }: { children: React.ReactNode }) {
+  return <div style={{ display: "flex", gap: 8, marginTop: 14 }}>{children}</div>;
+}
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
