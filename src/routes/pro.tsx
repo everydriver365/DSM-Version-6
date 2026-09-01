@@ -18,7 +18,7 @@ import {
 import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
-import { formatVideoDuration, videoThumbnail } from "@/lib/learnVideos";
+
 import proImage from "@/assets/pro-image.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -52,18 +52,12 @@ type LearnVideo = {
   id: string;
   title: string;
   description: string | null;
-  url: string | null;
-  embed_url?: string | null;
+  video_url: string | null;
+  video_embed_url: string | null;
   thumbnail_url: string | null;
-  duration?: string | number | null;
-  duration_seconds?: number | null;
-  categories?: string[] | null;
-  source?: string | null;
-  kind?: string | null;
-  is_featured?: boolean | null;
-  is_published?: boolean | null;
-  sort_order?: number | null;
-  created_at?: string;
+  category: string | null;
+  is_published: boolean;
+  sort_order: number | null;
 };
 
 type FeaturedPerk = {
@@ -351,13 +345,17 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
     id: "mock",
     title: "How to pass your standards check",
     description: "A step-by-step guide to help you prepare, stay calm and pass with confidence.",
-    duration_seconds: 1080,
-    categories: ["Training"],
+    video_url: null,
+    video_embed_url: null,
+    thumbnail_url: null,
+    category: "Training",
+    is_published: true,
+    sort_order: null,
   } as LearnVideo;
 
-  const thumb = videoThumbnail(v) || proImage.url;
-  const duration = formatVideoDuration(v) || "18 min";
-  const category = sentenceCase(v.categories?.[0] || v.source || "PRO TV");
+  const thumb = v.thumbnail_url || proImage.url;
+  const duration = "18 min";
+  const category = sentenceCase(v.category || "PRO TV");
 
   return (
     <section style={{ ...POPPINS }}>
@@ -976,13 +974,11 @@ function ProPage() {
       try {
         const [videoRes, perkRes, commentsRes, listingsRes] = await Promise.allSettled([
           supabase
-            .from("learn_videos")
+            .from("howto_videos")
             .select(
-              "id, title, description, url, embed_url, thumbnail_url, duration, duration_seconds, categories, source, kind, is_featured, is_published, sort_order, created_at"
+              "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order"
             )
-            .eq("kind", "library")
             .eq("is_published", true)
-            .eq("is_featured", true)
             .order("sort_order", { ascending: true })
             .limit(1),
           supabase
