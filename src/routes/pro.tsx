@@ -19,6 +19,7 @@ import {
 
   IconSearch,
   IconShoppingBag,
+  IconShieldCheck,
   IconSteeringWheel,
   IconUsers,
   IconWaveSine,
@@ -1306,7 +1307,7 @@ function ProPage() {
 
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState<LearnVideo | null>(null);
-  const [perk, setPerk] = useState<FeaturedPerk | null>(null);
+  const [perks, setPerks] = useState<FeaturedPerk[]>([]);
   const [perkCategories, setPerkCategories] = useState<string[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
@@ -1518,7 +1519,7 @@ function ProPage() {
       >
         <RadioCard />
         <ProTvCard video={video} onNavigate={go} />
-        <PerksCard perk={perk} categories={perkCategories} onNavigate={go} />
+        <PerksCard perks={perks} categories={perkCategories} onNavigate={go} />
         <WhatsHappeningCard items={feed} onNavigate={go} />
         <ShopCard listings={listings} onNavigate={go} />
       </div>
