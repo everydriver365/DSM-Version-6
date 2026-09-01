@@ -38,6 +38,7 @@ import proRadio2 from "@/assets/pro-radio-2.png.asset.json";
 import proRadio3 from "@/assets/pro-radio-3.png.asset.json";
 import logo80s from "@/assets/80s-logo.png.asset.json";
 import logo90s from "@/assets/90s-logo.png.asset.json";
+import logo00s from "@/assets/00s-logo.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
@@ -426,7 +427,17 @@ const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; 
       />
     ),
   },
-  { name: "PRO Xmas", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
+  {
+    name: "PRO Xmas",
+    fillIcon: true,
+    icon: (
+      <img
+        src={logo00s.url}
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    ),
+  },
 ];
 
 function RadioCard() {
