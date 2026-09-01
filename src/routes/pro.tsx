@@ -467,18 +467,19 @@ function RadioCard() {
                 ...POPPINS,
                 flex: "1 1 0",
                 minWidth: 0,
+                minHeight: 0,
                 aspectRatio: "1 / 1",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 6,
-                padding: 8,
+                gap: 5,
+                padding: 6,
                 borderRadius: 8,
                 cursor: "pointer",
-                fontSize: 10,
+                fontSize: "clamp(8px, 2.3vw, 9.5px)",
                 fontWeight: 700,
-                lineHeight: 1.15,
+                lineHeight: 1.1,
                 textAlign: "center",
                 background: selected ? BLUE : "#fff",
                 color: selected ? "#fff" : "rgba(11,31,58,0.62)",
@@ -495,14 +496,16 @@ function RadioCard() {
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
-                  width: 24,
-                  height: 24,
+                  width: 22,
+                  height: 22,
                   overflow: "hidden",
+                  transform: "scale(0.88)",
+                  transformOrigin: "center",
                 }}
               >
                 {s.icon}
               </span>
-              <span>{s.name}</span>
+              <span style={{ width: "100%", wordBreak: "break-word" }}>{s.name}</span>
             </button>
           );
         })}
