@@ -205,8 +205,9 @@ function RadioPage() {
           top: 0,
           zIndex: 30,
           background: "#0B2341",
-          marginTop: "calc(-1 * env(safe-area-inset-top, 0px))",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
+          marginTop: "calc(-1 * var(--dsm-safe-top, env(safe-area-inset-top, 0px)))",
+          padding:
+            "calc(var(--dsm-safe-top, env(safe-area-inset-top, 0px)) + 12px) 16px 12px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
