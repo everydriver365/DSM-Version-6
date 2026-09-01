@@ -7465,7 +7465,6 @@ function HomePage() {
                                     amountDue={l.amount_due}
                                     paidAmount={(l as any).paid_amount}
                                     prepaidHours={(l.pupils as any)?.prepaid_hours}
-                                    isLive={isLive}
                                     onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
                                   />
                                 )}
