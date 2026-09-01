@@ -34,12 +34,73 @@ import proImage from "@/assets/pro-image.png.asset.json";
 import proLogo from "@/assets/pro-logo-padded.png";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const PAGE_BG = "#F4F6F8";
+const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
+const PAGE_BG = "#EEF2F7";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const TEXT_SECONDARY = "#6B7686";
 const HAIRLINE = "#E4E8EF";
 const CARD_RADIUS = 16;
+
+/** Editorial section heading: heavy Sora title with optional right-hand action. */
+function SectionHead({
+  title,
+  actionLabel,
+  onAction,
+  right,
+}: {
+  title: string;
+  actionLabel?: string;
+  onAction?: () => void;
+  right?: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "space-between",
+        marginBottom: 12,
+      }}
+    >
+      <h2
+        style={{
+          ...SORA,
+          margin: 0,
+          fontSize: 20,
+          fontWeight: 800,
+          letterSpacing: -0.5,
+          color: NAVY,
+          textTransform: "uppercase",
+        }}
+      >
+        {title}
+      </h2>
+      {right}
+      {actionLabel && onAction && (
+        <button
+          type="button"
+          onClick={onAction}
+          style={{
+            ...POPPINS,
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: 0.8,
+            textTransform: "uppercase",
+            color: BLUE,
+          }}
+        >
+          {actionLabel}
+        </button>
+      )}
+    </div>
+  );
+}
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
