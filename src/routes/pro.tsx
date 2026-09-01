@@ -1029,12 +1029,6 @@ function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
 
   return (
     <section>
-      <SectionHeader
-        eyebrow="Pro Radio"
-        title="Ad free radio for ADIs and PDIs"
-        actionLabel="Listen live"
-        onAction={() => onNavigate("/radio")}
-      />
       <div
         style={{
           margin: `0 ${PAD}px`,
