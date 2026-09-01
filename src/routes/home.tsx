@@ -1584,7 +1584,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           style={{
             marginTop: 16,
             background: "#F3EFFD",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: "12px 14px",
             display: "flex",
             alignItems: "center",
