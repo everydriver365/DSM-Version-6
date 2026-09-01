@@ -174,6 +174,29 @@ function SectionHeader({
 // 1 — Perks rail
 /* ------------------------------------------------------------------ */
 
+function shortSaving(raw: string | null): string {
+  const s = (raw || "").trim();
+  if (!s) return "Exclusive";
+  const pct = s.match(/(\d+)\s*%/);
+  if (pct) return `${pct[1]}% off`;
+  const money = s.match(/£\s?([\d,]+)\s*\+?/);
+  if (money) return `£${money[1]}${s.includes("+") ? "+" : ""} value`;
+  return s.length > 14 ? "Member offer" : s;
+}
+
+function perkTint(seed: string): [string, string] {
+  const palettes: Array<[string, string]> = [
+    ["#0B2341", "#1F4E86"],
+    ["#134E4A", "#2C8A80"],
+    ["#3B1E54", "#7A3EA8"],
+    ["#5A2B12", "#B4682C"],
+    ["#12314F", "#2C97DE"],
+  ];
+  let n = 0;
+  for (let i = 0; i < seed.length; i += 1) n = (n + seed.charCodeAt(i)) % palettes.length;
+  return palettes[n]!;
+}
+
 function PerksSection({
   perks,
   onNavigate,
@@ -181,7 +204,10 @@ function PerksSection({
   perks: Perk[];
   onNavigate: (to: string) => void;
 }) {
+  const [active, setActive] = useState(0);
   if (perks.length === 0) return null;
+  const CARD_W = 148;
+  const pages = Math.max(1, Math.ceil(perks.length / 2));
   return (
     <section>
       <SectionHeader
@@ -190,74 +216,121 @@ function PerksSection({
         actionLabel="See all perks"
         onAction={() => onNavigate("/perks")}
       />
-      <div style={SCROLL_ROW}>
-        {perks.map((p) => (
-          <div
-            key={p.id}
-            onClick={() => onNavigate(`/perks/${p.id}`)}
-            style={{
-              ...CARD_SNAP,
-              width: 208,
-              background: "#fff",
-              borderRadius: 14,
-              border: `0.5px solid ${HAIRLINE}`,
-              boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
-              overflow: "hidden",
-              cursor: "pointer",
-            }}
-          >
+      <div
+        style={SCROLL_ROW}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          const idx = Math.round(el.scrollLeft / ((CARD_W + 12) * 2));
+          setActive(Math.min(pages - 1, Math.max(0, idx)));
+        }}
+      >
+        {perks.map((p) => {
+          const [c1, c2] = perkTint(p.id);
+          const label = p.partner?.name || p.name;
+          return (
             <div
+              key={p.id}
+              onClick={() => onNavigate(`/perks/${p.id}`)}
               style={{
-                height: 116,
-                background: "#EDF1F6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
+                ...CARD_SNAP,
+                width: CARD_W,
+                background: "#fff",
+                borderRadius: 14,
+                border: `0.5px solid ${HAIRLINE}`,
+                boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
+                overflow: "hidden",
+                cursor: "pointer",
               }}
             >
-              {p.hero_image_url ? (
-                <img
-                  src={p.hero_image_url}
-                  alt={p.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              ) : (
-                <IconGift size={28} color="#B9C4D2" stroke={1.6} />
-              )}
-              <span
+              <div
                 style={{
-                  position: "absolute",
-                  left: 10,
-                  bottom: 10,
-                  background: "#fff",
-                  color: BLUE,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  borderRadius: 6,
-                  padding: "3px 8px",
-                  boxShadow: "0 1px 4px rgba(11,35,65,0.15)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.03em",
+                  height: 104,
+                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
                 }}
               >
-                {p.saving?.trim() || "Exclusive"}
-              </span>
-            </div>
-            <div style={{ padding: "10px 12px 13px" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...CLAMP(1) }}>
-                {p.partner?.name || p.name}
+                {p.hero_image_url ? (
+                  <img
+                    src={p.hero_image_url}
+                    alt={p.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                ) : (
+                  <span
+                    style={{
+                      color: "rgba(255,255,255,0.92)",
+                      fontSize: 30,
+                      fontWeight: 800,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {label.trim().charAt(0).toUpperCase()}
+                  </span>
+                )}
+                <span
+                  style={{
+                    position: "absolute",
+                    left: 8,
+                    bottom: 8,
+                    background: "#fff",
+                    color: BLUE,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    borderRadius: 6,
+                    padding: "3px 7px",
+                    boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.03em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {shortSaving(p.saving)}
+                </span>
               </div>
-              <div style={{ fontSize: 12, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                {p.description?.trim() || p.category || p.name}
+              <div style={{ padding: "9px 10px 12px" }}>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: NAVY,
+                    lineHeight: 1.28,
+                    minHeight: 34,
+                    ...CLAMP(2),
+                  }}
+                >
+                  {label}
+                </div>
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
+                  {p.category || p.description?.trim() || "Member benefit"}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+      {pages > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 10 }}>
+          {Array.from({ length: pages }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                width: i === active ? 16 : 5,
+                height: 5,
+                borderRadius: 3,
+                background: i === active ? BLUE : "#CBD5E1",
+                transition: "width .2s",
+              }}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 // 2 — Featured hero
