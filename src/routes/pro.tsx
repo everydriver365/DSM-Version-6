@@ -721,13 +721,13 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
   const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
 
   const fallbackRows: CommunityComment[] = [
-    { id: "1", body: "Anyone covering Winchester?", author_name: "Dave M", instructor_name: null, created_at: new Date(Date.now() - 2 * 60000).toISOString() },
-    { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", instructor_name: null, created_at: new Date(Date.now() - 14 * 60000).toISOString() },
-    { id: "3", body: "Anyone done their standards check recently?", author_name: "Mark R", instructor_name: null, created_at: new Date(Date.now() - 60 * 60000).toISOString() },
-    { id: "4", body: "Best route for roundabout practice near Southampton?", author_name: "Emma W", instructor_name: null, created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString() },
-    { id: "5", body: "Pupil passed first time today! 🎉", author_name: "James P", instructor_name: null, created_at: new Date(Date.now() - 3 * 60 * 60000).toISOString() },
-    { id: "6", body: "Anyone know the Bar End pass rate this month?", author_name: "Lisa K", instructor_name: null, created_at: new Date(Date.now() - 5 * 60 * 60000).toISOString() },
-    { id: "7", body: "Reminder: CPD hours deadline end of month", author_name: "Tom B", instructor_name: null, created_at: new Date(Date.now() - 8 * 60 * 60000).toISOString() },
+    { id: "1", body: "Anyone covering Winchester?", author_name: "Dave M", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 2 * 60000).toISOString() },
+    { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 14 * 60000).toISOString() },
+    { id: "3", body: "Anyone done their standards check recently?", author_name: "Mark R", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 60 * 60000).toISOString() },
+    { id: "4", body: "Best route for roundabout practice near Southampton?", author_name: "Emma W", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString() },
+    { id: "5", body: "Pupil passed first time today! 🎉", author_name: "James P", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 3 * 60 * 60000).toISOString() },
+    { id: "6", body: "Anyone know the Bar End pass rate this month?", author_name: "Lisa K", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 5 * 60 * 60000).toISOString() },
+    { id: "7", body: "Reminder: CPD hours deadline end of month", author_name: "Tom B", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 8 * 60 * 60000).toISOString() },
   ];
 
   const displayRows = rows.length > 0 ? rows : fallbackRows;
@@ -792,18 +792,18 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
         {displayRows.map((row, idx) => {
 
           const name = row.author_name || "Member";
-          const color = avatarColor(name);
+          const color = communityAvatarColor(name);
           return (
             <div
               key={row.id}
               onClick={() => onNavigate("/community")}
               style={{
                 display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "12px 14px",
+                alignItems: "flex-start",
+                gap: 10,
+                padding: "10px 14px",
                 cursor: "pointer",
-                borderBottom: idx < displayRows.length - 1 ? `0.5px solid ${HAIRLINE}` : "none",
+                borderBottom: idx < displayRows.length - 1 ? "0.5px solid #F4F6F8" : "none",
               }}
             >
               <div
@@ -821,24 +821,38 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
                   flexShrink: 0,
                 }}
               >
-                {initials(name)}
+                {firstInitial(name)}
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
                 <div
                   style={{
-                    fontSize: 14,
-                    color: NAVY,
-                    lineHeight: 1.35,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
                   }}
                 >
-                  <strong>{name.split(" ")[0]}:</strong>{" "}
-                  <span style={{ fontWeight: 400 }}>{row.body}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#0B2341" }}>{name}</span>
+                  <span style={{ fontSize: 10, color: "#D1D5DB", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#536579",
+                    lineHeight: 1.4,
+                    marginTop: 2,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {row.body}
+                </div>
+                <div style={{ marginTop: 4 }}>
+                  <SourceBadge source={row.source} />
                 </div>
               </div>
-              <span style={{ fontSize: 12, color: "#9CA3AF", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
             </div>
           );
         })}
