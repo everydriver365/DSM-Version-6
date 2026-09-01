@@ -10694,13 +10694,28 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? "100vw" : 0,
+            left: activePage === 0 ? "100vw" : activePage === 1 ? 0 : "-100vw",
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
           }}
         >
           <ProPage />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            width: "100vw",
+            left: activePage === 2 ? 0 : activePage === 1 ? "100vw" : "200vw",
+            transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            background: "#F4F6F8",
+          }}
+        >
+          <MediaHub onNavigate={(to) => navigate({ to: to as never })} />
         </div>
       </div>
 
