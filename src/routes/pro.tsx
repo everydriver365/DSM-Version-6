@@ -224,19 +224,17 @@ function RadioCard() {
               width: 46,
               height: 46,
               borderRadius: 8,
-              background: "#fff",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
               overflow: "hidden",
             }}
           >
             <img
               src={proLogo.url}
               alt="PRO"
-              style={{ width: 28, height: 28, objectFit: "contain" }}
+              style={{ width: 36, height: 36, objectFit: "contain" }}
             />
           </div>
 
