@@ -3,6 +3,13 @@ import { useEffect, useState } from "react";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
 import { supabase } from "@/lib/supabaseClient";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import perkboxLogoAsset from "@/assets/perkbox-logo.jpeg.asset.json";
+import pirkxLogoAsset from "@/assets/pirkx-logo.png.asset.json";
+import hmcaLogoAsset from "@/assets/hmca-logo.png.asset.json";
+import bennendenLogoAsset from "@/assets/bennenden-logo.jpg.asset.json";
+import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const PAGE_BG = "#F4F6F8";
@@ -186,14 +193,43 @@ function perkTint(seed: string): [string, string] {
   return palettes[n]!;
 }
 
+/**
+ * No perk row in Supabase has a hero_image_url yet, so fall back to the
+ * bundled partner brand mark when we can recognise the partner by name.
+ */
+const PARTNER_LOGOS: { match: RegExp; url: string }[] = [
+  { match: /pirkx/i, url: pirkxLogoAsset.url },
+  { match: /perkbox/i, url: perkboxLogoAsset.url },
+  { match: /\bdia\b|driving instructors association/i, url: diaLogoAsset.url },
+  { match: /hmca/i, url: hmcaLogoAsset.url },
+  { match: /benn?enden/i, url: bennendenLogoAsset.url },
+  { match: /vitality/i, url: vitalityLogoAsset.url },
+];
+
+function partnerLogo(...names: (string | null | undefined)[]): string | null {
+  const haystack = names.filter(Boolean).join(" ");
+  if (!haystack.trim()) return null;
+  return PARTNER_LOGOS.find((l) => l.match.test(haystack))?.url ?? null;
+}
+
+/** Resolve the best available image for a perk, and how it should be fitted. */
+function perkImage(perk: Perk): { src: string | null; contain: boolean } {
+  const hero = perk.hero_image_url?.trim();
+  if (hero) return { src: hero, contain: false };
+  const logo = partnerLogo(perk.partner?.name, perk.name);
+  return logo ? { src: logo, contain: true } : { src: null, contain: false };
+}
+
 function PerkHeroImage({
   src,
   alt,
   initial,
+  contain = false,
 }: {
   src: string | null;
   alt: string;
   initial: string;
+  contain?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   if (src?.trim() && !failed) {
@@ -202,7 +238,19 @@ function PerkHeroImage({
         src={src}
         alt={alt}
         onError={() => setFailed(true)}
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        style={
+          contain
+            ? {
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                display: "block",
+                background: "#fff",
+                padding: 14,
+                boxSizing: "border-box",
+              }
+            : { width: "100%", height: "100%", objectFit: "cover", display: "block" }
+        }
       />
     );
   }
@@ -220,11 +268,13 @@ function PerkHeroImage({
   );
 }
 
+
 /** Large featured tile shown at the top of a tab, matching the PRO TV featured card. */
 function FeaturedCard({
   title,
   subtitle,
   image,
+  imageContain,
   initial,
   tint,
   badge,
@@ -234,6 +284,7 @@ function FeaturedCard({
   title: string;
   subtitle: string;
   image: string | null | undefined;
+  imageContain?: boolean;
   initial: string;
   tint: [string, string];
   badge: string;
@@ -263,7 +314,7 @@ function FeaturedCard({
           justifyContent: "center",
         }}
       >
-        <PerkHeroImage src={image ?? null} alt={title} initial={initial} />
+        <PerkHeroImage src={image ?? null} alt={title} initial={initial} contain={imageContain} />
         <span
           style={{
             position: "absolute",
@@ -316,6 +367,7 @@ function GridCard({
   title,
   subtitle,
   image,
+  imageContain,
   chip,
   onClick,
 }: {
@@ -323,6 +375,7 @@ function GridCard({
   title: string;
   subtitle: string;
   image: string | null;
+  imageContain?: boolean;
   chip: string;
   onClick: () => void;
 }) {
@@ -350,7 +403,13 @@ function GridCard({
           position: "relative",
         }}
       >
-        <PerkHeroImage src={image} alt={title} initial={title.trim().charAt(0).toUpperCase()} />
+        <PerkHeroImage
+          src={image}
+          alt={title}
+          initial={title.trim().charAt(0).toUpperCase()}
+          contain={imageContain}
+        />
+
         <span
           style={{
             position: "absolute",
@@ -399,10 +458,11 @@ function PerksSection({
   onNavigate: (to: string) => void;
 }) {
   if (perks.length === 0) return <EmptyState label="No perks available right now." />;
-  const withImage = perks.filter((p) => !!p.hero_image_url?.trim());
-  const withoutImage = perks.filter((p) => !p.hero_image_url?.trim());
+  const withImage = perks.filter((p) => !!perkImage(p).src);
+  const withoutImage = perks.filter((p) => !perkImage(p).src);
   const ordered = [...withImage, ...withoutImage];
   const [hero, ...rest] = ordered;
+  const heroImg = hero ? perkImage(hero) : null;
   return (
     <section>
       <SectionHeader
@@ -418,7 +478,8 @@ function PerksSection({
             oneLine(hero.description) ||
             [hero.partner?.name, hero.category].filter(Boolean).join(" · ")
           }
-          image={hero.hero_image_url ?? null}
+          image={heroImg?.src ?? null}
+          imageContain={heroImg?.contain}
           initial={(hero.partner?.name || hero.name).trim().charAt(0).toUpperCase()}
           tint={perkTint(hero.id)}
           badge="Featured perk"
@@ -436,6 +497,7 @@ function PerksSection({
       >
         {rest.map((p) => {
           const label = p.partner?.name || p.name;
+          const img = perkImage(p);
           return (
             <GridCard
               key={p.id}
@@ -446,7 +508,8 @@ function PerksSection({
                 [p.partner?.name, p.category].filter(Boolean).join(" · ") ||
                 `${shortSaving(p.saving)} for PRO members`
               }
-              image={p.hero_image_url}
+              image={img.src}
+              imageContain={img.contain}
               chip={shortSaving(p.saving)}
               onClick={() => onNavigate(`/perks/${p.id}`)}
             />
@@ -454,6 +517,7 @@ function PerksSection({
         })}
       </div>
     </section>
+
   );
 }
 
