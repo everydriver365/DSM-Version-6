@@ -420,10 +420,21 @@ function RadioSection() {
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            overflow: "hidden",
           }}
         >
-          <IconRadio size={26} color={BLUE} stroke={2} />
+          {radio.nowPlaying?.artwork && !artworkFailed ? (
+            <img
+              src={radio.nowPlaying.artwork}
+              alt={radio.nowPlaying.title || "Now playing artwork"}
+              onError={() => setArtworkFailed(true)}
+              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8 }}
+            />
+          ) : (
+            <IconRadio size={26} color={BLUE} stroke={2} />
+          )}
         </div>
+
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
