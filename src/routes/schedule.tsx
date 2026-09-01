@@ -810,6 +810,7 @@ function SchedulePage() {
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const hasAutoSynced = useRef(false);
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
@@ -962,18 +963,17 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd, lessonsReloadKey]);
 
-  // Fetch external calendar blocks in the same window.
-  const fetchCalendarBlocks = useCallback(async () => {
+  async function loadCalendarBlocks(uid: string) {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
     const SUPABASE_ANON_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const uid = session?.user?.id;
       if (!token || !uid) return;
-      const startIso = ymdLocal(rangeStart);
-      const endIso = ymdLocal(rangeEnd);
+      const now = new Date();
+      const startIso = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+      const endIso = new Date(now.getFullYear(), now.getMonth() + 3, 0).toISOString();
       const res = await fetch(
         `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour,location,description,notes`,
         { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
@@ -984,11 +984,16 @@ function SchedulePage() {
     } catch (err) {
       console.warn("[schedule] calendar_blocks fetch failed", err);
     }
-  }, [rangeStart, rangeEnd]);
+  }
 
   useEffect(() => {
-    fetchCalendarBlocks();
-  }, [fetchCalendarBlocks]);
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const uid = session?.user?.id;
+      if (!uid) return;
+      await loadCalendarBlocks(uid);
+    })();
+  }, []);
 
   // Private DSM events in the same window.
   useEffect(() => {
