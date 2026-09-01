@@ -429,7 +429,7 @@ export default function LearnPageBody({ videoId }: { videoId?: string } = {}) {
         </div>
       </div>
 
-      <LearnVideosSection />
+      <LearnVideosSection videoId={videoId} />
 
       <LearnLibrarySection />
 
