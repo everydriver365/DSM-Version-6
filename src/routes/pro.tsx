@@ -37,6 +37,7 @@ const SCROLL_ROW = {
   WebkitOverflowScrolling: "touch" as const,
   scrollbarWidth: "none" as const,
   scrollSnapType: "x proximity" as const,
+  scrollPaddingLeft: PAD,
   padding: `0 ${PAD}px 4px`,
 };
 
