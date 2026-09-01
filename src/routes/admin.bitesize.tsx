@@ -134,6 +134,8 @@ function AdminBitesizePage() {
     setVideoFile(null);
     setThumbFile(null);
     setThumbPreview(null);
+    setSource("upload");
+    setYoutubeUrl("");
   }
 
   function openEdit(video: any) {
