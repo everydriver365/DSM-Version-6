@@ -733,7 +733,21 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           overflow: "hidden",
         }}
       >
+        {rows.length === 0 && (
+          <div
+            style={{
+              padding: 20,
+              textAlign: "center",
+              fontSize: 13,
+              fontStyle: "italic",
+              color: "#9CA3AF",
+            }}
+          >
+            No recent posts yet
+          </div>
+        )}
         {rows.map((row, idx) => {
+
           const name = row.author_name || "Member";
           const color = avatarColor(name);
           return (
