@@ -16,6 +16,7 @@ import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
 import { type PodcastEpisode } from "@/lib/podcasts";
 import { getPodcastEpisodes } from "@/lib/podcasts.functions";
+import { toast } from "@/lib/toast";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const PAGE_BG = "#F7F8FA";
@@ -340,6 +341,40 @@ function PerksSection({
 // 1.5 — PRO Radio hero tile
 /* ------------------------------------------------------------------ */
 
+type ProStation = {
+  name: string;
+  subtitle: string;
+  badge: string;
+  color: string;
+  isLive: boolean;
+  toastText?: string;
+};
+
+/** Mirrors the station list on /radio (src/routes/radio.tsx). */
+const PRO_STATIONS: ProStation[] = [
+  { name: "PRO Live", subtitle: "Live now", badge: "PRO", color: BLUE, isLive: true },
+  { name: "PRO 80s", subtitle: "The best of the 80s", badge: "80s", color: "#12A594", isLive: false },
+  { name: "PRO 90s", subtitle: "The best of the 90s", badge: "90s", color: "#7C5CFA", isLive: false },
+  { name: "PRO 00s", subtitle: "The best of the 00s", badge: "00s", color: "#E5762F", isLive: false },
+  { name: "PRO 70s", subtitle: "The best of the 70s", badge: "70s", color: "#C0398B", isLive: false },
+  { name: "PRO 60s", subtitle: "The best of the 60s", badge: "60s", color: "#2E7D32", isLive: false },
+  { name: "PRO Chill", subtitle: "Easy listening", badge: "CHL", color: "#0E7490", isLive: false },
+  { name: "PRO Drive", subtitle: "Drive time energy", badge: "DRV", color: "#B4232A", isLive: false },
+  { name: "PRO Xmas", subtitle: "Festive favourites", badge: "XMS", color: "#C62828", isLive: false, toastText: "PRO Xmas coming soon! 🎄" },
+];
+
+/** Static schedule copy — no programme data source exists yet. */
+const PRO_SHOWS = [
+  { title: "The Morning Drive", schedule: "Weekdays, 6:00 – 10:00", gradient: "linear-gradient(160deg,#F2994A,#0B2341)" },
+  { title: "Driving Home", schedule: "Weekdays, 16:00 – 19:00", gradient: "linear-gradient(160deg,#E5762F,#241539)" },
+  { title: "Weekend Vibes", schedule: "Saturdays, 9:00 – 13:00", gradient: "linear-gradient(160deg,#7C5CFA,#0B2341)" },
+  { title: "The Sunday Session", schedule: "Sundays, 10:00 – 14:00", gradient: "linear-gradient(160deg,#1F7A8C,#0B2341)" },
+];
+
+
+// 1.5 — PRO Radio hero tile
+/* ------------------------------------------------------------------ */
+
 function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
   const radio = useProRadioContext();
   const [artworkFailed, setArtworkFailed] = useState(false);
@@ -529,6 +564,222 @@ function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
             <IconShare size={22} stroke={1.6} />
           </button>
         </div>
+      </div>
+
+      {/* All stations */}
+      <div
+        style={{
+          padding: `18px ${PAD}px 8px`,
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: NAVY,
+        }}
+      >
+        All stations
+      </div>
+      <div style={SCROLL_ROW}>
+        {PRO_STATIONS.map((s) => {
+          const active = s.isLive && station === s.name;
+          return (
+            <div
+              key={s.name}
+              onClick={() => {
+                if (!s.isLive) {
+                  toast(s.toastText ?? `${s.name} coming soon!`);
+                  return;
+                }
+                radio.play();
+              }}
+              style={{
+                ...CARD_SNAP,
+                width: 190,
+                borderRadius: 12,
+                padding: 12,
+                background: active ? NAVY : "#fff",
+                border: `1px solid ${active ? NAVY : HAIRLINE}`,
+                boxShadow: "0 2px 10px rgba(11,35,65,0.06)",
+                cursor: "pointer",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div
+                  style={{
+                    width: 46,
+                    height: 46,
+                    borderRadius: 10,
+                    flexShrink: 0,
+                    background: s.color,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontSize: 14,
+                    fontWeight: 800,
+                  }}
+                >
+                  {s.isLive ? <IconRadio size={22} color="#fff" stroke={2} /> : s.badge}
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: active ? "#fff" : NAVY,
+                      ...CLAMP(1),
+                    }}
+                  >
+                    {s.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: active ? "rgba(255,255,255,0.65)" : MUTED,
+                      marginTop: 2,
+                      ...CLAMP(1),
+                    }}
+                  >
+                    {s.subtitle}
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  color: s.isLive ? (active ? "#fff" : BLUE) : s.color,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                {s.isLive ? (
+                  <>
+                    <span
+                      style={{
+                        width: 5,
+                        height: 5,
+                        borderRadius: "50%",
+                        background: radio.isPlaying ? "#E53935" : "rgba(255,255,255,0.5)",
+                      }}
+                    />
+                    {radio.isPlaying ? "LIVE" : "PAUSED"}
+                  </>
+                ) : (
+                  "COMING SOON"
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Recently played */}
+      <SectionHeader eyebrow="Recently played" actionLabel="View all" onAction={() => onNavigate("/radio")} />
+      <div
+        style={{
+          margin: `0 ${PAD}px`,
+          background: "#fff",
+          border: `1px solid ${HAIRLINE}`,
+          borderRadius: 12,
+          padding: 12,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: 10,
+            flexShrink: 0,
+            background: NAVY,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+          }}
+        >
+          {artwork && !artworkFailed ? (
+            <img
+              src={artwork}
+              alt=""
+              onError={() => setArtworkFailed(true)}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <>
+              <div style={{ color: "#fff", fontSize: 13, fontWeight: 800, lineHeight: 1 }}>PRO</div>
+              <div style={{ color: BLUE, fontSize: 9, fontWeight: 700 }}>LIVE</div>
+            </>
+          )}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...CLAMP(1) }}>{station}</div>
+          <div style={{ fontSize: 12, color: MUTED, marginTop: 2, ...CLAMP(1) }}>{subtitle}</div>
+        </div>
+        <button
+          type="button"
+          aria-label={radio.isPlaying ? "Pause" : "Play"}
+          onClick={() => radio.toggle()}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: "50%",
+            border: `1px solid ${HAIRLINE}`,
+            background: "#fff",
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          {radio.isPlaying ? (
+            <IconPlayerPause size={17} color={NAVY} fill={NAVY} stroke={1} />
+          ) : (
+            <IconPlayerPlay size={17} color={NAVY} fill={NAVY} stroke={1} style={{ marginLeft: 2 }} />
+          )}
+        </button>
+      </div>
+
+      {/* Featured shows */}
+      <SectionHeader eyebrow="Featured shows" actionLabel="View all" onAction={() => onNavigate("/radio")} />
+      <div style={SCROLL_ROW}>
+        {PRO_SHOWS.map((show) => (
+          <div
+            key={show.title}
+            onClick={() => onNavigate("/radio")}
+            style={{ ...CARD_SNAP, width: 150, cursor: "pointer" }}
+          >
+            <div
+              style={{
+                height: 106,
+                borderRadius: 12,
+                background: show.gradient,
+                display: "flex",
+                alignItems: "flex-end",
+                padding: 10,
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 800,
+                lineHeight: 1.15,
+                textTransform: "uppercase",
+              }}
+            >
+              <span style={CLAMP(2)}>{show.title}</span>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8, ...CLAMP(1) }}>
+              {show.title}
+            </div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 2, ...CLAMP(1) }}>{show.schedule}</div>
+          </div>
+        ))}
       </div>
     </section>
   );
