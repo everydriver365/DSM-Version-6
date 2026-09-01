@@ -1512,7 +1512,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
                 }}
               >
                 <span style={{ color: "#0B1F3A" }}>Explore </span>
-                <span style={{ color: "#1877D6" }}>EDP </span>
                 <span style={{ color: "#22A6A0" }}>PRO</span>
               </div>
               <IconArrowRight size={22} stroke={2} color="#1877D6" />
