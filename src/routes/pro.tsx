@@ -18,7 +18,7 @@ import {
 import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
-import { formatVideoDuration, videoThumbnail } from "@/lib/learnVideos";
+
 import proImage from "@/assets/pro-image.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
