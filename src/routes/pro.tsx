@@ -151,11 +151,19 @@ function FeaturedCard({
   video: HowtoVideo | null;
   onOpen: () => void;
 }) {
-  const title = video?.title ?? "PRO Live Radio";
+  const radio = useProRadioContext();
+  const np = radio.nowPlaying;
+  const radioMode = !video;
+
+  const title = video?.title ?? (np?.title && np.title !== "PRO Radio" ? np.title : "PRO Live Radio");
+  const radioDescription = [np?.artist, np?.album].filter(Boolean).join(" — ");
   const description =
     video?.description ??
-    "Ad free radio made for driving instructors — music, chat and company on every drive.";
-  const thumb = video?.thumbnail_url ?? null;
+    (radioMode && radioDescription
+      ? radioDescription
+      : "Ad free radio made for driving instructors — music, chat and company on every drive.");
+  const thumb = video?.thumbnail_url ?? (radioMode ? np?.artwork ?? null : null);
+
 
   return (
     <div
