@@ -760,7 +760,7 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
                 borderRadius: 4,
               }}
             >
-              18:00
+              {thumbDuration}
             </div>
           </div>
 
