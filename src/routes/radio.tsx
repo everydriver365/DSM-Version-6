@@ -91,7 +91,7 @@ function StationTile({
   onToggleFavorite,
 }: StationTileProps) {
   const isLive = station.isLive;
-  const isActive = isLive && isSelected;
+  const isActive = isLive;
 
   const tileStyles: React.CSSProperties = isActive
     ? {
@@ -116,7 +116,7 @@ function StationTile({
         alignItems: "center",
         gap: 8,
         cursor: "pointer",
-        opacity: isLive ? 1 : 0.6,
+        opacity: 0.6,
         position: "relative",
       };
 
@@ -234,12 +234,11 @@ function StationTile({
               fontSize: 8,
               fontWeight: 600,
               color: "#536579",
-              background: isLive ? "#F4F6F8" : "transparent",
               borderRadius: 10,
               padding: "2px 7px",
             }}
           >
-            {isLive ? "AVAILABLE" : "SOON"}
+            SOON
           </span>
         )}
       </div>
