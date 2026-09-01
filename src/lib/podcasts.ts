@@ -216,6 +216,7 @@ export const CURATED_EPISODES: PodcastEpisode[] = [
     showName: "TED Talks Daily",
     showFeatured: true,
     showRecommended: true,
+    showInteresting: true,
     showCategories: ["TED", "Ideas", "Learning", "General"],
   },
   {
@@ -237,6 +238,7 @@ export const CURATED_EPISODES: PodcastEpisode[] = [
     showName: "TED Talks Daily",
     showFeatured: true,
     showRecommended: true,
+    showInteresting: true,
     showCategories: ["TED", "Ideas", "Learning", "General"],
   },
 ];
