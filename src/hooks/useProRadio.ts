@@ -183,9 +183,11 @@ export function useProRadio() {
           const nextShowName = liveSelected ? "PRO Live" : (s.selectedStation || "PRO Radio");
           return {
             ...s,
-            nowPlaying: nextNowPlaying,
+            nowPlaying: liveSelected
+              ? nextNowPlaying
+              : { title: s.selectedStation || "PRO Radio", artist: "PRO Radio", artwork: s.nowPlaying.artwork ?? null },
             showName: nextShowName,
-            isLive: liveSelected,
+            isLive: true,
           };
         });
         updateMediaSession(nextNowPlaying, stateRef.current.showName);

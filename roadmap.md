@@ -17,3 +17,5 @@
   - [ ] Keep ranked pupil list visible after sending (do not setRanked(null))
 - [ ] Put “Explore EDP PRO” teaser title on one line
 - [ ] Add a Pupils tile to the hamburger menu
+- [x] Wire All stations grid to real live streams with play/pause
+- [x] Replace placeholder PRO perk / shop copy with real descriptions

@@ -10,7 +10,6 @@ import {
   IconPlayerSkipBack,
   IconPlayerSkipForward,
 } from "@tabler/icons-react";
-import { toast } from "@/lib/toast";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
@@ -23,17 +22,17 @@ interface StationDef {
   toastText?: string;
 }
 
-/** All stations shown on the PRO Radio page, sourced from the existing product data. */
+/** All stations shown on the PRO Radio page — each maps to a real live stream. */
 const STATIONS: StationDef[] = [
   { name: "PRO Live", isLive: true },
-  { name: "PRO 80s", isLive: false },
-  { name: "PRO 90s", isLive: false },
-  { name: "PRO 00s", isLive: false },
-  { name: "PRO 70s", isLive: false },
-  { name: "PRO 60s", isLive: false },
-  { name: "PRO Chill", isLive: false },
-  { name: "PRO Drive", isLive: false },
-  { name: "PRO Xmas", isLive: false, toastText: "PRO Xmas coming soon! 🎄" },
+  { name: "PRO 80s", isLive: true, stream: "https://0n-80s.radionetz.de/0n-80s.mp3" },
+  { name: "PRO 90s", isLive: true, stream: "https://0n-90s.radionetz.de/0n-90s.mp3" },
+  { name: "PRO 00s", isLive: true, stream: "https://stream.laut.fm/00er" },
+  { name: "PRO 70s", isLive: true, stream: "https://0n-70s.radionetz.de/0n-70s.mp3" },
+  { name: "PRO 60s", isLive: true, stream: "https://0n-60s.radionetz.de/0n-60s.mp3" },
+  { name: "PRO Chill", isLive: true, stream: "https://0n-chillout.radionetz.de/0n-chillout.mp3" },
+  { name: "PRO Drive", isLive: true, stream: "https://0n-rock.radionetz.de/0n-rock.mp3" },
+  { name: "PRO Xmas", isLive: true, stream: "https://ice1.somafm.com/christmas-128-mp3" },
 ];
 
 function LiveDot({ size = 6 }: { size?: number }) {
@@ -76,6 +75,7 @@ function LiveBadge({ size = 6 }: { size?: number }) {
 interface StationTileProps {
   station: StationDef;
   isPlaying: boolean;
+  isSelected: boolean;
   isFavorite: boolean;
   onToggle: () => void;
   onToggleFavorite: (e: React.MouseEvent) => void;
@@ -84,12 +84,12 @@ interface StationTileProps {
 function StationTile({
   station,
   isPlaying,
+  isSelected,
   isFavorite,
   onToggle,
   onToggleFavorite,
 }: StationTileProps) {
-  const isLive = station.isLive;
-  const isActive = isLive;
+  const isActive = isSelected;
 
   const tileStyles: React.CSSProperties = isActive
     ? {
@@ -113,7 +113,6 @@ function StationTile({
         alignItems: "center",
         gap: 8,
         cursor: "pointer",
-        opacity: 0.6,
         position: "relative",
       };
 
@@ -184,11 +183,13 @@ function StationTile({
       </button>
 
       <div style={iconBoxStyles}>
-        <IconRadio
-          size={22}
-          color={isActive ? "#2C97DE" : "#536579"}
-          stroke={1.8}
-        />
+        {isActive && isPlaying ? (
+          <IconPlayerPause size={22} color="#2C97DE" stroke={1.8} />
+        ) : isActive ? (
+          <IconPlayerPlay size={22} color="#2C97DE" stroke={1.8} />
+        ) : (
+          <IconRadio size={22} color="#536579" stroke={1.8} />
+        )}
       </div>
 
       <div
@@ -235,7 +236,7 @@ function StationTile({
               padding: "2px 7px",
             }}
           >
-            SOON
+            PLAY
           </span>
         )}
       </div>
@@ -460,8 +461,9 @@ function RadioPage() {
   }, [radio.favorites]);
 
   const handleStationToggle = (station: StationDef) => {
-    if (!station.isLive) {
-      toast(station.toastText ?? `${station.name} coming soon!`);
+    const isSelected = radio.selectedStation === station.name;
+    if (isSelected && radio.isPlaying) {
+      radio.pause();
       return;
     }
     if (station.stream) {
@@ -580,6 +582,7 @@ function RadioPage() {
               key={station.name}
               station={station}
               isPlaying={radio.isPlaying}
+              isSelected={radio.selectedStation === station.name}
               isFavorite={radio.favorites.includes(station.name)}
               onToggle={() => handleStationToggle(station)}
               onToggleFavorite={(e) => {
