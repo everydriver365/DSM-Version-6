@@ -1079,31 +1079,66 @@ function SchedulePage() {
         if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
 
         // Auto-sync Google Calendar if last sync was > 30 mins ago
-        const lastSyncedDate = i.calendar_last_synced ? new Date(i.calendar_last_synced) : null;
+        const lastSynced = instrData?.calendar_last_synced
+          ? new Date(instrData.calendar_last_synced)
+          : null;
         const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
-        const shouldSync = !lastSyncedDate || lastSyncedDate < thirtyMinsAgo;
-        if (i.google_calendar_connected && shouldSync && !hasAutoSynced.current) {
-          hasAutoSynced.current = true;
-          console.log("[schedule] auto-syncing Google Calendar...");
-          fetch(`${SUPABASE_URL}/functions/v1/sync-google-calendar`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ instructor_id: uid }),
-          })
+        const shouldAutoSync =
+          instrData?.google_calendar_connected &&
+          (!lastSynced || lastSynced < thirtyMinsAgo);
+        if (shouldAutoSync && uid) {
+          console.log("[schedule] auto-syncing...");
+          fetch(
+            `${SUPABASE_URL}/functions/v1/` + `sync-google-calendar`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                apikey: SUPABASE_ANON_KEY,
+                Authorization: `Bearer ${session?.access_token}`,
+              },
+              body: JSON.stringify({ instructor_id: uid }),
+            }
+          )
             .then((r) => r.json())
             .then((data) => {
-              console.log("[schedule] auto-sync result:", data);
-              // Reload calendar blocks after sync completes
               if (data.ok || data.success) {
-                loadCalendarBlocks(uid);
+                console.log("[schedule] auto-sync done:", data.synced, "events");
+                // Re-fetch calendar blocks after sync completes
+                const now = new Date();
+                const startIso = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+                const endIso = new Date(now.getFullYear(), now.getMonth() + 3, 0).toISOString();
+                fetch(
+                  `${SUPABASE_URL}/rest/v1/` +
+                    `calendar_blocks?` +
+                    `instructor_id=eq.${uid}` +
+                    `&source=eq.external_calendar` +
+                    `&start_datetime=gte.` +
+                    `${startIso}` +
+                    `&start_datetime=lte.` +
+                    `${endIso}T23:59:59` +
+                    `&select=id,start_datetime,` +
+                    `end_datetime,title,colour,` +
+                    `location,description,notes`,
+                  {
+                    headers: {
+                      apikey: SUPABASE_ANON_KEY,
+                      Authorization: `Bearer ${session?.access_token}`,
+                    },
+                  }
+                )
+                  .then((r) => r.json())
+                  .then((blocks) => {
+                    if (Array.isArray(blocks)) {
+                      setCalendarBlocks(blocks);
+                    }
+                  })
+                  .catch(console.warn);
               }
             })
-            .catch((err) => console.warn("[schedule] auto-sync failed:", err));
+            .catch((err) => console.warn("[schedule] auto-sync error:", err));
         }
+
 
         if (recRes.ok) {
           const d = await recRes.json();
