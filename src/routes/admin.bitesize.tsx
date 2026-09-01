@@ -16,8 +16,21 @@ import {
   IconEyeOff,
   IconBook,
   IconUpload,
+  IconBrandYoutube,
   IconX,
 } from "@tabler/icons-react";
+
+function getYouTubeId(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? match[1] : null;
+}
+
+function youtubeThumbnail(url: string): string | null {
+  const id = getYouTubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+}
 
 export const Route = createFileRoute("/admin/bitesize")({
   head: () => ({
@@ -95,6 +108,9 @@ function AdminBitesizePage() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [source, setSource] = useState<"upload" | "youtube">("upload");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+
 
   useEffect(() => {
     setLoading(true);
@@ -118,7 +134,17 @@ function AdminBitesizePage() {
     setVideoFile(null);
     setThumbFile(null);
     setThumbPreview(null);
+    setSource("upload");
+    setYoutubeUrl("");
   }
+
+  useEffect(() => {
+    if (source === "youtube" && youtubeUrl.trim() && !thumbFile) {
+      setThumbPreview(youtubeThumbnail(youtubeUrl.trim()));
+    } else if (source === "upload") {
+      if (!thumbFile) setThumbPreview(null);
+    }
+  }, [source, youtubeUrl, thumbFile]);
 
   function openEdit(video: any) {
     setTitle(video.title ?? "");
@@ -131,13 +157,32 @@ function AdminBitesizePage() {
   }
 
   async function handleUpload() {
-    if (!videoFile || !title.trim()) return;
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (source === "youtube" && !youtubeUrl.trim()) {
+      toast.error("Please enter a YouTube URL");
+      return;
+    }
+    if (source === "upload" && !videoFile) {
+      toast.error("Please select a video file");
+      return;
+    }
+
     setUploading(true);
     try {
-      setUploadProgress("Uploading video...");
-      const videoUrl = await uploadVideo(videoFile, "learn-videos", 500);
-
+      let videoUrl: string | null = null;
       let thumbnailUrl: string | null = null;
+
+      if (source === "youtube") {
+        videoUrl = youtubeUrl.trim();
+        thumbnailUrl = thumbFile ? null : youtubeThumbnail(videoUrl);
+      } else {
+        setUploadProgress("Uploading video...");
+        videoUrl = await uploadVideo(videoFile!, "learn-videos", 500);
+      }
+
       if (thumbFile) {
         setUploadProgress("Uploading thumbnail...");
         thumbnailUrl = await uploadImage(thumbFile, "learn-videos");
@@ -718,59 +763,130 @@ function AdminBitesizePage() {
             {formFields}
 
             <div>
-              <span style={labelStyle}>Video file</span>
-              <label
-                htmlFor="ab-video"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 6,
-                  border: "2px dashed #DDD6FE",
-                  borderRadius: tokens.radiusCard,
-                  padding: "24px 16px",
-                  cursor: "pointer",
-                  background: "#FAF8FF",
-                }}
-              >
-                <IconUpload size={48} color="#7C3AED" />
-                <div
+              <span style={labelStyle}>Video source</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setSource("upload")}
                   style={{
-                    fontSize: tokens.fontSize.md,
-                    fontWeight: tokens.fontWeight.semibold,
-                    color: tokens.navy,
+                    flex: 1,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    border: source === "upload" ? "none" : "0.5px solid #E4E8EF",
+                    background: source === "upload" ? "#0B2341" : "#F4F6F8",
+                    color: source === "upload" ? "#fff" : "#536579",
                     ...POPPINS,
                   }}
                 >
-                  Tap to select video
-                </div>
-                <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
-                  MP4 or MOV · max 500MB
-                </div>
-                {videoFile && (
-                  <div
+                  <IconUpload size={16} />
+                  Upload file
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSource("youtube")}
+                  style={{
+                    flex: 1,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    border: source === "youtube" ? "none" : "0.5px solid #E4E8EF",
+                    background: source === "youtube" ? "#0B2341" : "#F4F6F8",
+                    color: source === "youtube" ? "#fff" : "#536579",
+                    ...POPPINS,
+                  }}
+                >
+                  <IconBrandYoutube size={16} />
+                  YouTube URL
+                </button>
+              </div>
+
+              {source === "upload" ? (
+                <>
+                  <label
+                    htmlFor="ab-video"
                     style={{
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: "#16A34A",
-                      marginTop: 4,
-                      wordBreak: "break-all",
-                      textAlign: "center",
-                      ...POPPINS,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      border: "2px dashed #DDD6FE",
+                      borderRadius: tokens.radiusCard,
+                      padding: "24px 16px",
+                      cursor: "pointer",
+                      background: "#FAF8FF",
+                      marginTop: 12,
                     }}
                   >
-                    ✓ {videoFile.name}
-                  </div>
-                )}
-              </label>
-              <input
-                id="ab-video"
-                type="file"
-                accept="video/*"
-                style={{ display: "none" }}
-                onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
-              />
+                    <IconUpload size={48} color="#7C3AED" />
+                    <div
+                      style={{
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.semibold,
+                        color: tokens.navy,
+                        ...POPPINS,
+                      }}
+                    >
+                      Tap to select video
+                    </div>
+                    <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
+                      MP4 or MOV · max 500MB
+                    </div>
+                    {videoFile && (
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: "#16A34A",
+                          marginTop: 4,
+                          wordBreak: "break-all",
+                          textAlign: "center",
+                          ...POPPINS,
+                        }}
+                      >
+                        ✓ {videoFile.name}
+                      </div>
+                    )}
+                  </label>
+                  <input
+                    id="ab-video"
+                    type="file"
+                    accept="video/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
+                  />
+                </>
+              ) : (
+                <input
+                  type="text"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="Paste YouTube URL..."
+                  style={{
+                    width: "100%",
+                    fontSize: 14,
+                    padding: "10px 14px",
+                    borderRadius: 10,
+                    border: "1px solid #E4E8EF",
+                    marginTop: 12,
+                    outline: "none",
+                    ...POPPINS,
+                  }}
+                />
+              )}
             </div>
 
             <div>
@@ -841,7 +957,12 @@ function AdminBitesizePage() {
             <button
               type="button"
               onClick={handleUpload}
-              disabled={!videoFile || !title.trim() || uploading}
+              disabled={
+                (!title.trim() ||
+                  (source === "upload" && !videoFile) ||
+                  (source === "youtube" && !youtubeUrl.trim()) ||
+                  uploading)
+              }
               style={{
                 width: "100%",
                 background: "#7C3AED",
@@ -852,10 +973,19 @@ function AdminBitesizePage() {
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
                 cursor:
-                  !videoFile || !title.trim() || uploading
+                  !title.trim() ||
+                    (source === "upload" && !videoFile) ||
+                    (source === "youtube" && !youtubeUrl.trim()) ||
+                    uploading
                     ? "not-allowed"
                     : "pointer",
-                opacity: !videoFile || !title.trim() || uploading ? 0.5 : 1,
+                opacity:
+                  !title.trim() ||
+                    (source === "upload" && !videoFile) ||
+                    (source === "youtube" && !youtubeUrl.trim()) ||
+                    uploading
+                    ? 0.5
+                    : 1,
                 ...POPPINS,
               }}
             >
