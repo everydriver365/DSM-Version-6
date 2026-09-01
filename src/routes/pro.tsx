@@ -113,6 +113,73 @@ function SectionHead({
   );
 }
 
+function SquareTile({
+  icon,
+  label,
+  onClick,
+  selected,
+  disabled,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  selected?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...POPPINS,
+        flex: "1 1 0",
+        minWidth: 0,
+        aspectRatio: "1 / 1",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 5,
+        padding: 6,
+        borderRadius: 8,
+        cursor: "pointer",
+        fontSize: "clamp(8px, 2.3vw, 9.5px)",
+        fontWeight: 700,
+        lineHeight: 1.1,
+        textAlign: "center",
+        background: selected ? BLUE : "#fff",
+        color: selected ? "#fff" : "rgba(11,31,58,0.62)",
+        border: selected ? "none" : `1px solid ${HAIRLINE}`,
+        boxShadow: selected
+          ? "0 8px 18px -8px rgba(24,119,214,0.8)"
+          : "0 1px 2px rgba(11,31,58,0.05)",
+        opacity: disabled ? 0.75 : 1,
+      }}
+    >
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          width: 22,
+          height: 22,
+          overflow: "hidden",
+          transform: "scale(0.88)",
+        }}
+      >
+        {icon}
+      </span>
+      <span style={{ width: "100%", wordBreak: "break-word" }}>{label}</span>
+    </button>
+  );
+}
+
+function TileRow({ children }: { children: React.ReactNode }) {
+  return <div style={{ display: "flex", gap: 8, marginTop: 14 }}>{children}</div>;
+}
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -279,7 +346,6 @@ const STATION_TILES: { name: string; icon: React.ReactNode }[] = [
   { name: "PRO Live", icon: <WaveformIcon /> },
   { name: "PRO 80s", icon: <DecadeIcon label="80s" from="#F59E0B" to="#E53935" /> },
   { name: "PRO 90s", icon: <DecadeIcon label="90s" from="#7B61FF" to="#2C97DE" /> },
-  { name: "PRO 00s", icon: <IconWaveSine size={24} color="#18A999" stroke={2.2} /> },
   { name: "PRO Xmas", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
 ];
 
@@ -458,70 +524,23 @@ function RadioCard() {
       </div>
 
       {/* Station tiles */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginTop: 14,
-          paddingBottom: 2,
-        }}
-      >
+      <TileRow>
         {STATION_TILES.map((s) => {
           const stationCfg = STATIONS[s.name];
           const selected = selectedChip === s.name;
           const comingSoon = stationCfg?.comingSoon ?? true;
           return (
-            <button
+            <SquareTile
               key={s.name}
-              type="button"
+              icon={s.icon}
+              label={s.name}
+              selected={selected}
+              disabled={comingSoon && !selected}
               onClick={() => handleChip(s.name)}
-              style={{
-                ...POPPINS,
-                flex: "1 1 0",
-                minWidth: 0,
-                minHeight: 0,
-                aspectRatio: "1 / 1",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 5,
-                padding: 6,
-                borderRadius: 8,
-                cursor: "pointer",
-                fontSize: "clamp(8px, 2.3vw, 9.5px)",
-                fontWeight: 700,
-                lineHeight: 1.1,
-                textAlign: "center",
-                background: selected ? BLUE : "#fff",
-                color: selected ? "#fff" : "rgba(11,31,58,0.62)",
-                border: selected ? "none" : `1px solid ${HAIRLINE}`,
-                boxShadow: selected
-                  ? "0 8px 18px -8px rgba(24,119,214,0.8)"
-                  : "0 1px 2px rgba(11,31,58,0.05)",
-                opacity: comingSoon && !selected ? 0.75 : 1,
-              }}
-            >
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  width: 22,
-                  height: 22,
-                  overflow: "hidden",
-                  transform: "scale(0.88)",
-                  transformOrigin: "center",
-                }}
-              >
-                {s.icon}
-              </span>
-              <span style={{ width: "100%", wordBreak: "break-word" }}>{s.name}</span>
-            </button>
+            />
           );
         })}
-      </div>
+      </TileRow>
     </section>
   );
 }
@@ -537,6 +556,27 @@ const TV_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
   { name: "Showcase", to: "/showcase", icon: <IconUsers size={24} color="#7C3AED" stroke={2} /> },
   { name: "Bitesize", to: "/bitesize", icon: <IconPlayerPlay size={24} color="#18A999" stroke={2} /> },
   { name: "Live", to: "/dsm-live", icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} /> },
+];
+
+const PERK_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "Health", to: "/perks?category=health", icon: <IconHeartbeat size={24} color="#16A34A" stroke={2} /> },
+  { name: "Fuel", to: "/perks?category=fuel", icon: <IconGasStation size={24} color="#E53935" stroke={2} /> },
+  { name: "SIM", to: "/perks?category=sim", icon: <IconDeviceMobile size={24} color="#1877D6" stroke={2} /> },
+  { name: "More", to: "/perks", icon: <IconDots size={24} color="#6B7686" stroke={2} /> },
+];
+
+const HAPPENING_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "Community", to: "/community", icon: <IconMessages size={24} color="#2C97DE" stroke={2} /> },
+  { name: "Alerts", to: "/community", icon: <IconAlertTriangle size={24} color="#F59E0B" stroke={2} /> },
+  { name: "PRO TV", to: "/dsm-live", icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} /> },
+  { name: "PRO Perks", to: "/perks", icon: <IconGift size={24} color="#16A34A" stroke={2} /> },
+];
+
+const SHOP_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "All items", to: "/marketplace", icon: <IconShoppingBag size={24} color="#1877D6" stroke={2} /> },
+  { name: "Dash cams", to: "/marketplace", icon: <IconDeviceTv size={24} color="#7C3AED" stroke={2} /> },
+  { name: "ADI Gear", to: "/marketplace", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
+  { name: "Books", to: "/marketplace", icon: <IconBook size={24} color="#18A999" stroke={2} /> },
 ];
 
 function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate: (to: string) => void }) {
@@ -773,53 +813,11 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
       </div>
 
       {/* Quick tiles */}
-      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+      <TileRow>
         {TV_TILES.map((t) => (
-          <button
-            key={t.name}
-            type="button"
-            onClick={() => onNavigate(t.to)}
-            style={{
-              ...POPPINS,
-              flex: "1 1 0",
-              minWidth: 0,
-              aspectRatio: "1 / 1",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 5,
-              padding: 6,
-              borderRadius: 8,
-              cursor: "pointer",
-              fontSize: "clamp(8px, 2.3vw, 9.5px)",
-              fontWeight: 700,
-              lineHeight: 1.1,
-              textAlign: "center",
-              background: "#fff",
-              color: "rgba(11,31,58,0.62)",
-              border: `1px solid ${HAIRLINE}`,
-              boxShadow: "0 1px 2px rgba(11,31,58,0.05)",
-            }}
-          >
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                width: 22,
-                height: 22,
-                overflow: "hidden",
-                transform: "scale(0.88)",
-              }}
-            >
-              {t.icon}
-            </span>
-            <span style={{ width: "100%", wordBreak: "break-word" }}>{t.name}</span>
-          </button>
+          <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
         ))}
-      </div>
+      </TileRow>
     </section>
   );
 }
@@ -1094,63 +1092,12 @@ function PerksCard({
         </div>
       )}
 
-      {/* Category tiles — same square tile design as under PRO TV */}
-      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-        {[...catLabels, "More"].map((label) => {
-          const Icon = label === "More" ? IconDots : categoryIcon(label);
-          const color = categoryTileColor(label);
-          const to =
-            label === "More"
-              ? "/perks"
-              : `/perks?category=${encodeURIComponent(label.toLowerCase())}`;
-          return (
-            <button
-              key={label}
-              type="button"
-              onClick={() => onNavigate(to)}
-              style={{
-                ...POPPINS,
-                flex: "1 1 0",
-                minWidth: 0,
-                aspectRatio: "1 / 1",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 5,
-                padding: 6,
-                borderRadius: 8,
-                cursor: "pointer",
-                fontSize: "clamp(8px, 2.3vw, 9.5px)",
-                fontWeight: 700,
-                lineHeight: 1.1,
-                textAlign: "center",
-                background: "#fff",
-                color: "rgba(11,31,58,0.62)",
-                border: `1px solid ${HAIRLINE}`,
-                boxShadow: "0 1px 2px rgba(11,31,58,0.05)",
-              }}
-            >
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  width: 22,
-                  height: 22,
-                  overflow: "hidden",
-                  transform: "scale(0.88)",
-                  color,
-                }}
-              >
-                <Icon size={24} stroke={2} />
-              </span>
-              <span style={{ width: "100%", wordBreak: "break-word" }}>{label}</span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Category tiles */}
+      <TileRow>
+        {PERK_TILES.map((t) => (
+          <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
+        ))}
+      </TileRow>
     </section>
   );
 }
@@ -1265,92 +1212,11 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
         onAction={() => onNavigate("/community")}
       />
 
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 8,
-          border: `0.5px solid ${HAIRLINE}`,
-          overflow: "hidden",
-          boxShadow: "0 6px 18px -12px rgba(11,31,58,0.35)",
-        }}
-      >
-        {displayRows.map((row, idx) => {
-          const icon = TYPE_ICONS[row.type];
-          return (
-            <div
-              key={`${row.type}-${row.id}`}
-              onClick={() => onNavigate(row.route)}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                padding: "10px 14px",
-                cursor: "pointer",
-                borderBottom: idx < displayRows.length - 1 ? "0.5px solid #F4F6F8" : "none",
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: row.author ? communityAvatarColor(row.author) : icon.bg,
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                {row.author ? firstInitial(row.author) : icon.node}
-              </div>
-              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: "#0B2341",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {row.author || row.title}
-                  </span>
-                  <span style={{ fontSize: 10, color: "#D1D5DB", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
-                </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#536579",
-                    lineHeight: 1.4,
-                    marginTop: 2,
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                  }}
-                >
-                  {row.body}
-                </div>
-                <div style={{ marginTop: 4 }}>
-                  <SourceBadge source={row.source} />
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <TileRow>
+        {HAPPENING_TILES.map((t) => (
+          <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
+        ))}
+      </TileRow>
     </section>
   );
 }
@@ -1387,88 +1253,11 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
     <section style={{ ...POPPINS }}>
       <SectionHead title="PRO Shop" actionLabel="Browse all" onAction={() => onNavigate("/marketplace")} />
 
-      <div
-        ref={containerRef}
-        onScroll={handleScroll}
-        style={{
-          display: "flex",
-          gap: GAP,
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-          paddingBottom: 8,
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
-        {products.map((p) => {
-          const image = p.image_urls?.[0] || null;
-          return (
-            <div
-              key={p.id}
-              onClick={() => onNavigate(`/marketplace`)}
-              style={{
-                flex: "0 0 auto",
-                width: `calc(50% - ${GAP / 2}px)`,
-                scrollSnapAlign: "start",
-                background: "#fff",
-                borderRadius: CARD_RADIUS,
-                border: `0.5px solid ${HAIRLINE}`,
-                overflow: "hidden",
-                cursor: "pointer",
-              }}
-            >
-              <div
-                style={{
-                  height: 130,
-                  background: image
-                    ? `url(${image}) center/cover`
-                    : "linear-gradient(135deg, #E4E8EF, #F4F6F8)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {!image && <IconShoppingBag size={32} color="#B8C0CC" stroke={1.5} />}
-              </div>
-              <div style={{ padding: 12 }}>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: NAVY,
-                    lineHeight: 1.3,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {p.title}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: BLUE, marginTop: 4 }}>
-                  {p.price_display ? formatMoneyDisplay(p.price_display) : ""}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {products.length > 1 && (
-        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 6 }}>
-          {products.map((_, i) => (
-            <span
-              key={i}
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: i === activeIndex ? NAVY : "#D1D5DB",
-              }}
-            />
-          ))}
-        </div>
-      )}
+      <TileRow>
+        {SHOP_TILES.map((t) => (
+          <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
+        ))}
+      </TileRow>
     </section>
   );
 }
