@@ -633,13 +633,12 @@ function PerksCard({
           background: "#fff",
           borderRadius: 8,
           marginTop: 8,
-
           padding: "12px 16px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           border: `0.5px solid ${HAIRLINE}`,
-          borderTop: "none",
+
         }}
       >
         <span style={{ fontSize: 13, color: TEXT_SECONDARY }}>{categoryLine}</span>
