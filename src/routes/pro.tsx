@@ -40,7 +40,7 @@ const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
 const TEXT_SECONDARY = "#6B7686";
 const HAIRLINE = "#E4E8EF";
-const CARD_RADIUS = 16;
+const CARD_RADIUS = 8;
 
 /** Editorial section heading: heavy Sora title with optional right-hand action. */
 function SectionHead({
@@ -311,7 +311,7 @@ function RadioCard() {
               fontWeight: 800,
               letterSpacing: 1.2,
               padding: "3px 8px",
-              borderRadius: 6,
+              borderRadius: 8,
             }}
           >
             <span
@@ -333,7 +333,7 @@ function RadioCard() {
         style={{
           position: "relative",
           overflow: "hidden",
-          borderRadius: 24,
+          borderRadius: 8,
           padding: 20,
           background: `linear-gradient(150deg, ${NAVY} 0%, #10305C 60%, #0B1F3A 100%)`,
           boxShadow: "0 18px 40px -18px rgba(11,31,58,0.65)",
@@ -547,7 +547,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
         onClick={() => onNavigate("/dsm-live")}
         style={{
           position: "relative",
-          borderRadius: 20,
+          borderRadius: 8,
           overflow: "hidden",
           cursor: "pointer",
           background: NAVY,
@@ -591,7 +591,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 letterSpacing: 1.1,
                 textTransform: "uppercase",
                 padding: "4px 8px",
-                borderRadius: 6,
+                borderRadius: 8,
               }}
             >
               {category}
@@ -604,7 +604,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 fontSize: 9.5,
                 fontWeight: 700,
                 padding: "4px 8px",
-                borderRadius: 6,
+                borderRadius: 8,
               }}
             >
               {duration}
@@ -701,7 +701,7 @@ function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string
       style={{
         width: "100%",
         flexShrink: 0,
-        borderRadius: 20,
+        borderRadius: 8,
         overflow: "hidden",
         position: "relative",
         cursor: "pointer",
@@ -793,7 +793,7 @@ function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string
           style={{
             width: 130,
             height: 84,
-            borderRadius: 14,
+            borderRadius: 8,
             overflow: "hidden",
             background: "rgba(255,255,255,0.08)",
             border: "0.5px solid rgba(255,255,255,0.18)",
@@ -937,7 +937,7 @@ function PerksCard({
       <div
         style={{
           background: "#fff",
-          borderRadius: 14,
+          borderRadius: 8,
           marginTop: 10,
           padding: "10px 12px",
           display: "flex",
@@ -1055,7 +1055,7 @@ function SourceBadge({ source }: { source?: string }) {
         gap: 3,
         fontSize: 10,
         fontWeight: 600,
-        borderRadius: 20,
+        borderRadius: 8,
         padding: "2px 8px",
         background: config.bg,
         color: config.color,
@@ -1127,7 +1127,7 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
                 fontWeight: 800,
                 letterSpacing: 0.6,
                 padding: "3px 8px",
-                borderRadius: 6,
+                borderRadius: 8,
                 textTransform: "uppercase",
               }}
             >
@@ -1142,7 +1142,7 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
       <div
         style={{
           background: "#fff",
-          borderRadius: 18,
+          borderRadius: 8,
           border: `0.5px solid ${HAIRLINE}`,
           overflow: "hidden",
           boxShadow: "0 6px 18px -12px rgba(11,31,58,0.35)",
