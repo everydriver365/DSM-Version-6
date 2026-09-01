@@ -242,7 +242,7 @@ function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
   );
 }
 
-export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) {
+export function TasksActionsCard({ userId, items, limit = 2, onSeeAll }: Props) {
   const navigate = useNavigate();
   const live = useTaskItems(items ? null : userId);
   const all = items ?? live;
