@@ -717,13 +717,13 @@ function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string
             fontWeight: 700,
             letterSpacing: 1,
             textTransform: "uppercase",
-            color: "#C4B5FD",
+            color: "#7FB6EE",
           }}
         >
           <IconGift size={12} stroke={2.2} /> PRO Perks
         </div>
 
-        <div style={{ marginTop: 8, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.15 }}>
+        <div style={{ ...SORA, marginTop: 8, fontSize: 19, fontWeight: 800, color: "#fff", lineHeight: 1.15, letterSpacing: -0.3 }}>
           {p.name}
         </div>
 
