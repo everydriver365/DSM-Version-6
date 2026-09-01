@@ -251,24 +251,7 @@ function PerksSection({
                   position: "relative",
                 }}
               >
-                {p.hero_image_url ? (
-                  <img
-                    src={p.hero_image_url}
-                    alt={p.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                ) : (
-                  <span
-                    style={{
-                      color: "rgba(255,255,255,0.92)",
-                      fontSize: 30,
-                      fontWeight: 800,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {label.trim().charAt(0).toUpperCase()}
-                  </span>
-                )}
+                <PerkHeroImage src={p.hero_image_url} alt={p.name} initial={label.trim().charAt(0).toUpperCase()} />
                 <span
                   style={{
                     position: "absolute",
