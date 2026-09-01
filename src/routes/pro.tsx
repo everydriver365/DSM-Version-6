@@ -1212,6 +1212,92 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
         onAction={() => onNavigate("/community")}
       />
 
+      {/* Live activity rows */}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 8,
+          border: `1px solid ${HAIRLINE}`,
+          overflow: "hidden",
+        }}
+      >
+        {displayRows.map((row, idx) => {
+          const iconCfg = TYPE_ICONS[row.type];
+          const isLast = idx === displayRows.length - 1;
+          return (
+            <div
+              key={row.id}
+              onClick={() => onNavigate(row.route)}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 12,
+                padding: "12px 14px",
+                borderBottom: isLast ? "none" : `1px solid ${HAIRLINE}`,
+                cursor: "pointer",
+              }}
+            >
+              <span
+                style={{
+                  flexShrink: 0,
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: iconCfg.bg,
+                }}
+              >
+                {iconCfg.node}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    marginBottom: 3,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: NAVY,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {row.title}
+                  </span>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: TEXT_SECONDARY, flexShrink: 0 }}>
+                    {timeAgo(row.created_at)}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    margin: "0 0 6px",
+                    fontSize: 13,
+                    lineHeight: 1.4,
+                    color: TEXT_SECONDARY,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {row.body}
+                </p>
+                <SourceBadge source={row.source} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <TileRow>
         {HAPPENING_TILES.map((t) => (
           <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
