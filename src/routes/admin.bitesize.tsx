@@ -763,59 +763,130 @@ function AdminBitesizePage() {
             {formFields}
 
             <div>
-              <span style={labelStyle}>Video file</span>
-              <label
-                htmlFor="ab-video"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 6,
-                  border: "2px dashed #DDD6FE",
-                  borderRadius: tokens.radiusCard,
-                  padding: "24px 16px",
-                  cursor: "pointer",
-                  background: "#FAF8FF",
-                }}
-              >
-                <IconUpload size={48} color="#7C3AED" />
-                <div
+              <span style={labelStyle}>Video source</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setSource("upload")}
                   style={{
-                    fontSize: tokens.fontSize.md,
-                    fontWeight: tokens.fontWeight.semibold,
-                    color: tokens.navy,
+                    flex: 1,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    border: source === "upload" ? "none" : "0.5px solid #E4E8EF",
+                    background: source === "upload" ? "#0B2341" : "#F4F6F8",
+                    color: source === "upload" ? "#fff" : "#536579",
                     ...POPPINS,
                   }}
                 >
-                  Tap to select video
-                </div>
-                <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
-                  MP4 or MOV · max 500MB
-                </div>
-                {videoFile && (
-                  <div
+                  <IconUpload size={16} />
+                  Upload file
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSource("youtube")}
+                  style={{
+                    flex: 1,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    border: source === "youtube" ? "none" : "0.5px solid #E4E8EF",
+                    background: source === "youtube" ? "#0B2341" : "#F4F6F8",
+                    color: source === "youtube" ? "#fff" : "#536579",
+                    ...POPPINS,
+                  }}
+                >
+                  <IconBrandYoutube size={16} />
+                  YouTube URL
+                </button>
+              </div>
+
+              {source === "upload" ? (
+                <>
+                  <label
+                    htmlFor="ab-video"
                     style={{
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: "#16A34A",
-                      marginTop: 4,
-                      wordBreak: "break-all",
-                      textAlign: "center",
-                      ...POPPINS,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      border: "2px dashed #DDD6FE",
+                      borderRadius: tokens.radiusCard,
+                      padding: "24px 16px",
+                      cursor: "pointer",
+                      background: "#FAF8FF",
+                      marginTop: 12,
                     }}
                   >
-                    ✓ {videoFile.name}
-                  </div>
-                )}
-              </label>
-              <input
-                id="ab-video"
-                type="file"
-                accept="video/*"
-                style={{ display: "none" }}
-                onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
-              />
+                    <IconUpload size={48} color="#7C3AED" />
+                    <div
+                      style={{
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.semibold,
+                        color: tokens.navy,
+                        ...POPPINS,
+                      }}
+                    >
+                      Tap to select video
+                    </div>
+                    <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
+                      MP4 or MOV · max 500MB
+                    </div>
+                    {videoFile && (
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: "#16A34A",
+                          marginTop: 4,
+                          wordBreak: "break-all",
+                          textAlign: "center",
+                          ...POPPINS,
+                        }}
+                      >
+                        ✓ {videoFile.name}
+                      </div>
+                    )}
+                  </label>
+                  <input
+                    id="ab-video"
+                    type="file"
+                    accept="video/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
+                  />
+                </>
+              ) : (
+                <input
+                  type="text"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="Paste YouTube URL..."
+                  style={{
+                    width: "100%",
+                    fontSize: 14,
+                    padding: "10px 14px",
+                    borderRadius: 10,
+                    border: "1px solid #E4E8EF",
+                    marginTop: 12,
+                    outline: "none",
+                    ...POPPINS,
+                  }}
+                />
+              )}
             </div>
 
             <div>
