@@ -388,10 +388,11 @@ function DecadeIcon({ label, from, to }: { label: string; from: string; to: stri
   );
 }
 
-const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean }[] = [
+const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; selectedColor?: string }[] = [
   {
     name: "PRO Live",
     fillIcon: true,
+    selectedColor: "#22C55E",
     icon: (
       <img
         src={proRadio2.url}
