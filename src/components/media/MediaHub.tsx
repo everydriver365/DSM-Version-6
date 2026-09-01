@@ -1059,13 +1059,251 @@ function PodcastsTab() {
   );
 }
 
+/* --------------------------------- LIVE ---------------------------------- */
+
+interface LiveRow {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  host_name: string | null;
+  session_date: string;
+  session_time: string;
+  duration_minutes: number | null;
+  max_spaces: number | null;
+  spaces_taken: number | null;
+  price_display: string | null;
+  image_url: string | null;
+  is_live: boolean | null;
+}
+
+const LIVE_FILTERS = [
+  "All",
+  "Standards Check",
+  "Business Coaching",
+  "CPD Webinar",
+  "New ADI",
+  "Q&A",
+];
+
+function liveDateLabel(dateStr: string, timeStr: string): string {
+  try {
+    const d = new Date(`${dateStr}T00:00:00`);
+    const day = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+    const [h, m] = (timeStr ?? "").split(":");
+    const t = new Date();
+    t.setHours(Number(h), Number(m), 0, 0);
+    const time = t.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true });
+    return `${day} · ${time}`;
+  } catch {
+    return dateStr;
+  }
+}
+
+function LiveTab({ onNavigate }: { onNavigate: (to: string) => void }) {
+  const [rows, setRows] = useState<LiveRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await supabase
+        .from("dsm_live_sessions")
+        .select(
+          "id, title, description, category, host_name, session_date, session_time, duration_minutes, max_spaces, spaces_taken, price_display, image_url, is_live",
+        )
+        .is("deleted_at", null)
+        .gte("session_date", today)
+        .order("session_date", { ascending: true })
+        .order("session_time", { ascending: true })
+        .limit(20);
+      if (cancelled) return;
+      setRows((data ?? []) as LiveRow[]);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filtered = useMemo(
+    () => (filter === "All" ? rows : rows.filter((r) => (r.category ?? "") === filter)),
+    [rows, filter],
+  );
+
+  const [hero, ...rest] = filtered;
+
+  return (
+    <div style={{ paddingBottom: 24 }}>
+      <FilterPills options={LIVE_FILTERS} value={filter} onChange={setFilter} />
+
+      {loading ? (
+        <EmptyState label="Loading sessions…" />
+      ) : !hero ? (
+        <EmptyState label="No live sessions scheduled." />
+      ) : (
+        <>
+          <div
+            onClick={() => onNavigate(`/dsm-live/${hero.id}`)}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              margin: "0 16px 12px",
+              overflow: "hidden",
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                height: 180,
+                background: LINE,
+                position: "relative",
+              }}
+            >
+              {hero.image_url ? (
+                <img
+                  src={hero.image_url}
+                  alt=""
+                  style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+                />
+              ) : null}
+              {hero.is_live ? (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    background: "rgba(229,57,53,0.92)",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 4,
+                    padding: "3px 8px",
+                    ...POPPINS,
+                  }}
+                >
+                  LIVE NOW
+                </span>
+              ) : null}
+            </div>
+            <div style={{ background: NAVY, padding: "12px 14px" }}>
+              <span
+                style={{
+                  display: "inline-block",
+                  background: BLUE,
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  borderRadius: 4,
+                  padding: "2px 7px",
+                  marginBottom: 6,
+                  textTransform: "uppercase",
+                  ...POPPINS,
+                }}
+              >
+                {hero.category ?? "Live session"}
+              </span>
+              <div
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  lineHeight: 1.3,
+                  marginBottom: 6,
+                  ...POPPINS,
+                }}
+              >
+                {hero.title}
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, ...POPPINS }}>
+                {liveDateLabel(hero.session_date, hero.session_time)}
+                {hero.host_name ? ` · ${hero.host_name}` : ""}
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+              padding: "0 16px 16px",
+            }}
+          >
+            {rest.map((s) => (
+              <div
+                key={s.id}
+                onClick={() => onNavigate(`/dsm-live/${s.id}`)}
+                style={{
+                  background: "#fff",
+                  borderRadius: 12,
+                  border: `0.5px solid ${LINE}`,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ width: "100%", height: 90, background: LINE, position: "relative" }}>
+                  {s.image_url ? (
+                    <img
+                      src={s.image_url}
+                      alt=""
+                      style={{ width: "100%", height: 90, objectFit: "cover", display: "block" }}
+                    />
+                  ) : null}
+                </div>
+                <div style={{ padding: "8px 10px" }}>
+                  <div
+                    style={{
+                      color: BLUE,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      marginBottom: 4,
+                      textTransform: "uppercase",
+                      ...POPPINS,
+                    }}
+                  >
+                    {s.category ?? "Live session"}
+                  </div>
+                  <div
+                    style={{
+                      color: NAVY,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      lineHeight: 1.3,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      ...POPPINS,
+                    }}
+                  >
+                    {s.title}
+                  </div>
+                  <div style={{ color: MUTED, fontSize: 10, marginTop: 4, ...POPPINS }}>
+                    {liveDateLabel(s.session_date, s.session_time)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* -------------------------------- MediaHub -------------------------------- */
 
 const TABS: { key: MediaTabKey; label: string }[] = [
   { key: "news", label: "NEWS" },
   { key: "tv", label: "PRO TV" },
   { key: "podcasts", label: "PODCASTS" },
+  { key: "live", label: "LIVE" },
 ];
+
 
 export function MediaHub({ onNavigate }: MediaHubProps) {
   const [activeTab, setActiveTab] = useState<MediaTabKey>("news");
