@@ -232,7 +232,7 @@ function RadioCard() {
             <img
               src={proLogo}
               alt="PRO"
-              style={{ width: 36, height: 36, objectFit: "contain" }}
+              style={{ width: 42, height: 42, objectFit: "contain" }}
             />
           </div>
 
