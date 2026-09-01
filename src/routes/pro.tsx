@@ -506,82 +506,22 @@ function ShopSection({
           padding: `0 ${PAD}px 4px`,
         }}
       >
-        {restListings.map((l) => {
-          const [c1, c2] = perkTint(l.id);
-          const image = l.thumbnail_url || l.image_urls?.[0] || null;
-          const chip = formatMoneyDisplay(l.price_display) || l.category || "Shop";
-          return (
-            <div
-              key={l.id}
-              onClick={() => onNavigate(`/marketplace/${l.id}`)}
-              style={{
-                background: "#fff",
-                borderRadius: 8,
-                border: `0.5px solid ${HAIRLINE}`,
-                boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
-                overflow: "hidden",
-                cursor: "pointer",
-                minWidth: 0,
-              }}
-            >
-              <div
-                style={{
-                  height: 104,
-                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                }}
-              >
-                <PerkHeroImage
-                  src={image}
-                  alt={l.title}
-                  initial={l.title.trim().charAt(0).toUpperCase()}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    left: 8,
-                    bottom: 8,
-                    background: "#fff",
-                    color: BLUE,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "3px 7px",
-                    boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.03em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {chip}
-                </span>
-              </div>
-              <div style={{ padding: "9px 10px 12px" }}>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: NAVY,
-                    lineHeight: 1.28,
-                    minHeight: 34,
-                    ...CLAMP(2),
-                  }}
-                >
-                  {l.title}
-                </div>
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                  {oneLine(l.description) ||
-                    l.marketplace_categories?.name ||
-                    l.category ||
-                    "Member price for PRO instructors"}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {restListings.map((l) => (
+          <GridCard
+            key={l.id}
+            id={l.id}
+            title={l.title}
+            subtitle={
+              oneLine(l.description) ||
+              l.marketplace_categories?.name ||
+              l.category ||
+              "Member price for PRO instructors"
+            }
+            image={l.thumbnail_url || l.image_urls?.[0] || null}
+            chip={formatMoneyDisplay(l.price_display) || l.category || "Shop"}
+            onClick={() => onNavigate(`/marketplace/${l.id}`)}
+          />
+        ))}
       </div>
     </section>
   );
