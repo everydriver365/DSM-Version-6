@@ -37,57 +37,49 @@ export interface LearnVideo {
 }
 
 export const VIDEO_CATEGORIES = [
-  "Driving",
-  "Instructor",
+  "Getting started",
+  "Training",
+  "News",
   "CPD",
-  "Road Safety",
-  "Learner Teaching",
-  "Hazard Perception",
-  "Manoeuvres",
-  "Roundabouts & Junctions",
-  "Test Preparation",
-  "Psychology & Behaviour",
-  "Technology & AI",
-  "EV & Vehicles",
+  "Business",
+  "Wellbeing",
+  "Bitesize",
+  "Showcase",
 ] as const;
 
 export type VideoCategory = (typeof VIDEO_CATEGORIES)[number];
 
 export const VIDEO_CATEGORY_EMOJI: Record<string, string> = {
-  Driving: "🚗",
-  Instructor: "👨‍🏫",
-  CPD: "🎓",
-  "Road Safety": "🚦",
-  "Learner Teaching": "🧑‍🎓",
-  "Hazard Perception": "🛣️",
-  Manoeuvres: "🔄",
-  "Roundabouts & Junctions": "🚘",
-  "Test Preparation": "🏁",
-  "Psychology & Behaviour": "🧠",
-  "Technology & AI": "🤖",
-  "EV & Vehicles": "⚡",
+  "Getting started": "🚀",
+  Training: "🎓",
+  News: "📰",
+  CPD: "📋",
+  Business: "💼",
+  Wellbeing: "🌿",
+  Bitesize: "📚",
+  Showcase: "🏆",
 };
 
 export const BITESIZE_CATEGORIES = [
-  "Driving Tip",
-  "Instructor Tip",
+  "Getting started",
+  "Training",
+  "News",
   "CPD",
-  "Psychology",
   "Business",
-  "Road Safety",
-  "AI & Technology",
   "Wellbeing",
+  "Bitesize",
+  "Showcase",
 ] as const;
 
 export const BITESIZE_CATEGORY_EMOJI: Record<string, string> = {
-  "Driving Tip": "🚗",
-  "Instructor Tip": "👨‍🏫",
-  CPD: "🎓",
-  Psychology: "🧠",
+  "Getting started": "🚀",
+  Training: "🎓",
+  News: "📰",
+  CPD: "📋",
   Business: "💼",
-  "Road Safety": "🚦",
-  "AI & Technology": "🤖",
   Wellbeing: "🌿",
+  Bitesize: "📚",
+  Showcase: "🏆",
 };
 
 export const AUDIENCE_LABEL: Record<string, string> = {
