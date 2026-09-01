@@ -806,7 +806,7 @@ function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string
           }}
           style={{
             background: "#fff",
-            color: "#4C1D95",
+            color: NAVY,
             border: "none",
             borderRadius: 999,
             padding: "8px 16px",
