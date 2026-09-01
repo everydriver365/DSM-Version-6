@@ -123,6 +123,7 @@ function SquareTile({
   selected,
   disabled,
   fillIcon,
+  selectedColor,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -130,6 +131,7 @@ function SquareTile({
   selected?: boolean;
   disabled?: boolean;
   fillIcon?: boolean;
+  selectedColor?: string;
 }) {
   return (
     <button
