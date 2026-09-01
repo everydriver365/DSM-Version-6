@@ -10813,6 +10813,14 @@ function HomePage() {
             background: activePage === 1 ? "#0B2341" : "rgba(11,35,65,0.2)",
           }}
         />
+        <div
+          style={{
+            width: activePage === 2 ? 20 : 8,
+            height: 4,
+            borderRadius: 2,
+            background: activePage === 2 ? "#0B2341" : "rgba(11,35,65,0.2)",
+          }}
+        />
       </div>
     </div>
   );
