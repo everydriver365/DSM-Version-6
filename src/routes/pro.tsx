@@ -197,6 +197,40 @@ function perkTint(seed: string): [string, string] {
   return palettes[n]!;
 }
 
+function PerkHeroImage({
+  src,
+  alt,
+  initial,
+}: {
+  src: string | null;
+  alt: string;
+  initial: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (src?.trim() && !failed) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        onError={() => setFailed(true)}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+      />
+    );
+  }
+  return (
+    <span
+      style={{
+        color: "rgba(255,255,255,0.92)",
+        fontSize: 30,
+        fontWeight: 800,
+        letterSpacing: "-0.02em",
+      }}
+    >
+      {initial}
+    </span>
+  );
+}
+
 function PerksSection({
   perks,
   onNavigate,
