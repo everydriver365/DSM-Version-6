@@ -167,16 +167,17 @@ function SquareTile({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flexShrink: 0,
-          width: 22,
-          height: 22,
+          flexShrink: fillIcon ? undefined : 0,
+          width: fillIcon ? "100%" : 22,
+          height: fillIcon ? "100%" : 22,
+          flex: fillIcon ? 1 : undefined,
           overflow: "hidden",
-          transform: "scale(0.88)",
+          transform: fillIcon ? undefined : "scale(0.88)",
         }}
       >
         {icon}
       </span>
-      <span style={{ width: "100%", wordBreak: "break-word" }}>{label}</span>
+      {!fillIcon && <span style={{ width: "100%", wordBreak: "break-word" }}>{label}</span>}
     </button>
   );
 }
