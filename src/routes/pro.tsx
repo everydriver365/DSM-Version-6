@@ -1085,7 +1085,7 @@ function ProPage() {
   const [video, setVideo] = useState<LearnVideo | null>(null);
   const [perk, setPerk] = useState<FeaturedPerk | null>(null);
   const [perkCategories, setPerkCategories] = useState<string[]>([]);
-  const [comments, setComments] = useState<CommunityComment[]>([]);
+  const [feed, setFeed] = useState<FeedItem[]>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
 
   useEffect(() => {
