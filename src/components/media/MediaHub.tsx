@@ -299,19 +299,30 @@ function NewsTab({ onNavigate }: { onNavigate: (to: string) => void }) {
 
 /* ---------------------------------- TV ----------------------------------- */
 
-interface VideoRow {
+interface VideoItem {
   id: string;
-  title: string | null;
+  title: string;
   description: string | null;
   video_url: string | null;
-  video_embed_url: string | null;
+  embed_url: string | null;
   thumbnail_url: string | null;
   category: string | null;
-  is_published: boolean | null;
-  sort_order: number | null;
+  duration: string | null;
+  source: "howto" | "bitesize";
 }
 
-const TV_FILTERS = ["All", "How To", "Bitesize", "Road Stories", "Instructor", "Exclusives"];
+const TV_FILTERS = [
+  "All",
+  "How To",
+  "Bitesize",
+  "Getting Started",
+  "Training",
+  "Business",
+  "Wellbeing",
+  "News",
+  "CPD",
+  "Showcase",
+];
 
 function PlayOverlay({ size = 48 }: { size?: number }) {
   return (
@@ -343,24 +354,225 @@ function PlayOverlay({ size = 48 }: { size?: number }) {
   );
 }
 
-function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
-  const [rows, setRows] = useState<VideoRow[]>([]);
+function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void }) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.9)",
+        zIndex: 200,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: 16 }}>
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}
+        >
+          <IconX size={24} color="#fff" />
+        </button>
+      </div>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 16,
+        }}
+      >
+        <div style={{ width: "100%" }}>
+          {video.embed_url ? (
+            <iframe
+              src={video.embed_url}
+              title={video.title}
+              style={{ width: "100%", height: 220, border: "none", borderRadius: 8 }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          ) : video.video_url ? (
+            <video
+              src={video.video_url}
+              controls
+              playsInline
+              style={{ width: "100%", borderRadius: 8, background: "#000" }}
+            />
+          ) : null}
+          <div
+            style={{
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              marginTop: 12,
+              ...POPPINS,
+            }}
+          >
+            {video.title}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VideoCard({ video, onPlay }: { video: VideoItem; onPlay: (v: VideoItem) => void }) {
+  return (
+    <div
+      onClick={() => onPlay(video)}
+      style={{
+        width: 150,
+        flexShrink: 0,
+        background: "#fff",
+        borderRadius: 12,
+        border: `0.5px solid ${LINE}`,
+        overflow: "hidden",
+        cursor: "pointer",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          height: 85,
+          background: NAVY,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {video.thumbnail_url ? (
+          <img
+            src={video.thumbnail_url}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <IconDeviceTv size={28} color="rgba(255,255,255,0.2)" />
+        )}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(0,0,0,0.2)",
+          }}
+        >
+          <IconPlayerPlay size={18} color="#fff" fill="#fff" />
+        </div>
+        <span
+          style={{
+            position: "absolute",
+            top: 5,
+            left: 5,
+            background: video.source === "bitesize" ? "#7B61FF" : BLUE,
+            color: "#fff",
+            fontSize: 8,
+            fontWeight: 700,
+            borderRadius: 3,
+            padding: "1px 5px",
+            ...POPPINS,
+          }}
+        >
+          {video.source === "bitesize" ? "BITESIZE" : "HOW TO"}
+        </span>
+        {video.duration ? (
+          <span
+            style={{
+              position: "absolute",
+              bottom: 5,
+              right: 5,
+              background: "rgba(0,0,0,0.6)",
+              color: "#fff",
+              fontSize: 9,
+              borderRadius: 3,
+              padding: "1px 5px",
+              ...POPPINS,
+            }}
+          >
+            {video.duration}
+          </span>
+        ) : null}
+      </div>
+      <div
+        style={{
+          padding: "8px 8px 10px",
+          fontSize: 11,
+          fontWeight: 600,
+          color: NAVY,
+          lineHeight: 1.3,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          ...POPPINS,
+        }}
+      >
+        {sanitizeNewsTitle(video.title)}
+      </div>
+    </div>
+  );
+}
+
+function TvTab({ onNavigate: _onNavigate }: { onNavigate: (to: string) => void }) {
+  const [allVideos, setAllVideos] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
+  const [playing, setPlaying] = useState<VideoItem | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
-        .from("howto_videos")
-        .select(
-          "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order",
-        )
-        .eq("is_published", true)
-        .order("sort_order", { ascending: true })
-        .limit(20);
+      const [howtoRes, bitesizeRes] = await Promise.all([
+        supabase
+          .from("howto_videos")
+          .select(
+            "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order",
+          )
+          .eq("is_published", true)
+          .order("sort_order", { ascending: true })
+          .limit(50),
+        supabase
+          .from("bitesize_videos")
+          .select(
+            "id, title, description, video_url, thumbnail_url, category, is_published, duration_mins, created_at",
+          )
+          .eq("is_published", true)
+          .is("deleted_at", null)
+          .order("created_at", { ascending: false })
+          .limit(50),
+      ]);
       if (cancelled) return;
-      setRows((data ?? []) as VideoRow[]);
+
+      const howto: VideoItem[] = ((howtoRes.data ?? []) as any[]).map((r) => ({
+        id: String(r.id),
+        title: r.title ?? "Untitled",
+        description: r.description ?? null,
+        video_url: r.video_url ?? null,
+        embed_url: r.video_embed_url ?? null,
+        thumbnail_url: r.thumbnail_url ?? null,
+        category: r.category ?? null,
+        duration: null,
+        source: "howto" as const,
+      }));
+
+      const bitesize: VideoItem[] = ((bitesizeRes.data ?? []) as any[]).map((r) => ({
+        id: String(r.id),
+        title: r.title ?? "Untitled",
+        description: r.description ?? null,
+        video_url: r.video_url ?? null,
+        embed_url: null,
+        thumbnail_url: r.thumbnail_url ?? null,
+        category: r.category ?? null,
+        duration: r.duration_mins ? `${r.duration_mins} min` : null,
+        source: "bitesize" as const,
+      }));
+
+      setAllVideos([...howto, ...bitesize]);
       setLoading(false);
     })();
     return () => {
@@ -369,12 +581,37 @@ function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
   }, []);
 
   const filtered = useMemo(() => {
-    if (filter === "All") return rows;
+    if (filter === "All") return allVideos;
+    if (filter === "How To") return allVideos.filter((v) => v.source === "howto");
+    if (filter === "Bitesize") return allVideos.filter((v) => v.source === "bitesize");
     const term = filter.toLowerCase();
-    return rows.filter((r) => (r.category ?? "").toLowerCase().includes(term));
-  }, [rows, filter]);
+    return allVideos.filter((v) => (v.category ?? "").toLowerCase().includes(term));
+  }, [allVideos, filter]);
 
-  const [featured, ...rest] = filtered;
+  const featured = useMemo(
+    () => filtered.find((v) => v.source === "howto") ?? filtered[0],
+    [filtered],
+  );
+
+  const sections = useMemo(() => {
+    const map = new Map<string, VideoItem[]>();
+    for (const v of filtered) {
+      if (featured && v.id === featured.id && v.source === featured.source) continue;
+      const key = v.category?.trim() || "More videos";
+      const list = map.get(key);
+      if (list) list.push(v);
+      else map.set(key, [v]);
+    }
+    return Array.from(map.entries());
+  }, [filtered, featured]);
+
+  function play(v: VideoItem) {
+    if (!v.embed_url && !v.video_url) {
+      toast.info("Video coming soon");
+      return;
+    }
+    setPlaying(v);
+  }
 
   return (
     <div style={{ paddingBottom: 24 }}>
@@ -387,7 +624,7 @@ function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
       ) : (
         <>
           <div
-            onClick={() => onNavigate("/dsm-live")}
+            onClick={() => play(featured)}
             style={{
               background: "#fff",
               borderRadius: 14,
@@ -421,7 +658,7 @@ function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
                   position: "absolute",
                   top: 10,
                   left: 10,
-                  background: BLUE,
+                  background: featured.source === "bitesize" ? "#7B61FF" : BLUE,
                   color: "#fff",
                   fontSize: 9,
                   fontWeight: 700,
@@ -446,7 +683,7 @@ function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
                   ...POPPINS,
                 }}
               >
-                Watch
+                {featured.duration ?? "Watch"}
               </span>
             </div>
             <div style={{ padding: "12px 14px" }}>
@@ -473,81 +710,40 @@ function TvTab({ onNavigate }: { onNavigate: (to: string) => void }) {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 10,
-              padding: "0 16px 16px",
-            }}
-          >
-            {rest.map((v) => (
+          {sections.map(([category, videos]) => (
+            <div key={category}>
               <div
-                key={v.id}
-                onClick={() => onNavigate("/dsm-live")}
                 style={{
-                  background: "#fff",
-                  borderRadius: 12,
-                  border: `0.5px solid ${LINE}`,
-                  overflow: "hidden",
-                  cursor: "pointer",
+                  fontSize: 11,
+                  color: MUTED,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: ".6px",
+                  padding: "12px 16px 8px",
+                  ...POPPINS,
                 }}
               >
-                <div
-                  style={{
-                    position: "relative",
-                    height: 80,
-                    background: NAVY,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {v.thumbnail_url ? (
-                    <img
-                      src={v.thumbnail_url}
-                      alt=""
-                      style={{ width: "100%", height: 80, objectFit: "cover", display: "block" }}
-                    />
-                  ) : (
-                    <IconDeviceTv size={28} color="rgba(255,255,255,0.2)" />
-                  )}
-                  <PlayOverlay size={32} />
-                </div>
-                <div style={{ padding: "8px 10px" }}>
-                  <div
-                    style={{
-                      color: BLUE,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      marginBottom: 4,
-                      textTransform: "uppercase",
-                      ...POPPINS,
-                    }}
-                  >
-                    {v.category ?? "PRO TV"}
-                  </div>
-                  <div
-                    style={{
-                      color: NAVY,
-                      fontSize: 12,
-                      fontWeight: 700,
-                      lineHeight: 1.3,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      ...POPPINS,
-                    }}
-                  >
-                    {sanitizeNewsTitle(v.title)}
-                  </div>
-                </div>
+                {category}
               </div>
-            ))}
-          </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  padding: "0 16px 12px",
+                  overflowX: "auto",
+                  scrollbarWidth: "none",
+                }}
+              >
+                {videos.map((v) => (
+                  <VideoCard key={`${v.source}-${v.id}`} video={v} onPlay={play} />
+                ))}
+              </div>
+            </div>
+          ))}
         </>
       )}
+
+      {playing ? <VideoModal video={playing} onClose={() => setPlaying(null)} /> : null}
     </div>
   );
 }
