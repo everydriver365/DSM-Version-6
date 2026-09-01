@@ -271,7 +271,11 @@ function RadioCard() {
             type="button"
             aria-label={radio.isPlaying ? "Pause" : "Play"}
             onClick={() => {
-              radio.toggle();
+              if (radio.isPlaying) {
+                radio.pause();
+              } else {
+                radio.play();
+              }
               setSelectedChip("PRO Live");
             }}
             style={{
