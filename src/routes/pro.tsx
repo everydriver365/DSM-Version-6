@@ -314,7 +314,7 @@ function FeaturedCard({
           justifyContent: "center",
         }}
       >
-        <PerkHeroImage src={image ?? null} alt={title} initial={initial} />
+        <PerkHeroImage src={image ?? null} alt={title} initial={initial} contain={imageContain} />
         <span
           style={{
             position: "absolute",
