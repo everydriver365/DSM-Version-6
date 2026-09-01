@@ -32,6 +32,8 @@ type ShopListing = {
   image_urls: string[] | null;
   thumbnail_url?: string | null;
   category?: string | null;
+  description?: string | null;
+  marketplace_categories?: { name: string | null } | null;
 };
 
 type Perk = {
@@ -54,6 +56,20 @@ function formatMoneyDisplay(raw: string | null): string {
   if (/^£\d/.test(cleaned)) return cleaned;
   if (/^\d/.test(cleaned)) return `£${cleaned}`;
   return raw;
+}
+
+/** Turn stored rich/long text into a single clean line of display copy. */
+function oneLine(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const text = raw
+    .replace(/<[^>]*>/g, " ")
+    .replace(/[*_#>`]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!text) return "";
+  const sentence = text.split(/(?<=[.!?])\s/)[0] ?? text;
+  const chosen = sentence.length >= 24 ? sentence : text;
+  return chosen.length > 90 ? `${chosen.slice(0, 87).trimEnd()}…` : chosen;
 }
 
 function SectionHeader({
@@ -297,7 +313,9 @@ function PerksSection({
                   {label}
                 </div>
                 <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                  {p.category || p.description?.trim() || "Member benefit"}
+                  {oneLine(p.description) ||
+                    [p.partner?.name, p.category].filter(Boolean).join(" · ") ||
+                    `${shortSaving(p.saving)} for PRO members`}
                 </div>
               </div>
             </div>
@@ -342,7 +360,7 @@ function ShopSection({
           return (
             <div
               key={l.id}
-              onClick={() => onNavigate("/marketplace")}
+              onClick={() => onNavigate(`/marketplace/${l.id}`)}
               style={{
                 background: "#fff",
                 borderRadius: 8,
@@ -402,7 +420,10 @@ function ShopSection({
                   {l.title}
                 </div>
                 <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                  {l.category || "PRO Shop"}
+                  {oneLine(l.description) ||
+                    l.marketplace_categories?.name ||
+                    l.category ||
+                    "Member price for PRO instructors"}
                 </div>
               </div>
             </div>
@@ -460,7 +481,7 @@ export function ProPage(_props: { onNavigateToMedia?: () => void } = {}) {
       const [shopRes, perkRes] = await Promise.allSettled([
         supabase
           .from("marketplace_listings")
-          .select("id, title, price_display, image_urls")
+          .select("id, title, description, price_display, image_urls, marketplace_categories(name)")
           .eq("is_active", true)
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
