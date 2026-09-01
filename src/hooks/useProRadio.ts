@@ -10,13 +10,36 @@ import {
 const RADIO_PREFS_KEY = "edp-radio-preferences";
 
 const STREAM_URL = "https://ice1.somafm.com/groovesalad-256-mp3";
-const SOMAFM_STATUS_URL = "https://api.somafm.com/groovesalad.json";
+const SOMAFM_CHANNEL_ID = "groovesalad";
+const SOMAFM_SONGS_URL = `https://somafm.com/songs/${SOMAFM_CHANNEL_ID}.json`;
+const SOMAFM_CHANNELS_URL = "https://api.somafm.com/channels.json";
+
+/** Channel logo, fetched once and reused when a track has no album art. */
+let channelLogoCache: string | null = null;
+
+async function getChannelLogo(): Promise<string | null> {
+  if (channelLogoCache) return channelLogoCache;
+  try {
+    const res = await fetch(SOMAFM_CHANNELS_URL);
+    const data = await res.json();
+    const channel = (data.channels ?? []).find(
+      (c: { id?: string }) => c.id === SOMAFM_CHANNEL_ID
+    );
+    channelLogoCache =
+      channel?.xlimage ?? channel?.largeimage ?? channel?.image ?? null;
+  } catch {
+    channelLogoCache = null;
+  }
+  return channelLogoCache;
+}
 
 export interface NowPlaying {
   title: string;
   artist?: string;
+  album?: string;
   artwork?: string | null;
 }
+
 
 export interface RadioState {
   isPlaying: boolean;
