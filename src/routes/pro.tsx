@@ -861,6 +861,7 @@ function PerksCard({
 
   return (
     <section style={{ ...POPPINS }}>
+      <SectionHead title="PRO Perks" actionLabel="See all" onAction={() => onNavigate("/perks")} />
       {/* Carousel */}
       <div
         style={{ overflow: "hidden", borderRadius: 20 }}
