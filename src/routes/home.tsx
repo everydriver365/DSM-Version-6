@@ -7157,11 +7157,11 @@ function HomePage() {
                           style={{
                             background: '#FFFFFF',
                             border: '1px solid #E4E8EF',
-                            borderRadius: tokens.radiusCard,
+                            borderRadius: 8,
                             marginBottom: 8,
                             padding: '12px 14px',
                             display: 'flex',
-                            alignItems: 'stretch',
+                            alignItems: 'center',
                             gap: 12,
                           }}
                         >
@@ -7173,7 +7173,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div aria-hidden style={{ width: 3, borderRadius: 12, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div aria-hidden style={{ width: 3, borderRadius: 12, background: '#1877D6', flexShrink: 0, alignSelf: 'stretch' }} />
                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
                               style={{
@@ -7194,6 +7194,7 @@ function HomePage() {
                               <span style={{ fontSize: 12, color: '#6B7686', fontWeight: tokens.fontWeight.medium, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
                             </div>
                           </div>
+                          <IconChevronRight size={16} stroke={1.5} color="#9CA3AF" style={{ flexShrink: 0 }} />
                         </div>
                       );
                     }
