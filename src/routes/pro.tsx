@@ -12,6 +12,11 @@ import {
   IconMessages,
   IconPlayerPlay,
   IconRadio,
+  IconGasStation,
+  IconHeartbeat,
+  IconDeviceMobile,
+  IconDots,
+
   IconSearch,
   IconShoppingBag,
   IconSteeringWheel,
