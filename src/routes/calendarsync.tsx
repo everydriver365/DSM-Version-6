@@ -220,6 +220,12 @@ function CalendarSyncPage() {
   async function sync() {
     setSyncing(true);
     try {
+      console.log("[calendar-sync] sync called, userId:", userId, "googleConnected:", googleConnected);
+      if (!userId) {
+        toast.error("Not signed in — please refresh and try again");
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast.error("Please sign in");
@@ -233,7 +239,7 @@ function CalendarSyncPage() {
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ instructor_id: userId }),
+        body: JSON.stringify({ instructor_id: userId, instructorId: userId }),
       });
       const data = await res.json().catch(() => ({}));
       if (
