@@ -313,8 +313,10 @@ function RadioCard() {
             borderTop: "0.5px solid rgba(11,31,58,0.08)",
           }}
         >
-          {STATION_TILES.map((s, idx) => {
+          {STATION_TILES.map((s) => {
+            const station = STATIONS[s.name];
             const selected = selectedChip === s.name;
+            const comingSoon = station?.comingSoon ?? true;
             return (
               <button
                 key={s.name}
@@ -323,10 +325,10 @@ function RadioCard() {
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  background: selected ? "rgba(255,255,255,0.75)" : "transparent",
+                  background: selected ? "#0B2341" : "#F4F6F8",
+                  color: selected ? "#fff" : "#536579",
                   borderRadius: 8,
-                  border: "none",
-                  borderLeft: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)",
+                  border: selected ? "none" : "0.5px solid #E4E8EF",
                   padding: "6px 2px",
                   display: "flex",
                   flexDirection: "column",
@@ -334,10 +336,11 @@ function RadioCard() {
                   gap: 5,
                   cursor: "pointer",
                   fontFamily: POPPINS.fontFamily,
+                  opacity: comingSoon && !selected ? 0.7 : 1,
                 }}
               >
                 <span style={{ height: 26, display: "flex", alignItems: "center" }}>{s.icon}</span>
-                <span style={{ fontSize: 10.5, fontWeight: 600, color: NAVY, whiteSpace: "nowrap" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 600, color: "inherit", whiteSpace: "nowrap" }}>
                   {s.name}
                 </span>
               </button>
