@@ -204,10 +204,8 @@ function PerksSection({
   perks: Perk[];
   onNavigate: (to: string) => void;
 }) {
-  const [active, setActive] = useState(0);
   if (perks.length === 0) return null;
-  const CARD_W = 148;
-  const pages = Math.max(1, Math.ceil(perks.length / 2));
+  const topFour = perks.slice(0, 4);
   return (
     <section>
       <SectionHeader
@@ -217,14 +215,14 @@ function PerksSection({
         onAction={() => onNavigate("/perks")}
       />
       <div
-        style={SCROLL_ROW}
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          const idx = Math.round(el.scrollLeft / ((CARD_W + 12) * 2));
-          setActive(Math.min(pages - 1, Math.max(0, idx)));
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 12,
+          padding: `0 ${PAD}px`,
         }}
       >
-        {perks.map((p) => {
+        {topFour.map((p) => {
           const [c1, c2] = perkTint(p.id);
           const label = p.partner?.name || p.name;
           return (
@@ -232,14 +230,13 @@ function PerksSection({
               key={p.id}
               onClick={() => onNavigate(`/perks/${p.id}`)}
               style={{
-                ...CARD_SNAP,
-                width: CARD_W,
                 background: "#fff",
                 borderRadius: 14,
                 border: `0.5px solid ${HAIRLINE}`,
                 boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
                 overflow: "hidden",
                 cursor: "pointer",
+                minWidth: 0,
               }}
             >
               <div
@@ -311,22 +308,6 @@ function PerksSection({
           );
         })}
       </div>
-      {pages > 1 && (
-        <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 10 }}>
-          {Array.from({ length: pages }).map((_, i) => (
-            <span
-              key={i}
-              style={{
-                width: i === active ? 16 : 5,
-                height: 5,
-                borderRadius: 3,
-                background: i === active ? BLUE : "#CBD5E1",
-                transition: "width .2s",
-              }}
-            />
-          ))}
-        </div>
-      )}
     </section>
   );
 }
