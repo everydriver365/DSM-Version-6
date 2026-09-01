@@ -274,6 +274,7 @@ function FeaturedCard({
   title,
   subtitle,
   image,
+  imageContain,
   initial,
   tint,
   badge,
@@ -283,6 +284,7 @@ function FeaturedCard({
   title: string;
   subtitle: string;
   image: string | null | undefined;
+  imageContain?: boolean;
   initial: string;
   tint: [string, string];
   badge: string;
