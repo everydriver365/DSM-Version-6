@@ -671,14 +671,10 @@ function PerksCard({
 /* ------------------------------------------------------------------ */
 
 function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
-  const rows = comments.length
-    ? comments.slice(0, 2)
-    : [
-        { id: "1", body: "Anyone covering Winchester this week?", author_name: "Dave M", created_at: new Date(Date.now() - 2 * 60000).toISOString() },
-        { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", created_at: new Date(Date.now() - 14 * 60000).toISOString() },
-      ];
+  const rows = comments.slice(0, 2);
 
-  const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length || 3;
+  const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
+
 
   return (
     <section style={{ ...POPPINS }}>
