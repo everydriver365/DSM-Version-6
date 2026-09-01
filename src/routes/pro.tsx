@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  IconGift,
   IconPlayerPause,
   IconPlayerPlay,
   IconRadio,
@@ -38,6 +37,7 @@ const SCROLL_ROW = {
   WebkitOverflowScrolling: "touch" as const,
   scrollbarWidth: "none" as const,
   scrollSnapType: "x proximity" as const,
+  scrollPaddingLeft: PAD,
   padding: `0 ${PAD}px 4px`,
 };
 
@@ -128,8 +128,8 @@ function SectionHeader({
             style={{
               fontSize: 11,
               fontWeight: 700,
-              letterSpacing: "0.12em",
-              color: NAVY,
+              letterSpacing: "0.14em",
+              color: BLUE,
               textTransform: "uppercase",
             }}
           >
@@ -137,14 +137,15 @@ function SectionHeader({
           </div>
         )}
         {title && (
-          <div style={{ fontSize: 17, fontWeight: 700, color: NAVY, marginTop: 4, lineHeight: 1.25 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: NAVY, marginTop: 3, lineHeight: 1.2 }}>
             {title}
           </div>
         )}
         {subtitle && (
-          <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.35 }}>{subtitle}</div>
+          <div style={{ fontSize: 13, color: MUTED, marginTop: 3, lineHeight: 1.35 }}>{subtitle}</div>
         )}
       </div>
+
       {onAction && (
         <button
           type="button"
@@ -173,6 +174,29 @@ function SectionHeader({
 // 1 — Perks rail
 /* ------------------------------------------------------------------ */
 
+function shortSaving(raw: string | null): string {
+  const s = (raw || "").trim();
+  if (!s) return "Exclusive";
+  const pct = s.match(/(\d+)\s*%/);
+  if (pct) return `${pct[1]}% off`;
+  const money = s.match(/£\s?([\d,]+)\s*\+?/);
+  if (money) return `£${money[1]}${s.includes("+") ? "+" : ""} value`;
+  return s.length > 14 ? "Member offer" : s;
+}
+
+function perkTint(seed: string): [string, string] {
+  const palettes: Array<[string, string]> = [
+    ["#0B2341", "#1F4E86"],
+    ["#134E4A", "#2C8A80"],
+    ["#3B1E54", "#7A3EA8"],
+    ["#5A2B12", "#B4682C"],
+    ["#12314F", "#2C97DE"],
+  ];
+  let n = 0;
+  for (let i = 0; i < seed.length; i += 1) n = (n + seed.charCodeAt(i)) % palettes.length;
+  return palettes[n]!;
+}
+
 function PerksSection({
   perks,
   onNavigate,
@@ -180,7 +204,10 @@ function PerksSection({
   perks: Perk[];
   onNavigate: (to: string) => void;
 }) {
+  const [active, setActive] = useState(0);
   if (perks.length === 0) return null;
+  const CARD_W = 148;
+  const pages = Math.max(1, Math.ceil(perks.length / 2));
   return (
     <section>
       <SectionHeader
@@ -189,81 +216,185 @@ function PerksSection({
         actionLabel="See all perks"
         onAction={() => onNavigate("/perks")}
       />
-      <div style={SCROLL_ROW}>
-        {perks.map((p) => (
-          <div
-            key={p.id}
-            onClick={() => onNavigate(`/perks/${p.id}`)}
-            style={{
-              ...CARD_SNAP,
-              width: 208,
-              background: "#fff",
-              borderRadius: 14,
-              border: `0.5px solid ${HAIRLINE}`,
-              boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
-              overflow: "hidden",
-              cursor: "pointer",
-            }}
-          >
+      <div
+        style={SCROLL_ROW}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          const idx = Math.round(el.scrollLeft / ((CARD_W + 12) * 2));
+          setActive(Math.min(pages - 1, Math.max(0, idx)));
+        }}
+      >
+        {perks.map((p) => {
+          const [c1, c2] = perkTint(p.id);
+          const label = p.partner?.name || p.name;
+          return (
             <div
+              key={p.id}
+              onClick={() => onNavigate(`/perks/${p.id}`)}
               style={{
-                height: 116,
-                background: "#EDF1F6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
+                ...CARD_SNAP,
+                width: CARD_W,
+                background: "#fff",
+                borderRadius: 14,
+                border: `0.5px solid ${HAIRLINE}`,
+                boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
+                overflow: "hidden",
+                cursor: "pointer",
               }}
             >
-              {p.hero_image_url ? (
-                <img
-                  src={p.hero_image_url}
-                  alt={p.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              ) : (
-                <IconGift size={28} color="#B9C4D2" stroke={1.6} />
-              )}
-              <span
+              <div
                 style={{
-                  position: "absolute",
-                  left: 10,
-                  bottom: 10,
-                  background: "#fff",
-                  color: BLUE,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  borderRadius: 6,
-                  padding: "3px 8px",
-                  boxShadow: "0 1px 4px rgba(11,35,65,0.15)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.03em",
+                  height: 104,
+                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
                 }}
               >
-                {p.saving?.trim() || "Exclusive"}
-              </span>
-            </div>
-            <div style={{ padding: "10px 12px 13px" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...CLAMP(1) }}>
-                {p.partner?.name || p.name}
+                {p.hero_image_url ? (
+                  <img
+                    src={p.hero_image_url}
+                    alt={p.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                ) : (
+                  <span
+                    style={{
+                      color: "rgba(255,255,255,0.92)",
+                      fontSize: 30,
+                      fontWeight: 800,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {label.trim().charAt(0).toUpperCase()}
+                  </span>
+                )}
+                <span
+                  style={{
+                    position: "absolute",
+                    left: 8,
+                    bottom: 8,
+                    background: "#fff",
+                    color: BLUE,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    borderRadius: 6,
+                    padding: "3px 7px",
+                    boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.03em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {shortSaving(p.saving)}
+                </span>
               </div>
-              <div style={{ fontSize: 12, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                {p.description?.trim() || p.category || p.name}
+              <div style={{ padding: "9px 10px 12px" }}>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: NAVY,
+                    lineHeight: 1.28,
+                    minHeight: 34,
+                    ...CLAMP(2),
+                  }}
+                >
+                  {label}
+                </div>
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
+                  {p.category || p.description?.trim() || "Member benefit"}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+      {pages > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 10 }}>
+          {Array.from({ length: pages }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                width: i === active ? 16 : 5,
+                height: 5,
+                borderRadius: 3,
+                background: i === active ? BLUE : "#CBD5E1",
+                transition: "width .2s",
+              }}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 // 2 — Featured hero
 /* ------------------------------------------------------------------ */
 
 function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () => void }) {
-  if (!video) return null;
+  if (!video) {
+    return (
+      <section>
+        <SectionHeader eyebrow="Featured" />
+        <div
+          onClick={onOpen}
+          style={{
+            margin: `0 ${PAD}px`,
+            borderRadius: 16,
+            padding: "26px 18px 24px",
+            background: "linear-gradient(135deg,#0B2341,#1F4E86)",
+            boxShadow: "0 6px 22px rgba(11,35,65,0.12)",
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              background: BLUE,
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              borderRadius: 4,
+              padding: "3px 8px",
+              marginBottom: 10,
+            }}
+          >
+            FEATURED
+          </span>
+          <div style={{ color: "#fff", fontSize: 20, fontWeight: 700, lineHeight: 1.25 }}>
+            New PRO TV episodes are on the way
+          </div>
+          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, marginTop: 6, lineHeight: 1.4 }}>
+            Nothing published yet. Browse the media library for the latest training and live shows.
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16 }}>
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                background: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconPlayerPlay size={16} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 2 }} />
+            </span>
+            <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Open PRO TV</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section>
       <SectionHeader eyebrow="Featured" />
@@ -359,20 +490,68 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
 /* ------------------------------------------------------------------ */
 
 function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => void }) {
-  if (videos.length === 0) return null;
+  if (videos.length === 0) {
+    return (
+      <section>
+        <SectionHeader
+          eyebrow="Pro TV"
+          title="Watch and learn"
+          subtitle="Helpful videos to make you a better driver."
+          onAction={onOpen}
+        />
+        <div
+          onClick={onOpen}
+          style={{
+            margin: `0 ${PAD}px`,
+            borderRadius: 14,
+            border: `0.5px solid ${HAIRLINE}`,
+            background: "#fff",
+            padding: "20px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 10,
+              background: "#EAF3FB",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconPlayerPlay size={18} color={BLUE} fill={BLUE} stroke={1.2} style={{ marginLeft: 2 }} />
+          </span>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>No episodes published yet</div>
+            <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
+              Tap to browse the full media library.
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section>
       <SectionHeader
         eyebrow="Pro TV"
+        title="Watch and learn"
         subtitle="Helpful videos to make you a better driver."
         onAction={onOpen}
       />
+
       <div style={SCROLL_ROW}>
         {videos.map((v) => (
           <div
             key={v.id}
             onClick={onOpen}
-            style={{ ...CARD_SNAP, width: 168, cursor: "pointer" }}
+            style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}
           >
             <div
               style={{
@@ -467,7 +646,12 @@ function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
 
   return (
     <section>
-      <SectionHeader eyebrow="Pro Radio" actionLabel="Listen live" onAction={() => onNavigate("/radio")} />
+      <SectionHeader
+        eyebrow="Pro Radio"
+        title="Ad free radio for ADIs and PDIs"
+        actionLabel="Listen live"
+        onAction={() => onNavigate("/radio")}
+      />
       <div
         style={{
           margin: `0 ${PAD}px`,
@@ -601,10 +785,10 @@ function PodcastsSection({
   if (episodes.length === 0) return null;
   return (
     <section>
-      <SectionHeader eyebrow="Podcasts" onAction={onOpen} />
+      <SectionHeader eyebrow="Podcasts" title="Listen on the road" onAction={onOpen} />
       <div style={SCROLL_ROW}>
         {episodes.slice(0, 8).map((ep) => (
-          <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 168, cursor: "pointer" }}>
+          <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}>
             <div
               style={{
                 height: 100,
@@ -694,7 +878,11 @@ function ShopSection({
   if (listings.length === 0) return null;
   return (
     <section>
-      <SectionHeader eyebrow="Pro Shop" onAction={() => onNavigate("/marketplace")} />
+      <SectionHeader
+        eyebrow="Pro Shop"
+        title="Kit for your car"
+        onAction={() => onNavigate("/marketplace")}
+      />
       <div style={SCROLL_ROW}>
         {listings.map((l) => {
           const image = l.thumbnail_url || l.image_urls?.[0] || null;
@@ -704,7 +892,7 @@ function ShopSection({
               onClick={() => onNavigate("/marketplace")}
               style={{
                 ...CARD_SNAP,
-                width: 150,
+                width: 142,
                 background: "#fff",
                 borderRadius: 12,
                 border: `0.5px solid ${HAIRLINE}`,
@@ -804,7 +992,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
           .limit(10),
         supabase
           .from("marketplace_listings")
-          .select("id, title, price_display, image_urls, category")
+          .select("id, title, price_display, image_urls")
           .eq("is_active", true)
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
