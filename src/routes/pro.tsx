@@ -220,6 +220,96 @@ function PerkHeroImage({
   );
 }
 
+/** Large featured tile shown at the top of a tab, matching the PRO TV featured card. */
+function FeaturedCard({
+  title,
+  subtitle,
+  image,
+  initial,
+  tint,
+  badge,
+  chip,
+  onClick,
+}: {
+  title: string;
+  subtitle: string;
+  image: string | null | undefined;
+  initial: string;
+  tint: [string, string];
+  badge: string;
+  chip: string;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: "#fff",
+        borderRadius: 8,
+        border: `0.5px solid ${HAIRLINE}`,
+        boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
+        margin: `0 ${PAD}px 12px`,
+        overflow: "hidden",
+        cursor: "pointer",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          height: 180,
+          background: `linear-gradient(135deg, ${tint[0]}, ${tint[1]})`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <PerkHeroImage src={image} alt={title} initial={initial} />
+        <span
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 10,
+            background: BLUE,
+            color: "#fff",
+            fontSize: 9,
+            fontWeight: 700,
+            borderRadius: 4,
+            padding: "3px 8px",
+            textTransform: "uppercase",
+            letterSpacing: "0.04em",
+          }}
+        >
+          {badge}
+        </span>
+        <span
+          style={{
+            position: "absolute",
+            bottom: 10,
+            right: 10,
+            background: "rgba(0,0,0,0.5)",
+            color: "#fff",
+            fontSize: 10,
+            fontWeight: 700,
+            borderRadius: 4,
+            padding: "3px 8px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {chip}
+        </span>
+      </div>
+      <div style={{ padding: "12px 14px 14px" }}>
+        <div style={{ color: NAVY, fontSize: 15, fontWeight: 700, lineHeight: 1.3 }}>{title}</div>
+        {subtitle ? (
+          <div style={{ color: MUTED, fontSize: 12, marginTop: 4, lineHeight: 1.4, ...CLAMP(2) }}>
+            {subtitle}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function PerksSection({
   perks,
   onNavigate,
@@ -231,6 +321,7 @@ function PerksSection({
   const withImage = perks.filter((p) => !!p.hero_image_url?.trim());
   const withoutImage = perks.filter((p) => !p.hero_image_url?.trim());
   const ordered = [...withImage, ...withoutImage];
+  const [hero, ...rest] = ordered;
   return (
     <section>
       <SectionHeader
@@ -239,6 +330,21 @@ function PerksSection({
         actionLabel="See all perks"
         onAction={() => onNavigate("/perks")}
       />
+      {hero ? (
+        <FeaturedCard
+          title={hero.partner?.name || hero.name}
+          subtitle={
+            oneLine(hero.description) ||
+            [hero.partner?.name, hero.category].filter(Boolean).join(" · ")
+          }
+          image={hero.hero_image_url}
+          initial={(hero.partner?.name || hero.name).trim().charAt(0).toUpperCase()}
+          tint={perkTint(hero.id)}
+          badge="Featured perk"
+          chip={shortSaving(hero.saving)}
+          onClick={() => onNavigate(`/perks/${hero.id}`)}
+        />
+      ) : null}
       <div
         style={{
           display: "grid",
@@ -247,7 +353,7 @@ function PerksSection({
           padding: `0 ${PAD}px`,
         }}
       >
-        {ordered.map((p) => {
+        {rest.map((p) => {
           const [c1, c2] = perkTint(p.id);
           const label = p.partner?.name || p.name;
           return (
@@ -338,6 +444,7 @@ function ShopSection({
   onNavigate: (to: string) => void;
 }) {
   if (listings.length === 0) return <EmptyState label="No shop listings available right now." />;
+  const [shopHero, ...restListings] = listings;
   return (
     <section>
       <SectionHeader
@@ -345,6 +452,27 @@ function ShopSection({
         title="Kit for your car"
         onAction={() => onNavigate("/marketplace")}
       />
+      {shopHero ? (
+        <FeaturedCard
+          title={shopHero.title}
+          subtitle={
+            oneLine(shopHero.description) ||
+            shopHero.marketplace_categories?.name ||
+            shopHero.category ||
+            "Member price for PRO instructors"
+          }
+          image={shopHero.thumbnail_url || shopHero.image_urls?.[0] || null}
+          initial={shopHero.title.trim().charAt(0).toUpperCase()}
+          tint={perkTint(shopHero.id)}
+          badge="Featured item"
+          chip={
+            formatMoneyDisplay(shopHero.price_display) ||
+            shopHero.marketplace_categories?.name ||
+            "Shop"
+          }
+          onClick={() => onNavigate(`/marketplace/${shopHero.id}`)}
+        />
+      ) : null}
       <div
         style={{
           display: "grid",
@@ -353,7 +481,7 @@ function ShopSection({
           padding: `0 ${PAD}px 4px`,
         }}
       >
-        {listings.map((l) => {
+        {restListings.map((l) => {
           const [c1, c2] = perkTint(l.id);
           const image = l.thumbnail_url || l.image_urls?.[0] || null;
           const chip = formatMoneyDisplay(l.price_display) || l.category || "Shop";
