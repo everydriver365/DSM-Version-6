@@ -364,13 +364,15 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
       <div
         onClick={() => onNavigate("/dsm-live")}
         style={{
-          background: NAVY,
-          borderRadius: CARD_RADIUS,
+          background: "linear-gradient(160deg, #0E2647 0%, #0B1F3A 100%)",
+          borderRadius: 8,
           overflow: "hidden",
           cursor: "pointer",
           position: "relative",
-          padding: "4px 16px",
+          padding: "10px 14px 12px",
+          boxShadow: "0 6px 18px rgba(11,31,58,0.18)",
         }}
+
       >
         {/* Header */}
         <div
