@@ -841,6 +841,15 @@ function categoryIcon(label: string) {
   return IconGift;
 }
 
+function categoryTileColor(label: string) {
+  const l = label.toLowerCase();
+  if (l.includes("fuel") || l.includes("motor") || l.includes("car")) return "#E53935";
+  if (l.includes("health") || l.includes("well") || l.includes("fit")) return "#16A34A";
+  if (l.includes("sim") || l.includes("phone") || l.includes("mobile")) return "#1877D6";
+  if (l === "more") return "#6B7686";
+  return "#7B61FF";
+}
+
 function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string) => void }) {
   const [imgOk, setImgOk] = useState(true);
   const showImage = Boolean(p.hero_image_url) && imgOk;
