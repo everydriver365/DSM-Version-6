@@ -3,6 +3,13 @@ import { useEffect, useState } from "react";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
 import { supabase } from "@/lib/supabaseClient";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import perkboxLogoAsset from "@/assets/perkbox-logo.jpeg.asset.json";
+import pirkxLogoAsset from "@/assets/pirkx-logo.png.asset.json";
+import hmcaLogoAsset from "@/assets/hmca-logo.png.asset.json";
+import bennendenLogoAsset from "@/assets/bennenden-logo.jpg.asset.json";
+import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const PAGE_BG = "#F4F6F8";
