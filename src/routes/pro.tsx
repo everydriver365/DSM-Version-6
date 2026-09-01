@@ -367,6 +367,7 @@ function GridCard({
   title,
   subtitle,
   image,
+  imageContain,
   chip,
   onClick,
 }: {
@@ -374,6 +375,7 @@ function GridCard({
   title: string;
   subtitle: string;
   image: string | null;
+  imageContain?: boolean;
   chip: string;
   onClick: () => void;
 }) {
