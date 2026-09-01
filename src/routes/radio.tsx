@@ -83,7 +83,6 @@ interface StationTileProps {
 
 function StationTile({
   station,
-  isSelected,
   isPlaying,
   isFavorite,
   onToggle,
