@@ -7402,30 +7402,30 @@ function HomePage() {
                           )}
                           </TestDetailTrigger>
                         ) : (
-                          <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 8, marginBottom: 8 }}>
-                          <div
-                            onClick={() => setDetailsSheetForLesson(l)}
-                            onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
-                            role="button"
-                            tabIndex={0}
-                            style={{
-                              padding: '12px 14px',
-                              display: 'flex',
-                              alignItems: 'stretch',
-                              gap: 12,
-                              cursor: 'pointer',
-                              boxSizing: 'border-box',
-                              opacity: isCancelled ? 0.55 : 1,
-                            }}
-                          >
-                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
-                              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
-                                {timeLabel}
-                              </div>
-                              <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
-                                {durLabel}
-                              </div>
+                        <div style={{ position: 'relative', background: isLive ? '#F0FDF4' : '#FFFFFF', border: isLive ? '1px solid #BBF7D0' : '1px solid #E4E8EF', borderRadius: 8, marginBottom: 8 }}>
+                        <div
+                          onClick={() => setDetailsSheetForLesson(l)}
+                          onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
+                          role="button"
+                          tabIndex={0}
+                          style={{
+                            padding: '12px 14px',
+                            display: 'flex',
+                            alignItems: 'stretch',
+                            gap: 12,
+                            cursor: 'pointer',
+                            boxSizing: 'border-box',
+                            opacity: isCancelled ? 0.55 : 1,
+                          }}
+                        >
+                          <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: isLive ? '#15803D' : '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                              {timeLabel}
                             </div>
+                            <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              {durLabel}
+                            </div>
+                          </div>
                             <div
                               aria-hidden
                               style={{
