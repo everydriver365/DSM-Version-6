@@ -59,6 +59,7 @@ import {
   DialogTitle,
 } from "../components/ui/dialog";
 import { supabase } from "../lib/supabaseClient";
+import { MediaHub } from "@/components/media/MediaHub";
 import { PushPermissionCard } from "../components/dsm/PushPermissionCard";
 import {
   getPermission,
@@ -5508,10 +5509,10 @@ function HomePage() {
           const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
           const dt = Date.now() - touchStartTime.current;
           const threshold = dt < 300 ? 30 : 80;
-          if (dx < -threshold && activePage === 0) {
-            setActivePage(1);
-          } else if (dx > threshold && activePage === 1) {
-            setActivePage(0);
+          if (dx < -threshold && activePage < 2) {
+            setActivePage(activePage + 1);
+          } else if (dx > threshold && activePage > 0) {
+            setActivePage(activePage - 1);
           }
           isDragging.current = false;
         }}
@@ -5522,7 +5523,7 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? 0 : "-100vw",
+            left: activePage === 0 ? 0 : activePage === 1 ? "-100vw" : "-200vw",
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
@@ -10694,13 +10695,28 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? "100vw" : 0,
+            left: activePage === 0 ? "100vw" : activePage === 1 ? 0 : "-100vw",
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
           }}
         >
           <ProPage />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            width: "100vw",
+            left: activePage === 2 ? 0 : activePage === 1 ? "100vw" : "200vw",
+            transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            background: "#F4F6F8",
+          }}
+        >
+          <MediaHub onNavigate={(to) => navigate({ to: to as never })} />
         </div>
       </div>
 
@@ -10751,6 +10767,22 @@ function HomePage() {
         >
           PRO
         </button>
+        <button
+          type="button"
+          onClick={() => setActivePage(2)}
+          style={{
+            padding: "5px 16px",
+            borderRadius: 18,
+            fontSize: 11,
+            fontWeight: 700,
+            border: "none",
+            background: activePage === 2 ? "#fff" : "transparent",
+            color: activePage === 2 ? "#0B2341" : "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+          }}
+        >
+          MEDIA
+        </button>
       </div>
 
       {/* Page dots */}
@@ -10780,6 +10812,14 @@ function HomePage() {
             height: 4,
             borderRadius: 2,
             background: activePage === 1 ? "#0B2341" : "rgba(11,35,65,0.2)",
+          }}
+        />
+        <div
+          style={{
+            width: activePage === 2 ? 20 : 8,
+            height: 4,
+            borderRadius: 2,
+            background: activePage === 2 ? "#0B2341" : "rgba(11,35,65,0.2)",
           }}
         />
       </div>
