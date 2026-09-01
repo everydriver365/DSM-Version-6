@@ -987,7 +987,7 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
-                  borderRadius: 3,
+                  borderRadius: 8,
                   padding: "2px 6px",
                   textTransform: "uppercase",
                 }}
