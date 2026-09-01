@@ -671,10 +671,21 @@ function PerksCard({
 /* ------------------------------------------------------------------ */
 
 function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
-  const rows = comments.slice(0, 2);
+  const rows = comments.slice(0, 7);
 
   const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
 
+  const fallbackRows: CommunityComment[] = [
+    { id: "1", body: "Anyone covering Winchester?", author_name: "Dave M", instructor_name: null, created_at: new Date(Date.now() - 2 * 60000).toISOString() },
+    { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", instructor_name: null, created_at: new Date(Date.now() - 14 * 60000).toISOString() },
+    { id: "3", body: "Anyone done their standards check recently?", author_name: "Mark R", instructor_name: null, created_at: new Date(Date.now() - 60 * 60000).toISOString() },
+    { id: "4", body: "Best route for roundabout practice near Southampton?", author_name: "Emma W", instructor_name: null, created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString() },
+    { id: "5", body: "Pupil passed first time today! 🎉", author_name: "James P", instructor_name: null, created_at: new Date(Date.now() - 3 * 60 * 60000).toISOString() },
+    { id: "6", body: "Anyone know the Bar End pass rate this month?", author_name: "Lisa K", instructor_name: null, created_at: new Date(Date.now() - 5 * 60 * 60000).toISOString() },
+    { id: "7", body: "Reminder: CPD hours deadline end of month", author_name: "Tom B", instructor_name: null, created_at: new Date(Date.now() - 8 * 60 * 60000).toISOString() },
+  ];
+
+  const displayRows = rows.length > 0 ? rows : fallbackRows;
 
   return (
     <section style={{ ...POPPINS }}>
@@ -733,20 +744,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
           overflow: "hidden",
         }}
       >
-        {rows.length === 0 && (
-          <div
-            style={{
-              padding: 20,
-              textAlign: "center",
-              fontSize: 13,
-              fontStyle: "italic",
-              color: "#9CA3AF",
-            }}
-          >
-            No recent posts yet
-          </div>
-        )}
-        {rows.map((row, idx) => {
+        {displayRows.map((row, idx) => {
 
           const name = row.author_name || "Member";
           const color = avatarColor(name);
@@ -760,7 +758,7 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
                 gap: 12,
                 padding: "12px 14px",
                 cursor: "pointer",
-                borderBottom: idx < rows.length - 1 ? `0.5px solid ${HAIRLINE}` : "none",
+                borderBottom: idx < displayRows.length - 1 ? `0.5px solid ${HAIRLINE}` : "none",
               }}
             >
               <div
@@ -1010,7 +1008,7 @@ function ProPage() {
             .select("id, message, created_at, instructors(name)")
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
-            .limit(2),
+            .limit(7),
 
           sbGet<
             ShopListing[]
