@@ -59,6 +59,7 @@ import {
   DialogTitle,
 } from "../components/ui/dialog";
 import { supabase } from "../lib/supabaseClient";
+import { MediaHub } from "@/components/media/MediaHub";
 import { PushPermissionCard } from "../components/dsm/PushPermissionCard";
 import {
   getPermission,
