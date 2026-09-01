@@ -36,6 +36,7 @@ import proLogo from "@/assets/pro-logo-padded.png";
 import proRadioLogo from "@/assets/pro-radio-logo.png.asset.json";
 import proRadio2 from "@/assets/pro-radio-2.png.asset.json";
 import proRadio3 from "@/assets/pro-radio-3.png.asset.json";
+import logo80s from "@/assets/80s-logo.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
