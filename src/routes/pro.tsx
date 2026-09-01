@@ -523,7 +523,14 @@ function RadioSection() {
         </button>
       </div>
 
-      <div style={{ ...SCROLL_ROW, gap: 6, padding: "10px 14px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 6,
+          padding: "10px 14px",
+        }}
+      >
         {STATIONS.map((s) => {
           const active = selected === s.name;
           return (
@@ -533,13 +540,16 @@ function RadioSection() {
               onClick={() => handleStation(s)}
               style={{
                 ...POPPINS,
-                flexShrink: 0,
+                flex: "1 1 calc(33.333% - 4px)",
+                minWidth: 0,
                 borderRadius: 999,
-                padding: "6px 12px",
+                padding: "8px 10px",
                 fontSize: 11,
                 fontWeight: 700,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
                 background: active ? BLUE : "#F4F6F8",
                 color: active ? "#fff" : MUTED,
                 border: active ? "none" : `0.5px solid ${HAIRLINE}`,
