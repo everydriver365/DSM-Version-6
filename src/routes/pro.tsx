@@ -1334,7 +1334,8 @@ function ProPage() {
             )
             .eq("active", true)
             .order("sort_order", { ascending: true })
-            .limit(1),
+            .limit(8),
+
           supabase
             .from("local_chat_messages")
             .select("id, message, created_at, instructors(name)")
