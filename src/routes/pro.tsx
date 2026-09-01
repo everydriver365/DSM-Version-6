@@ -369,7 +369,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
           overflow: "hidden",
           cursor: "pointer",
           position: "relative",
-          padding: "10px 14px 12px",
+          padding: "8px 12px 10px",
           boxShadow: "0 6px 18px rgba(11,31,58,0.18)",
         }}
 
@@ -380,7 +380,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 8,
+            marginBottom: 6,
           }}
         >
           <div
@@ -394,7 +394,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
               letterSpacing: -0.2,
             }}
           >
-            <IconDeviceTv size={22} stroke={1.8} />
+            <IconDeviceTv size={20} stroke={1.8} />
             PRO TV
           </div>
 
@@ -402,11 +402,11 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             style={{
               background: BLUE,
               color: "#fff",
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: 0.4,
-              padding: "4px 8px",
+              padding: "3px 7px",
               borderRadius: 999,
             }}
           >
@@ -415,17 +415,17 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
         </div>
 
         {/* Body */}
-        <div style={{ display: "flex", gap: 14, alignItems: "stretch" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "stretch" }}>
           {/* Thumbnail */}
           <div
             style={{
               position: "relative",
-              width: "48%",
-              minWidth: 140,
-              aspectRatio: "16 / 9",
+              width: "38%",
+              minWidth: 112,
+              aspectRatio: "16 / 10",
               borderRadius: 8,
               overflow: "hidden",
-              background: thumb ? `url(${thumb}) center/cover` : "linear-gradient(135deg, #0B2341, #1a3a6b)",
+              background: thumb ? `url(${thumb}) center/cover no-repeat` : "linear-gradient(135deg, #0B2341, #1a3a6b)",
               flexShrink: 0,
               display: "flex",
               alignItems: "center",
@@ -441,8 +441,8 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
             />
             <div
               style={{
-                width: 44,
-                height: 44,
+                width: 38,
+                height: 38,
                 borderRadius: "50%",
                 background: "rgba(255,255,255,0.22)",
                 border: "2px solid rgba(255,255,255,0.45)",
@@ -453,7 +453,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 zIndex: 1,
               }}
             >
-              <IconPlayerPlay size={18} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
+              <IconPlayerPlay size={16} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
             </div>
           </div>
 
@@ -463,7 +463,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
               style={{
                 margin: 0,
                 color: "#fff",
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: 700,
                 lineHeight: 1.25,
                 letterSpacing: -0.2,
@@ -478,9 +478,9 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
                 alignItems: "center",
                 gap: 8,
                 color: "rgba(255,255,255,0.65)",
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 500,
-                marginTop: 6,
+                marginTop: 4,
               }}
             >
               <span>{category}</span>
@@ -490,12 +490,12 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
 
             <p
               style={{
-                margin: "10px 0 0",
+                margin: "6px 0 0",
                 color: "rgba(255,255,255,0.75)",
-                fontSize: 13,
-                lineHeight: 1.45,
+                fontSize: 12,
+                lineHeight: 1.4,
                 display: "-webkit-box",
-                WebkitLineClamp: 3,
+                WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
               }}
@@ -505,14 +505,14 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
 
             <div style={{ flex: 1 }} />
 
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 4 }}>
               <span
                 style={{
                   background: "rgba(255,255,255,0.14)",
                   color: "#fff",
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: 600,
-                  padding: "5px 10px",
+                  padding: "4px 8px",
                   borderRadius: 999,
                 }}
               >
