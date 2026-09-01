@@ -36,6 +36,7 @@ import proLogo from "@/assets/pro-logo-padded.png";
 import proRadioLogo from "@/assets/pro-radio-logo.png.asset.json";
 import proRadio2 from "@/assets/pro-radio-2.png.asset.json";
 import proRadio3 from "@/assets/pro-radio-3.png.asset.json";
+import logo80s from "@/assets/80s-logo.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
@@ -402,7 +403,17 @@ const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; 
       />
     ),
   },
-  { name: "PRO 80s", icon: <DecadeIcon label="80s" from="#F59E0B" to="#E53935" /> },
+  {
+    name: "PRO 80s",
+    fillIcon: true,
+    icon: (
+      <img
+        src={logo80s.url}
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    ),
+  },
   { name: "PRO 90s", icon: <DecadeIcon label="90s" from="#7B61FF" to="#2C97DE" /> },
   { name: "PRO Xmas", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
 ];
