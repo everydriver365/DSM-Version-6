@@ -397,7 +397,7 @@ function CalendarSyncPage() {
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ instructorId: userId }),
+        body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
       });
       const data = await res.json().catch(() => ({}));
       if (data.success || data.eventsImported !== undefined) {
@@ -511,7 +511,7 @@ function CalendarSyncPage() {
             apikey: SUPABASE_ANON_KEY,
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ instructorId: userId }),
+          body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
         },
       );
       const syncData = await syncRes.json().catch(() => ({}));
