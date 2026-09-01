@@ -333,6 +333,204 @@ function PerksSection({
 
 
 /* ------------------------------------------------------------------ */
+// 1.5 — PRO Radio hero tile
+/* ------------------------------------------------------------------ */
+
+function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
+  const radio = useProRadioContext();
+  const [artworkFailed, setArtworkFailed] = useState(false);
+  useEffect(() => {
+    setArtworkFailed(false);
+  }, [radio.nowPlaying?.artwork]);
+
+  const station = radio.selectedStation || "PRO Live";
+  const artwork = radio.nowPlaying?.artwork;
+  const subtitle = radio.nowPlaying?.artist || radio.showName || "Groove Salad · SomaFM";
+
+  const ctrl = {
+    background: "transparent",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "rgba(255,255,255,0.85)",
+  } as const;
+
+  return (
+    <section>
+      <SectionHeader
+        eyebrow="Pro Radio"
+        title="The best driving radio"
+        actionLabel="Listen in your car"
+        onAction={() => onNavigate("/radio")}
+      />
+      <div
+        style={{
+          margin: `0 ${PAD}px`,
+          borderRadius: 16,
+          overflow: "hidden",
+          background: "linear-gradient(135deg,#0B2341 0%,#123763 55%,#0B2341 100%)",
+          boxShadow: "0 6px 22px rgba(11,35,65,0.18)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 14px 12px" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  background: "#E53935",
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  borderRadius: 999,
+                  padding: "3px 9px",
+                }}
+              >
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#fff" }} />
+                LIVE
+              </span>
+            </div>
+
+            <div
+              style={{
+                color: BLUE,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                marginTop: 10,
+              }}
+            >
+              Now on air
+            </div>
+            <div style={{ color: "#fff", fontSize: 20, fontWeight: 700, lineHeight: 1.2, marginTop: 2 }}>
+              {station}
+            </div>
+            <div style={{ color: "rgba(255,255,255,0.82)", fontSize: 12, marginTop: 3, ...CLAMP(1) }}>
+              {subtitle}
+            </div>
+            <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginTop: 8, ...CLAMP(2) }}>
+              The perfect mix of chill beats and driving vibes all day long.
+            </div>
+            <button
+              type="button"
+              onClick={() => onNavigate("/radio")}
+              style={{
+                ...ctrl,
+                color: BLUE,
+                fontSize: 12,
+                fontWeight: 600,
+                marginTop: 10,
+                gap: 5,
+              }}
+            >
+              View schedule →
+            </button>
+          </div>
+
+          <div
+            style={{
+              width: 118,
+              height: 118,
+              borderRadius: "50%",
+              flexShrink: 0,
+              background: "radial-gradient(circle at 50% 45%, #123763 0%, #061529 75%)",
+              border: "1px solid rgba(44,151,222,0.35)",
+              boxShadow: "0 0 0 8px rgba(44,151,222,0.07)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            }}
+          >
+            {artwork && !artworkFailed ? (
+              <img
+                src={artwork}
+                alt={radio.nowPlaying?.title || station}
+                onError={() => setArtworkFailed(true)}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <>
+                <IconRadio size={20} color={BLUE} stroke={2} />
+                <div style={{ color: "#fff", fontSize: 26, fontWeight: 800, lineHeight: 1, marginTop: 4 }}>
+                  PRO
+                </div>
+                <div style={{ color: BLUE, fontSize: 15, fontWeight: 700, lineHeight: 1.1 }}>LIVE</div>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "10px 20px 14px",
+            background: "rgba(255,255,255,0.05)",
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <button
+            type="button"
+            aria-label="Favourite"
+            onClick={() => radio.toggleFavorite(station)}
+            style={ctrl}
+          >
+            <IconHeart
+              size={22}
+              stroke={1.6}
+              color={radio.favorites?.includes(station) ? "#E53935" : "rgba(255,255,255,0.85)"}
+              fill={radio.favorites?.includes(station) ? "#E53935" : "none"}
+            />
+          </button>
+          <button type="button" aria-label="Back 15 seconds" onClick={() => onNavigate("/radio")} style={ctrl}>
+            <IconRewindBackward15 size={24} stroke={1.6} />
+          </button>
+          <button
+            type="button"
+            aria-label={radio.isPlaying ? "Pause" : "Play"}
+            onClick={() => radio.toggle()}
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: "50%",
+              background: BLUE,
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(44,151,222,0.4)",
+            }}
+          >
+            {radio.isPlaying ? (
+              <IconPlayerPause size={22} color="#fff" fill="#fff" stroke={1} />
+            ) : (
+              <IconPlayerPlay size={22} color="#fff" fill="#fff" stroke={1} style={{ marginLeft: 2 }} />
+            )}
+          </button>
+          <button type="button" aria-label="Forward 15 seconds" onClick={() => onNavigate("/radio")} style={ctrl}>
+            <IconRewindForward15 size={24} stroke={1.6} />
+          </button>
+          <button type="button" aria-label="Share" onClick={() => onNavigate("/radio")} style={ctrl}>
+            <IconShare size={22} stroke={1.6} />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 // 2 — Featured hero
 /* ------------------------------------------------------------------ */
 
