@@ -489,14 +489,62 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
 /* ------------------------------------------------------------------ */
 
 function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => void }) {
-  if (videos.length === 0) return null;
+  if (videos.length === 0) {
+    return (
+      <section>
+        <SectionHeader
+          eyebrow="Pro TV"
+          title="Watch and learn"
+          subtitle="Helpful videos to make you a better driver."
+          onAction={onOpen}
+        />
+        <div
+          onClick={onOpen}
+          style={{
+            margin: `0 ${PAD}px`,
+            borderRadius: 14,
+            border: `0.5px solid ${HAIRLINE}`,
+            background: "#fff",
+            padding: "20px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            cursor: "pointer",
+          }}
+        >
+          <span
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 10,
+              background: "#EAF3FB",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconPlayerPlay size={18} color={BLUE} fill={BLUE} stroke={1.2} style={{ marginLeft: 2 }} />
+          </span>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>No episodes published yet</div>
+            <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
+              Tap to browse the full media library.
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section>
       <SectionHeader
         eyebrow="Pro TV"
+        title="Watch and learn"
         subtitle="Helpful videos to make you a better driver."
         onAction={onOpen}
       />
+
       <div style={SCROLL_ROW}>
         {videos.map((v) => (
           <div
