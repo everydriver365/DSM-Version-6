@@ -828,9 +828,9 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
-              <span>18 min</span>
+              <span>{v.duration_label ?? "18 min"}</span>
               <span style={{ color: HAIRLINE }}>·</span>
-              <span>Beginner</span>
+              <span>{sourceLabel}</span>
             </div>
 
             {v.description && (
