@@ -445,11 +445,11 @@ function RadioCard() {
         </div>
       </div>
 
-      {/* Station pills */}
+      {/* Station tiles */}
       <div
         style={{
           display: "flex",
-          gap: 6,
+          gap: 8,
           marginTop: 14,
           paddingBottom: 2,
         }}
@@ -467,16 +467,19 @@ function RadioCard() {
                 ...POPPINS,
                 flex: "1 1 0",
                 minWidth: 0,
-                display: "inline-flex",
+                aspectRatio: "1 / 1",
+                display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 5,
-                padding: "10px 8px",
-                borderRadius: 999,
+                gap: 6,
+                padding: 8,
+                borderRadius: 8,
                 cursor: "pointer",
-                whiteSpace: "nowrap",
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: 700,
+                lineHeight: 1.15,
+                textAlign: "center",
                 background: selected ? BLUE : "#fff",
                 color: selected ? "#fff" : "rgba(11,31,58,0.62)",
                 border: selected ? "none" : `1px solid ${HAIRLINE}`,
@@ -492,22 +495,14 @@ function RadioCard() {
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
-                  width: 16,
-                  height: 16,
+                  width: 24,
+                  height: 24,
                   overflow: "hidden",
                 }}
               >
                 {s.icon}
               </span>
-              <span
-                style={{
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  minWidth: 0,
-                }}
-              >
-                {s.name}
-              </span>
+              <span>{s.name}</span>
             </button>
           );
         })}
