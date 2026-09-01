@@ -19,10 +19,8 @@ Deno.serve(async (req) => {
   let body: any = {};
   try { body = await req.json(); } catch {}
 
-  // Accept both instructor_id and instructorId for compatibility
   const instructor_id = body.instructor_id || body.instructorId;
   const action = body.action ?? "sync";
-  const days_ahead = body.days_ahead ?? 60;
 
   if (!instructor_id) {
     return new Response(
@@ -31,7 +29,6 @@ Deno.serve(async (req) => {
     );
   }
 
-  // Get instructor Google tokens
   const { data: instructor } = await supabase
     .from("instructors")
     .select("google_access_token, google_refresh_token, google_token_expiry, google_calendar_id, google_calendar_connected")
@@ -97,7 +94,7 @@ Deno.serve(async (req) => {
     );
   }
 
-  // HANDLE SYNC — fetch Google events into calendar_blocks
+  // HANDLE SYNC
   const now = new Date();
   const timeMin = new Date(now);
   timeMin.setDate(timeMin.getDate() - 60);
@@ -109,7 +106,7 @@ Deno.serve(async (req) => {
     timeMax: timeMax.toISOString(),
     singleEvents: "true",
     orderBy: "startTime",
-    maxResults: "500",
+    maxResults: "2500",
   });
 
   const eventsRes = await fetch(
@@ -129,16 +126,20 @@ Deno.serve(async (req) => {
   const eventsData = await eventsRes.json();
   const items = (eventsData.items ?? []).filter((i: any) => i.status !== "cancelled");
 
-  console.log(`[sync-google-calendar] fetched ${items.length} events for ${instructor_id}`);
+  console.log(`[sync-google-calendar] fetched ${items.length} events`);
 
-  // Clear existing external calendar blocks in range
-  await supabase
+  // Delete ALL existing external calendar blocks for this instructor first
+  const { error: deleteError } = await supabase
     .from("calendar_blocks")
     .delete()
     .eq("instructor_id", instructor_id)
-    .eq("source", "external_calendar")
-    .gte("start_datetime", timeMin.toISOString())
-    .lte("start_datetime", timeMax.toISOString());
+    .eq("source", "external_calendar");
+
+  if (deleteError) {
+    console.error("[sync-google-calendar] delete error", deleteError.message);
+  } else {
+    console.log("[sync-google-calendar] cleared existing blocks");
+  }
 
   let synced = 0;
   if (items.length > 0) {
@@ -160,10 +161,12 @@ Deno.serve(async (req) => {
       };
     });
 
-    // Insert in batches of 50 to avoid hitting limits
-    for (let i = 0; i < rows.length; i += 50) {
-      const batch = rows.slice(i, i + 50);
-      const { error } = await supabase.from("calendar_blocks").insert(batch);
+    // Insert in batches of 100
+    for (let i = 0; i < rows.length; i += 100) {
+      const batch = rows.slice(i, i + 100);
+      const { error } = await supabase
+        .from("calendar_blocks")
+        .insert(batch);
       if (error) {
         console.error("[sync-google-calendar] insert error", error.message);
       } else {
@@ -172,12 +175,11 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Update last synced
   await supabase.from("instructors").update({
     calendar_last_synced: new Date().toISOString(),
   }).eq("id", instructor_id);
 
-  console.log(`[sync-google-calendar] done: ${synced} events synced`);
+  console.log(`[sync-google-calendar] done: ${synced} synced`);
 
   return new Response(
     JSON.stringify({ ok: true, success: true, synced, eventsImported: synced }),
