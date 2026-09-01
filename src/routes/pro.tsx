@@ -310,7 +310,88 @@ function FeaturedCard({
   );
 }
 
+/** Shared grid tile used identically by PERKS and PRO SHOP. */
+function GridCard({
+  id,
+  title,
+  subtitle,
+  image,
+  chip,
+  onClick,
+}: {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string | null;
+  chip: string;
+  onClick: () => void;
+}) {
+  const [c1, c2] = perkTint(id);
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: "#fff",
+        borderRadius: 8,
+        border: `0.5px solid ${HAIRLINE}`,
+        boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
+        overflow: "hidden",
+        cursor: "pointer",
+        minWidth: 0,
+      }}
+    >
+      <div
+        style={{
+          height: 104,
+          background: `linear-gradient(135deg, ${c1}, ${c2})`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <PerkHeroImage src={image} alt={title} initial={title.trim().charAt(0).toUpperCase()} />
+        <span
+          style={{
+            position: "absolute",
+            left: 8,
+            bottom: 8,
+            background: "#fff",
+            color: BLUE,
+            fontSize: 10,
+            fontWeight: 700,
+            borderRadius: 8,
+            padding: "3px 7px",
+            boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
+            textTransform: "uppercase",
+            letterSpacing: "0.03em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {chip}
+        </span>
+      </div>
+      <div style={{ padding: "9px 10px 12px" }}>
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: NAVY,
+            lineHeight: 1.28,
+            minHeight: 34,
+            ...CLAMP(2),
+          }}
+        >
+          {title}
+        </div>
+        <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>{subtitle}</div>
+      </div>
+    </div>
+  );
+}
+
 function PerksSection({
+
   perks,
   onNavigate,
 }: {
