@@ -5455,13 +5455,9 @@ function HomePage() {
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 0 }}>
       <div
         style={{
-          display: "flex",
-          width: "200vw",
-          height: "100%",
-          position: "relative",
-          transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          left: activePage === 0 ? 0 : "-100vw",
-          willChange: "left",
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
         }}
         onTouchStart={(e) => {
           // Ignore swipes that start inside a nested horizontal scroller (e.g. quick-access pager)
