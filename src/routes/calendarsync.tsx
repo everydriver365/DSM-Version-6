@@ -1,20 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
-import { useEffect, useRef, useState } from "react";
-import { IconAlertCircle, IconAlertTriangle, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconCopy, IconInfoCircle, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
-import { DSMToggle } from "@/components/dsm/DSMToggle";
-import {
-  getImportEnabled,
-  getPushEnabled,
-  setImportEnabled as persistImportEnabled,
-  setPushEnabled as persistPushEnabled,
-} from "@/lib/calendarSyncPrefs";
+import { useEffect, useState } from "react";
+import { IconCalendar, IconChevronRight, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SAVE_BUTTON_STYLE } from "@/components/dsm/SaveFooter";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -34,13 +25,6 @@ function timeAgo(iso: string): string {
   return `${d} day${d === 1 ? "" : "s"} ago`;
 }
 
-function formatDate(iso: string | null | undefined): string {
-  if (!iso) return "Never";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "Never";
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
-
 interface GoogleConnection {
   connected_at: string | null;
   last_synced_at: string | null;
@@ -50,65 +34,13 @@ export const Route = createFileRoute("/calendarsync")({
   head: () => ({
     meta: [
       { title: "Calendar sync — EDP by EveryDriver" },
-      { name: "description", content: "Sync your lessons to any calendar app using an ICS feed." },
+      { name: "description", content: "Connect Google Calendar to import events and push lessons automatically." },
     ],
   }),
   component: CalendarSyncPage,
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-
-const SECTION_CARD: React.CSSProperties = {
-  background: "#fff",
-  borderRadius: tokens.radiusCard,
-  padding: 16,
-  boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
-  marginBottom: 24,
-};
-
-const DESC: React.CSSProperties = {
-  ...POPPINS,
-  color: "#6B6B6F",
-  fontSize: 13.5,
-  fontWeight: tokens.fontWeight.medium,
-  lineHeight: 1.5,
-  marginBottom: 16,
-};
-
-const FIELD_LABEL: React.CSSProperties = {
-  ...POPPINS,
-  display: "block",
-  color: "#8A8A8E",
-  fontSize: 12,
-  fontWeight: tokens.fontWeight.semibold,
-  marginBottom: 8,
-};
-
-const FIELD_INPUT: React.CSSProperties = {
-  ...POPPINS,
-  background: "#F2F2F7",
-  borderRadius: tokens.radiusCard,
-  padding: "14px 16px",
-  border: "none",
-  outline: "none",
-  color: "#6B6B6F",
-  fontSize: tokens.fontSize.base,
-  fontWeight: tokens.fontWeight.medium,
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-};
-
-const STATUS_DOT: React.CSSProperties = {
-  width: 22,
-  height: 22,
-  borderRadius: 999,
-  background: "#1A9B5C",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexShrink: 0,
-};
 
 const BTN_BASE: React.CSSProperties = {
   ...POPPINS,
@@ -128,77 +60,13 @@ const BTN_PRIMARY: React.CSSProperties = {
   ...SAVE_BUTTON_STYLE,
 };
 
-const BTN_OUTLINE: React.CSSProperties = {
-  ...BTN_BASE,
-  background: "#fff",
-  color: tokens.blue,
-  border: "1.5px solid #E4E4E8",
-};
-
-const BTN_OUTLINE_RED: React.CSSProperties = {
-  ...BTN_BASE,
-  background: "#fff",
-  color: "#FF3B30",
-  border: "1.5px solid #FF3B30",
-};
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
-      <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 12, flexShrink: 0 }} />
-      <span
-        style={{
-          ...POPPINS,
-          color: tokens.blue,
-          fontSize: 12,
-          fontWeight: tokens.fontWeight.extrabold,
-          letterSpacing: "0.6px",
-          textTransform: "uppercase",
-        }}
-      >
-        {children}
-      </span>
-    </div>
-  );
-}
-
-
-
-
 function CalendarSyncPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [externalCalendarUrl, setExternalCalendarUrl] = useState("");
-  const [savedUrl, setSavedUrl] = useState("");
-  const [icsSyncing, setIcsSyncing] = useState(false);
-  const [icsLastSynced, setIcsLastSynced] = useState<string | null>(null);
-  const [icsSyncError, setIcsSyncError] = useState<string | null>(null);
-  const [removing, setRemoving] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const [googleConnected, setGoogleConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
-  const [importEnabled, setImportEnabledState] = useState(true);
-  const [pushEnabled, setPushEnabledState] = useState(true);
-  const [showICS, setShowICS] = useState(false);
-
-  // Load saved sync-direction preferences (client-only).
-  useEffect(() => {
-    setImportEnabledState(getImportEnabled());
-    setPushEnabledState(getPushEnabled());
-  }, []);
-
-  function setImportEnabled(v: boolean) {
-    setImportEnabledState(v);
-    persistImportEnabled(v);
-  }
-
-  function setPushEnabled(v: boolean) {
-    setPushEnabledState(v);
-    persistPushEnabled(v);
-  }
 
   useEffect(() => {
     (async () => {
@@ -216,39 +84,18 @@ function CalendarSyncPage() {
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${token}`,
         };
-        const baseSel = "external_calendar_url,external_calendar_last_synced_at";
-        const fullSel = `${baseSel},external_calendar_sync_error,google_calendar_connected,calendar_last_synced`;
-        let rows: unknown = null;
-        let res = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${fullSel}`,
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced`,
           { headers },
         );
-        if (!res.ok) {
-          // Column may not exist yet — retry without sync_error.
-          res = await fetch(
-            `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${baseSel},google_calendar_connected,calendar_last_synced`,
-            { headers },
-          );
-        }
         if (res.ok) {
-          rows = await res.json();
-          const row = Array.isArray(rows) ? rows[0] as {
-            external_calendar_url?: string | null;
-            external_calendar_last_synced_at?: string | null;
-            external_calendar_sync_error?: string | null;
-            google_calendar_connected?: boolean | null;
-            calendar_last_synced?: string | null;
-          } : null;
-          if (row?.external_calendar_url) {
-            setExternalCalendarUrl(row.external_calendar_url);
-            setSavedUrl(row.external_calendar_url);
-          }
-          if (row?.external_calendar_last_synced_at) {
-            setIcsLastSynced(row.external_calendar_last_synced_at);
-          }
-          if (row?.external_calendar_sync_error) {
-            setIcsSyncError(row.external_calendar_sync_error);
-          }
+          const rows = await res.json();
+          const row = Array.isArray(rows)
+            ? (rows[0] as {
+                google_calendar_connected?: boolean | null;
+                calendar_last_synced?: string | null;
+              })
+            : null;
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
         }
@@ -314,7 +161,6 @@ function CalendarSyncPage() {
       }
       window.history.replaceState({}, "", window.location.pathname);
       if (isConnected) {
-        // Auto-sync after a short delay to let state settle
         setTimeout(() => {
           void sync();
         }, 1500);
@@ -351,9 +197,6 @@ function CalendarSyncPage() {
         return;
       }
 
-      // Google blocks its consent screen inside iframes (the Lovable preview
-      // runs in one), which makes the flow flash open and vanish. Break out of
-      // the frame — or fall back to a new tab if that is not allowed.
       const inIframe = window.self !== window.top;
       if (inIframe) {
         try {
@@ -373,12 +216,8 @@ function CalendarSyncPage() {
     }
   }
 
-  /** One sync entry point — routes to Google OAuth sync or the ICS sync. */
+  /** Sync with Google Calendar. */
   async function sync() {
-    if (!importEnabled) {
-      toast.error("Importing Google events is turned off");
-      return;
-    }
     setSyncing(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -387,25 +226,27 @@ function CalendarSyncPage() {
         return;
       }
 
-      const endpoint = googleConnected ? "sync-google-calendar" : "sync-external-calendar";
-      console.log("[calendar-sync] endpoint:", endpoint, "googleConnected:", googleConnected);
-
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/${endpoint}`, {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/sync-google-calendar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
+        body: JSON.stringify({ instructor_id: userId }),
       });
       const data = await res.json().catch(() => ({}));
-      if (data.success || data.eventsImported !== undefined) {
-        toast.success(`Synced ${data.eventsImported ?? 0} events`);
+      if (
+        data.ok ||
+        data.success ||
+        data.synced !== undefined ||
+        data.eventsImported !== undefined
+      ) {
+        toast.success(
+          `Synced ${data.synced ?? data.eventsImported ?? 0} events from Google Calendar`,
+        );
         setLastSynced(new Date().toISOString());
-        // After every Google sync: copy each event's Google colour onto the
-        // imported rows. Silent, and never allowed to break a normal sync.
-        if (googleConnected && userId) {
+        if (userId) {
           void (async () => {
             try {
               const result = await backfillGoogleColours({
@@ -425,13 +266,11 @@ function CalendarSyncPage() {
         String(data.error ?? "").includes("calendar_blocks_external_unique") ||
         String(data.error ?? "").includes("duplicate key")
       ) {
-        // Events already imported by a previous sync — not a real failure.
         toast.info("Calendar already up to date");
         setLastSynced(new Date().toISOString());
       } else {
         toast.error(data.message ?? data.error ?? "Sync failed");
       }
-
     } catch {
       toast.error("Sync failed");
     } finally {
@@ -439,7 +278,7 @@ function CalendarSyncPage() {
     }
   }
 
-  /** One disconnect entry point — clears both stores. */
+  /** Disconnect Google Calendar. */
   async function disconnect() {
     if (!userId) return;
     try {
@@ -462,209 +301,202 @@ function CalendarSyncPage() {
     }
   }
 
-
-
-  async function runSync(urlToUse: string) {
-    if (!userId) return;
-    const trimmed = urlToUse.trim();
-    if (!trimmed) {
-      toast.error("Paste your Google Calendar ICS URL first");
-      return;
-    }
-    let parsed: URL | null = null;
-    try { parsed = new URL(trimmed); } catch { /* noop */ }
-    if (!parsed || (parsed.protocol !== "https:" && parsed.protocol !== "http:" && parsed.protocol !== "webcal:")) {
-      toast.error("That doesn't look like a valid ICS URL (must start with https://)");
-      return;
-    }
-    urlToUse = trimmed;
-    setIcsSyncing(true);
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-
-      if (urlToUse !== savedUrl) {
-        const patchRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}`,
-          {
-            method: "PATCH",
-            headers: {
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ external_calendar_url: urlToUse }),
-          },
-        );
-        if (!patchRes.ok) {
-          throw new Error("Could not save URL");
-        }
-        setSavedUrl(urlToUse);
-      }
-
-      const syncRes = await fetch(
-        `${SUPABASE_URL}/functions/v1/sync-external-calendar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
-        },
-      );
-      const syncData = await syncRes.json().catch(() => ({}));
-      console.log("[calendar-sync] sync response:", syncData);
-      const rawErr = String(syncData.error || syncData.message || "");
-      if (syncData.success) {
-        const count = syncData.eventsImported || 0;
-        toast.success(
-          count > 0
-            ? `Calendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
-            : "Calendar synced — no upcoming events found",
-        );
-        setIcsLastSynced(new Date().toISOString());
-      } else if (syncRes.status === 429 || rawErr.includes("429")) {
-        toast.error("Your calendar provider is rate-limiting us. Please wait a few minutes and sync again.");
-      } else {
-        toast.error(syncData.message || syncData.error || "Sync failed — check your URL and try again");
-      }
-
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Sync failed");
-    } finally {
-      setIcsSyncing(false);
-    }
-  }
-
-  async function removeCalendar() {
-    if (!userId) return;
-    setRemoving(true);
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-      await fetch(`${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}`, {
-        method: "PATCH",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ external_calendar_url: null, external_calendar_last_synced_at: null }),
-      });
-      await fetch(`${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}`, {
-        method: "DELETE",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setExternalCalendarUrl("");
-      setSavedUrl("");
-      setLastSynced(null);
-      toast.success("External calendar removed");
-    } catch {
-      toast.error("Could not remove calendar");
-    } finally {
-      setRemoving(false);
-    }
-  }
-
-  const icsUrl = userId
-    ? `https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/ics-feed?instructor_id=${userId}`
-    : "https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/ics-feed?instructor_id=…";
-
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(icsUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // fallback
-      const ta = document.createElement("textarea");
-      ta.value = icsUrl;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  }
-
-  async function shareLink() {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "My EDP Calendar Feed",
-          text: "Sync your lessons to any calendar app using this ICS feed.",
-          url: icsUrl,
-        });
-      } catch {
-        // user cancelled
-      }
-    } else {
-      copyLink();
-    }
-  }
-
   return (
     <DSMTopSheet title="Calendar Sync" onBack={() => navigate({ to: "/settings" as never })}>
-    <div style={{ ...POPPINS, minHeight: "100%" }}>
-
-      <div className="px-4 pb-12">
-        {/* IconInfoCircle card */}
-        <div
-          className="mx-0 mt-3"
-          style={{
-            backgroundColor: "#E7F1FC",
-            borderRadius: tokens.radiusCard,
-            padding: "14px 16px",
-            display: "flex",
-            flexDirection: "row",
-            gap: 10,
-          }}
-        >
-          <IconInfoCircle size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
-          <p style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, lineHeight: 1.5 }}>
-            Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
-          </p>
-        </div>
-
-        {/* Google Calendar — single connection card */}
-        <div style={{ marginTop: 24 }}>
+      <div style={{ ...POPPINS, minHeight: "100%" }}>
+        <div className="px-4 pb-12">
           <div
+            className="mx-0 mt-3"
             style={{
-              ...POPPINS,
-              color: tokens.textMuted,
-              fontSize: tokens.fontSize.sm,
-              fontWeight: tokens.fontWeight.semibold,
-              textTransform: "uppercase",
-              marginBottom: 12,
+              backgroundColor: "#E7F1FC",
+              borderRadius: tokens.radiusCard,
+              padding: "14px 16px",
+              display: "flex",
+              flexDirection: "row",
+              gap: 10,
             }}
           >
-            GOOGLE CALENDAR
+            <IconInfoCircle size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+            <p
+              style={{
+                ...POPPINS,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.medium,
+                lineHeight: 1.5,
+              }}
+            >
+              Connect your Google Calendar to import events and push EDP lessons automatically.
+            </p>
           </div>
-        </div>
 
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: 8,
-            border: "1px solid #E4E8EF",
-            overflow: "hidden",
-            marginBottom: 16,
-          }}
-        >
-          {googleConnected ? (
-            <>
+          <div style={{ marginTop: 24 }}>
+            <div
+              style={{
+                ...POPPINS,
+                color: tokens.textMuted,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.semibold,
+                textTransform: "uppercase",
+                marginBottom: 12,
+              }}
+            >
+              GOOGLE CALENDAR
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 8,
+              border: "1px solid #E4E8EF",
+              overflow: "hidden",
+              marginBottom: 16,
+            }}
+          >
+            {googleConnected ? (
+              <>
+                <div
+                  style={{
+                    padding: "14px 16px",
+                    display: "flex",
+                    gap: 12,
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 999,
+                      background: "#DCFCE7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconCalendar size={20} color="#15803D" stroke={1.5} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        ...POPPINS,
+                        color: tokens.navy,
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: 600,
+                      }}
+                    >
+                      Google Calendar
+                    </div>
+                    <div
+                      style={{
+                        ...POPPINS,
+                        color: tokens.textMuted,
+                        fontSize: tokens.fontSize.sm,
+                        marginTop: 2,
+                      }}
+                    >
+                      Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: "#DCFCE7",
+                      color: "#15803D",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
+                      borderRadius: 999,
+                      padding: "4px 10px",
+                    }}
+                  >
+                    Connected
+                  </div>
+                </div>
+                <div style={{ height: 1, background: tokens.border }} />
+
+                <div
+                  onClick={sync}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    padding: "13px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    cursor: "pointer",
+                    borderBottom: "1px solid #E4E8EF",
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") sync();
+                  }}
+                >
+                  <IconRefresh
+                    size={16}
+                    color="#1877D6"
+                    stroke={1.5}
+                    className={syncing ? "animate-spin" : undefined}
+                  />
+                  <div
+                    style={{
+                      ...POPPINS,
+                      color: tokens.navy,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.medium,
+                      flex: 1,
+                    }}
+                  >
+                    Sync now
+                  </div>
+                  {syncing && (
+                    <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: 11 }}>
+                      Syncing...
+                    </div>
+                  )}
+                </div>
+
+                <div
+                  onClick={disconnect}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    padding: "13px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    cursor: "pointer",
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") disconnect();
+                  }}
+                >
+                  <IconX size={16} color="#CC2229" stroke={1.5} />
+                  <div
+                    style={{
+                      ...POPPINS,
+                      color: tokens.red,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: 500,
+                    }}
+                  >
+                    Disconnect Google Calendar
+                  </div>
+                </div>
+              </>
+            ) : (
               <div
+                onClick={connectGoogleCalendar}
+                role="button"
+                tabIndex={0}
                 style={{
                   padding: "14px 16px",
                   display: "flex",
                   gap: 12,
                   alignItems: "center",
+                  cursor: "pointer",
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") connectGoogleCalendar();
                 }}
               >
                 <div
@@ -672,612 +504,61 @@ function CalendarSyncPage() {
                     width: 40,
                     height: 40,
                     borderRadius: 999,
-                    background: "#DCFCE7",
+                    background: "#EFF6FF",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
                   }}
                 >
-                  <IconCalendar size={20} color="#15803D" stroke={1.5} />
+                  <IconCalendar size={20} color="#1877D6" stroke={1.5} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}>
-                    Google Calendar
+                  <div
+                    style={{
+                      ...POPPINS,
+                      color: tokens.navy,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Connect Google Calendar
                   </div>
-                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
-                    Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    background: "#DCFCE7",
-                    color: "#15803D",
-                    fontSize: tokens.fontSize.sm,
-                    fontWeight: tokens.fontWeight.bold,
-                    borderRadius: 999,
-                    padding: "4px 10px",
-                  }}
-                >
-                  Connected
-                </div>
-              </div>
-              <div style={{ height: 1, background: tokens.border }} />
-
-              {/* Import direction */}
-              <div
-                style={{
-                  padding: "13px 16px",
-                  display: "flex",
-                  gap: 12,
-                  alignItems: "center",
-                  borderBottom: "1px solid #E4E8EF",
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
-                    Import Google events into EDP
-                  </div>
-                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
-                    Google events appear on your schedule
+                  <div
+                    style={{
+                      ...POPPINS,
+                      color: tokens.textMuted,
+                      fontSize: tokens.fontSize.sm,
+                      marginTop: 2,
+                    }}
+                  >
+                    Import events and push lessons automatically
                   </div>
                 </div>
-                <DSMToggle checked={importEnabled} onChange={setImportEnabled} />
-              </div>
-
-              {/* Push direction */}
-              <div
-                style={{
-                  padding: "13px 16px",
-                  display: "flex",
-                  gap: 12,
-                  alignItems: "center",
-                  borderBottom: "1px solid #E4E8EF",
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
-                    Push EDP lessons to Google
-                  </div>
-                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
-                    Lessons appear in your Google Calendar
-                  </div>
-                </div>
-                <DSMToggle checked={pushEnabled} onChange={setPushEnabled} />
-              </div>
-
-              <div
-                onClick={sync}
-                role="button"
-                tabIndex={0}
-                style={{
-                  padding: "13px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  cursor: "pointer",
-                  borderBottom: "1px solid #E4E8EF",
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") sync();
-                }}
-              >
-                <IconRefresh
-                  size={16}
-                  color="#1877D6"
-                  stroke={1.5}
-                  className={syncing ? "animate-spin" : undefined}
-                />
-                <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, flex: 1 }}>
-                  Sync now
-                </div>
-                {syncing && (
-                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: 11 }}>Syncing...</div>
+                {connecting ? (
+                  <div style={{ ...POPPINS, color: tokens.blue, fontSize: 12 }}>Connecting...</div>
+                ) : (
+                  <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
                 )}
               </div>
+            )}
+          </div>
 
-              <div
-                onClick={disconnect}
-                role="button"
-                tabIndex={0}
-                style={{
-                  padding: "13px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  cursor: "pointer",
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") disconnect();
-                }}
-              >
-                <IconX size={16} color="#CC2229" stroke={1.5} />
-                <div style={{ ...POPPINS, color: tokens.red, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
-                  Disconnect Google Calendar
-                </div>
-              </div>
-            </>
-          ) : (
-            <div
+          {!googleConnected && (
+            <button
+              type="button"
               onClick={connectGoogleCalendar}
-              role="button"
-              tabIndex={0}
+              disabled={connecting}
               style={{
-                padding: "14px 16px",
-                display: "flex",
-                gap: 12,
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") connectGoogleCalendar();
+                ...BTN_PRIMARY,
+                opacity: connecting ? 0.6 : 1,
               }}
             >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 999,
-                  background: "#EFF6FF",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <IconCalendar size={20} color="#1877D6" stroke={1.5} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}>
-                  Connect Google Calendar
-                </div>
-                <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
-                  Import events and push lessons automatically
-                </div>
-              </div>
-              {connecting ? (
-                <div style={{ ...POPPINS, color: tokens.blue, fontSize: 12 }}>Connecting...</div>
-              ) : (
-                <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
-              )}
-            </div>
+              {connecting ? "Connecting…" : "Connect Google Calendar"}
+            </button>
           )}
         </div>
-
-        {/* Advanced — ICS fallback (collapsed) */}
-        <button
-          type="button"
-          onClick={() => setShowICS(!showICS)}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: 12,
-            color: tokens.textMuted,
-            padding: "8px 0",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          <IconChevronDown
-            size={12}
-            color="#9CA3AF"
-            style={{ transform: showICS ? "rotate(180deg)" : "none" }}
-          />
-          Use a custom ICS link instead
-        </button>
-
-        {showICS && (
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: tokens.radiusCard,
-            border: "1px solid #E4E8EF",
-            overflow: "hidden",
-            marginBottom: 16,
-            marginTop: 8,
-            padding: "14px 16px",
-          }}
-        >
-          <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, marginBottom: 4 }}>
-            Or use a custom ICS URL
-          </div>
-          <p style={{ ...POPPINS, color: tokens.textMuted, fontSize: 12, lineHeight: 1.5, marginBottom: 12 }}>
-            Works with Outlook, Apple Calendar, and other apps that share an ICS feed.
-          </p>
-          <div style={{ marginBottom: 12 }}>
-            <input
-              ref={inputRef}
-              type="url"
-              value={externalCalendarUrl}
-              onChange={(e) => setExternalCalendarUrl(e.target.value)}
-              placeholder="https://calendar.google.com/calendar/ical/..."
-              className="w-full"
-              style={FIELD_INPUT}
-            />
-          </div>
-          {icsSyncError ? (
-            <div
-              style={{
-                marginBottom: 12,
-                background: "#FEF2F2",
-                borderRadius: tokens.radiusCard,
-                padding: "12px 16px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <IconAlertCircle size={14} color="#FF3B30" />
-                <span className="text-xs" style={{ ...POPPINS, color: "#FF3B30", fontWeight: 600 }}>
-                  Sync error: {icsSyncError}
-                </span>
-              </div>
-              <div className="text-xs" style={{ ...POPPINS, color: "#8A8A8E", marginTop: 4 }}>
-                This usually means your ICS URL has expired. Get a new one from your calendar app.
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-                  inputRef.current?.focus();
-                }}
-                className="text-xs font-semibold"
-                style={{ ...POPPINS, color: tokens.blue, marginTop: 6 }}
-              >
-                Update URL →
-              </button>
-            </div>
-          ) : icsLastSynced ? (
-            <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: 12, marginTop: 8, marginBottom: 12 }}>
-              Last synced: {timeAgo(icsLastSynced)}
-            </div>
-          ) : null}
-
-          <button
-            type="button"
-            onClick={() => runSync(externalCalendarUrl)}
-            disabled={icsSyncing || !externalCalendarUrl.trim()}
-            style={{
-              ...BTN_PRIMARY,
-              opacity: icsSyncing || !externalCalendarUrl.trim() ? 0.6 : 1,
-            }}
-          >
-            {icsSyncing ? (
-              <>
-                <IconLoader2 size={16} className="animate-spin" /> Syncing...
-              </>
-            ) : (
-              <>Save and sync ICS URL →</>
-            )}
-          </button>
-
-          {savedUrl && (
-            <div style={{ marginTop: 12, textAlign: "center" }}>
-              <button
-                type="button"
-                onClick={removeCalendar}
-                disabled={removing}
-                style={{ ...POPPINS, color: "#FF3B30", fontSize: tokens.fontSize.base, fontWeight: 700 }}
-              >
-                {removing ? "Removing..." : "Remove calendar"}
-              </button>
-            </div>
-          )}
-        </div>
-        )}
-
-
-        {/* ICS Feed URL */}
-
-        <SectionLabel>Your ICS feed URL</SectionLabel>
-        <div style={SECTION_CARD}>
-          <input
-            readOnly
-            value={icsUrl}
-            className="w-full"
-            style={FIELD_INPUT}
-            onFocus={(e) => e.target.select()}
-          />
-          <button type="button" onClick={copyLink} style={{ ...BTN_PRIMARY, marginTop: 12 }}>
-            {copied ? (
-              <>
-                <IconCheck size={16} /> Copied!
-              </>
-            ) : (
-              <>
-                <IconCopy size={16} /> Copy link
-              </>
-            )}
-          </button>
-          <button type="button" onClick={shareLink} style={{ ...BTN_OUTLINE, marginTop: 12 }}>
-            Share link
-          </button>
-        </div>
-
-
-        {/* How calendar sync works */}
-        <div
-          style={{
-            backgroundColor: "#F0F4FF",
-            borderWidth: "0.5px",
-            borderStyle: "solid",
-            borderColor: "#BFDBFE",
-            borderRadius: tokens.radiusCard,
-            padding: 16,
-            marginLeft: 16,
-            marginRight: 16,
-            marginTop: 12,
-          }}
-        >
-          <div className="flex items-start gap-3">
-            <IconInfoCircle size={16} color="#1A52A0" className="shrink-0 mt-0.5" />
-            <div>
-              <div
-                className="text-[14px] font-semibold"
-                style={{ ...POPPINS, color: "#0F2044", marginBottom: 8 }}
-              >
-                How calendar sync works
-              </div>
-              <ul
-                className="text-xs"
-                style={{ ...POPPINS, color: "#6B7280", lineHeight: 1.6 }}
-              >
-                <li>✓ Your Google Calendar events sync into EDP every 2 hours</li>
-                <li>✓ EDP lessons appear in Google Calendar within 24 hours</li>
-                <li>✓ EDP is always up to date — use it as your primary schedule</li>
-                <li>○ Google Calendar is a read-only view — manage lessons in EDP</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* IconInfoCircle banner */}
-        <div
-          className="mt-3 flex items-start gap-3"
-          style={{
-            backgroundColor: tokens.canvas,
-            borderWidth: "1px",
-            borderStyle: "solid",
-            borderColor: tokens.blue,
-            borderRadius: tokens.radiusCard,
-            padding: 16,
-          }}
-        >
-          <IconAlertTriangle size={20} color="#1877D6" className="shrink-0 mt-0.5" />
-          <p className="text-[13px] text-[#0B1F3A] leading-[1.5]" style={POPPINS}>
-            This is a one-way read feed. Your EDP lessons appear in your calendar app, but changes made in your calendar app will not sync back to EDP. Always manage your lessons in EDP.
-          </p>
-        </div>
-
-        <SectionHeader>HOW TO ADD TO YOUR CALENDAR</SectionHeader>
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem
-            value="google"
-            className="border-0"
-            style={{
-              backgroundColor: "#F8F9FB",
-              borderRadius: 8,
-              marginBottom: 12,
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: tokens.canvas,
-            }}
-          >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
-              <span className="flex items-center gap-3">
-                <IconCalendar size={20} color="#1877D6" />
-                Google Calendar
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <ol className="flex flex-col gap-3 list-none">
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    1
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Open Google Calendar on a computer (not phone)
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    2
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click + next to "Other calendars" on the left sidebar
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    3
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click "From URL"
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    4
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Paste your ICS feed URL above
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    5
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click "Add calendar"
-                  </p>
-                </li>
-              </ol>
-              <p className="mt-3 text-[12px] text-[#6B7280] italic" style={POPPINS}>
-                Note: Updates every few hours automatically
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem
-            value="apple"
-            className="border-0"
-            style={{
-              backgroundColor: "#F8F9FB",
-              borderRadius: 8,
-              marginBottom: 12,
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: tokens.canvas,
-            }}
-          >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
-              <span className="flex items-center gap-3">
-                <IconCalendar size={20} color="#1877D6" />
-                Apple Calendar
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <ol className="flex flex-col gap-3 list-none">
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    1
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Open the Calendar app on Mac or iPhone
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    2
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click File → New Calendar Subscription (Mac) or tap Calendars → Add Calendar → Add Subscription Calendar (iPhone)
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    3
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Paste your ICS feed URL
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    4
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click Subscribe
-                  </p>
-                </li>
-              </ol>
-              <p className="mt-3 text-[12px] text-[#6B7280] italic" style={POPPINS}>
-                Note: Updates every few hours automatically
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem
-            value="outlook"
-            className="border-0"
-            style={{
-              backgroundColor: "#F8F9FB",
-              borderRadius: 8,
-              marginBottom: 12,
-              borderWidth: "0.5px",
-              borderStyle: "solid",
-              borderColor: tokens.canvas,
-            }}
-          >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
-              <span className="flex items-center gap-3">
-                <IconCalendar size={20} color="#1877D6" />
-                Outlook
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <ol className="flex flex-col gap-3 list-none">
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    1
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Go to outlook.com and open Calendar
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    2
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click Add calendar → Subscribe from web
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    3
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Paste your ICS feed URL
-                  </p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
-                  >
-                    4
-                  </div>
-                  <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click Import
-                  </p>
-                </li>
-              </ol>
-              <p className="mt-3 text-[12px] text-[#6B7280] italic" style={POPPINS}>
-                Note: Updates every few hours automatically
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
       </div>
-    </div>
     </DSMTopSheet>
   );
 }
