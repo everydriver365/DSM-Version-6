@@ -1007,7 +1007,7 @@ function ProPage() {
             .limit(1),
           supabase
             .from("local_chat_messages")
-            .select("id, body, created_at, instructors(name)")
+            .select("id, message, created_at, instructors(name)")
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
             .limit(2),
