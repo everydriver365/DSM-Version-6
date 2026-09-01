@@ -3,14 +3,21 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "@/lib/toast";
-import { IconBroadcast, IconMicrophone, IconPlayerPlay, IconSteeringWheel, IconUsers } from "@tabler/icons-react";
+import {
+  IconBroadcast,
+  IconMicrophone,
+  IconPlayerPlay,
+  IconSteeringWheel,
+  IconUsers,
+  IconCalendarPlus,
+} from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
+  formatSessionDate,
+  formatSessionTime,
   type LiveSession,
 } from "./dsm-live";
-
-
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -39,6 +46,79 @@ export const Route = createFileRoute("/dsm-live/")({
   component: DsmLivePage,
 });
 
+function deliveryLabel(session: LiveSession): string {
+  const raw = ((session as LiveSession & { delivery_type?: string | null }).delivery_type ?? "").toString().toLowerCase();
+  if (raw.includes("zoom")) return "Zoom";
+  if (raw.includes("team")) return "Teams";
+  if (raw.includes("webinar")) return "Webinar";
+  if (raw.includes("podcast")) return "Podcast";
+  if (raw.includes("person") || raw.includes("in_person")) return "In person";
+  return "Online";
+}
+
+function durationLabel(minutes: number | null): string | null {
+  const m = minutes ?? 0;
+  if (!m) return null;
+  if (m % 60 === 0) return `${m / 60}h`;
+  if (m > 60) return `${Math.floor(m / 60)}h ${m % 60}m`;
+  return `${m}m`;
+}
+
+function priceLabel(session: LiveSession): string | null {
+  const s = session as LiveSession & { price?: number | null; price_display?: string | null };
+  if (s.price_display) return s.price_display;
+  if (typeof s.price === "number") return s.price === 0 ? "Free" : `£${s.price.toFixed(2)}`;
+  if (typeof session.price_amount === "number") {
+    return session.price_amount === 0 ? "Free" : `£${session.price_amount.toFixed(2)}`;
+  }
+  return null;
+}
+
+function priceBadgeStyles(label: string | null): { text: string; background: string; color: string } {
+  const raw = (label ?? "").toLowerCase();
+  if (raw.includes("pro")) {
+    return { text: "PRO", background: "#EAF5FC", color: "#2C97DE" };
+  }
+  if (raw.includes("free")) {
+    return { text: "FREE", background: "#DCFCE7", color: "#16A34A" };
+  }
+  return { text: label ?? "Paid", background: "#FEF3C7", color: "#F59E0B" };
+}
+
+function categoryAccentColor(category: string | null | undefined): string {
+  const raw = (category ?? "").toLowerCase();
+  if (raw.includes("standards")) return "#2C97DE";
+  if (raw.includes("business")) return "#7B61FF";
+  if (raw.includes("cpd")) return "#E53935";
+  if (raw.includes("coach")) return "#18A999";
+  return "#F59E0B";
+}
+
+function addToCalendar(session: LiveSession) {
+  const start = new Date(`${session.session_date}T${session.session_time || "00:00"}`);
+  const end = new Date(start.getTime() + (session.duration_minutes ?? 60) * 60000);
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const ics = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:${session.id}@dsmlive
+DTSTAMP:${fmt(new Date())}
+DTSTART:${fmt(start)}
+DTEND:${fmt(end)}
+SUMMARY:${session.title}
+DESCRIPTION:${(session.description ?? "").replace(/\n/g, "\\n")}
+END:VEVENT
+END:VCALENDAR`;
+  const blob = new Blob([ics], { type: "text/calendar" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${session.title.replace(/\W+/g, "-")}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast.success("Added to calendar");
+}
+
 function DsmLivePage() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
@@ -46,7 +126,6 @@ function DsmLivePage() {
   const [category, setCategory] = useState<string>("All");
   const [view, setView] = useState<"upcoming" | "all">("upcoming");
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-
 
   useEffect(() => {
     let cancelled = false;
@@ -68,7 +147,7 @@ function DsmLivePage() {
         if (userId) {
           const res = await fetch(
             `${SUPABASE_URL}/rest/v1/dsm_live_bookings?instructor_id=eq.${userId}&status=eq.confirmed&select=session_id,status`,
-            { headers: AUTH_HEADERS },
+          { headers: AUTH_HEADERS },
           );
           const rows = (await res.json()) as { session_id: string }[];
           if (!cancelled && Array.isArray(rows)) {
@@ -109,104 +188,202 @@ function DsmLivePage() {
     return list;
   }, [sessions, category, view]);
 
-
+  const nextSession = useMemo(() => {
+    if (!sessions) return null;
+    const now = Date.now();
+    return sessions.find((s) => {
+      const dt = new Date(`${s.session_date}T${s.session_time || "00:00"}:00`).getTime();
+      return Number.isFinite(dt) ? dt >= now : true;
+    }) ?? null;
+  }, [sessions]);
 
   const poppins = "Poppins, sans-serif";
 
   return (
-    <div style={{ fontFamily: poppins, background: "#F4F6F8", paddingTop: 12 }}>
-      {/* Live status pill */}
-      <div style={{ padding: "12px 16px 0", display: "flex" }}>
-        <span
+    <div style={{ fontFamily: poppins, background: "#F4F6F8", minHeight: "100vh", paddingBottom: 24 }}>
+      {/* Navy page title */}
+      <div
+        style={{
+          background: "#0B2341",
+          padding: "12px 16px 16px",
+          textAlign: "center",
+        }}
+      >
+        <h1
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: "#E6F1FB",
-            border: "0.5px solid #D3E2F3",
-            color: "#0B1F3A",
-            fontSize: tokens.fontSize.sm,
-            fontWeight: tokens.fontWeight.medium,
-            padding: "4px 12px",
-            borderRadius: 999,
+            margin: 0,
+            color: "#FFFFFF",
+            fontSize: 18,
+            fontWeight: 700,
+            lineHeight: 1.25,
+            fontFamily: "Sora, sans-serif",
+          }}
+        >
+          EDP Live
+        </h1>
+        <p
+          style={{
+            margin: "6px 0 0",
+            color: "rgba(255,255,255,0.5)",
+            fontSize: 12,
+            lineHeight: 1.4,
             fontFamily: poppins,
           }}
         >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: 999,
-              background: "#16A34A",
-              display: "inline-block",
-            }}
-          />
-          Live
-        </span>
+          Live coaching, CPD webinars and standards check preparation.
+        </p>
       </div>
 
-      {/* Hero */}
-      <div style={{ padding: "16px 16px 18px" }}>
+      {/* Featured next session */}
+      {nextSession && (
         <div
           style={{
-            background: tokens.white,
-            borderRadius: tokens.radiusCard,
-            border: "0.5px solid #E2E6ED",
+            margin: 16,
+            background: "linear-gradient(135deg, #0B2341, #1a3a6b)",
+            borderRadius: 14,
             padding: 16,
+            position: "relative",
+            minHeight: 140,
             display: "flex",
-            flexDirection: "row",
-            gap: 14,
-            alignItems: "flex-start",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            fontFamily: poppins,
           }}
         >
+          {/* NEXT SESSION badge */}
           <div
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              background: "#E6F1FB",
+              position: "absolute",
+              top: 12,
+              left: 12,
+              background: "#E53935",
+              color: "#FFFFFF",
+              fontSize: 9,
+              fontWeight: 700,
+              borderRadius: 4,
+              padding: "2px 8px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
+              gap: 4,
             }}
           >
-            <IconBroadcast size={22} color="#1877D6" stroke={1.5} />
-
+            <span
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: "#FFFFFF",
+                display: "inline-block",
+              }}
+            />
+            NEXT SESSION
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: tokens.fontSize.xl,
-                fontWeight: tokens.fontWeight.medium,
-                color: tokens.navy,
-                marginBottom: 6,
-                fontFamily: poppins,
-              }}
-            >
-              EDP Live
+
+          {/* Price badge */}
+          {(() => {
+            const p = priceLabel(nextSession);
+            if (!p) return null;
+            const styles = priceBadgeStyles(p);
+            return (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  background: "rgba(255,255,255,0.15)",
+                  color: "#FFFFFF",
+                  fontSize: 10,
+                  borderRadius: 4,
+                  padding: "2px 8px",
+                }}
+              >
+                {styles.text}
+              </div>
+            );
+          })()}
+
+          {/* Date / format / duration */}
+          <div
+            style={{
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 11,
+              marginBottom: 4,
+            }}
+          >
+            {[
+              formatSessionDate(nextSession.session_date),
+              deliveryLabel(nextSession),
+              durationLabel(nextSession.duration_minutes),
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </div>
+
+          {/* Title */}
+          <div
+            style={{
+              color: "#FFFFFF",
+              fontSize: 17,
+              fontWeight: 700,
+              lineHeight: 1.3,
+              marginBottom: 12,
+            }}
+          >
+            {nextSession.title}
+          </div>
+
+          {/* Bottom row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ color: "#FFFFFF", fontSize: 22, fontWeight: 700 }}>
+              {formatSessionTime(nextSession.session_time)}
             </div>
-            <p
+            <button
+              type="button"
+              onClick={() =>
+                navigate({ to: "/dsm-live/$sessionId", params: { sessionId: nextSession.id } })
+              }
               style={{
-                margin: 0,
-                fontSize: tokens.fontSize.base,
-                color: "#5A6270",
-                lineHeight: 1.5,
+                background: "#2C97DE",
+                color: "#FFFFFF",
+                fontSize: 13,
+                fontWeight: 700,
+                borderRadius: 8,
+                padding: "8px 18px",
+                border: "none",
+                cursor: "pointer",
                 fontFamily: poppins,
               }}
             >
-              Live coaching, CPD webinars and standards check prep
-            </p>
+              {bookedIds.has(nextSession.id) ? "Booked" : "Book / Join"}
+            </button>
+            <button
+              type="button"
+              aria-label="Add to calendar"
+              onClick={() => addToCalendar(nextSession)}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <IconCalendarPlus size={16} color="#FFFFFF" />
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Category pills (horizontal scroll) */}
+      {/* Category filter pills */}
       <div
         style={{
           display: "flex",
-          gap: 8,
-          padding: "12px 16px",
+          gap: 6,
+          padding: "0 16px 14px",
           overflowX: "auto",
           flexWrap: "nowrap",
           scrollbarWidth: "none",
@@ -225,13 +402,13 @@ function DsmLivePage() {
               onClick={() => setCategory(c)}
               style={{
                 flexShrink: 0,
-                background: active ? "#0B1F3A" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#0B1F3A",
-                border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
-                borderRadius: 999,
-                padding: "8px 16px",
-                fontSize: tokens.fontSize.base,
-                fontWeight: active ? 500 : 400,
+                background: active ? "#0B2341" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#536579",
+                border: active ? "none" : "0.5px solid #E4E8EF",
+                borderRadius: 20,
+                padding: "5px 14px",
+                fontSize: 11,
+                fontWeight: active ? 700 : 500,
                 fontFamily: poppins,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
@@ -241,47 +418,52 @@ function DsmLivePage() {
             </button>
           );
         })}
-        {(() => {
-          const active = view === "upcoming";
-          return (
-            <button
-              type="button"
-              onClick={() => setView(active ? "all" : "upcoming")}
-              style={{
-                flexShrink: 0,
-                background: active ? "#0B1F3A" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#0B1F3A",
-                border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
-                borderRadius: 999,
-                padding: "8px 16px",
-                fontSize: tokens.fontSize.base,
-                fontWeight: active ? 500 : 400,
-                fontFamily: poppins,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Upcoming
-            </button>
-          );
-        })()}
       </div>
 
-      {/* Sessions */}
-      <div style={{ padding: 16 }}>
-        <h2
+      {/* Upcoming sessions */}
+      <div style={{ padding: "0 16px" }}>
+        <div
           style={{
-            margin: "0 0 12px",
-            fontSize: 15,
-            fontWeight: tokens.fontWeight.medium,
-            color: tokens.navy,
-            fontFamily: poppins,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "0 0 10px",
           }}
         >
-          Sessions
-        </h2>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 13,
+              fontWeight: 700,
+              color: "#0B2341",
+              fontFamily: poppins,
+            }}
+          >
+            {view === "upcoming" ? "Upcoming sessions" : "All sessions"}
+          </h2>
+          <button
+            type="button"
+            onClick={() => setView(view === "upcoming" ? "all" : "upcoming")}
+            style={{
+              fontSize: 11,
+              color: "#2C97DE",
+              fontWeight: 500,
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              fontFamily: poppins,
+            }}
+          >
+            {view === "upcoming" ? "View calendar →" : "Upcoming only →"}
+          </button>
+        </div>
 
-        {sessions === null ? null : filtered.length === 0 ? (
+        {sessions === null ? (
+          <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
+            Loading sessions…
+          </div>
+        ) : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "32px 16px", color: "#B0BAC9", fontSize: 13 }}>
             {view === "upcoming" ? "No upcoming sessions" : "No sessions found"}
           </div>
@@ -305,7 +487,7 @@ function DsmLivePage() {
       </div>
 
       {/* Podcasts */}
-      <div id="podcasts" style={{ padding: 16 }}>
+      <div id="podcasts" style={{ padding: 16, marginTop: 16 }}>
         <h2 style={{ margin: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#0F2044", fontFamily: poppins }}>
           🎙️ EDP Podcast
         </h2>
@@ -586,175 +768,133 @@ function SessionCard({
   onOpen: () => void;
 }) {
   const poppins = "Poppins, sans-serif";
-  const s = session as LiveSession & {
-    delivery_type?: string | null;
-    image_url?: string | null;
-    price_display?: string | null;
-    price?: number | null;
-  };
-
-  const deliveryLabel = (() => {
-    const raw = (s.delivery_type ?? "").toString().toLowerCase();
-    if (raw.includes("zoom")) return "Zoom";
-    if (raw.includes("team")) return "Teams";
-    if (raw.includes("webinar")) return "Webinar";
-    if (raw.includes("podcast")) return "Podcast";
-    if (raw.includes("person") || raw.includes("in_person")) return "In person";
-    return "Online";
-  })();
-
-
-  const priceLabel = (() => {
-    if (s.price_display) return s.price_display;
-    if (typeof s.price === "number") return s.price === 0 ? "Free" : `£${s.price.toFixed(2)}`;
-    return null;
-  })();
-  const isFree = (priceLabel ?? "").toLowerCase() === "free";
-
-  const timeLabel = (() => {
-    if (!s.session_time) return null;
-    const [hStr, mStr] = s.session_time.split(":");
-    return `${String(Number(hStr)).padStart(2, "0")}:${(mStr ?? "00").slice(0, 2)}`;
-  })();
-
-  const durLabel = (() => {
-    const m = s.duration_minutes ?? 0;
-    if (!m) return null;
-    if (m % 60 === 0) return `${m / 60}h`;
-    if (m > 60) return `${Math.floor(m / 60)}h${m % 60}`;
-    return `${m}m`;
-  })();
+  const accent = categoryAccentColor(session.category);
+  const pLabel = priceLabel(session);
+  const pBadge = priceBadgeStyles(pLabel);
 
   const dateLabel = (() => {
-    if (!s.session_date) return null;
+    if (!session.session_date) return null;
     try {
-      return new Date(s.session_date + "T00:00:00").toLocaleDateString("en-GB", {
+      return new Date(session.session_date + "T00:00:00").toLocaleDateString("en-GB", {
         weekday: "short",
         day: "numeric",
         month: "short",
       });
     } catch {
-      return s.session_date;
+      return session.session_date;
     }
+  })();
+
+  const timeLabel = (() => {
+    if (!session.session_time) return "--:--";
+    const [hStr, mStr] = session.session_time.split(":");
+    return `${String(Number(hStr)).padStart(2, "0")}:${(mStr ?? "00").slice(0, 2)}`;
   })();
 
   return (
     <div
       onClick={onOpen}
       style={{
-        background: tokens.white,
-        border: "1px solid #E3E8F0",
-        borderRadius: tokens.radiusCard,
-        padding: 16,
-        marginBottom: 10,
+        background: "#FFFFFF",
+        border: "0.5px solid #E4E8EF",
+        borderRadius: 12,
+        padding: 14,
+        marginBottom: 8,
         display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
         gap: 12,
         cursor: "pointer",
         fontFamily: poppins,
       }}
     >
-      {/* Time column */}
-      <div style={{ width: 48, flexShrink: 0 }}>
-        <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, lineHeight: 1.1 }}>
-          {timeLabel ?? "--:--"}
-        </div>
-        {durLabel && (
-          <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8792A2", marginTop: 2 }}>
-            {durLabel}
-          </div>
-        )}
-      </div>
-
       {/* Accent bar */}
       <div
         style={{
           width: 4,
-          alignSelf: "stretch",
-          minHeight: 44,
-          borderRadius: 12,
-          background: booked ? "#1D7A4C" : "#1877D6",
+          borderRadius: 2,
+          background: accent,
           flexShrink: 0,
+          alignSelf: "stretch",
+          minHeight: 60,
         }}
       />
 
-      {/* Details */}
+      {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: tokens.fontSize.md,
-            fontWeight: tokens.fontWeight.bold,
-            color: tokens.navy,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 4,
           }}
         >
-          {s.title}
-        </div>
-        <div
-          style={{
-            fontSize: 12,
-            color: "#8792A2",
-            marginTop: 2,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {[dateLabel, deliveryLabel].filter(Boolean).join(" · ")}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-          {priceLabel && (
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: tokens.fontWeight.semibold,
-                color: isFree ? "#1D7A4C" : "#0B1F3A",
-              }}
-            >
-              {priceLabel}
-            </span>
-          )}
-          {booked && (
+          <span style={{ fontSize: 11, color: "#536579" }}>
+            {[dateLabel, deliveryLabel(session)].filter(Boolean).join(" · ")}
+          </span>
+          {pLabel && (
             <span
               style={{
                 fontSize: 9,
-                fontWeight: tokens.fontWeight.bold,
-                letterSpacing: "0.02em",
-                padding: "3px 16px",
-                borderRadius: tokens.radiusCard,
-                background: "#E4F4EB",
-                color: "#1D7A4C",
-                textTransform: "uppercase",
+                fontWeight: 500,
+                borderRadius: 4,
+                padding: "1px 6px",
+                background: pBadge.background,
+                color: pBadge.color,
               }}
             >
-              Booked
+              {pBadge.text}
             </span>
           )}
         </div>
-      </div>
 
-      {/* Hero image — far right */}
-      <div
-        style={{
-          width: 76,
-          height: 76,
-          borderRadius: 8,
-          flexShrink: 0,
-          background: s.image_url ? `url(${s.image_url}) center/cover` : "#0B1F3A",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {!s.image_url && (
-          <IconSteeringWheel size={26} color="rgba(255,255,255,0.4)" stroke={1.75} />
-        )}
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 500,
+            color: "#0B2341",
+            marginBottom: 6,
+            lineHeight: 1.3,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {session.title}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ fontSize: 20, fontWeight: 500, color: "#0B2341" }}>
+            {timeLabel}
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen();
+            }}
+            style={{
+              background: "#FFFFFF",
+              border: "0.5px solid #E4E8EF",
+              borderRadius: 8,
+              padding: "6px 14px",
+              fontSize: 12,
+              color: "#0B2341",
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: poppins,
+            }}
+          >
+            {booked ? "Booked" : "Book / Join"}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
-
-
