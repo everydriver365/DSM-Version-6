@@ -73,13 +73,13 @@ export const BITESIZE_CATEGORIES = [
 
 export const BITESIZE_CATEGORY_EMOJI: Record<string, string> = {
   "Getting started": "🚀",
-  Training: "🎓",
-  News: "📰",
-  CPD: "📋",
-  Business: "💼",
-  Wellbeing: "🌿",
-  Bitesize: "📚",
-  Showcase: "🏆",
+  "Training": "🎓",
+  "News": "📰",
+  "CPD": "📋",
+  "Business": "💼",
+  "Wellbeing": "🌿",
+  "Bitesize": "📚",
+  "Showcase": "🏆",
 };
 
 export const AUDIENCE_LABEL: Record<string, string> = {
