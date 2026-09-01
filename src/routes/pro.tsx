@@ -592,6 +592,7 @@ function RadioCard() {
               icon={s.icon}
               label={s.name}
               fillIcon={s.fillIcon}
+              selectedColor={s.selectedColor}
               selected={selected}
               disabled={comingSoon && !selected}
               onClick={() => handleChip(s.name)}
