@@ -399,13 +399,13 @@ function SettingsPage() {
 
       const { data: instructor, error: instErr } = await supabase
         .from("instructors")
-        .select("name, profile_image_url, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, external_calendar_last_synced_at")
+        .select("name, profile_image_url, hourly_rate, default_lesson_duration_minutes, lesson_buffer_minutes, lesson_buffer_after, home_postcode, address, city, lat, lng, radius_miles, send_lesson_reminders, reminder_timing, publish_to_marketplace, featured_listing, featured_until, app_slug, calendar_last_synced")
         .eq("id", user.id)
         .maybeSingle();
       if (instErr) console.error("[settings] instructor fetch error", instErr);
       if (instructor?.name) setInstructorName(instructor.name);
       if (instructor?.profile_image_url) setAvatarUrl(instructor.profile_image_url);
-      const lastSync = (instructor as unknown as { external_calendar_last_synced_at?: string | null } | null)?.external_calendar_last_synced_at;
+      const lastSync = (instructor as unknown as { calendar_last_synced?: string | null } | null)?.calendar_last_synced;
       if (lastSync) setCalendarLastSynced(lastSync);
       if (instructor && typeof (instructor as { hourly_rate?: number }).hourly_rate === "number") {
         setHourlyRate((instructor as { hourly_rate: number }).hourly_rate);

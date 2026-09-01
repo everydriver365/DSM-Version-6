@@ -805,7 +805,7 @@ function SchedulePage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
-  const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
+  const [instructor, setInstructor] = useState<{ name: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -1032,7 +1032,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced,google_calendar_connected")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,calendar_last_synced,google_calendar_connected")
             .eq("id", uid)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${uid}&is_active=eq.true`, { headers }),
@@ -1043,7 +1043,7 @@ function SchedulePage() {
         if (instrRow.error) {
           const retry = await supabase
             .from("instructors")
-            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,calendar_last_synced")
             .eq("id", uid)
             .maybeSingle();
           instrData = retry.data as any;
@@ -1057,7 +1057,6 @@ function SchedulePage() {
           per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
           lesson_buffer_after?: number | null;
           hourly_rate?: number | null;
-          external_calendar_url?: string | null;
           calendar_last_synced?: string | null;
           google_calendar_connected?: boolean | null;
         };
@@ -1069,7 +1068,6 @@ function SchedulePage() {
         if (i.hourly_rate != null) setHourlyRate(Number(i.hourly_rate) || 40);
         setInstructor({
           name: i.name ?? null,
-          external_calendar_url: i.external_calendar_url ?? null,
           calendar_last_synced: i.calendar_last_synced ?? null,
           google_calendar_connected: i.google_calendar_connected ?? false,
         });
@@ -1119,8 +1117,8 @@ function SchedulePage() {
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
-    if (!instructor?.google_calendar_connected && !instructor?.external_calendar_url) {
-      toast.info("Connect a calendar first");
+    if (!instructor?.google_calendar_connected) {
+      toast.info("Connect Google Calendar first");
       navigate({ to: "/calendarsync" as never });
       return;
     }
@@ -1133,15 +1131,11 @@ function SchedulePage() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const useGoogleSync = instructor?.google_calendar_connected;
-      const endpoint = useGoogleSync
-        ? "/functions/v1/sync-google-calendar"
-        : "/functions/v1/sync-external-calendar";
+      const useGoogleSync = true;
+      const endpoint = "/functions/v1/sync-google-calendar";
       console.log("[schedule] handleSync called", {
         userId,
         google_calendar_connected: instructor?.google_calendar_connected,
-        external_calendar_url: instructor?.external_calendar_url,
-        useGoogleSync,
         endpoint,
       });
       const res = await fetch(SUPABASE_URL + endpoint, {
@@ -1199,7 +1193,7 @@ function SchedulePage() {
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
       } else {
-        const msg = "Sync failed — check your calendar URL in Settings";
+        const msg = data?.message ?? data?.error ?? "Sync failed — reconnect Google Calendar in Settings";
         toast.error(msg);
         setSyncMessage({ type: "error", text: msg });
         hapticError();
