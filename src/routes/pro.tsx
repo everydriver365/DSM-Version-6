@@ -534,125 +534,200 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
   } as LearnVideo;
 
   const thumb = v.thumbnail_url || proImage.url;
-  const duration = "18 min";
-  const category = sentenceCase(v.category || "PRO TV");
+  const categoryLabel = (v.category || "Training").toUpperCase();
 
   return (
     <section style={{ ...POPPINS }}>
-      <SectionHead title="PRO TV" actionLabel="All episodes" onAction={() => onNavigate("/dsm-live")} />
+      {/* Compact card header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 10,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconDeviceTv size={20} color={NAVY} stroke={2} />
+          <span
+            style={{
+              ...SORA,
+              fontSize: 16,
+              fontWeight: 800,
+              letterSpacing: -0.3,
+              color: NAVY,
+            }}
+          >
+            PRO TV
+          </span>
+        </div>
+        <span
+          style={{
+            ...POPPINS,
+            fontSize: 10,
+            fontWeight: 800,
+            letterSpacing: 0.8,
+            textTransform: "uppercase",
+            color: "#fff",
+            background: BLUE,
+            padding: "4px 9px",
+            borderRadius: 999,
+          }}
+        >
+          NEW
+        </span>
+      </div>
 
       <div
         onClick={() => onNavigate("/dsm-live")}
         style={{
           position: "relative",
-          borderRadius: 8,
+          borderRadius: 12,
           overflow: "hidden",
           cursor: "pointer",
-          background: NAVY,
-          boxShadow: "0 16px 34px -20px rgba(11,31,58,0.7)",
+          background: "#fff",
+          border: `1px solid ${HAIRLINE}`,
+          boxShadow: "0 4px 14px -4px rgba(11,31,58,0.10)",
+          padding: 12,
         }}
       >
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            aspectRatio: "16 / 10",
-            background: `url(${thumb}) center/cover no-repeat`,
-          }}
-        >
-          {/* semi-transparent navy overlay */}
+        <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
+          {/* Thumbnail ~42% */}
           <div
             style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(180deg, rgba(11,31,58,0.15) 0%, rgba(11,31,58,0.55) 55%, rgba(11,31,58,0.95) 100%)",
-            }}
-          />
-
-          <div
-            style={{
-              position: "absolute",
-              top: 12,
-              left: 12,
-              display: "flex",
-              gap: 6,
+              position: "relative",
+              flex: "0 0 42%",
+              minWidth: 0,
+              borderRadius: 10,
+              overflow: "hidden",
+              background: NAVY,
+              aspectRatio: "4 / 3",
             }}
           >
-            <span
-              style={{
-                background: "rgba(255,255,255,0.16)",
-                backdropFilter: "blur(8px)",
-                color: "#fff",
-                fontSize: 9.5,
-                fontWeight: 800,
-                letterSpacing: 1.1,
-                textTransform: "uppercase",
-                padding: "4px 8px",
-                borderRadius: 8,
-              }}
-            >
-              {category}
-            </span>
-            <span
-              style={{
-                background: "rgba(255,255,255,0.16)",
-                backdropFilter: "blur(8px)",
-                color: "#fff",
-                fontSize: 9.5,
-                fontWeight: 700,
-                padding: "4px 8px",
-                borderRadius: 8,
-              }}
-            >
-              {duration}
-            </span>
-          </div>
+            <img
+              src={thumb}
+              alt={v.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
 
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span
+            {/* Play button */}
+            <div
               style={{
-                width: 58,
-                height: 58,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.92)",
+                position: "absolute",
+                inset: 0,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 10px 26px rgba(0,0,0,0.4)",
               }}
             >
-              <IconPlayerPlay size={24} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 3 }} />
-            </span>
+              <span
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.92)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
+                }}
+              >
+                <IconPlayerPlay size={17} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 2 }} />
+              </span>
+            </div>
+
+            {/* Duration label */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 6,
+                left: 6,
+                background: "rgba(0,0,0,0.65)",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 700,
+                padding: "2px 6px",
+                borderRadius: 4,
+              }}
+            >
+              18:00
+            </div>
           </div>
 
-          <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
+          {/* Text content ~58% */}
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              padding: "2px 0",
+            }}
+          >
+            <span
+              style={{
+                ...POPPINS,
+                fontSize: 10,
+                fontWeight: 800,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                color: "#7C3AED",
+                marginBottom: 5,
+              }}
+            >
+              {categoryLabel}
+            </span>
+
             <h3
               style={{
                 ...SORA,
                 margin: 0,
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 700,
-                lineHeight: 1.25,
-                letterSpacing: -0.3,
+                color: NAVY,
+                fontSize: 15,
+                fontWeight: 800,
+                lineHeight: 1.2,
+                letterSpacing: -0.25,
+                marginBottom: 6,
               }}
             >
               {v.title}
             </h3>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                fontWeight: 500,
+                color: "#6B7686",
+                marginBottom: 6,
+              }}
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#6B7686"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span>18 min</span>
+              <span style={{ color: HAIRLINE }}>·</span>
+              <span>Beginner</span>
+            </div>
+
             {v.description && (
               <p
                 style={{
-                  margin: "6px 0 0",
-                  color: "rgba(255,255,255,0.75)",
+                  margin: 0,
+                  color: "#6B7686",
                   fontSize: 12,
                   lineHeight: 1.45,
                   overflow: "hidden",
