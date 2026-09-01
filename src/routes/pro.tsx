@@ -473,9 +473,21 @@ function RadioSection() {
               ? radio.nowPlaying?.title || "On air now"
               : "Ad free radio for ADIs and PDIs"}
           </div>
-          <div style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, marginTop: 1 }}>
-            {radio.showName || selected}
+          <div
+            style={{
+              color: "rgba(255,255,255,0.35)",
+              fontSize: 11,
+              marginTop: 1,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {radio.isPlaying && radio.nowPlaying?.artist
+              ? radio.nowPlaying.artist
+              : radio.showName || selected}
           </div>
+
         </div>
 
         <button
