@@ -1448,7 +1448,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
 
   const cardStyle: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 16,
+    borderRadius: 8,
     border: "0.5px solid #E5E5EA",
     boxShadow: "0 4px 0 #E4E4E8",
   };
@@ -1462,10 +1462,27 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
 
   return (
     <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      {/* Section header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-        <div style={{ width: 3, height: 16, borderRadius: 2, background: "#1877D6" }} />
-        <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.6, color: "#1877D6" }}>
+      {/* Section header — matches the standard DSM section eyebrow used everywhere else */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+        <span
+          aria-hidden
+          style={{
+            display: "inline-block",
+            width: 3,
+            height: 12,
+            borderRadius: 12,
+            backgroundColor: "#1877D6",
+          }}
+        />
+        <span
+          style={{
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.semibold,
+            color: "#1877D6",
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+          }}
+        >
           DISCOVER &amp; LEARN
         </span>
       </div>
