@@ -205,7 +205,9 @@ function PerksSection({
   onNavigate: (to: string) => void;
 }) {
   if (perks.length === 0) return null;
-  const topFour = perks.slice(0, 4);
+  const withImage = perks.filter((p) => !!p.hero_image_url?.trim());
+  const withoutImage = perks.filter((p) => !p.hero_image_url?.trim());
+  const topFour = [...withImage, ...withoutImage].slice(0, 4);
   return (
     <section>
       <SectionHeader
@@ -983,7 +985,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
           .select("id, name, description, category, saving, hero_image_url, partner:benefit_partners(name)")
           .eq("active", true)
           .order("sort_order", { ascending: true })
-          .limit(8),
+          .limit(12),
       ]);
       if (cancelled) return;
 
