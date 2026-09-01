@@ -908,7 +908,7 @@ function PerksCard({
                 border: "none",
                 padding: 0,
                 cursor: "pointer",
-                background: i === index ? "#6D28D9" : "#D6D9E0",
+                background: i === index ? "#1877D6" : "#D6D9E0",
                 transition: "width 220ms ease, background 220ms ease",
               }}
             />
@@ -959,8 +959,8 @@ function PerksCard({
                     width: 26,
                     height: 26,
                     borderRadius: 8,
-                    background: "#F3EEFF",
-                    color: "#6D28D9",
+                    background: "#E8F1FB",
+                    color: "#1877D6",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -997,7 +997,7 @@ function PerksCard({
             cursor: "pointer",
             fontSize: 11.5,
             fontWeight: 700,
-            color: "#6D28D9",
+            color: "#1877D6",
             fontFamily: POPPINS.fontFamily,
             flexShrink: 0,
             display: "inline-flex",
