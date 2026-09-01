@@ -257,6 +257,7 @@ function HeroCard() {
         background: "#FFFFFF",
         borderRadius: 16,
         overflow: "hidden",
+        border: "0.5px solid #E4E8EF",
         boxShadow: "0 8px 32px rgba(11,35,65,0.15)",
       }}
     >
