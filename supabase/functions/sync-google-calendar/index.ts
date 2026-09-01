@@ -100,9 +100,9 @@ Deno.serve(async (req) => {
   // HANDLE SYNC — fetch Google events into calendar_blocks
   const now = new Date();
   const timeMin = new Date(now);
-  timeMin.setDate(timeMin.getDate() - 7);
+  timeMin.setDate(timeMin.getDate() - 60);
   const timeMax = new Date(now);
-  timeMax.setDate(timeMax.getDate() + days_ahead);
+  timeMax.setDate(timeMax.getDate() + 180);
 
   const params = new URLSearchParams({
     timeMin: timeMin.toISOString(),
