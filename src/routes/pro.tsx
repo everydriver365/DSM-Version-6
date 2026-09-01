@@ -524,70 +524,23 @@ function RadioCard() {
       </div>
 
       {/* Station tiles */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          marginTop: 14,
-          paddingBottom: 2,
-        }}
-      >
+      <TileRow>
         {STATION_TILES.map((s) => {
           const stationCfg = STATIONS[s.name];
           const selected = selectedChip === s.name;
           const comingSoon = stationCfg?.comingSoon ?? true;
           return (
-            <button
+            <SquareTile
               key={s.name}
-              type="button"
+              icon={s.icon}
+              label={s.name}
+              selected={selected}
+              disabled={comingSoon && !selected}
               onClick={() => handleChip(s.name)}
-              style={{
-                ...POPPINS,
-                flex: "1 1 0",
-                minWidth: 0,
-                minHeight: 0,
-                aspectRatio: "1 / 1",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 5,
-                padding: 6,
-                borderRadius: 8,
-                cursor: "pointer",
-                fontSize: "clamp(8px, 2.3vw, 9.5px)",
-                fontWeight: 700,
-                lineHeight: 1.1,
-                textAlign: "center",
-                background: selected ? BLUE : "#fff",
-                color: selected ? "#fff" : "rgba(11,31,58,0.62)",
-                border: selected ? "none" : `1px solid ${HAIRLINE}`,
-                boxShadow: selected
-                  ? "0 8px 18px -8px rgba(24,119,214,0.8)"
-                  : "0 1px 2px rgba(11,31,58,0.05)",
-                opacity: comingSoon && !selected ? 0.75 : 1,
-              }}
-            >
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  width: 22,
-                  height: 22,
-                  overflow: "hidden",
-                  transform: "scale(0.88)",
-                  transformOrigin: "center",
-                }}
-              >
-                {s.icon}
-              </span>
-              <span style={{ width: "100%", wordBreak: "break-word" }}>{s.name}</span>
-            </button>
+            />
           );
         })}
-      </div>
+      </TileRow>
     </section>
   );
 }
