@@ -1500,7 +1500,7 @@ function ProPage() {
   const go = (to: string) => navigate({ to: to as never });
 
   const [loading, setLoading] = useState(true);
-  const [video, setVideo] = useState<LearnVideo | null>(null);
+  const [video, setVideo] = useState<ProTvVideo | null>(null);
   const [perks, setPerks] = useState<FeaturedPerk[]>([]);
   const [perkCategories, setPerkCategories] = useState<string[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
