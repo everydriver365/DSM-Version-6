@@ -163,15 +163,20 @@ export function useProRadio() {
     }
 
     const fetchStatus = async () => {
+      const logo = await getChannelLogo();
       try {
-        const res = await fetch(SOMAFM_STATUS_URL);
+        const res = await fetch(SOMAFM_SONGS_URL);
         const data = await res.json();
-        const song = data.channel?.lastPlaying;
-        const current = data.channel?.songs?.[0];
+        const current = data.songs?.[0];
+        const albumArt =
+          typeof current?.albumArt === "string" && current.albumArt.trim()
+            ? current.albumArt
+            : null;
         const nextNowPlaying = {
-          title: current?.title ?? song?.title ?? "Groove Salad",
-          artist: current?.artist ?? song?.artist ?? "SomaFM",
-          artwork: current?.cover ?? null,
+          title: current?.title ?? "Groove Salad",
+          artist: current?.artist ?? "SomaFM",
+          album: current?.album ?? undefined,
+          artwork: albumArt ?? logo,
         };
         setState((s) => {
           const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
@@ -189,7 +194,7 @@ export function useProRadio() {
         const fallbackNowPlaying = {
           title: "Groove Salad",
           artist: "SomaFM",
-          artwork: null,
+          artwork: logo,
         };
         setState((s) => {
           const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
@@ -204,6 +209,7 @@ export function useProRadio() {
         updateMediaSession(fallbackNowPlaying, stateRef.current.showName);
       }
     };
+
 
     fetchStatus();
     const interval = window.setInterval(fetchStatus, 30000);
