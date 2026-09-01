@@ -1085,97 +1085,62 @@ function PerksCard({
         </div>
       )}
 
-      {/* Category navigation */}
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 8,
-          marginTop: 10,
-          padding: "10px 12px",
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          border: `0.5px solid ${HAIRLINE}`,
-          boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
-        }}
-      >
+      {/* Category tiles — same square tile design as under PRO TV */}
+      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
         {[...catLabels, "More"].map((label) => {
           const Icon = label === "More" ? IconDots : categoryIcon(label);
+          const color = categoryTileColor(label);
           const to =
             label === "More"
               ? "/perks"
               : `/perks?category=${encodeURIComponent(label.toLowerCase())}`;
           return (
-            <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
-              <button
-                type="button"
-                onClick={() => onNavigate(to)}
+            <button
+              key={label}
+              type="button"
+              onClick={() => onNavigate(to)}
+              style={{
+                ...POPPINS,
+                flex: "1 1 0",
+                minWidth: 0,
+                aspectRatio: "1 / 1",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 5,
+                padding: 6,
+                borderRadius: 8,
+                cursor: "pointer",
+                fontSize: "clamp(8px, 2.3vw, 9.5px)",
+                fontWeight: 700,
+                lineHeight: 1.1,
+                textAlign: "center",
+                background: "#fff",
+                color: "rgba(11,31,58,0.62)",
+                border: `1px solid ${HAIRLINE}`,
+                boxShadow: "0 1px 2px rgba(11,31,58,0.05)",
+              }}
+            >
+              <span
                 style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: 6,
-                  flex: 1,
-                  minWidth: 0,
-                  fontFamily: POPPINS.fontFamily,
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  width: 22,
+                  height: 22,
+                  overflow: "hidden",
+                  transform: "scale(0.88)",
+                  color,
                 }}
               >
-                <span
-                  style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: 8,
-                    background: "#E8F1FB",
-                    color: "#1877D6",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Icon size={14} stroke={2} />
-                </span>
-                <span
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: NAVY,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {label}
-                </span>
-              </button>
-              <span style={{ width: 1, height: 20, background: HAIRLINE, flexShrink: 0 }} />
-            </div>
+                <Icon size={24} stroke={2} />
+              </span>
+              <span style={{ width: "100%", wordBreak: "break-word" }}>{label}</span>
+            </button>
           );
         })}
-
-        <button
-          type="button"
-          onClick={() => onNavigate("/perks")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            fontSize: 11.5,
-            fontWeight: 700,
-            color: "#1877D6",
-            fontFamily: POPPINS.fontFamily,
-            flexShrink: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          See all <IconChevronRight size={13} stroke={2.4} />
-        </button>
       </div>
     </section>
   );
