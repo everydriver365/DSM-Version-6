@@ -10,7 +10,10 @@ import {
   IconRadio,
   IconSearch,
   IconShoppingBag,
+  IconSteeringWheel,
   IconUsers,
+  IconWaveSine,
+
 } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
@@ -139,6 +142,43 @@ function formatMoneyDisplay(raw: string | null): string {
 
 const STATIONS = ["PRO Live", "PRO 80s", "PRO 90s", "PRO Chill", "PRO Drive"];
 
+function WaveformIcon() {
+  const bars = [10, 18, 24, 18, 10];
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+      {bars.map((h, i) => (
+        <span key={i} style={{ width: 3, height: h, borderRadius: 2, background: BLUE }} />
+      ))}
+    </span>
+  );
+}
+
+function DecadeIcon({ label, from, to }: { label: string; from: string; to: string }) {
+  return (
+    <span
+      style={{
+        fontSize: 19,
+        fontWeight: 800,
+        letterSpacing: -0.5,
+        backgroundImage: `linear-gradient(135deg, ${from}, ${to})`,
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        color: "transparent",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+const STATION_TILES: { name: string; icon: React.ReactNode }[] = [
+  { name: "PRO Live", icon: <WaveformIcon /> },
+  { name: "PRO 80s", icon: <DecadeIcon label="80s" from="#F59E0B" to="#E53935" /> },
+  { name: "PRO 90s", icon: <DecadeIcon label="90s" from="#7B61FF" to="#2C97DE" /> },
+  { name: "PRO Chill", icon: <IconWaveSine size={24} color="#18A999" stroke={2.2} /> },
+  { name: "PRO Drive", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
+];
+
 function RadioCard() {
   const radio = useProRadioContext();
   const [selectedChip, setSelectedChip] = useState<string>(radio.selectedStation || "PRO Live");
@@ -165,159 +205,142 @@ function RadioCard() {
     <section style={{ ...POPPINS }}>
       <div
         style={{
-          background: NAVY,
-          borderRadius: CARD_RADIUS,
-          padding: 16,
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          position: "relative",
+          background: "linear-gradient(135deg, #EAF3FC 0%, #DCEBFB 55%, #E8F1FD 100%)",
+          borderRadius: 8,
+          padding: 14,
+          border: "0.5px solid #CFE0F5",
+          boxShadow: "0 2px 10px rgba(11,31,58,0.06)",
         }}
       >
+        {/* Top row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: 8,
+              background: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
+            }}
+          >
+            <IconRadio size={26} color={BLUE} stroke={1.8} />
+          </div>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ color: NAVY, fontSize: 17, fontWeight: 700, letterSpacing: -0.2 }}>
+                PRO Radio
+              </span>
+              <span
+                style={{
+                  background: "#E53935",
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 800,
+                  letterSpacing: 0.4,
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                LIVE
+              </span>
+            </div>
+            <div
+              style={{
+                color: TEXT_SECONDARY,
+                fontSize: 13,
+                marginTop: 2,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {radio.isPlaying ? nowTitle : "Listen live to the best stations"}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            aria-label={radio.isPlaying ? "Pause" : "Play"}
+            onClick={() => {
+              radio.toggle();
+              setSelectedChip("PRO Live");
+            }}
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: "50%",
+              background: BLUE,
+              border: "3px solid #fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(24,119,214,0.3)",
+            }}
+          >
+            {radio.isPlaying ? (
+              <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <span style={{ width: 4, height: 16, background: "#fff", borderRadius: 2 }} />
+                <span style={{ width: 4, height: 16, background: "#fff", borderRadius: 2 }} />
+              </span>
+            ) : (
+              <IconPlayerPlay size={20} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
+            )}
+          </button>
+        </div>
+
+        {/* Stations */}
         <div
           style={{
-            width: 52,
-            height: 52,
-            borderRadius: 12,
-            background: "rgba(255,255,255,0.12)",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
+            alignItems: "stretch",
+            marginTop: 12,
+            paddingTop: 10,
+            borderTop: "0.5px solid rgba(11,31,58,0.08)",
           }}
         >
-          <IconRadio size={26} color="#64B5F6" stroke={1.6} />
+          {STATION_TILES.map((s, idx) => {
+            const selected = selectedChip === s.name;
+            return (
+              <button
+                key={s.name}
+                type="button"
+                onClick={() => handleChip(s.name)}
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  background: selected ? "rgba(255,255,255,0.75)" : "transparent",
+                  borderRadius: 8,
+                  border: "none",
+                  borderLeft: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)",
+                  padding: "6px 2px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 5,
+                  cursor: "pointer",
+                  fontFamily: POPPINS.fontFamily,
+                }}
+              >
+                <span style={{ height: 26, display: "flex", alignItems: "center" }}>{s.icon}</span>
+                <span style={{ fontSize: 10.5, fontWeight: 600, color: NAVY, whiteSpace: "nowrap" }}>
+                  {s.name}
+                </span>
+              </button>
+            );
+          })}
         </div>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <span
-              style={{
-                color: "#fff",
-                fontSize: 17,
-                fontWeight: 700,
-                letterSpacing: -0.2,
-              }}
-            >
-              PRO Radio
-            </span>
-            <span
-              style={{
-                background: "#E53935",
-                color: "#fff",
-                fontSize: 9,
-                fontWeight: 800,
-                textTransform: "uppercase",
-                letterSpacing: 0.4,
-                padding: "2px 6px",
-                borderRadius: 4,
-              }}
-            >
-              LIVE
-            </span>
-          </div>
-          <div
-            style={{
-              color: "rgba(255,255,255,0.9)",
-              fontSize: 14,
-              fontWeight: 500,
-              lineHeight: 1.3,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {nowTitle}
-          </div>
-          <div
-            style={{
-              color: "rgba(255,255,255,0.55)",
-              fontSize: 12,
-              fontWeight: 400,
-              marginTop: 2,
-            }}
-          >
-            {radio.isPlaying ? `On ${station}` : "Tap play to listen"}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          aria-label={radio.isPlaying ? "Pause" : "Play"}
-          onClick={() => {
-            radio.toggle();
-            setSelectedChip("PRO Live");
-          }}
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: "50%",
-            background: BLUE,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            cursor: "pointer",
-            boxShadow: "0 6px 16px rgba(24,119,214,0.35)",
-          }}
-        >
-          {radio.isPlaying ? (
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
-              <span style={{ width: 4, height: 18, background: "#fff", borderRadius: 2 }} />
-              <span style={{ width: 4, height: 18, background: "#fff", borderRadius: 2 }} />
-            </span>
-          ) : (
-            <IconPlayerPlay size={22} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
-          )}
-        </button>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: 6,
-          overflowX: "auto",
-          marginTop: 12,
-          paddingBottom: 4,
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
-        {STATIONS.map((name) => {
-          const selected = selectedChip === name;
-          return (
-            <button
-              key={name}
-              type="button"
-              onClick={() => handleChip(name)}
-              style={{
-                flex: "0 0 auto",
-                background: selected ? NAVY : "#fff",
-                color: selected ? "#fff" : NAVY,
-                border: `1px solid ${selected ? NAVY : HAIRLINE}`,
-                borderRadius: 999,
-                padding: "6px 12px",
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: "pointer",
-                fontFamily: POPPINS.fontFamily,
-              }}
-            >
-              {name}
-            </button>
-          );
-        })}
       </div>
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 // PRO TV card
@@ -341,13 +364,15 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
       <div
         onClick={() => onNavigate("/dsm-live")}
         style={{
-          background: NAVY,
-          borderRadius: CARD_RADIUS,
+          background: "linear-gradient(160deg, #0E2647 0%, #0B1F3A 100%)",
+          borderRadius: 8,
           overflow: "hidden",
           cursor: "pointer",
           position: "relative",
-          padding: "4px 16px",
+          padding: "10px 14px 12px",
+          boxShadow: "0 6px 18px rgba(11,31,58,0.18)",
         }}
+
       >
         {/* Header */}
         <div
@@ -397,8 +422,8 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
               position: "relative",
               width: "48%",
               minWidth: 140,
-              aspectRatio: "16 / 8.5",
-              borderRadius: 12,
+              aspectRatio: "16 / 9",
+              borderRadius: 8,
               overflow: "hidden",
               background: thumb ? `url(${thumb}) center/cover` : "linear-gradient(135deg, #0B2341, #1a3a6b)",
               flexShrink: 0,
@@ -530,53 +555,56 @@ function PerksCard({
     <section style={{ ...POPPINS }}>
       <div
         style={{
-          background: "linear-gradient(135deg, #6B4FD6 0%, #8B5CF6 100%)",
-          borderRadius: CARD_RADIUS,
+          background: "linear-gradient(135deg, #EDE9FE 0%, #E3DCFB 55%, #F1EEFE 100%)",
+          borderRadius: 8,
           padding: 14,
           display: "flex",
           alignItems: "center",
           gap: 12,
+          border: "0.5px solid #D9D0F7",
+          boxShadow: "0 2px 10px rgba(107,79,214,0.08)",
         }}
       >
         <div
           style={{
             width: 48,
             height: 48,
-            borderRadius: 12,
-            background: "rgba(255,255,255,0.2)",
+            borderRadius: 8,
+            background: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            boxShadow: "0 1px 4px rgba(107,79,214,0.12)",
           }}
         >
-          <IconGift size={24} color="#fff" stroke={1.6} />
+          <IconGift size={24} color="#7C3AED" stroke={1.8} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 11,
+              fontSize: 10.5,
               fontWeight: 700,
-              color: "rgba(255,255,255,0.75)",
+              color: "#7C3AED",
               textTransform: "uppercase",
               letterSpacing: 0.6,
-              marginBottom: 4,
+              marginBottom: 3,
             }}
           >
-            PRO PERKS · FEATURED
+            PRO PERKS
           </div>
           <div
             style={{
               fontSize: 16,
               fontWeight: 700,
-              color: "#fff",
+              color: NAVY,
               lineHeight: 1.25,
             }}
           >
             {p.name}
           </div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", marginTop: 3 }}>
+          <div style={{ fontSize: 13, color: "#5B5473", marginTop: 3 }}>
             {p.saving}
           </div>
         </div>
@@ -586,15 +614,16 @@ function PerksCard({
           onClick={() => onNavigate("/perks")}
           style={{
             flexShrink: 0,
-            background: "rgba(255,255,255,0.25)",
-            color: "#fff",
-            border: "none",
+            background: "#fff",
+            color: "#7C3AED",
+            border: "0.5px solid #D9D0F7",
             borderRadius: 8,
-            padding: "8px 14px",
-            fontSize: 13,
-            fontWeight: 600,
+            padding: "9px 16px",
+            fontSize: 14,
+            fontWeight: 700,
             cursor: "pointer",
             fontFamily: POPPINS.fontFamily,
+            boxShadow: "0 1px 4px rgba(107,79,214,0.12)",
           }}
         >
           Claim
@@ -604,13 +633,14 @@ function PerksCard({
       <div
         style={{
           background: "#fff",
-          borderRadius: "0 0 " + CARD_RADIUS + "px " + CARD_RADIUS + "px",
+          borderRadius: 8,
+          marginTop: 8,
           padding: "12px 16px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           border: `0.5px solid ${HAIRLINE}`,
-          borderTop: "none",
+
         }}
       >
         <span style={{ fontSize: 13, color: TEXT_SECONDARY }}>{categoryLine}</span>
