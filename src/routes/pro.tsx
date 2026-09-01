@@ -21,6 +21,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "@/lib/toast";
 
 import proImage from "@/assets/pro-image.png.asset.json";
+import proLogo from "@/assets/pro-logo.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const PAGE_BG = "#F4F6F8";
@@ -229,9 +230,14 @@ function RadioCard() {
               justifyContent: "center",
               flexShrink: 0,
               boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
+              overflow: "hidden",
             }}
           >
-            <IconRadio size={26} color={BLUE} stroke={1.8} />
+            <img
+              src={proLogo.url}
+              alt="PRO"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
           </div>
 
           <div style={{ flex: 1, minWidth: 0 }}>
