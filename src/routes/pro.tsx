@@ -263,7 +263,7 @@ function RadioCard() {
                 textOverflow: "ellipsis",
               }}
             >
-              {radio.isPlaying ? nowTitle : "Ad FREE radio for ADI's and PDI's"}
+              {radio.isPlaying ? nowTitle : "Ad Ad FREE radio for Instructors."}
             </div>
           </div>
 
