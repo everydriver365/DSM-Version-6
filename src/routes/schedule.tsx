@@ -1191,12 +1191,20 @@ function SchedulePage() {
         const msg = "Calendar provider is rate-limiting us — try again in a few minutes";
         toast.info(msg);
         setSyncMessage({ type: "error", text: msg });
+      } else if (raw.includes("calendar_blocks_external_unique") || raw.includes("duplicate key")) {
+        // Those events were already imported — not a real failure.
+        const msg = "Calendar already up to date";
+        toast.info(msg);
+        setSyncMessage({ type: "success", text: msg });
+        setLastSynced(new Date().toISOString());
+        await fetchCalendarBlocks();
       } else {
         const msg = "Sync failed — check your calendar URL in Settings";
         toast.error(msg);
         setSyncMessage({ type: "error", text: msg });
         hapticError();
       }
+
     } catch (err) {
       const msg = "Sync failed";
       toast.error(msg);
