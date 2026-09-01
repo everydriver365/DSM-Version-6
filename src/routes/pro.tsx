@@ -604,18 +604,19 @@ function RadioCard() {
 // PRO TV card
 /* ------------------------------------------------------------------ */
 
-const TV_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+const TV_TILES: { name: string; to: string; icon: React.ReactNode; fillIcon?: boolean }[] = [
   { name: "PRO Learn", to: "/dsm-learn", icon: <IconBook size={24} color="#1877D6" stroke={2} /> },
   { name: "Showcase", to: "/showcase", icon: <IconUsers size={24} color="#7C3AED" stroke={2} /> },
   { name: "Bitesize", to: "/bitesize", icon: <IconPlayerPlay size={24} color="#18A999" stroke={2} /> },
   {
     name: "Live",
     to: "/dsm-live",
+    fillIcon: true,
     icon: (
       <img
         src={proRadio2.url}
         alt=""
-        style={{ width: 26, height: 26, objectFit: "contain" }}
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
       />
     ),
   },
