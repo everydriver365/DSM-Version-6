@@ -558,6 +558,27 @@ const TV_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
   { name: "Live", to: "/dsm-live", icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} /> },
 ];
 
+const PERK_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "Health", to: "/perks?category=health", icon: <IconHeartbeat size={24} color="#16A34A" stroke={2} /> },
+  { name: "Fuel", to: "/perks?category=fuel", icon: <IconGasStation size={24} color="#E53935" stroke={2} /> },
+  { name: "SIM", to: "/perks?category=sim", icon: <IconDeviceMobile size={24} color="#1877D6" stroke={2} /> },
+  { name: "More", to: "/perks", icon: <IconDots size={24} color="#6B7686" stroke={2} /> },
+];
+
+const HAPPENING_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "Community", to: "/community", icon: <IconMessages size={24} color="#2C97DE" stroke={2} /> },
+  { name: "Alerts", to: "/community", icon: <IconAlertTriangle size={24} color="#F59E0B" stroke={2} /> },
+  { name: "PRO TV", to: "/dsm-live", icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} /> },
+  { name: "PRO Perks", to: "/perks", icon: <IconGift size={24} color="#16A34A" stroke={2} /> },
+];
+
+const SHOP_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
+  { name: "All items", to: "/marketplace", icon: <IconShoppingBag size={24} color="#1877D6" stroke={2} /> },
+  { name: "Dash cams", to: "/marketplace", icon: <IconDeviceTv size={24} color="#7C3AED" stroke={2} /> },
+  { name: "ADI Gear", to: "/marketplace", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
+  { name: "Books", to: "/marketplace", icon: <IconBook size={24} color="#18A999" stroke={2} /> },
+];
+
 function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate: (to: string) => void }) {
   const v = video ?? {
     id: "mock",
