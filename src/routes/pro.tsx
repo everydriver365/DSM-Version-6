@@ -403,7 +403,13 @@ function GridCard({
           position: "relative",
         }}
       >
-        <PerkHeroImage src={image} alt={title} initial={title.trim().charAt(0).toUpperCase()} />
+        <PerkHeroImage
+          src={image}
+          alt={title}
+          initial={title.trim().charAt(0).toUpperCase()}
+          contain={imageContain}
+        />
+
         <span
           style={{
             position: "absolute",
