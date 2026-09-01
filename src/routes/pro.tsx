@@ -779,7 +779,6 @@ function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () 
 
   return (
     <section>
-      <SectionHeader eyebrow="Featured" />
       <div
         onClick={onOpen}
         style={{
