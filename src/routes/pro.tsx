@@ -72,6 +72,7 @@ type FeaturedPerk = {
   saving: string | null;
   description: string | null;
   category: string | null;
+  hero_image_url: string | null;
   partner_name: string;
   partner_logo_url: string | null;
 };
