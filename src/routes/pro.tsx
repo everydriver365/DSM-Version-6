@@ -1029,19 +1029,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
         }}
       >
         <header style={{ padding: `18px ${PAD}px 2px` }}>
-          <h1
-            style={{
-              fontSize: 40,
-              fontWeight: 800,
-              color: NAVY,
-              margin: 0,
-              letterSpacing: "-0.02em",
-              lineHeight: 1,
-            }}
-          >
-            PRO
-          </h1>
-          <div style={{ fontSize: 15, fontWeight: 600, color: MUTED, marginTop: 8 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: MUTED }}>
             Your PRO membership
           </div>
           <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.4, maxWidth: 280 }}>
