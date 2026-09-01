@@ -366,6 +366,7 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
         })}
       </div>
     </div>
+  </>
   );
 }
 
