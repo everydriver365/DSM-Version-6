@@ -7157,11 +7157,11 @@ function HomePage() {
                           style={{
                             background: '#FFFFFF',
                             border: '1px solid #E4E8EF',
-                            borderRadius: tokens.radiusCard,
+                            borderRadius: 8,
                             marginBottom: 8,
                             padding: '12px 14px',
                             display: 'flex',
-                            alignItems: 'stretch',
+                            alignItems: 'center',
                             gap: 12,
                           }}
                         >
@@ -7173,7 +7173,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div aria-hidden style={{ width: 3, borderRadius: 12, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div aria-hidden style={{ width: 3, borderRadius: 12, background: '#1877D6', flexShrink: 0, alignSelf: 'stretch' }} />
                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
                               style={{
@@ -7194,6 +7194,7 @@ function HomePage() {
                               <span style={{ fontSize: 12, color: '#6B7686', fontWeight: tokens.fontWeight.medium, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
                             </div>
                           </div>
+                          <IconChevronRight size={16} stroke={1.5} color="#9CA3AF" style={{ flexShrink: 0 }} />
                         </div>
                       );
                     }
@@ -7401,40 +7402,40 @@ function HomePage() {
                           )}
                           </TestDetailTrigger>
                         ) : (
-                          <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 8, marginBottom: 8 }}>
-                          <div
-                            onClick={() => setDetailsSheetForLesson(l)}
-                            onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
-                            role="button"
-                            tabIndex={0}
-                            style={{
-                              padding: '12px 14px',
-                              display: 'flex',
-                              alignItems: 'stretch',
-                              gap: 12,
-                              cursor: 'pointer',
-                              boxSizing: 'border-box',
-                              opacity: isCancelled ? 0.55 : 1,
-                            }}
-                          >
-                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
-                              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
-                                {timeLabel}
-                              </div>
-                              <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
-                                {durLabel}
-                              </div>
+                        <div style={{ position: 'relative', background: isLive ? '#F0FDF4' : '#FFFFFF', border: isLive ? '1px solid #BBF7D0' : '1px solid #E4E8EF', borderRadius: 8, marginBottom: 8 }}>
+                        <div
+                          onClick={() => setDetailsSheetForLesson(l)}
+                          onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
+                          role="button"
+                          tabIndex={0}
+                          style={{
+                            padding: '12px 14px',
+                            display: 'flex',
+                            alignItems: 'stretch',
+                            gap: 12,
+                            cursor: 'pointer',
+                            boxSizing: 'border-box',
+                            opacity: isCancelled ? 0.55 : 1,
+                          }}
+                        >
+                          <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: isLive ? '#15803D' : '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                              {timeLabel}
                             </div>
-                            <div
-                              aria-hidden
-                              style={{
-                                width: 3,
-                                borderRadius: 12,
-                                background: isCancelled ? '#9CA3AF' : '#1877D6',
-                                flexShrink: 0,
-                                alignSelf: 'stretch',
-                              }}
-                            />
+                            <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              {durLabel}
+                            </div>
+                          </div>
+                          <div
+                            aria-hidden
+                            style={{
+                              width: 3,
+                              borderRadius: 12,
+                              background: '#1877D6',
+                              flexShrink: 0,
+                              alignSelf: 'stretch',
+                            }}
+                          />
                             <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                                 <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
@@ -7464,7 +7465,6 @@ function HomePage() {
                                     amountDue={l.amount_due}
                                     paidAmount={(l as any).paid_amount}
                                     prepaidHours={(l.pupils as any)?.prepaid_hours}
-                                    isLive={isLive}
                                     onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
                                   />
                                 )}
