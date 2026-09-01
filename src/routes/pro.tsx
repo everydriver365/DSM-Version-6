@@ -1114,14 +1114,45 @@ function ProPage() {
             .select("id, message, created_at, instructors(name)")
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
-            .limit(7),
+            .limit(3),
 
           sbGet<
             ShopListing[]
           >(
             "marketplace_listings?is_active=eq.true&deleted_at=is.null&order=created_at.desc&select=id,title,price_display,image_urls,marketplace_suppliers(name,logo_url,is_verified)&limit=10"
           ),
+          supabase
+            .from("local_alerts")
+            .select("id, title, body, created_at, alert_type")
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("howto_videos")
+            .select("id, title, category, created_at")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("bitesize_videos")
+            .select("id, title, category, created_at")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("benefit_perks")
+            .select("id, name, saving, created_at")
+            .eq("active", true)
+            .order("created_at", { ascending: false })
+            .limit(1),
+          supabase
+            .from("marketplace_listings")
+            .select("id, title, price_display, created_at")
+            .eq("is_active", true)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(1),
         ]);
+
 
         if (cancelled) return;
 
