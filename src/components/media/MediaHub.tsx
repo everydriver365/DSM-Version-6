@@ -752,7 +752,7 @@ function TvTab({ onNavigate: _onNavigate }: { onNavigate: (to: string) => void }
 
 /* -------------------------------- PODCASTS -------------------------------- */
 
-const PODCAST_FILTERS = ["All", "Featured", "Driving Tips", "Road Stories", "Interviews"];
+const PODCAST_FILTERS = ["All", "Featured", "Driving Tips", "Road Stories", "Interviews", "Interesting"];
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -829,17 +829,32 @@ function PodcastsTab() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (filter === "All") return episodes;
-    if (filter === "Featured") return episodes.filter((e) => e.showFeatured);
+    if (filter === "All") return episodes.filter((e) => !e.showCategories.includes("Interesting"));
+    if (filter === "Interesting") return episodes.filter((e) => e.showCategories.includes("Interesting"));
+    if (filter === "Featured") {
+      return episodes.filter((e) => e.showFeatured && !e.showCategories.includes("Interesting"));
+    }
     const term = filter.toLowerCase();
-    return episodes.filter((e) =>
-      e.showCategories.some((c) => c.toLowerCase().includes(term.split(" ")[0] ?? term)),
+    return episodes.filter(
+      (e) =>
+        !e.showCategories.includes("Interesting") &&
+        e.showCategories.some((c) => c.toLowerCase().includes(term.split(" ")[0] ?? term)),
     );
   }, [episodes, filter]);
 
-  const featured = filtered.find((e) => e.showFeatured) ?? filtered[0];
+  const featured = useMemo(() => {
+    if (filter === "Interesting") {
+      return filtered.find((e) => e.showCategories.includes("Interesting")) ?? filtered[0];
+    }
+    return filtered.find((e) => e.showFeatured) ?? filtered[0];
+  }, [filtered, filter]);
+
   const latest = filtered.filter((e) => e.id !== featured?.id).slice(0, 8);
-  const shows = PODCAST_SHOWS.filter((s) => s.featured);
+
+  const shows = useMemo(() => {
+    if (filter === "Interesting") return PODCAST_SHOWS.filter((s) => s.interesting);
+    return PODCAST_SHOWS.filter((s) => !s.interesting);
+  }, [filter]);
 
   const open = (url: string | null | undefined) => {
     if (url) window.open(url, "_blank", "noopener,noreferrer");
