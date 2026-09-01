@@ -75,7 +75,6 @@ function LiveBadge({ size = 6 }: { size?: number }) {
 
 interface StationTileProps {
   station: StationDef;
-  isSelected: boolean;
   isPlaying: boolean;
   isFavorite: boolean;
   onToggle: () => void;
