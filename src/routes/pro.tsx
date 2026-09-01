@@ -177,8 +177,8 @@ const STATION_TILES: { name: string; icon: React.ReactNode }[] = [
   { name: "PRO Live", icon: <WaveformIcon /> },
   { name: "PRO 80s", icon: <DecadeIcon label="80s" from="#F59E0B" to="#E53935" /> },
   { name: "PRO 90s", icon: <DecadeIcon label="90s" from="#7B61FF" to="#2C97DE" /> },
-  { name: "PRO Chill", icon: <IconWaveSine size={24} color="#18A999" stroke={2.2} /> },
-  { name: "PRO Drive", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
+  { name: "PRO 00s", icon: <IconWaveSine size={24} color="#18A999" stroke={2.2} /> },
+  { name: "PRO Xmas", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
 ];
 
 function RadioCard() {
