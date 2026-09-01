@@ -33,6 +33,7 @@ import { formatVideoDuration, videoMinutes, type LearnVideo } from "@/lib/learnV
 
 import proImage from "@/assets/pro-image.png.asset.json";
 import proLogo from "@/assets/pro-logo-padded.png";
+import proRadioLogo from "@/assets/pro-radio-logo.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
