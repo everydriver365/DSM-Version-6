@@ -415,7 +415,17 @@ const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; 
       />
     ),
   },
-  { name: "PRO 90s", icon: <DecadeIcon label="90s" from="#7B61FF" to="#2C97DE" /> },
+  {
+    name: "PRO 90s",
+    fillIcon: true,
+    icon: (
+      <img
+        src={logo90s.url}
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    ),
+  },
   { name: "PRO Xmas", icon: <IconSteeringWheel size={24} color="#F97316" stroke={2} /> },
 ];
 
