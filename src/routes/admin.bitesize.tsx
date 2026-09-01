@@ -108,6 +108,9 @@ function AdminBitesizePage() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
+  const [source, setSource] = useState<"upload" | "youtube">("upload");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+
 
   useEffect(() => {
     setLoading(true);
