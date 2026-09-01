@@ -337,7 +337,7 @@ function PerksSection({
             oneLine(hero.description) ||
             [hero.partner?.name, hero.category].filter(Boolean).join(" · ")
           }
-          image={hero.hero_image_url}
+          image={hero.hero_image_url ?? null}
           initial={(hero.partner?.name || hero.name).trim().charAt(0).toUpperCase()}
           tint={perkTint(hero.id)}
           badge="Featured perk"
