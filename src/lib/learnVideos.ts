@@ -37,48 +37,48 @@ export interface LearnVideo {
 }
 
 export const VIDEO_CATEGORIES = [
-  "Getting started",
+  "Getting Started",
+  "How To",
   "Training",
-  "News",
   "CPD",
   "Business",
   "Wellbeing",
-  "Bitesize",
+  "News",
   "Showcase",
 ] as const;
 
 export type VideoCategory = (typeof VIDEO_CATEGORIES)[number];
 
 export const VIDEO_CATEGORY_EMOJI: Record<string, string> = {
-  "Getting started": "🚀",
+  "Getting Started": "🚀",
+  "How To": "🎯",
   "Training": "🎓",
-  "News": "📰",
   "CPD": "📋",
   "Business": "💼",
   "Wellbeing": "🌿",
-  "Bitesize": "📚",
+  "News": "📰",
   "Showcase": "🏆",
 };
 
 export const BITESIZE_CATEGORIES = [
-  "Getting started",
+  "Getting Started",
+  "How To",
   "Training",
-  "News",
   "CPD",
   "Business",
   "Wellbeing",
-  "Bitesize",
+  "News",
   "Showcase",
 ] as const;
 
 export const BITESIZE_CATEGORY_EMOJI: Record<string, string> = {
-  "Getting started": "🚀",
+  "Getting Started": "🚀",
+  "How To": "🎯",
   "Training": "🎓",
-  "News": "📰",
   "CPD": "📋",
   "Business": "💼",
   "Wellbeing": "🌿",
-  "Bitesize": "📚",
+  "News": "📰",
   "Showcase": "🏆",
 };
 
