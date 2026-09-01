@@ -5,25 +5,50 @@ import {
   IconCalendar,
   IconMessage,
   IconChevronRight,
-  IconCar,
   IconListCheck,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { calculateOutstandingOwed } from "@/lib/paymentsOwed";
-import { tokens } from "@/lib/tokens";
 
 const PF = "Poppins, sans-serif";
+const HF = "Sora, Poppins, sans-serif";
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
-const HAIRLINE = "#E5E5EA";
-const SHADOW = "#E4E4E8";
+const MUTED = "#6B7A8F";
+const HAIRLINE = "#E5E7EB";
+
+const TONES = {
+  danger: {
+    accent: "#FF3B30",
+    iconBg: "#FFF0F0",
+    iconColor: "#D32F2F",
+    pillBg: "#FFECEC",
+    pillText: "#D32F2F",
+  },
+  warning: {
+    accent: "#FF9500",
+    iconBg: "#FFF7ED",
+    iconColor: "#EA580C",
+    pillBg: "#FFF3E0",
+    pillText: "#EA580C",
+  },
+  muted: {
+    accent: "#9CA3AF",
+    iconBg: "#F3F4F6",
+    iconColor: "#6B7280",
+    pillBg: "#F3F4F6",
+    pillText: "#4B5563",
+  },
+} as const;
 
 export type TaskTone = "danger" | "warning" | "muted";
 
 export type TaskItem = {
   id: string;
   title: string;
-  /** Right-hand value: amount, "Due today", etc. Omit for a chevron-only row. */
+  /** Short secondary line shown beneath the title. */
+  subtitle?: string;
+  /** Right-hand value: amount, "Overdue", etc. Omit for a chevron-only row. */
   value?: string;
   tone: TaskTone;
   /** Icon tile colour + glyph */
@@ -33,12 +58,6 @@ export type TaskItem = {
   /** Sort weight — lower is more urgent */
   weight: number;
   onPress: () => void;
-};
-
-const toneColor: Record<TaskTone, string> = {
-  danger: "#A32D2D",
-  warning: "#854F0B",
-  muted: "#6B7686",
 };
 
 function money(n: number) {
@@ -52,11 +71,11 @@ function daysFromToday(dateStr: string): number {
   return Math.round((d.getTime() - today.getTime()) / 86400000);
 }
 
-function dueLabel(days: number): { value: string; tone: TaskTone; weight: number } {
-  if (days < 0) return { value: "Overdue", tone: "danger", weight: 0 };
-  if (days === 0) return { value: "Due today", tone: "danger", weight: 1 };
-  if (days === 1) return { value: "Due tomorrow", tone: "warning", weight: 2 };
-  return { value: `In ${days} days`, tone: "muted", weight: 3 + Math.min(days, 30) };
+function dueLabel(days: number): { value: string; tone: TaskTone; weight: number; subtitle: string } {
+  if (days < 0) return { value: "Overdue", tone: "danger", weight: 0, subtitle: "Due now" };
+  if (days === 0) return { value: "Due today", tone: "danger", weight: 1, subtitle: "Due now" };
+  if (days === 1) return { value: "Due tomorrow", tone: "warning", weight: 2, subtitle: "Due tomorrow" };
+  return { value: `In ${days} days`, tone: "muted", weight: 3 + Math.min(days, 30), subtitle: `In ${days} days` };
 }
 
 /**
@@ -140,11 +159,10 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
           owed.count > 1 || !owed.name
             ? `Confirm ${owed.count} outstanding payment${owed.count === 1 ? "" : "s"}`
             : `Confirm payment – ${owed.name}`,
+        subtitle: "Review and confirm",
         value: money(owed.total),
-        tone: "danger",
+        tone: "warning",
         Icon: IconReceipt,
-        iconColor: "#854F0B",
-        iconBg: "#FAEEDA",
         weight: 1,
         onPress: () => navigate({ to: "/payments" as never }),
       });
@@ -156,11 +174,10 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
       items.push({
         id: `todo-${t.id}`,
         title: t.title,
+        subtitle: d.subtitle,
         value: d.value,
         tone: d.tone,
         Icon: IconCalendar,
-        iconColor: "#185FA5",
-        iconBg: "#E6F1FB",
         weight: d.weight,
         onPress: () => navigate({ to: "/todos" as never }),
       });
@@ -170,10 +187,9 @@ function useTaskItems(userId: string | null | undefined): TaskItem[] {
       items.push({
         id: "unread",
         title: `${unread} unread message${unread === 1 ? "" : "s"}`,
+        subtitle: "Tap to view",
         tone: "muted",
         Icon: IconMessage,
-        iconColor: "#185FA5",
-        iconBg: "#E6F1FB",
         weight: 4,
         onPress: () => navigate({ to: "/messages" as never }),
       });
@@ -192,6 +208,40 @@ type Props = {
   onSeeAll?: () => void;
 };
 
+function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
+  const t = TONES[tone];
+  const isMoney = value.startsWith("£");
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        flexShrink: 0,
+        padding: "6px 12px",
+        borderRadius: 999,
+        fontSize: 13,
+        fontWeight: 600,
+        color: t.pillText,
+        background: t.pillBg,
+        fontFamily: PF,
+      }}
+    >
+      {!isMoney && (
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: t.pillText,
+          }}
+        />
+      )}
+      {value}
+    </span>
+  );
+}
+
 export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) {
   const navigate = useNavigate();
   const live = useTaskItems(items ? null : userId);
@@ -201,57 +251,63 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
   if (rows.length === 0) return null;
 
   return (
-    <>
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 30,
+        border: `0.5px solid ${HAIRLINE}`,
+        boxShadow: "0 8px 24px rgba(11,31,58,0.06)",
+        padding: "22px 18px 18px",
+        fontFamily: PF,
+      }}
+    >
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 8,
+          marginBottom: 18,
+          paddingLeft: 4,
+          paddingRight: 4,
         }}
       >
         <span
           style={{
-            fontSize: 13,
-            fontWeight: 500,
+            fontSize: 18,
+            fontWeight: 700,
             color: NAVY,
-            fontFamily: PF,
+            fontFamily: HF,
+            letterSpacing: "-0.3px",
           }}
         >
-          Tasks and actions
+          Tasks & actions
         </span>
         <button
           type="button"
           onClick={() => (onSeeAll ? onSeeAll() : navigate({ to: "/todos" as never }))}
           style={{
-            fontSize: 13,
-            fontWeight: 500,
+            fontSize: 14,
+            fontWeight: 600,
             color: BLUE,
             background: "none",
             border: "none",
             padding: 0,
             cursor: "pointer",
             fontFamily: PF,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 2,
           }}
         >
           See all
+          <IconChevronRight size={16} stroke={2.5} />
         </button>
       </div>
 
-      <div
-        style={{
-          background: "#FFFFFF",
-          borderRadius: 12,
-          border: `0.5px solid ${HAIRLINE}`,
-          boxShadow: `0 4px 0 ${SHADOW}`,
-          overflow: "hidden",
-          fontFamily: PF,
-        }}
-      >
+      <div>
         {rows.map((item, i) => {
           const Icon = item.Icon ?? IconListCheck;
-          const fallbackIconBg = item.id === "owed" ? "#FAEEDA" : "#F1EFE8";
-          const fallbackIconColor = item.id === "owed" ? "#854F0B" : "#5F5E5A";
+          const tone = TONES[item.tone];
           return (
             <button
               key={item.id}
@@ -261,65 +317,94 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                padding: "12px 14px",
+                gap: 14,
+                padding: "14px 16px",
                 background: "transparent",
                 border: "none",
                 borderTop: i === 0 ? "none" : `0.5px solid ${HAIRLINE}`,
                 textAlign: "left",
                 cursor: "pointer",
                 fontFamily: PF,
+                position: "relative",
+                borderRadius: 16,
               }}
             >
+              {/* Left accent line */}
               <span
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 9,
+                  position: "absolute",
+                  left: 0,
+                  top: 18,
+                  bottom: 18,
+                  width: 4,
+                  borderRadius: 999,
+                  background: tone.accent,
+                }}
+              />
+
+              <span
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 14,
                   flexShrink: 0,
-                  background: item.iconBg ?? fallbackIconBg,
+                  background: item.iconBg ?? tone.iconBg,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Icon size={18} color={item.iconColor ?? fallbackIconColor} stroke={1.8} />
+                <Icon size={24} color={item.iconColor ?? tone.iconColor} stroke={1.7} />
               </span>
 
               <span
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: NAVY,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
                 }}
               >
-                {item.title}
-              </span>
-
-              {item.value ? (
                 <span
                   style={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: toneColor[item.tone],
-                    flexShrink: 0,
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: NAVY,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
-                  {item.value}
+                  {item.title}
                 </span>
-              ) : (
-                <IconChevronRight size={18} color="#C7CDD9" stroke={1.8} style={{ flexShrink: 0 }} />
-              )}
+                {item.subtitle && (
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 400,
+                      color: MUTED,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {item.subtitle}
+                  </span>
+                )}
+              </span>
+
+              <span style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+                {item.value ? (
+                  <ValuePill value={item.value} tone={item.tone} />
+                ) : null}
+                <IconChevronRight size={20} color="#C7CDD9" stroke={2} style={{ flexShrink: 0 }} />
+              </span>
             </button>
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
 
