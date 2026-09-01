@@ -1077,6 +1077,34 @@ function SchedulePage() {
           google_calendar_connected: i.google_calendar_connected ?? false,
         });
         if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
+
+        // Auto-sync Google Calendar if last sync was > 30 mins ago
+        const lastSyncedDate = i.calendar_last_synced ? new Date(i.calendar_last_synced) : null;
+        const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
+        const shouldSync = !lastSyncedDate || lastSyncedDate < thirtyMinsAgo;
+        if (i.google_calendar_connected && shouldSync && !hasAutoSynced.current) {
+          hasAutoSynced.current = true;
+          console.log("[schedule] auto-syncing Google Calendar...");
+          fetch(`${SUPABASE_URL}/functions/v1/sync-google-calendar`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ instructor_id: uid }),
+          })
+            .then((r) => r.json())
+            .then((data) => {
+              console.log("[schedule] auto-sync result:", data);
+              // Reload calendar blocks after sync completes
+              if (data.ok || data.success) {
+                loadCalendarBlocks(uid);
+              }
+            })
+            .catch((err) => console.warn("[schedule] auto-sync failed:", err));
+        }
+
         if (recRes.ok) {
           const d = await recRes.json();
           if (!cancelled && Array.isArray(d)) setRecurringBlocks(d);
@@ -1166,7 +1194,7 @@ function SchedulePage() {
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
         hapticSuccess();
-        await fetchCalendarBlocks();
+        await loadCalendarBlocks(userId);
         // Copy each Google event's colour onto the imported rows. Silent, and
         // never allowed to break a normal sync.
         if (useGoogleSync && token) {
@@ -1177,7 +1205,7 @@ function SchedulePage() {
               });
               if (result.success) {
                 console.log("[schedule] colour pass", result);
-                await fetchCalendarBlocks();
+                await loadCalendarBlocks(userId);
               } else {
                 console.warn("[schedule] colour pass failed", result.error);
               }
@@ -1196,7 +1224,7 @@ function SchedulePage() {
         toast.info(msg);
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
-        await fetchCalendarBlocks();
+        await loadCalendarBlocks(userId);
       } else {
         const msg = data?.message ?? data?.error ?? "Sync failed — reconnect Google Calendar in Settings";
         toast.error(msg);
@@ -1212,7 +1240,7 @@ function SchedulePage() {
     } finally {
       setSyncing(false);
     }
-  }, [userId, instructor, fetchCalendarBlocks, navigate]);
+  }, [userId, instructor, navigate]);
 
   const handleDeleteLesson = useCallback(async (lesson: any) => {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
