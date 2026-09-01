@@ -157,13 +157,32 @@ function AdminBitesizePage() {
   }
 
   async function handleUpload() {
-    if (!videoFile || !title.trim()) return;
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (source === "youtube" && !youtubeUrl.trim()) {
+      toast.error("Please enter a YouTube URL");
+      return;
+    }
+    if (source === "upload" && !videoFile) {
+      toast.error("Please select a video file");
+      return;
+    }
+
     setUploading(true);
     try {
-      setUploadProgress("Uploading video...");
-      const videoUrl = await uploadVideo(videoFile, "learn-videos", 500);
-
+      let videoUrl: string | null = null;
       let thumbnailUrl: string | null = null;
+
+      if (source === "youtube") {
+        videoUrl = youtubeUrl.trim();
+        thumbnailUrl = thumbFile ? null : youtubeThumbnail(videoUrl);
+      } else {
+        setUploadProgress("Uploading video...");
+        videoUrl = await uploadVideo(videoFile!, "learn-videos", 500);
+      }
+
       if (thumbFile) {
         setUploadProgress("Uploading thumbnail...");
         thumbnailUrl = await uploadImage(thumbFile, "learn-videos");
