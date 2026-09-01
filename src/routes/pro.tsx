@@ -1387,9 +1387,27 @@ function ProPage() {
           setVideo(videoRes.value.data[0] as LearnVideo);
         }
 
-        if (perkRes.status === "fulfilled" && perkRes.value.data && perkRes.value.data.length > 0) {
+        let perkRows: any[] =
+          perkRes.status === "fulfilled" && Array.isArray(perkRes.value.data)
+            ? (perkRes.value.data as any[])
+            : [];
+
+        // If the partner embed fails (e.g. schema drift on benefit_partners),
+        // still show the perks themselves rather than hiding the whole section.
+        if (perkRows.length === 0) {
+          const { data: plainPerks } = await supabase
+            .from("benefit_perks")
+            .select("id, name, saving, description, category, hero_image_url")
+            .eq("active", true)
+            .order("sort_order", { ascending: true })
+            .limit(8);
+          if (cancelled) return;
+          if (Array.isArray(plainPerks)) perkRows = plainPerks as any[];
+        }
+
+        if (perkRows.length > 0) {
           setPerks(
-            (perkRes.value.data as any[]).map((row) => ({
+            perkRows.map((row) => ({
               id: row.id,
               name: row.name,
               saving: row.saving,
@@ -1400,17 +1418,10 @@ function ProPage() {
               partner_logo_url: row.partner?.logo_url ?? null,
             }))
           );
-        }
 
-
-        if (
-          perkRes.status === "fulfilled" &&
-          perkRes.value.data &&
-          Array.isArray(perkRes.value.data)
-        ) {
           const cats = Array.from(
             new Set(
-              (perkRes.value.data as any[])
+              perkRows
                 .map((r) => r.category)
                 .filter((c): c is string => typeof c === "string" && c.trim().length > 0)
                 .map((c) => sentenceCase(c))
