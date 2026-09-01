@@ -190,11 +190,13 @@ function RadioCard() {
   }, [radio.selectedStation]);
 
   const handleChip = (name: string) => {
-    if (name === "PRO Live") {
-      radio.toggle();
-    } else {
-      radio.pause?.();
+    const station = STATIONS[name];
+    if (!station) return;
+    if (station.comingSoon) {
+      toast(`${station.name} coming soon! 🎧`);
+      return;
     }
+    radio.setStation(station);
     setSelectedChip(name);
   };
 
