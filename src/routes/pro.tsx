@@ -1058,11 +1058,12 @@ function ProPage() {
           setComments(
             (commentsRes.value.data as any[]).map((r) => ({
               id: r.id,
-              body: r.body,
+              body: r.message,
               created_at: r.created_at,
-              author_name: r.author_name || r.instructor?.name || "Member",
-              instructor_name: r.instructor?.name || null,
+              author_name: r.instructors?.name || "Member",
+              instructor_name: r.instructors?.name || null,
             }))
+
           );
         }
 
