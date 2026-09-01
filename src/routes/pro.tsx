@@ -88,6 +88,7 @@ type CommunityComment = {
   created_at: string;
   author_name: string | null;
   instructor_name: string | null;
+  source?: string;
 };
 
 /* ------------------------------------------------------------------ */
