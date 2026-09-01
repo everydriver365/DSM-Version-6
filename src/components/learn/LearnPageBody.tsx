@@ -324,7 +324,7 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
   );
 }
 
-export default function LearnPageBody() {
+export default function LearnPageBody({ videoId }: { videoId?: string } = {}) {
   const navigate = useNavigate();
   const [playing, setPlaying] = useState<Video | null>(null);
   const [playbackSrc, setPlaybackSrc] = useState<string | null>(null);
@@ -353,6 +353,16 @@ export default function LearnPageBody() {
 
   const [videos, setVideos] = useState<Video[]>([]);
   const playVideos = videos.filter((v) => !!v.url);
+
+  const [autoOpened, setAutoOpened] = useState(false);
+  useEffect(() => {
+    if (autoOpened || !videoId || videos.length === 0) return;
+    const match = videos.find((v) => v.id === videoId);
+    if (match?.url) {
+      setPlaying(match);
+      setAutoOpened(true);
+    }
+  }, [videoId, videos, autoOpened]);
   const playIndex = playing ? playVideos.findIndex((v) => v.id === playing.id) : -1;
 
   useEffect(() => {

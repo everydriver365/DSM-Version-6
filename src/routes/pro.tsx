@@ -700,7 +700,14 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
       </div>
 
       <div
-        onClick={() => onNavigate("/dsm-live")}
+        onClick={() => {
+          if (video) {
+            const tab = video.source === "bitesize" ? "bitesize" : "learn";
+            onNavigate(`/dsm-learn?tab=${tab}&video=${encodeURIComponent(video.id)}`);
+          } else {
+            onNavigate("/dsm-live");
+          }
+        }}
         style={{
           position: "relative",
           borderRadius: 12,
