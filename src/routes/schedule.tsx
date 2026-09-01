@@ -1151,7 +1151,7 @@ function SchedulePage() {
           apikey: SUPABASE_ANON_KEY,
           Authorization: "Bearer " + token,
         },
-        body: JSON.stringify({ instructorId: userId }),
+        body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
       });
       console.log("[schedule] handleSync fetch response", {
         endpoint,

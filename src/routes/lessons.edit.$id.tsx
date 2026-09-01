@@ -44,7 +44,7 @@ async function triggerCalendarSync() {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify({ instructorId }),
+      body: JSON.stringify({ instructorId, instructor_id: instructorId }),
     });
   } catch {
     // Fail silently — don't block lesson save
