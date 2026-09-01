@@ -10,6 +10,7 @@ export type PodcastShow = {
   featured: boolean;
   recommended: boolean;
   recommendedNote?: string;
+  interesting?: boolean;
 };
 
 export type PodcastEpisode = {
@@ -29,6 +30,7 @@ export type PodcastEpisode = {
   showFeatured: boolean;
   showRecommended: boolean;
   showCategories: string[];
+  showInteresting?: boolean;
 };
 
 export const PODCAST_SHOWS: PodcastShow[] = [
@@ -103,6 +105,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     featured: false,
     recommended: true,
     recommendedNote: "Business growth and mindset for running your school",
+    interesting: true,
   },
   {
     id: "full-disclosure",
@@ -114,6 +117,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     featured: false,
     recommended: true,
     recommendedNote: "Long-form interviews and interview technique",
+    interesting: true,
   },
   {
     id: "nick-abbot",
@@ -125,6 +129,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     featured: false,
     recommended: true,
     recommendedNote: "Sharp talk radio for the driving-time habit",
+    interesting: true,
   },
   {
     id: "ted-talks-daily",
@@ -136,6 +141,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     featured: false,
     recommended: true,
     recommendedNote: "A fresh TED talk every weekday",
+    interesting: true,
   },
   {
     id: "ted-how-to-be-a-better-human",
@@ -145,6 +151,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     categories: ["TED", "Wellbeing", "Mindset", "Personal Development"],
     featured: false,
     recommended: false,
+    interesting: true,
   },
   {
     id: "ted-health",
@@ -154,6 +161,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     categories: ["TED", "Health", "Wellbeing"],
     featured: false,
     recommended: false,
+    interesting: true,
   },
   {
     id: "ted-business",
@@ -163,6 +171,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     categories: ["TED", "Business", "Growth", "Leadership"],
     featured: false,
     recommended: false,
+    interesting: true,
   },
   {
     id: "ted-tech",
@@ -172,6 +181,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     categories: ["TED", "Technology", "AI", "Innovation"],
     featured: false,
     recommended: false,
+    interesting: true,
   },
   {
     id: "ted-radio-hour",
@@ -181,6 +191,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     categories: ["TED", "Ideas", "Learning", "General"],
     featured: false,
     recommended: false,
+    interesting: true,
   },
 ];
 
@@ -301,6 +312,7 @@ export function parseFeed(xml: string, show: PodcastShow, limit: number): Podcas
       showFeatured: show.featured,
       showRecommended: show.recommended,
       showCategories: show.categories,
+      showInteresting: show.interesting,
     };
   });
 }
