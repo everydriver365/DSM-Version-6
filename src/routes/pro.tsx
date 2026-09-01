@@ -1513,14 +1513,43 @@ function ProPage() {
         const [videoRes, perkRes, chatRes, listingsRes, alertsRes, tvRes, bitesizeRes, perkFeedRes, shopFeedRes] =
           await Promise.allSettled([
 
-          supabase
-            .from("howto_videos")
-            .select(
-              "id, title, description, video_url, video_embed_url, thumbnail_url, category, is_published, sort_order"
-            )
-            .eq("is_published", true)
-            .order("sort_order", { ascending: true })
-            .limit(1),
+          (async () => {
+            const [learnRes, bitesizeRes] = await Promise.allSettled([
+              supabase
+                .from("learn_videos")
+                .select(
+                  "id, title, description, url, embed_url, thumbnail_url, categories, source, duration, duration_seconds, is_published, created_at"
+                )
+                .eq("is_published", true)
+                .order("created_at", { ascending: false })
+                .limit(1),
+              supabase
+                .from("bitesize_videos")
+                .select(
+                  "id, title, description, video_url, thumbnail_url, category, duration_mins, is_published, deleted_at, created_at"
+                )
+                .eq("is_published", true)
+                .is("deleted_at", null)
+                .order("created_at", { ascending: false })
+                .limit(1),
+            ]);
+            const learnRow =
+              learnRes.status === "fulfilled" && Array.isArray(learnRes.value?.data)
+                ? (learnRes.value.data[0] as LearnVideo & { created_at: string })
+                : undefined;
+            const bitesizeRow =
+              bitesizeRes.status === "fulfilled" && Array.isArray(bitesizeRes.value?.data)
+                ? bitesizeRes.value.data[0]
+                : undefined;
+            const learnVideo = learnRow ? normalizeLearnForTv(learnRow) : undefined;
+            const bitesizeVideo = bitesizeRow ? normalizeBitesizeForTv(bitesizeRow) : undefined;
+            if (!learnVideo && !bitesizeVideo) return null;
+            if (!learnVideo) return bitesizeVideo as ProTvVideo;
+            if (!bitesizeVideo) return learnVideo;
+            return new Date(learnVideo.created_at).getTime() >= new Date(bitesizeVideo.created_at).getTime()
+              ? learnVideo
+              : bitesizeVideo;
+          })(),
           supabase
             .from("benefit_perks")
             .select(
