@@ -590,6 +590,8 @@ function RadioPage() {
           ))}
         </div>
 
+        <RecentlyPlayedSection />
+        <FeaturedShowsSection />
       </div>
     </div>
   );
