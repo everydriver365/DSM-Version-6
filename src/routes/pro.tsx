@@ -1052,7 +1052,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
             Your PRO membership
           </div>
           <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.4, maxWidth: 280 }}>
-            Premium content, expert advice and exclusive benefits.
+            Premium exclusive perks for members.
           </div>
         </header>
 
