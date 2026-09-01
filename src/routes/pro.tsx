@@ -449,12 +449,9 @@ function RadioCard() {
       <div
         style={{
           display: "flex",
-          gap: 8,
+          gap: 6,
           marginTop: 14,
-          overflowX: "auto",
           paddingBottom: 2,
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
         }}
       >
         {STATION_TILES.map((s) => {
@@ -468,15 +465,17 @@ function RadioCard() {
               onClick={() => handleChip(s.name)}
               style={{
                 ...POPPINS,
-                flexShrink: 0,
+                flex: "1 1 0",
+                minWidth: 0,
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 6,
-                padding: "8px 14px",
+                justifyContent: "center",
+                gap: 5,
+                padding: "7px 8px",
                 borderRadius: 999,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
-                fontSize: 11.5,
+                fontSize: 10.5,
                 fontWeight: 700,
                 background: selected ? BLUE : "#fff",
                 color: selected ? "#fff" : "rgba(11,31,58,0.62)",
@@ -487,10 +486,28 @@ function RadioCard() {
                 opacity: comingSoon && !selected ? 0.75 : 1,
               }}
             >
-              <span style={{ display: "flex", alignItems: "center", height: 18, overflow: "hidden" }}>
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  width: 16,
+                  height: 16,
+                  overflow: "hidden",
+                }}
+              >
                 {s.icon}
               </span>
-              {s.name}
+              <span
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  minWidth: 0,
+                }}
+              >
+                {s.name}
+              </span>
             </button>
           );
         })}
