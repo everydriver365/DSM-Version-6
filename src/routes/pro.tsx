@@ -469,13 +469,24 @@ function ShopSection({
   onNavigate: (to: string) => void;
 }) {
   if (listings.length === 0) return <EmptyState label="No shop listings available right now." />;
-  const [shopHero, ...restListings] = listings;
+  const imageOf = (l: ShopListing) => l.thumbnail_url || l.image_urls?.[0] || null;
+  const ordered = [...listings.filter((l) => !!imageOf(l)), ...listings.filter((l) => !imageOf(l))];
+  const [shopHero, ...restListings] = ordered;
   return (
     <section>
       <SectionHeader
         eyebrow="PRO SHOP"
         title="Kit for your car"
+        actionLabel="See all items"
         onAction={() => onNavigate("/marketplace")}
+      />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 12,
+          padding: `0 ${PAD}px 4px`,
+        }}
       />
       {shopHero ? (
         <FeaturedCard
