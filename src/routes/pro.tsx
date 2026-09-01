@@ -557,7 +557,7 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
 
   return (
     <section style={{ ...POPPINS }}>
-      {/* Compact card header */}
+      {/* Home-style section header */}
       <div
         style={{
           display: "flex",
@@ -567,14 +567,24 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <IconDeviceTv size={20} color={NAVY} stroke={2} />
+          <span
+            aria-hidden
+            style={{
+              display: "inline-block",
+              width: 3,
+              height: 12,
+              borderRadius: 12,
+              backgroundColor: BLUE,
+            }}
+          />
           <span
             style={{
-              ...SORA,
-              fontSize: 16,
-              fontWeight: 800,
-              letterSpacing: -0.3,
-              color: NAVY,
+              ...POPPINS,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: BLUE,
             }}
           >
             PRO TV
