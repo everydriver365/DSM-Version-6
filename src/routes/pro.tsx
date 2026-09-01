@@ -1212,92 +1212,11 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
         onAction={() => onNavigate("/community")}
       />
 
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 8,
-          border: `0.5px solid ${HAIRLINE}`,
-          overflow: "hidden",
-          boxShadow: "0 6px 18px -12px rgba(11,31,58,0.35)",
-        }}
-      >
-        {displayRows.map((row, idx) => {
-          const icon = TYPE_ICONS[row.type];
-          return (
-            <div
-              key={`${row.type}-${row.id}`}
-              onClick={() => onNavigate(row.route)}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                padding: "10px 14px",
-                cursor: "pointer",
-                borderBottom: idx < displayRows.length - 1 ? "0.5px solid #F4F6F8" : "none",
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: row.author ? communityAvatarColor(row.author) : icon.bg,
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                {row.author ? firstInitial(row.author) : icon.node}
-              </div>
-              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: "#0B2341",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {row.author || row.title}
-                  </span>
-                  <span style={{ fontSize: 10, color: "#D1D5DB", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
-                </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#536579",
-                    lineHeight: 1.4,
-                    marginTop: 2,
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                  }}
-                >
-                  {row.body}
-                </div>
-                <div style={{ marginTop: 4 }}>
-                  <SourceBadge source={row.source} />
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <TileRow>
+        {HAPPENING_TILES.map((t) => (
+          <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
+        ))}
+      </TileRow>
     </section>
   );
 }
