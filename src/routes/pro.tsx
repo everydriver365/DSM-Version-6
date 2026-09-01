@@ -618,18 +618,18 @@ const SHOP_TILES: { name: string; to: string; icon: React.ReactNode }[] = [
   { name: "Books", to: "/marketplace", icon: <IconBook size={24} color="#18A999" stroke={2} /> },
 ];
 
-function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate: (to: string) => void }) {
+function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate: (to: string) => void }) {
   const v = video ?? {
     id: "mock",
     title: "How to pass your standards check",
     description: "A step-by-step guide to help you prepare, stay calm and pass with confidence.",
-    video_url: null,
-    video_embed_url: null,
     thumbnail_url: null,
     category: "Training",
-    is_published: true,
-    sort_order: null,
-  } as LearnVideo;
+    duration_label: "18 min",
+    duration_minutes: 18,
+    created_at: new Date().toISOString(),
+    source: "learn",
+  } as ProTvVideo;
 
   const thumb = v.thumbnail_url || proImage.url;
   const categoryLabel = (v.category || "Training").toUpperCase();
