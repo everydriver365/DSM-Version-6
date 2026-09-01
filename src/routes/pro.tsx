@@ -336,7 +336,9 @@ function ShopSection({
         }}
       >
         {listings.map((l) => {
+          const [c1, c2] = perkTint(l.id);
           const image = l.thumbnail_url || l.image_urls?.[0] || null;
+          const chip = formatMoneyDisplay(l.price_display) || l.category || "Shop";
           return (
             <div
               key={l.id}
@@ -345,38 +347,63 @@ function ShopSection({
                 background: "#fff",
                 borderRadius: 8,
                 border: `0.5px solid ${HAIRLINE}`,
+                boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
                 overflow: "hidden",
                 cursor: "pointer",
+                minWidth: 0,
               }}
             >
               <div
                 style={{
-                  height: 100,
-                  background: "#F1F4F8",
+                  height: 104,
+                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "relative",
                 }}
               >
-                {image ? (
-                  <img
-                    src={image}
-                    alt={l.title}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                ) : (
-                  <IconShoppingBag size={24} color="#D1D5DB" stroke={1.6} />
-                )}
+                <PerkHeroImage
+                  src={image}
+                  alt={l.title}
+                  initial={l.title.trim().charAt(0).toUpperCase()}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    left: 8,
+                    bottom: 8,
+                    background: "#fff",
+                    color: BLUE,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    borderRadius: 8,
+                    padding: "3px 7px",
+                    boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.03em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {chip}
+                </span>
               </div>
-              <div style={{ padding: "9px 10px 11px" }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: NAVY, lineHeight: 1.3, ...CLAMP(2) }}>
+              <div style={{ padding: "9px 10px 12px" }}>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: NAVY,
+                    lineHeight: 1.28,
+                    minHeight: 34,
+                    ...CLAMP(2),
+                  }}
+                >
                   {l.title}
                 </div>
-                {l.price_display && (
-                  <div style={{ fontSize: 13, fontWeight: 700, color: BLUE, marginTop: 4 }}>
-                    {formatMoneyDisplay(l.price_display)}
-                  </div>
-                )}
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
+                  {l.category || "PRO Shop"}
+                </div>
               </div>
             </div>
           );
