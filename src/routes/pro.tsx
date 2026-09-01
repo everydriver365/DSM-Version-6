@@ -128,8 +128,8 @@ function SectionHeader({
             style={{
               fontSize: 11,
               fontWeight: 700,
-              letterSpacing: "0.12em",
-              color: NAVY,
+              letterSpacing: "0.14em",
+              color: BLUE,
               textTransform: "uppercase",
             }}
           >
@@ -137,14 +137,15 @@ function SectionHeader({
           </div>
         )}
         {title && (
-          <div style={{ fontSize: 17, fontWeight: 700, color: NAVY, marginTop: 4, lineHeight: 1.25 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: NAVY, marginTop: 3, lineHeight: 1.2 }}>
             {title}
           </div>
         )}
         {subtitle && (
-          <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.35 }}>{subtitle}</div>
+          <div style={{ fontSize: 13, color: MUTED, marginTop: 3, lineHeight: 1.35 }}>{subtitle}</div>
         )}
       </div>
+
       {onAction && (
         <button
           type="button"
