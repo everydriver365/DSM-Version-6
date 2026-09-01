@@ -114,7 +114,6 @@ function StationTile({
         alignItems: "center",
         gap: 8,
         cursor: "pointer",
-        opacity: 0.6,
         position: "relative",
       };
 
@@ -185,11 +184,13 @@ function StationTile({
       </button>
 
       <div style={iconBoxStyles}>
-        <IconRadio
-          size={22}
-          color={isActive ? "#2C97DE" : "#536579"}
-          stroke={1.8}
-        />
+        {isActive && isPlaying ? (
+          <IconPlayerPause size={22} color="#2C97DE" stroke={1.8} />
+        ) : isActive ? (
+          <IconPlayerPlay size={22} color="#2C97DE" stroke={1.8} />
+        ) : (
+          <IconRadio size={22} color="#536579" stroke={1.8} />
+        )}
       </div>
 
       <div
@@ -236,7 +237,7 @@ function StationTile({
               padding: "2px 7px",
             }}
           >
-            SOON
+            PLAY
           </span>
         )}
       </div>
@@ -461,8 +462,9 @@ function RadioPage() {
   }, [radio.favorites]);
 
   const handleStationToggle = (station: StationDef) => {
-    if (!station.isLive) {
-      toast(station.toastText ?? `${station.name} coming soon!`);
+    const isSelected = radio.selectedStation === station.name;
+    if (isSelected && radio.isPlaying) {
+      radio.pause();
       return;
     }
     if (station.stream) {
@@ -581,6 +583,7 @@ function RadioPage() {
               key={station.name}
               station={station}
               isPlaying={radio.isPlaying}
+              isSelected={radio.selectedStation === station.name}
               isFavorite={radio.favorites.includes(station.name)}
               onToggle={() => handleStationToggle(station)}
               onToggleFavorite={(e) => {
