@@ -386,14 +386,15 @@ function DecadeIcon({ label, from, to }: { label: string; from: string; to: stri
   );
 }
 
-const STATION_TILES: { name: string; icon: React.ReactNode }[] = [
+const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean }[] = [
   {
     name: "PRO Live",
+    fillIcon: true,
     icon: (
       <img
-        src={proRadioLogo.url}
+        src={proRadio2.url}
         alt=""
-        style={{ width: 22, height: 22, objectFit: "contain" }}
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
       />
     ),
   },
@@ -587,6 +588,7 @@ function RadioCard() {
               key={s.name}
               icon={s.icon}
               label={s.name}
+              fillIcon={s.fillIcon}
               selected={selected}
               disabled={comingSoon && !selected}
               onClick={() => handleChip(s.name)}
