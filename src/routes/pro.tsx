@@ -19,6 +19,7 @@ import {
 
   IconSearch,
   IconShoppingBag,
+  IconShieldCheck,
   IconSteeringWheel,
   IconUsers,
   IconWaveSine,
@@ -558,189 +559,259 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
 // PRO Perks card
 /* ------------------------------------------------------------------ */
 
-function PerksCard({
-  perk,
-  categories,
-  onNavigate,
-}: {
-  perk: FeaturedPerk | null;
-  categories: string[];
-  onNavigate: (to: string) => void;
-}) {
-  const p: FeaturedPerk = perk ?? {
-    id: "mock",
-    name: "AA Breakdown Cover",
-    saving: "10% off for EDP members",
-    description: null,
-    category: "Motoring",
-    hero_image_url: null,
-    partner_name: "AA",
-    partner_logo_url: null,
-  };
+function categoryIcon(label: string) {
+  const l = label.toLowerCase();
+  if (l.includes("fuel") || l.includes("motor") || l.includes("car")) return IconGasStation;
+  if (l.includes("health") || l.includes("well") || l.includes("fit")) return IconHeartbeat;
+  if (l.includes("sim") || l.includes("phone") || l.includes("mobile")) return IconDeviceMobile;
+  if (l.includes("insur") || l.includes("legal") || l.includes("finance")) return IconShieldCheck;
+  if (l.includes("shop") || l.includes("retail")) return IconShoppingBag;
+  if (l.includes("learn") || l.includes("train") || l.includes("course")) return IconBook;
+  return IconGift;
+}
 
+function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string) => void }) {
   const [imgOk, setImgOk] = useState(true);
   const showImage = Boolean(p.hero_image_url) && imgOk;
-
   const offer = p.saving || p.description || "Exclusive member saving";
   const offerParts = offer.split(/(\d+%)/);
 
-  const catIcons = [IconGasStation, IconHeartbeat, IconDeviceMobile];
-  const catLabels = categories.length ? categories.slice(0, 3) : ["Fuel", "Health", "SIM"];
-
   return (
-    <section style={{ ...POPPINS }}>
+    <div
+      onClick={() => onNavigate("/perks")}
+      style={{
+        width: "100%",
+        flexShrink: 0,
+        borderRadius: 20,
+        overflow: "hidden",
+        position: "relative",
+        cursor: "pointer",
+        background: "linear-gradient(115deg, #0B1236 0%, #241559 52%, #4C1D95 100%)",
+        boxShadow: "0 16px 38px rgba(60,26,150,0.38), 0 0 0 0.5px rgba(255,255,255,0.10) inset",
+        padding: "16px 16px 14px",
+        display: "flex",
+        alignItems: "stretch",
+        gap: 12,
+      }}
+    >
       <div
-        onClick={() => onNavigate("/perks")}
         style={{
-          borderRadius: 20,
-          overflow: "hidden",
-          position: "relative",
-          cursor: "pointer",
-          background: "linear-gradient(115deg, #0B1236 0%, #241559 52%, #4C1D95 100%)",
-          boxShadow: "0 16px 38px rgba(60,26,150,0.38), 0 0 0 0.5px rgba(255,255,255,0.10) inset",
-          padding: "16px 16px 14px",
-          display: "flex",
-          alignItems: "stretch",
-          gap: 12,
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(90% 120% at 88% 15%, rgba(168,85,247,0.38) 0%, rgba(168,85,247,0) 62%)",
+          pointerEvents: "none",
         }}
-      >
-        {/* Glow */}
+      />
+
+      {/* Left: content */}
+      <div style={{ flex: 1, minWidth: 0, position: "relative", display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(90% 120% at 88% 15%, rgba(168,85,247,0.38) 0%, rgba(168,85,247,0) 62%)",
-            pointerEvents: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: 1,
+            textTransform: "uppercase",
+            color: "#C4B5FD",
           }}
-        />
+        >
+          <IconGift size={12} stroke={2.2} /> PRO Perks
+        </div>
 
-        {/* Left: content */}
-        <div style={{ flex: 1, minWidth: 0, position: "relative", display: "flex", flexDirection: "column" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 5,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: 1,
-              textTransform: "uppercase",
-              color: "#C4B5FD",
-            }}
-          >
-            <IconGift size={12} stroke={2.2} /> PRO Perks
-          </div>
+        <div style={{ marginTop: 8, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.15 }}>
+          {p.name}
+        </div>
 
-          <div
-            style={{
-              marginTop: 8,
-              fontSize: 20,
-              fontWeight: 800,
-              color: "#fff",
-              lineHeight: 1.15,
-            }}
-          >
-            {p.name}
-          </div>
-
-          <div style={{ marginTop: 6, fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.4 }}>
-            {offerParts.map((part, i) =>
-              /^\d+%$/.test(part) ? (
-                <span key={i} style={{ color: "#C084FC", fontWeight: 800 }}>
-                  {part}
-                </span>
-              ) : (
-                <span key={i}>{part}</span>
-              )
-            )}
-          </div>
-
-          {p.partner_name && (
-            <div
-              style={{
-                marginTop: 8,
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: 0.5,
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.45)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {p.partner_name}
-              {p.category ? ` · ${p.category}` : ""}
-            </div>
+        <div style={{ marginTop: 6, fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.4 }}>
+          {offerParts.map((part, i) =>
+            /^\d+%$/.test(part) ? (
+              <span key={i} style={{ color: "#C084FC", fontWeight: 800 }}>
+                {part}
+              </span>
+            ) : (
+              <span key={i}>{part}</span>
+            )
           )}
         </div>
 
-        {/* Right: real perk image + CTA */}
-        <div
-          style={{
-            position: "relative",
-            width: 130,
-            flexShrink: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
+        {p.partner_name && (
           <div
             style={{
-              width: 130,
-              height: 84,
-              borderRadius: 14,
+              marginTop: 8,
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: 0.5,
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.45)",
               overflow: "hidden",
-              background: "rgba(255,255,255,0.08)",
-              border: "0.5px solid rgba(255,255,255,0.18)",
-              boxShadow: "0 10px 24px rgba(10,6,40,0.45)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
-            {showImage ? (
-              <img
-                src={p.hero_image_url ?? undefined}
-                alt={p.name}
-                onError={() => setImgOk(false)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              />
-            ) : (
-              <IconGift size={40} color="rgba(255,255,255,0.85)" stroke={1.4} />
-            )}
+            {p.partner_name}
+            {p.category ? ` · ${p.category}` : ""}
           </div>
+        )}
+      </div>
 
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onNavigate("/perks");
-            }}
-            style={{
-              background: "#fff",
-              color: "#4C1D95",
-              border: "none",
-              borderRadius: 999,
-              padding: "8px 16px",
-              fontSize: 13,
-              fontWeight: 800,
-              cursor: "pointer",
-              fontFamily: POPPINS.fontFamily,
-              boxShadow: "0 6px 16px rgba(10,6,40,0.4)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
-            Claim <IconChevronRight size={14} stroke={2.6} />
-          </button>
+      {/* Right: real perk image + CTA */}
+      <div
+        style={{
+          position: "relative",
+          width: 130,
+          flexShrink: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 10,
+        }}
+      >
+        <div
+          style={{
+            width: 130,
+            height: 84,
+            borderRadius: 14,
+            overflow: "hidden",
+            background: "rgba(255,255,255,0.08)",
+            border: "0.5px solid rgba(255,255,255,0.18)",
+            boxShadow: "0 10px 24px rgba(10,6,40,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {showImage ? (
+            <img
+              src={p.hero_image_url ?? undefined}
+              alt={p.name}
+              onError={() => setImgOk(false)}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            <IconGift size={40} color="rgba(255,255,255,0.85)" stroke={1.4} />
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNavigate("/perks");
+          }}
+          style={{
+            background: "#fff",
+            color: "#4C1D95",
+            border: "none",
+            borderRadius: 999,
+            padding: "8px 16px",
+            fontSize: 13,
+            fontWeight: 800,
+            cursor: "pointer",
+            fontFamily: POPPINS.fontFamily,
+            boxShadow: "0 6px 16px rgba(10,6,40,0.4)",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          Claim <IconChevronRight size={14} stroke={2.6} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PerksCard({
+  perks,
+  categories,
+  onNavigate,
+}: {
+  perks: FeaturedPerk[];
+  categories: string[];
+  onNavigate: (to: string) => void;
+}) {
+  const [index, setIndex] = useState(0);
+  const pausedRef = useRef(false);
+  const touchStartX = useRef<number | null>(null);
+
+  const count = perks.length;
+
+  useEffect(() => {
+    if (count <= 1) return;
+    const t = setInterval(() => {
+      if (pausedRef.current) return;
+      setIndex((i) => (i + 1) % count);
+    }, 6000);
+    return () => clearInterval(t);
+  }, [count]);
+
+  useEffect(() => {
+    if (index >= count) setIndex(0);
+  }, [count, index]);
+
+  if (count === 0) return null;
+
+  const catLabels = categories.slice(0, 3);
+
+  return (
+    <section style={{ ...POPPINS }}>
+      {/* Carousel */}
+      <div
+        style={{ overflow: "hidden", borderRadius: 20 }}
+        onTouchStart={(e) => {
+          pausedRef.current = true;
+          touchStartX.current = e.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(e) => {
+          pausedRef.current = false;
+          const start = touchStartX.current;
+          touchStartX.current = null;
+          if (start == null || count <= 1) return;
+          const dx = (e.changedTouches[0]?.clientX ?? start) - start;
+          if (Math.abs(dx) < 40) return;
+          setIndex((i) => (dx < 0 ? (i + 1) % count : (i - 1 + count) % count));
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            transform: `translateX(-${index * 100}%)`,
+            transition: "transform 380ms cubic-bezier(0.22,0.61,0.36,1)",
+          }}
+        >
+          {perks.map((p) => (
+            <PerkSlide key={p.id} p={p} onNavigate={onNavigate} />
+          ))}
         </div>
       </div>
+
+      {/* Dots */}
+      {count > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 8 }}>
+          {perks.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-label={`Show perk ${i + 1}`}
+              onClick={() => setIndex(i)}
+              style={{
+                width: i === index ? 16 : 6,
+                height: 6,
+                borderRadius: 999,
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                background: i === index ? "#6D28D9" : "#D6D9E0",
+                transition: "width 220ms ease, background 220ms ease",
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Category navigation */}
       <div
@@ -756,13 +827,17 @@ function PerksCard({
           boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
         }}
       >
-        {catLabels.map((label, i) => {
-          const Icon = catIcons[i] ?? IconDots;
+        {[...catLabels, "More"].map((label) => {
+          const Icon = label === "More" ? IconDots : categoryIcon(label);
+          const to =
+            label === "More"
+              ? "/perks"
+              : `/perks?category=${encodeURIComponent(label.toLowerCase())}`;
           return (
             <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
               <button
                 type="button"
-                onClick={() => onNavigate("/perks")}
+                onClick={() => onNavigate(to)}
                 style={{
                   background: "none",
                   border: "none",
@@ -833,6 +908,7 @@ function PerksCard({
     </section>
   );
 }
+
 
 
 /* ------------------------------------------------------------------ */
@@ -1231,7 +1307,7 @@ function ProPage() {
 
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState<LearnVideo | null>(null);
-  const [perk, setPerk] = useState<FeaturedPerk | null>(null);
+  const [perks, setPerks] = useState<FeaturedPerk[]>([]);
   const [perkCategories, setPerkCategories] = useState<string[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
@@ -1258,7 +1334,8 @@ function ProPage() {
             )
             .eq("active", true)
             .order("sort_order", { ascending: true })
-            .limit(1),
+            .limit(8),
+
           supabase
             .from("local_chat_messages")
             .select("id, message, created_at, instructors(name)")
@@ -1311,18 +1388,20 @@ function ProPage() {
         }
 
         if (perkRes.status === "fulfilled" && perkRes.value.data && perkRes.value.data.length > 0) {
-          const row = perkRes.value.data[0] as any;
-          setPerk({
-            id: row.id,
-            name: row.name,
-            saving: row.saving,
-            description: row.description,
-            category: row.category,
-            hero_image_url: row.hero_image_url ?? null,
-            partner_name: row.partner?.name ?? "EDP partner",
-            partner_logo_url: row.partner?.logo_url ?? null,
-          });
+          setPerks(
+            (perkRes.value.data as any[]).map((row) => ({
+              id: row.id,
+              name: row.name,
+              saving: row.saving,
+              description: row.description,
+              category: row.category,
+              hero_image_url: row.hero_image_url ?? null,
+              partner_name: row.partner?.name ?? "EDP partner",
+              partner_logo_url: row.partner?.logo_url ?? null,
+            }))
+          );
         }
+
 
         if (
           perkRes.status === "fulfilled" &&
@@ -1441,7 +1520,7 @@ function ProPage() {
       >
         <RadioCard />
         <ProTvCard video={video} onNavigate={go} />
-        <PerksCard perk={perk} categories={perkCategories} onNavigate={go} />
+        <PerksCard perks={perks} categories={perkCategories} onNavigate={go} />
         <WhatsHappeningCard items={feed} onNavigate={go} />
         <ShopCard listings={listings} onNavigate={go} />
       </div>
