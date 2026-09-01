@@ -1125,7 +1125,17 @@ function ShopSection({
         title="Kit for your car"
         onAction={() => onNavigate("/marketplace")}
       />
-      <div style={SCROLL_ROW}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 12,
+          maxHeight: 360,
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch" as const,
+          padding: `0 ${PAD}px 4px`,
+        }}
+      >
         {listings.map((l) => {
           const image = l.thumbnail_url || l.image_urls?.[0] || null;
           return (
@@ -1133,8 +1143,6 @@ function ShopSection({
               key={l.id}
               onClick={() => onNavigate("/marketplace")}
               style={{
-                ...CARD_SNAP,
-                width: 142,
                 background: "#fff",
                 borderRadius: 8,
                 border: `0.5px solid ${HAIRLINE}`,
