@@ -310,7 +310,88 @@ function FeaturedCard({
   );
 }
 
+/** Shared grid tile used identically by PERKS and PRO SHOP. */
+function GridCard({
+  id,
+  title,
+  subtitle,
+  image,
+  chip,
+  onClick,
+}: {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string | null;
+  chip: string;
+  onClick: () => void;
+}) {
+  const [c1, c2] = perkTint(id);
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: "#fff",
+        borderRadius: 8,
+        border: `0.5px solid ${HAIRLINE}`,
+        boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
+        overflow: "hidden",
+        cursor: "pointer",
+        minWidth: 0,
+      }}
+    >
+      <div
+        style={{
+          height: 104,
+          background: `linear-gradient(135deg, ${c1}, ${c2})`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <PerkHeroImage src={image} alt={title} initial={title.trim().charAt(0).toUpperCase()} />
+        <span
+          style={{
+            position: "absolute",
+            left: 8,
+            bottom: 8,
+            background: "#fff",
+            color: BLUE,
+            fontSize: 10,
+            fontWeight: 700,
+            borderRadius: 8,
+            padding: "3px 7px",
+            boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
+            textTransform: "uppercase",
+            letterSpacing: "0.03em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {chip}
+        </span>
+      </div>
+      <div style={{ padding: "9px 10px 12px" }}>
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: NAVY,
+            lineHeight: 1.28,
+            minHeight: 34,
+            ...CLAMP(2),
+          }}
+        >
+          {title}
+        </div>
+        <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>{subtitle}</div>
+      </div>
+    </div>
+  );
+}
+
 function PerksSection({
+
   perks,
   onNavigate,
 }: {
@@ -354,77 +435,21 @@ function PerksSection({
         }}
       >
         {rest.map((p) => {
-          const [c1, c2] = perkTint(p.id);
           const label = p.partner?.name || p.name;
           return (
-            <div
+            <GridCard
               key={p.id}
+              id={p.id}
+              title={label}
+              subtitle={
+                oneLine(p.description) ||
+                [p.partner?.name, p.category].filter(Boolean).join(" · ") ||
+                `${shortSaving(p.saving)} for PRO members`
+              }
+              image={p.hero_image_url}
+              chip={shortSaving(p.saving)}
               onClick={() => onNavigate(`/perks/${p.id}`)}
-              style={{
-                background: "#fff",
-                borderRadius: 8,
-                border: `0.5px solid ${HAIRLINE}`,
-                boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
-                overflow: "hidden",
-                cursor: "pointer",
-                minWidth: 0,
-              }}
-            >
-              <div
-                style={{
-                  height: 104,
-                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                }}
-              >
-                <PerkHeroImage
-                  src={p.hero_image_url}
-                  alt={p.name}
-                  initial={label.trim().charAt(0).toUpperCase()}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    left: 8,
-                    bottom: 8,
-                    background: "#fff",
-                    color: BLUE,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "3px 7px",
-                    boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.03em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {shortSaving(p.saving)}
-                </span>
-              </div>
-              <div style={{ padding: "9px 10px 12px" }}>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: NAVY,
-                    lineHeight: 1.28,
-                    minHeight: 34,
-                    ...CLAMP(2),
-                  }}
-                >
-                  {label}
-                </div>
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                  {oneLine(p.description) ||
-                    [p.partner?.name, p.category].filter(Boolean).join(" · ") ||
-                    `${shortSaving(p.saving)} for PRO members`}
-                </div>
-              </div>
-            </div>
+            />
           );
         })}
       </div>
@@ -444,12 +469,15 @@ function ShopSection({
   onNavigate: (to: string) => void;
 }) {
   if (listings.length === 0) return <EmptyState label="No shop listings available right now." />;
-  const [shopHero, ...restListings] = listings;
+  const imageOf = (l: ShopListing) => l.thumbnail_url || l.image_urls?.[0] || null;
+  const ordered = [...listings.filter((l) => !!imageOf(l)), ...listings.filter((l) => !imageOf(l))];
+  const [shopHero, ...restListings] = ordered;
   return (
     <section>
       <SectionHeader
         eyebrow="PRO SHOP"
         title="Kit for your car"
+        actionLabel="See all items"
         onAction={() => onNavigate("/marketplace")}
       />
       {shopHero ? (
@@ -481,82 +509,22 @@ function ShopSection({
           padding: `0 ${PAD}px 4px`,
         }}
       >
-        {restListings.map((l) => {
-          const [c1, c2] = perkTint(l.id);
-          const image = l.thumbnail_url || l.image_urls?.[0] || null;
-          const chip = formatMoneyDisplay(l.price_display) || l.category || "Shop";
-          return (
-            <div
-              key={l.id}
-              onClick={() => onNavigate(`/marketplace/${l.id}`)}
-              style={{
-                background: "#fff",
-                borderRadius: 8,
-                border: `0.5px solid ${HAIRLINE}`,
-                boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
-                overflow: "hidden",
-                cursor: "pointer",
-                minWidth: 0,
-              }}
-            >
-              <div
-                style={{
-                  height: 104,
-                  background: `linear-gradient(135deg, ${c1}, ${c2})`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                }}
-              >
-                <PerkHeroImage
-                  src={image}
-                  alt={l.title}
-                  initial={l.title.trim().charAt(0).toUpperCase()}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    left: 8,
-                    bottom: 8,
-                    background: "#fff",
-                    color: BLUE,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "3px 7px",
-                    boxShadow: "0 1px 4px rgba(11,35,65,0.18)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.03em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {chip}
-                </span>
-              </div>
-              <div style={{ padding: "9px 10px 12px" }}>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: NAVY,
-                    lineHeight: 1.28,
-                    minHeight: 34,
-                    ...CLAMP(2),
-                  }}
-                >
-                  {l.title}
-                </div>
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
-                  {oneLine(l.description) ||
-                    l.marketplace_categories?.name ||
-                    l.category ||
-                    "Member price for PRO instructors"}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {restListings.map((l) => (
+          <GridCard
+            key={l.id}
+            id={l.id}
+            title={l.title}
+            subtitle={
+              oneLine(l.description) ||
+              l.marketplace_categories?.name ||
+              l.category ||
+              "Member price for PRO instructors"
+            }
+            image={l.thumbnail_url || l.image_urls?.[0] || null}
+            chip={formatMoneyDisplay(l.price_display) || l.category || "Shop"}
+            onClick={() => onNavigate(`/marketplace/${l.id}`)}
+          />
+        ))}
       </div>
     </section>
   );
