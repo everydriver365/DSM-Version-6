@@ -257,7 +257,7 @@ export function TasksActionsCard({ userId, items, limit = 2, onSeeAll }: Props) 
         borderRadius: 30,
         border: `0.5px solid ${HAIRLINE}`,
         boxShadow: "0 8px 24px rgba(11,31,58,0.06)",
-        padding: "22px 18px 18px",
+        padding: "20px 20px 22px",
         fontFamily: PF,
       }}
     >
