@@ -10701,7 +10701,7 @@ function HomePage() {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          <ProPage />
+          <ProPage onNavigateToMedia={() => setActivePage(2)} />
         </div>
         <div
           style={{
