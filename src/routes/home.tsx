@@ -7678,63 +7678,75 @@ function HomePage() {
                   <span style={SECTION_TITLE_TEXT_STYLE}>Upcoming tests</span>
                 </div>
               </div>
-            <div
-              style={{
-                background: '#F7FAFC',
-                borderRadius: 22,
-                overflow: 'hidden',
-                boxShadow: '0 4px 16px rgba(7,43,71,0.10)',
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              {/* Main gradient section */}
               <div
-                onClick={() => navigate({ to: '/tests' as never })}
                 style={{
-                  background: 'linear-gradient(135deg, #072B47 0%, #0A6CFF 100%)',
-                  padding: '16px 18px',
-                  cursor: 'pointer',
+                  background: '#FFFFFF',
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 12px rgba(7,43,71,0.08)',
+                  fontFamily: 'Poppins, sans-serif',
                 }}
               >
-                {/* Countdown label */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                  <IconStar size={12} color="#FFFFFF" fill="#FFFFFF" stroke={0} />
-                  <span
+                {/* Next-test indicator */}
+                <div style={{ padding: '12px 12px 0' }}>
+                  <div
                     style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: '#FFFFFF',
-                      letterSpacing: '0.3px',
-                      textTransform: 'uppercase',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      background: '#E8F4FD',
+                      borderRadius: 8,
+                      padding: '5px 10px',
                     }}
                   >
-                    {countdownLabel}
-                  </span>
+                    <IconCalendar size={14} color="#1877D6" />
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: '#1877D6',
+                        letterSpacing: '0.3px',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {countdownLabel}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Test detail row */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                {/* Main test row */}
+                <div
+                  onClick={() => navigate({ to: '/tests' as never })}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '12px',
+                    cursor: 'pointer',
+                  }}
+                >
                   {/* Date tile */}
                   <div
                     style={{
-                      width: 54,
-                      height: 54,
-                      borderRadius: 16,
-                      background: '#FFFFFF',
+                      width: 50,
+                      height: 50,
+                      borderRadius: 8,
+                      background: '#F7FAFC',
+                      border: '1px solid #E8F4FD',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0,
-                      gap: 2,
+                      gap: 1,
                     }}
                   >
-                    <div style={{ fontSize: 22, fontWeight: 700, color: '#072B47', lineHeight: 1 }}>{dayNum}</div>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', lineHeight: 1 }}>{dayNum}</div>
                     <div
                       style={{
                         fontSize: 10,
                         fontWeight: 600,
-                        color: '#072B47',
+                        color: '#1877D6',
                         letterSpacing: '0.4px',
                         textTransform: 'uppercase',
                         lineHeight: 1,
@@ -7750,7 +7762,7 @@ function HomePage() {
                       style={{
                         fontSize: 16,
                         fontWeight: 600,
-                        color: '#FFFFFF',
+                        color: '#0B1F3A',
                         letterSpacing: '-0.1px',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -7761,9 +7773,9 @@ function HomePage() {
                     </div>
                     <div
                       style={{
-                        fontSize: 13,
-                        color: 'rgba(255,255,255,0.75)',
-                        marginTop: 3,
+                        fontSize: 12,
+                        color: '#6B7280',
+                        marginTop: 2,
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -7773,15 +7785,38 @@ function HomePage() {
                     </div>
                     <div
                       style={{
-                        fontSize: 13,
-                        color: 'rgba(255,255,255,0.75)',
-                        marginTop: 3,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        marginTop: 4,
+                        flexWrap: 'wrap',
                       }}
                     >
-                      {fmtDateTime(next.test_date, next.test_time)}
+                      <span style={{ fontSize: 12, color: '#1877D6', whiteSpace: 'nowrap' }}>
+                        {nextDate
+                          ? nextDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+                          : next.test_date}
+                        {' · '}
+                        <span style={{ fontWeight: 600 }}>
+                          {next.test_time ? String(next.test_time).slice(0, 5) : 'TBC'}
+                        </span>
+                      </span>
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          background: '#DCFCE7',
+                          color: '#15803D',
+                          borderRadius: 999,
+                          padding: '2px 8px',
+                          fontSize: 10,
+                          fontWeight: 600,
+                        }}
+                      >
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E' }} />
+                        BOOKED
+                      </span>
                     </div>
                     {nextMissingLabel && (
                       <button
@@ -7799,7 +7834,7 @@ function HomePage() {
                           background: '#FEF3C7',
                           color: '#B45309',
                           border: 'none',
-                          borderRadius: 999,
+                          borderRadius: 8,
                           padding: '5px 10px',
                           fontSize: 11,
                           fontWeight: 600,
@@ -7813,61 +7848,57 @@ function HomePage() {
                   </div>
 
                   {/* Chevron */}
-                  <IconChevronRight size={18} stroke={2} color="#FFFFFF" style={{ flexShrink: 0, opacity: 0.9 }} />
+                  <IconChevronRight size={18} stroke={2} color="#9CA3AF" style={{ flexShrink: 0 }} />
                 </div>
-              </div>
 
-              {/* Summary footer */}
-              <div
-                style={{
-                  background: '#FFFFFF',
-                  padding: '12px 16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                }}
-              >
+                {/* Summary footer */}
                 <div
                   style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: '50%',
-                    background: '#072B47',
+                    borderTop: '0.5px solid #EEF2F7',
+                    padding: '10px 12px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: '#FFFFFF',
-                    flexShrink: 0,
+                    gap: 10,
                   }}
                 >
-                  {displayName.charAt(0).toUpperCase() || '?'}
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 8,
+                      background: '#E8F4FD',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconUser size={14} color="#1877D6" />
+                  </div>
+                  <span style={{ fontSize: 12, color: '#6B7280', flex: 1 }}>
+                    {testsSorted.length} pupil{testsSorted.length === 1 ? '' : 's'} with tests booked
+                  </span>
+                  <button
+                    onClick={() => navigate({ to: '/tests' as never })}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: '#1877D6',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    View all
+                    <IconChevronRight size={14} stroke={2} color="#1877D6" />
+                  </button>
                 </div>
-                <span style={{ fontSize: 13, color: '#6E6E73', flex: 1 }}>
-                  {testsSorted.length} pupil{testsSorted.length === 1 ? '' : 's'} with tests booked
-                </span>
-                <button
-                  onClick={() => navigate({ to: '/tests' as never })}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: '#0066FF',
-                    background: 'none',
-                    border: 'none',
-                    padding: 0,
-                    cursor: 'pointer',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  View all
-                  <IconChevronRight size={14} stroke={2} color="#0066FF" />
-                </button>
               </div>
-            </div>
             {editTest && (
               <TestEditSheet
                 test={{
