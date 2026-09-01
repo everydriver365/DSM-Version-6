@@ -742,9 +742,59 @@ function ProTvCard({ video, onNavigate }: { video: LearnVideo | null; onNavigate
           </div>
         </div>
       </div>
+
+      {/* Quick tiles */}
+      <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+        {TV_TILES.map((t) => (
+          <button
+            key={t.name}
+            type="button"
+            onClick={() => onNavigate(t.to)}
+            style={{
+              ...POPPINS,
+              flex: "1 1 0",
+              minWidth: 0,
+              aspectRatio: "1 / 1",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 5,
+              padding: 6,
+              borderRadius: 8,
+              cursor: "pointer",
+              fontSize: "clamp(8px, 2.3vw, 9.5px)",
+              fontWeight: 700,
+              lineHeight: 1.1,
+              textAlign: "center",
+              background: "#fff",
+              color: "rgba(11,31,58,0.62)",
+              border: `1px solid ${HAIRLINE}`,
+              boxShadow: "0 1px 2px rgba(11,31,58,0.05)",
+            }}
+          >
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                width: 22,
+                height: 22,
+                overflow: "hidden",
+                transform: "scale(0.88)",
+              }}
+            >
+              {t.icon}
+            </span>
+            <span style={{ width: "100%", wordBreak: "break-word" }}>{t.name}</span>
+          </button>
+        ))}
+      </div>
     </section>
   );
 }
+
 
 
 /* ------------------------------------------------------------------ */
