@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  IconGift,
   IconPlayerPause,
   IconPlayerPlay,
   IconRadio,
@@ -446,7 +445,7 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
           <div
             key={v.id}
             onClick={onOpen}
-            style={{ ...CARD_SNAP, width: 168, cursor: "pointer" }}
+            style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}
           >
             <div
               style={{
@@ -678,7 +677,7 @@ function PodcastsSection({
       <SectionHeader eyebrow="Podcasts" onAction={onOpen} />
       <div style={SCROLL_ROW}>
         {episodes.slice(0, 8).map((ep) => (
-          <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 168, cursor: "pointer" }}>
+          <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}>
             <div
               style={{
                 height: 100,
@@ -778,7 +777,7 @@ function ShopSection({
               onClick={() => onNavigate("/marketplace")}
               style={{
                 ...CARD_SNAP,
-                width: 150,
+                width: 142,
                 background: "#fff",
                 borderRadius: 12,
                 border: `0.5px solid ${HAIRLINE}`,
@@ -878,7 +877,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
           .limit(10),
         supabase
           .from("marketplace_listings")
-          .select("id, title, price_display, image_urls, category")
+          .select("id, title, price_display, image_urls")
           .eq("is_active", true)
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
