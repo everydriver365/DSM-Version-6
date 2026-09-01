@@ -228,7 +228,7 @@ function StationTile({
         ) : (
           <span
             style={{
-              fontSize: 8,
+              fontSize: 9,
               fontWeight: 600,
               color: "#536579",
               borderRadius: 10,
