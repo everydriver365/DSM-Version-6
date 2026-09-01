@@ -1386,18 +1386,20 @@ function ProPage() {
         }
 
         if (perkRes.status === "fulfilled" && perkRes.value.data && perkRes.value.data.length > 0) {
-          const row = perkRes.value.data[0] as any;
-          setPerk({
-            id: row.id,
-            name: row.name,
-            saving: row.saving,
-            description: row.description,
-            category: row.category,
-            hero_image_url: row.hero_image_url ?? null,
-            partner_name: row.partner?.name ?? "EDP partner",
-            partner_logo_url: row.partner?.logo_url ?? null,
-          });
+          setPerks(
+            (perkRes.value.data as any[]).map((row) => ({
+              id: row.id,
+              name: row.name,
+              saving: row.saving,
+              description: row.description,
+              category: row.category,
+              hero_image_url: row.hero_image_url ?? null,
+              partner_name: row.partner?.name ?? "EDP partner",
+              partner_logo_url: row.partner?.logo_url ?? null,
+            }))
+          );
         }
+
 
         if (
           perkRes.status === "fulfilled" &&
