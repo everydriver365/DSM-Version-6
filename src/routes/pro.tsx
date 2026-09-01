@@ -197,6 +197,40 @@ function perkTint(seed: string): [string, string] {
   return palettes[n]!;
 }
 
+function PerkHeroImage({
+  src,
+  alt,
+  initial,
+}: {
+  src: string | null;
+  alt: string;
+  initial: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (src?.trim() && !failed) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        onError={() => setFailed(true)}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+      />
+    );
+  }
+  return (
+    <span
+      style={{
+        color: "rgba(255,255,255,0.92)",
+        fontSize: 30,
+        fontWeight: 800,
+        letterSpacing: "-0.02em",
+      }}
+    >
+      {initial}
+    </span>
+  );
+}
+
 function PerksSection({
   perks,
   onNavigate,
@@ -205,7 +239,9 @@ function PerksSection({
   onNavigate: (to: string) => void;
 }) {
   if (perks.length === 0) return null;
-  const topFour = perks.slice(0, 4);
+  const withImage = perks.filter((p) => !!p.hero_image_url?.trim());
+  const withoutImage = perks.filter((p) => !p.hero_image_url?.trim());
+  const topFour = [...withImage, ...withoutImage].slice(0, 4);
   return (
     <section>
       <SectionHeader
@@ -249,24 +285,7 @@ function PerksSection({
                   position: "relative",
                 }}
               >
-                {p.hero_image_url ? (
-                  <img
-                    src={p.hero_image_url}
-                    alt={p.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                ) : (
-                  <span
-                    style={{
-                      color: "rgba(255,255,255,0.92)",
-                      fontSize: 30,
-                      fontWeight: 800,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {label.trim().charAt(0).toUpperCase()}
-                  </span>
-                )}
+                <PerkHeroImage src={p.hero_image_url} alt={p.name} initial={label.trim().charAt(0).toUpperCase()} />
                 <span
                   style={{
                     position: "absolute",
@@ -983,7 +1002,7 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
           .select("id, name, description, category, saving, hero_image_url, partner:benefit_partners(name)")
           .eq("active", true)
           .order("sort_order", { ascending: true })
-          .limit(8),
+          .limit(12),
       ]);
       if (cancelled) return;
 
