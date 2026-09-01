@@ -82,14 +82,17 @@ type ShopListing = {
   marketplace_suppliers?: { name: string; logo_url: string | null; is_verified: boolean } | null;
 };
 
-type CommunityComment = {
+type FeedItem = {
   id: string;
+  type: "chat" | "alert" | "video" | "bitesize" | "perk" | "shop";
+  title: string;
   body: string;
+  author: string | null;
+  source: string;
+  route: string;
   created_at: string;
-  author_name: string | null;
-  instructor_name: string | null;
-  source?: string;
 };
+
 
 /* ------------------------------------------------------------------ */
 // Helpers
