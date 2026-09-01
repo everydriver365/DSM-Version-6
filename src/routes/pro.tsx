@@ -1441,10 +1441,10 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
 
         <PerksSection perks={perks} onNavigate={go} />
         <RadioHeroCard onNavigate={go} />
-        <FeaturedCard video={featured} onOpen={openMedia} />
-        <ProTvSection videos={rest.length > 0 ? rest : videos} onOpen={openMedia} />
         <RadioSection onNavigate={go} />
         <PodcastsSection episodes={episodes} onOpen={openMedia} />
+        <FeaturedCard video={featured} onOpen={openMedia} />
+        <ProTvSection videos={rest.length > 0 ? rest : videos} onOpen={openMedia} />
         <ShopSection listings={listings} onNavigate={go} />
       </div>
     </PageLayout>
