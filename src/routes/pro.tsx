@@ -1242,35 +1242,7 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
 
   return (
     <section style={{ ...POPPINS }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 10,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <IconShoppingBag size={20} color="#F59E0B" stroke={1.8} />
-          <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>PRO Shop</span>
-        </div>
-        <button
-          type="button"
-          onClick={() => onNavigate("/marketplace")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: 600,
-            color: BLUE,
-            fontFamily: POPPINS.fontFamily,
-          }}
-        >
-          Browse all <IconChevronRight size={14} stroke={2} style={{ verticalAlign: "middle" }} />
-        </button>
-      </div>
+      <SectionHead title="PRO Shop" actionLabel="Browse all" onAction={() => onNavigate("/marketplace")} />
 
       <div
         ref={containerRef}
