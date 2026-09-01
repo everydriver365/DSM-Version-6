@@ -1339,6 +1339,90 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
     <section style={{ ...POPPINS }}>
       <SectionHead title="PRO Shop" actionLabel="Browse all" onAction={() => onNavigate("/marketplace")} />
 
+      {/* Product carousel */}
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        style={{
+          display: "flex",
+          gap: GAP,
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          paddingBottom: 8,
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        {products.map((p) => {
+          const image = p.image_urls?.[0] || null;
+          return (
+            <div
+              key={p.id}
+              onClick={() => onNavigate(`/marketplace`)}
+              style={{
+                flex: "0 0 auto",
+                width: `calc(50% - ${GAP / 2}px)`,
+                scrollSnapAlign: "start",
+                background: "#fff",
+                borderRadius: CARD_RADIUS,
+                border: `0.5px solid ${HAIRLINE}`,
+                overflow: "hidden",
+                cursor: "pointer",
+              }}
+            >
+              <div
+                style={{
+                  height: 130,
+                  background: image
+                    ? `url(${image}) center/cover`
+                    : "linear-gradient(135deg, #E4E8EF, #F4F6F8)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {!image && <IconShoppingBag size={32} color="#B8C0CC" stroke={1.5} />}
+              </div>
+              <div style={{ padding: 12 }}>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: NAVY,
+                    lineHeight: 1.3,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {p.title}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: BLUE, marginTop: 4 }}>
+                  {p.price_display ? formatMoneyDisplay(p.price_display) : ""}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {products.length > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 6 }}>
+          {products.map((_, i) => (
+            <span
+              key={i}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: i === activeIndex ? NAVY : "#D1D5DB",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <TileRow>
         {SHOP_TILES.map((t) => (
           <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
