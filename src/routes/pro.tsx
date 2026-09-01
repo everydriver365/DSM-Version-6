@@ -42,7 +42,7 @@ const TEXT_SECONDARY = "#6B7686";
 const HAIRLINE = "#E4E8EF";
 const CARD_RADIUS = 8;
 
-/** Editorial section heading: heavy Sora title with optional right-hand action. */
+/** Home-style section eyebrow: 3px accent bar + small blue uppercase title. */
 function SectionHead({
   title,
   actionLabel,
@@ -58,24 +58,36 @@ function SectionHead({
     <div
       style={{
         display: "flex",
-        alignItems: "flex-end",
+        alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 12,
+        marginBottom: 10,
       }}
     >
-      <h2
-        style={{
-          ...SORA,
-          margin: 0,
-          fontSize: 20,
-          fontWeight: 800,
-          letterSpacing: -0.5,
-          color: NAVY,
-          textTransform: "uppercase",
-        }}
-      >
-        {title}
-      </h2>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span
+          aria-hidden
+          style={{
+            display: "inline-block",
+            width: 3,
+            height: 12,
+            borderRadius: 12,
+            backgroundColor: BLUE,
+          }}
+        />
+        <h2
+          style={{
+            ...POPPINS,
+            margin: 0,
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.12em",
+            color: BLUE,
+            textTransform: "uppercase",
+          }}
+        >
+          {title}
+        </h2>
+      </div>
       {right}
       {actionLabel && onAction && (
         <button
