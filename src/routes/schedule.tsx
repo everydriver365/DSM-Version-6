@@ -810,6 +810,7 @@ function SchedulePage() {
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const hasAutoSynced = useRef(false);
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
@@ -962,18 +963,17 @@ function SchedulePage() {
     };
   }, [rangeStart, rangeEnd, lessonsReloadKey]);
 
-  // Fetch external calendar blocks in the same window.
-  const fetchCalendarBlocks = useCallback(async () => {
+  async function loadCalendarBlocks(uid: string) {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
     const SUPABASE_ANON_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const uid = session?.user?.id;
       if (!token || !uid) return;
-      const startIso = ymdLocal(rangeStart);
-      const endIso = ymdLocal(rangeEnd);
+      const now = new Date();
+      const startIso = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+      const endIso = new Date(now.getFullYear(), now.getMonth() + 3, 0).toISOString();
       const res = await fetch(
         `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour,location,description,notes`,
         { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
@@ -984,11 +984,16 @@ function SchedulePage() {
     } catch (err) {
       console.warn("[schedule] calendar_blocks fetch failed", err);
     }
-  }, [rangeStart, rangeEnd]);
+  }
 
   useEffect(() => {
-    fetchCalendarBlocks();
-  }, [fetchCalendarBlocks]);
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const uid = session?.user?.id;
+      if (!uid) return;
+      await loadCalendarBlocks(uid);
+    })();
+  }, []);
 
   // Private DSM events in the same window.
   useEffect(() => {
@@ -1072,6 +1077,34 @@ function SchedulePage() {
           google_calendar_connected: i.google_calendar_connected ?? false,
         });
         if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
+
+        // Auto-sync Google Calendar if last sync was > 30 mins ago
+        const lastSyncedDate = i.calendar_last_synced ? new Date(i.calendar_last_synced) : null;
+        const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000);
+        const shouldSync = !lastSyncedDate || lastSyncedDate < thirtyMinsAgo;
+        if (i.google_calendar_connected && shouldSync && !hasAutoSynced.current) {
+          hasAutoSynced.current = true;
+          console.log("[schedule] auto-syncing Google Calendar...");
+          fetch(`${SUPABASE_URL}/functions/v1/sync-google-calendar`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ instructor_id: uid }),
+          })
+            .then((r) => r.json())
+            .then((data) => {
+              console.log("[schedule] auto-sync result:", data);
+              // Reload calendar blocks after sync completes
+              if (data.ok || data.success) {
+                loadCalendarBlocks(uid);
+              }
+            })
+            .catch((err) => console.warn("[schedule] auto-sync failed:", err));
+        }
+
         if (recRes.ok) {
           const d = await recRes.json();
           if (!cancelled && Array.isArray(d)) setRecurringBlocks(d);
@@ -1161,7 +1194,7 @@ function SchedulePage() {
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
         hapticSuccess();
-        await fetchCalendarBlocks();
+        await loadCalendarBlocks(userId);
         // Copy each Google event's colour onto the imported rows. Silent, and
         // never allowed to break a normal sync.
         if (useGoogleSync && token) {
@@ -1172,7 +1205,7 @@ function SchedulePage() {
               });
               if (result.success) {
                 console.log("[schedule] colour pass", result);
-                await fetchCalendarBlocks();
+                await loadCalendarBlocks(userId);
               } else {
                 console.warn("[schedule] colour pass failed", result.error);
               }
@@ -1191,7 +1224,7 @@ function SchedulePage() {
         toast.info(msg);
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
-        await fetchCalendarBlocks();
+        await loadCalendarBlocks(userId);
       } else {
         const msg = data?.message ?? data?.error ?? "Sync failed — reconnect Google Calendar in Settings";
         toast.error(msg);
@@ -1207,7 +1240,7 @@ function SchedulePage() {
     } finally {
       setSyncing(false);
     }
-  }, [userId, instructor, fetchCalendarBlocks, navigate]);
+  }, [userId, instructor, navigate]);
 
   const handleDeleteLesson = useCallback(async (lesson: any) => {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
