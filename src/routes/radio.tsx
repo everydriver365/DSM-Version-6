@@ -76,6 +76,7 @@ function LiveBadge({ size = 6 }: { size?: number }) {
 interface StationTileProps {
   station: StationDef;
   isPlaying: boolean;
+  isSelected: boolean;
   isFavorite: boolean;
   onToggle: () => void;
   onToggleFavorite: (e: React.MouseEvent) => void;
@@ -84,12 +85,12 @@ interface StationTileProps {
 function StationTile({
   station,
   isPlaying,
+  isSelected,
   isFavorite,
   onToggle,
   onToggleFavorite,
 }: StationTileProps) {
-  const isLive = station.isLive;
-  const isActive = isLive;
+  const isActive = isSelected;
 
   const tileStyles: React.CSSProperties = isActive
     ? {
