@@ -340,6 +340,40 @@ function PerksSection({
 // 1.5 — PRO Radio hero tile
 /* ------------------------------------------------------------------ */
 
+type ProStation = {
+  name: string;
+  subtitle: string;
+  badge: string;
+  color: string;
+  isLive: boolean;
+  toastText?: string;
+};
+
+/** Mirrors the station list on /radio (src/routes/radio.tsx). */
+const PRO_STATIONS: ProStation[] = [
+  { name: "PRO Live", subtitle: "Live now", badge: "PRO", color: BLUE, isLive: true },
+  { name: "PRO 80s", subtitle: "The best of the 80s", badge: "80s", color: "#12A594", isLive: false },
+  { name: "PRO 90s", subtitle: "The best of the 90s", badge: "90s", color: "#7C5CFA", isLive: false },
+  { name: "PRO 00s", subtitle: "The best of the 00s", badge: "00s", color: "#E5762F", isLive: false },
+  { name: "PRO 70s", subtitle: "The best of the 70s", badge: "70s", color: "#C0398B", isLive: false },
+  { name: "PRO 60s", subtitle: "The best of the 60s", badge: "60s", color: "#2E7D32", isLive: false },
+  { name: "PRO Chill", subtitle: "Easy listening", badge: "CHL", color: "#0E7490", isLive: false },
+  { name: "PRO Drive", subtitle: "Drive time energy", badge: "DRV", color: "#B4232A", isLive: false },
+  { name: "PRO Xmas", subtitle: "Festive favourites", badge: "XMS", color: "#C62828", isLive: false, toastText: "PRO Xmas coming soon! 🎄" },
+];
+
+/** Static schedule copy — no programme data source exists yet. */
+const PRO_SHOWS = [
+  { title: "The Morning Drive", schedule: "Weekdays, 6:00 – 10:00", gradient: "linear-gradient(160deg,#F2994A,#0B2341)" },
+  { title: "Driving Home", schedule: "Weekdays, 16:00 – 19:00", gradient: "linear-gradient(160deg,#E5762F,#241539)" },
+  { title: "Weekend Vibes", schedule: "Saturdays, 9:00 – 13:00", gradient: "linear-gradient(160deg,#7C5CFA,#0B2341)" },
+  { title: "The Sunday Session", schedule: "Sundays, 10:00 – 14:00", gradient: "linear-gradient(160deg,#1F7A8C,#0B2341)" },
+];
+
+
+// 1.5 — PRO Radio hero tile
+/* ------------------------------------------------------------------ */
+
 function RadioHeroCard({ onNavigate }: { onNavigate: (to: string) => void }) {
   const radio = useProRadioContext();
   const [artworkFailed, setArtworkFailed] = useState(false);
