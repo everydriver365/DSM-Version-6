@@ -480,14 +480,6 @@ function ShopSection({
         actionLabel="See all items"
         onAction={() => onNavigate("/marketplace")}
       />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: 12,
-          padding: `0 ${PAD}px 4px`,
-        }}
-      />
       {shopHero ? (
         <FeaturedCard
           title={shopHero.title}
