@@ -135,7 +135,14 @@ function formatMoneyDisplay(raw: string | null): string {
 // Radio card
 /* ------------------------------------------------------------------ */
 
-const STATIONS = ["PRO Live", "PRO 80s", "PRO 90s", "PRO Chill", "PRO Drive"];
+const STATIONS: Record<string, { name: string; stream: string; comingSoon: boolean }> = {
+  "PRO Live": { name: "PRO Live", stream: "https://ice1.somafm.com/groovesalad-256-mp3", comingSoon: false },
+  "PRO 80s": { name: "PRO 80s", stream: "", comingSoon: true },
+  "PRO 90s": { name: "PRO 90s", stream: "", comingSoon: true },
+  "PRO Chill": { name: "PRO Chill", stream: "", comingSoon: true },
+  "PRO Drive": { name: "PRO Drive", stream: "", comingSoon: true },
+  "PRO Xmas": { name: "PRO Xmas", stream: "", comingSoon: true },
+};
 
 function WaveformIcon() {
   const bars = [10, 18, 24, 18, 10];
