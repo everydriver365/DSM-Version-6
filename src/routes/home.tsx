@@ -10766,6 +10766,22 @@ function HomePage() {
         >
           PRO
         </button>
+        <button
+          type="button"
+          onClick={() => setActivePage(2)}
+          style={{
+            padding: "5px 16px",
+            borderRadius: 18,
+            fontSize: 11,
+            fontWeight: 700,
+            border: "none",
+            background: activePage === 2 ? "#fff" : "transparent",
+            color: activePage === 2 ? "#0B2341" : "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+          }}
+        >
+          MEDIA
+        </button>
       </div>
 
       {/* Page dots */}
