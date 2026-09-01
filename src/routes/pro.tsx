@@ -1606,8 +1606,8 @@ function ProPage() {
 
         if (cancelled) return;
 
-        if (videoRes.status === "fulfilled" && videoRes.value.data && videoRes.value.data.length > 0) {
-          setVideo(videoRes.value.data[0] as LearnVideo);
+        if (videoRes.status === "fulfilled" && videoRes.value) {
+          setVideo(videoRes.value);
         }
 
         let perkRows: any[] =
