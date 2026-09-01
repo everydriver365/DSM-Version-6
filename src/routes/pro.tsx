@@ -282,7 +282,7 @@ function FeaturedCard({
           }}
         >
           <IconPlayerPlay size={14} color="#fff" fill="#fff" stroke={1.2} />
-          Watch now
+          Listen now
         </button>
       </div>
     </div>
