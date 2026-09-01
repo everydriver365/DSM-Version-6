@@ -1107,7 +1107,7 @@ function ProPage() {
           supabase
             .from("benefit_perks")
             .select(
-              "id, name, saving, description, category, partner:benefit_partners(name, logo_url, icon_bg, icon_color)"
+              "id, name, saving, description, category, hero_image_url, partner:benefit_partners(name, logo_url, icon_bg, icon_color)"
             )
             .eq("active", true)
             .order("sort_order", { ascending: true })
@@ -1171,6 +1171,7 @@ function ProPage() {
             saving: row.saving,
             description: row.description,
             category: row.category,
+            hero_image_url: row.hero_image_url ?? null,
             partner_name: row.partner?.name ?? "EDP partner",
             partner_logo_url: row.partner?.logo_url ?? null,
           });
