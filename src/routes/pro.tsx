@@ -36,7 +36,6 @@ import proLogo from "@/assets/pro-logo-padded.png";
 import proRadioLogo from "@/assets/pro-radio-logo.png.asset.json";
 import proRadio3 from "@/assets/pro-radio-3.png.asset.json";
 import logo80s from "@/assets/80s-logo.png.asset.json";
-import logo80s from "@/assets/80s-logo.png.asset.json";
 import logo90s from "@/assets/90s-logo.png.asset.json";
 import logo00s from "@/assets/00s-logo.png.asset.json";
 
@@ -651,14 +650,7 @@ const TV_TILES: { name: string; to: string; icon: React.ReactNode; fillIcon?: bo
   {
     name: "Live",
     to: "/dsm-live",
-    fillIcon: true,
-    icon: (
-      <img
-        src={proRadio2.url}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-      />
-    ),
+    icon: <IconDeviceTv size={24} color="#E5484D" stroke={2} />,
   },
 ];
 
