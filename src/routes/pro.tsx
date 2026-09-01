@@ -1293,7 +1293,7 @@ function ProPage() {
         <RadioCard />
         <ProTvCard video={video} onNavigate={go} />
         <PerksCard perk={perk} categories={perkCategories} onNavigate={go} />
-        <CommunityCard comments={comments} onNavigate={go} />
+        <WhatsHappeningCard items={feed} onNavigate={go} />
         <ShopCard listings={listings} onNavigate={go} />
       </div>
     </PageLayout>
