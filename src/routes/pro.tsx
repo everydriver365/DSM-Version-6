@@ -896,7 +896,7 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
       {/* Quick tiles */}
       <TileRow>
         {TV_TILES.map((t) => (
-          <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
+          <SquareTile key={t.name} icon={t.icon} label={t.name} fillIcon={t.fillIcon} onClick={() => onNavigate(t.to)} />
         ))}
       </TileRow>
     </section>
