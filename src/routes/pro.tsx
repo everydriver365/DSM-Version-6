@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  IconAlertTriangle,
   IconBell,
   IconChevronRight,
   IconDeviceTv,
   IconGift,
   IconMessageCircle,
+  IconMessages,
   IconPlayerPlay,
   IconRadio,
   IconSearch,
@@ -86,6 +88,7 @@ type CommunityComment = {
   created_at: string;
   author_name: string | null;
   instructor_name: string | null;
+  source?: string;
 };
 
 /* ------------------------------------------------------------------ */
@@ -117,6 +120,19 @@ function avatarColor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function firstInitial(name: string): string {
+  return name.trim()[0]?.toUpperCase() ?? "?";
+}
+
+function communityAvatarColor(name: string): string {
+  const initial = firstInitial(name);
+  if (initial >= "A" && initial <= "E") return "#2C97DE";
+  if (initial >= "F" && initial <= "J") return "#18A999";
+  if (initial >= "K" && initial <= "O") return "#7B61FF";
+  if (initial >= "P" && initial <= "T") return "#F59E0B";
+  return "#E53935";
 }
 
 function sentenceCase(s: string): string {
@@ -670,19 +686,48 @@ function PerksCard({
 // Community card
 /* ------------------------------------------------------------------ */
 
+const SOURCE_BADGES: Record<string, { label: string; icon: React.ReactNode; bg: string; color: string }> = {
+  "Chat room": { label: "Chat room", icon: <IconMessages size={10} />, bg: "#EAF5FC", color: "#2C97DE" },
+  "Video comment": { label: "Video comment", icon: <IconDeviceTv size={10} />, bg: "#FEE2E2", color: "#E53935" },
+  "Community post": { label: "Community post", icon: <IconUsers size={10} />, bg: "#DCFCE7", color: "#16A34A" },
+  "Local alert": { label: "Local alert", icon: <IconAlertTriangle size={10} />, bg: "#FEF3C7", color: "#F59E0B" },
+};
+
+function SourceBadge({ source }: { source?: string }) {
+  const config = SOURCE_BADGES[source || "Community post"] ?? SOURCE_BADGES["Community post"];
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 3,
+        fontSize: 10,
+        fontWeight: 600,
+        borderRadius: 20,
+        padding: "2px 8px",
+        background: config.bg,
+        color: config.color,
+      }}
+    >
+      {config.icon}
+      {config.label}
+    </span>
+  );
+}
+
 function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
   const rows = comments.slice(0, 7);
 
   const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
 
   const fallbackRows: CommunityComment[] = [
-    { id: "1", body: "Anyone covering Winchester?", author_name: "Dave M", instructor_name: null, created_at: new Date(Date.now() - 2 * 60000).toISOString() },
-    { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", instructor_name: null, created_at: new Date(Date.now() - 14 * 60000).toISOString() },
-    { id: "3", body: "Anyone done their standards check recently?", author_name: "Mark R", instructor_name: null, created_at: new Date(Date.now() - 60 * 60000).toISOString() },
-    { id: "4", body: "Best route for roundabout practice near Southampton?", author_name: "Emma W", instructor_name: null, created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString() },
-    { id: "5", body: "Pupil passed first time today! 🎉", author_name: "James P", instructor_name: null, created_at: new Date(Date.now() - 3 * 60 * 60000).toISOString() },
-    { id: "6", body: "Anyone know the Bar End pass rate this month?", author_name: "Lisa K", instructor_name: null, created_at: new Date(Date.now() - 5 * 60 * 60000).toISOString() },
-    { id: "7", body: "Reminder: CPD hours deadline end of month", author_name: "Tom B", instructor_name: null, created_at: new Date(Date.now() - 8 * 60 * 60000).toISOString() },
+    { id: "1", body: "Anyone covering Winchester?", author_name: "Dave M", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 2 * 60000).toISOString() },
+    { id: "2", body: "New DVSA phone guidance just dropped", author_name: "Sarah T", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 14 * 60000).toISOString() },
+    { id: "3", body: "Anyone done their standards check recently?", author_name: "Mark R", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 60 * 60000).toISOString() },
+    { id: "4", body: "Best route for roundabout practice near Southampton?", author_name: "Emma W", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 2 * 60 * 60000).toISOString() },
+    { id: "5", body: "Pupil passed first time today! 🎉", author_name: "James P", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 3 * 60 * 60000).toISOString() },
+    { id: "6", body: "Anyone know the Bar End pass rate this month?", author_name: "Lisa K", instructor_name: null, source: "Chat room", created_at: new Date(Date.now() - 5 * 60 * 60000).toISOString() },
+    { id: "7", body: "Reminder: CPD hours deadline end of month", author_name: "Tom B", instructor_name: null, source: "Community post", created_at: new Date(Date.now() - 8 * 60 * 60000).toISOString() },
   ];
 
   const displayRows = rows.length > 0 ? rows : fallbackRows;
@@ -747,18 +792,18 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
         {displayRows.map((row, idx) => {
 
           const name = row.author_name || "Member";
-          const color = avatarColor(name);
+          const color = communityAvatarColor(name);
           return (
             <div
               key={row.id}
               onClick={() => onNavigate("/community")}
               style={{
                 display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "12px 14px",
+                alignItems: "flex-start",
+                gap: 10,
+                padding: "10px 14px",
                 cursor: "pointer",
-                borderBottom: idx < displayRows.length - 1 ? `0.5px solid ${HAIRLINE}` : "none",
+                borderBottom: idx < displayRows.length - 1 ? "0.5px solid #F4F6F8" : "none",
               }}
             >
               <div
@@ -776,24 +821,38 @@ function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[];
                   flexShrink: 0,
                 }}
               >
-                {initials(name)}
+                {firstInitial(name)}
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
                 <div
                   style={{
-                    fontSize: 14,
-                    color: NAVY,
-                    lineHeight: 1.35,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
                   }}
                 >
-                  <strong>{name.split(" ")[0]}:</strong>{" "}
-                  <span style={{ fontWeight: 400 }}>{row.body}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#0B2341" }}>{name}</span>
+                  <span style={{ fontSize: 10, color: "#D1D5DB", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#536579",
+                    lineHeight: 1.4,
+                    marginTop: 2,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {row.body}
+                </div>
+                <div style={{ marginTop: 4 }}>
+                  <SourceBadge source={row.source} />
                 </div>
               </div>
-              <span style={{ fontSize: 12, color: "#9CA3AF", flexShrink: 0 }}>{timeAgo(row.created_at)}</span>
             </div>
           );
         })}
