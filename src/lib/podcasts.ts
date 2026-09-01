@@ -314,7 +314,7 @@ export function parseFeed(xml: string, show: PodcastShow, limit: number): Podcas
       showFeatured: show.featured,
       showRecommended: show.recommended,
       showCategories: show.categories,
-      showInteresting: show.interesting,
+      showInteresting: show.interesting ?? false,
     };
   });
 }
