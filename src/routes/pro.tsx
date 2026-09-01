@@ -122,12 +122,14 @@ function SquareTile({
   onClick,
   selected,
   disabled,
+  fillIcon,
 }: {
   icon: React.ReactNode;
   label: string;
   onClick?: () => void;
   selected?: boolean;
   disabled?: boolean;
+  fillIcon?: boolean;
 }) {
   return (
     <button
