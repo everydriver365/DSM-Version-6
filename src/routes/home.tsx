@@ -7834,7 +7834,7 @@ function HomePage() {
                           background: '#FEF3C7',
                           color: '#B45309',
                           border: 'none',
-                          borderRadius: 6,
+                          borderRadius: 8,
                           padding: '5px 10px',
                           fontSize: 11,
                           fontWeight: 600,
