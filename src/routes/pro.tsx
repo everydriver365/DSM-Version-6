@@ -581,119 +581,90 @@ function PerksCard({
   const [imgOk, setImgOk] = useState(true);
   const showImage = Boolean(p.hero_image_url) && imgOk;
 
-  const categoryLine = categories.length
-    ? categories.slice(0, 3).join(" · ") + (categories.length > 3 ? " · more" : "")
-    : "Fuel · Health · SIM · more";
+  const offer = p.saving || p.description || "Exclusive member saving";
+  const offerParts = offer.split(/(\d+%)/);
+
+  const catIcons = [IconGasStation, IconHeartbeat, IconDeviceMobile];
+  const catLabels = categories.length ? categories.slice(0, 3) : ["Fuel", "Health", "SIM"];
 
   return (
     <section style={{ ...POPPINS }}>
       <div
         onClick={() => onNavigate("/perks")}
         style={{
-          borderRadius: 8,
+          borderRadius: 20,
           overflow: "hidden",
-          border: "0.5px solid #D9D0F7",
-          boxShadow: "0 8px 24px rgba(107,79,214,0.18)",
-          background: "linear-gradient(160deg, #3B1E7A 0%, #5B34C7 48%, #7C3AED 100%)",
-          cursor: "pointer",
           position: "relative",
+          cursor: "pointer",
+          background: "linear-gradient(115deg, #0B1236 0%, #241559 52%, #4C1D95 100%)",
+          boxShadow: "0 16px 38px rgba(60,26,150,0.38), 0 0 0 0.5px rgba(255,255,255,0.10) inset",
+          padding: "16px 16px 14px",
+          display: "flex",
+          alignItems: "stretch",
+          gap: 12,
         }}
       >
-        {/* Media */}
-        <div style={{ position: "relative", height: 148, overflow: "hidden" }}>
-          {showImage ? (
-            <img
-              src={p.hero_image_url ?? undefined}
-              alt={p.name}
-              onError={() => setImgOk(false)}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            />
-          ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background:
-                  "radial-gradient(120% 120% at 20% 0%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 60%)",
-              }}
-            >
-              <IconGift size={54} color="rgba(255,255,255,0.9)" stroke={1.4} />
-            </div>
-          )}
+        {/* Glow */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(90% 120% at 88% 15%, rgba(168,85,247,0.38) 0%, rgba(168,85,247,0) 62%)",
+            pointerEvents: "none",
+          }}
+        />
 
-          {/* Scrim for text legibility */}
+        {/* Left: content */}
+        <div style={{ flex: 1, minWidth: 0, position: "relative", display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(180deg, rgba(30,14,66,0.55) 0%, rgba(30,14,66,0.05) 42%, rgba(30,14,66,0.86) 100%)",
-            }}
-          />
-
-          {/* Eyebrow */}
-          <div
-            style={{
-              position: "absolute",
-              top: 12,
-              left: 12,
               display: "inline-flex",
               alignItems: "center",
               gap: 5,
-              background: "rgba(255,255,255,0.18)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              border: "0.5px solid rgba(255,255,255,0.35)",
-              borderRadius: 8,
-              padding: "4px 9px",
-              fontSize: 9.5,
+              fontSize: 10,
               fontWeight: 700,
-              letterSpacing: 0.7,
+              letterSpacing: 1,
               textTransform: "uppercase",
-              color: "#fff",
+              color: "#C4B5FD",
             }}
           >
-            <IconGift size={11} stroke={2} /> PRO Perks
+            <IconGift size={12} stroke={2.2} /> PRO Perks
           </div>
 
-          {/* Saving badge */}
-          {p.saving && (
-            <div
-              style={{
-                position: "absolute",
-                top: 12,
-                right: 12,
-                background: "#fff",
-                color: "#6D28D9",
-                borderRadius: 8,
-                padding: "5px 10px",
-                fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: 0.2,
-                boxShadow: "0 4px 12px rgba(30,14,66,0.28)",
-                maxWidth: "62%",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {p.saving}
-            </div>
-          )}
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: 20,
+              fontWeight: 800,
+              color: "#fff",
+              lineHeight: 1.15,
+            }}
+          >
+            {p.name}
+          </div>
 
-          {/* Title block over media */}
-          <div style={{ position: "absolute", left: 14, right: 14, bottom: 12 }}>
+          <div style={{ marginTop: 6, fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.4 }}>
+            {offerParts.map((part, i) =>
+              /^\d+%$/.test(part) ? (
+                <span key={i} style={{ color: "#C084FC", fontWeight: 800 }}>
+                  {part}
+                </span>
+              ) : (
+                <span key={i}>{part}</span>
+              )
+            )}
+          </div>
+
+          {p.partner_name && (
             <div
               style={{
+                marginTop: 8,
                 fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: 0.6,
+                fontWeight: 600,
+                letterSpacing: 0.5,
                 textTransform: "uppercase",
-                color: "rgba(255,255,255,0.78)",
-                marginBottom: 3,
+                color: "rgba(255,255,255,0.45)",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -702,46 +673,48 @@ function PerksCard({
               {p.partner_name}
               {p.category ? ` · ${p.category}` : ""}
             </div>
-            <div
-              style={{
-                fontSize: 19,
-                fontWeight: 800,
-                color: "#fff",
-                lineHeight: 1.2,
-                textShadow: "0 1px 8px rgba(20,8,45,0.5)",
-              }}
-            >
-              {p.name}
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Footer bar */}
+        {/* Right: real perk image + CTA */}
         <div
           style={{
+            position: "relative",
+            width: 130,
+            flexShrink: 0,
             display: "flex",
-            alignItems: "center",
-            gap: 12,
-            padding: "12px 14px",
-            background: "rgba(255,255,255,0.06)",
-            borderTop: "0.5px solid rgba(255,255,255,0.16)",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            gap: 10,
           }}
         >
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 12,
-                color: "rgba(255,255,255,0.82)",
-                lineHeight: 1.4,
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              {p.description || p.saving || "Exclusive member saving, included with your EDP plan."}
-            </div>
+          <div
+            style={{
+              width: 130,
+              height: 84,
+              borderRadius: 14,
+              overflow: "hidden",
+              background: "rgba(255,255,255,0.08)",
+              border: "0.5px solid rgba(255,255,255,0.18)",
+              boxShadow: "0 10px 24px rgba(10,6,40,0.45)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {showImage ? (
+              <img
+                src={p.hero_image_url ?? undefined}
+                alt={p.name}
+                onError={() => setImgOk(false)}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            ) : (
+              <IconGift size={40} color="rgba(255,255,255,0.85)" stroke={1.4} />
+            )}
           </div>
+
           <button
             type="button"
             onClick={(e) => {
@@ -749,51 +722,93 @@ function PerksCard({
               onNavigate("/perks");
             }}
             style={{
-              flexShrink: 0,
               background: "#fff",
-              color: "#6D28D9",
+              color: "#4C1D95",
               border: "none",
-              borderRadius: 8,
-              padding: "9px 18px",
-              fontSize: 13.5,
+              borderRadius: 999,
+              padding: "8px 16px",
+              fontSize: 13,
               fontWeight: 800,
               cursor: "pointer",
               fontFamily: POPPINS.fontFamily,
-              boxShadow: "0 4px 12px rgba(20,8,45,0.3)",
+              boxShadow: "0 6px 16px rgba(10,6,40,0.4)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
-            Claim
+            Claim <IconChevronRight size={14} stroke={2.6} />
           </button>
         </div>
       </div>
 
-      {/* Categories row */}
+      {/* Category navigation */}
       <div
         style={{
           background: "#fff",
-          borderRadius: 8,
-          marginTop: 8,
-          padding: "11px 14px",
+          borderRadius: 14,
+          marginTop: 10,
+          padding: "10px 12px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 10,
+          gap: 8,
           border: `0.5px solid ${HAIRLINE}`,
-          boxShadow: "0 1px 3px rgba(11,35,65,0.05)",
+          boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
         }}
       >
-        <span
-          style={{
-            fontSize: 12.5,
-            color: TEXT_SECONDARY,
-            fontWeight: 500,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {categoryLine}
-        </span>
+        {catLabels.map((label, i) => {
+          const Icon = catIcons[i] ?? IconDots;
+          return (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
+              <button
+                type="button"
+                onClick={() => onNavigate("/perks")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  flex: 1,
+                  minWidth: 0,
+                  fontFamily: POPPINS.fontFamily,
+                }}
+              >
+                <span
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: 8,
+                    background: "#F3EEFF",
+                    color: "#6D28D9",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={14} stroke={2} />
+                </span>
+                <span
+                  style={{
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    color: NAVY,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {label}
+                </span>
+              </button>
+              <span style={{ width: 1, height: 20, background: HAIRLINE, flexShrink: 0 }} />
+            </div>
+          );
+        })}
+
         <button
           type="button"
           onClick={() => onNavigate("/perks")}
@@ -802,9 +817,9 @@ function PerksCard({
             border: "none",
             padding: 0,
             cursor: "pointer",
-            fontSize: 12.5,
+            fontSize: 11.5,
             fontWeight: 700,
-            color: BLUE,
+            color: "#6D28D9",
             fontFamily: POPPINS.fontFamily,
             flexShrink: 0,
             display: "inline-flex",
@@ -812,12 +827,13 @@ function PerksCard({
             gap: 2,
           }}
         >
-          See all <IconChevronRight size={14} stroke={2.2} />
+          See all <IconChevronRight size={13} stroke={2.4} />
         </button>
       </div>
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 // What's happening feed
