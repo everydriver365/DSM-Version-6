@@ -1212,6 +1212,92 @@ function WhatsHappeningCard({ items, onNavigate }: { items: FeedItem[]; onNaviga
         onAction={() => onNavigate("/community")}
       />
 
+      {/* Live activity rows */}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 8,
+          border: `1px solid ${HAIRLINE}`,
+          overflow: "hidden",
+        }}
+      >
+        {displayRows.map((row, idx) => {
+          const iconCfg = TYPE_ICONS[row.type];
+          const isLast = idx === displayRows.length - 1;
+          return (
+            <div
+              key={row.id}
+              onClick={() => onNavigate(row.route)}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 12,
+                padding: "12px 14px",
+                borderBottom: isLast ? "none" : `1px solid ${HAIRLINE}`,
+                cursor: "pointer",
+              }}
+            >
+              <span
+                style={{
+                  flexShrink: 0,
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: iconCfg.bg,
+                }}
+              >
+                {iconCfg.node}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    marginBottom: 3,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: NAVY,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {row.title}
+                  </span>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: TEXT_SECONDARY, flexShrink: 0 }}>
+                    {timeAgo(row.created_at)}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    margin: "0 0 6px",
+                    fontSize: 13,
+                    lineHeight: 1.4,
+                    color: TEXT_SECONDARY,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {row.body}
+                </p>
+                <SourceBadge source={row.source} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <TileRow>
         {HAPPENING_TILES.map((t) => (
           <SquareTile key={t.name} icon={t.icon} label={t.name} onClick={() => onNavigate(t.to)} />
@@ -1252,6 +1338,90 @@ function ShopCard({ listings, onNavigate }: { listings: ShopListing[]; onNavigat
   return (
     <section style={{ ...POPPINS }}>
       <SectionHead title="PRO Shop" actionLabel="Browse all" onAction={() => onNavigate("/marketplace")} />
+
+      {/* Product carousel */}
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        style={{
+          display: "flex",
+          gap: GAP,
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+          paddingBottom: 8,
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        {products.map((p) => {
+          const image = p.image_urls?.[0] || null;
+          return (
+            <div
+              key={p.id}
+              onClick={() => onNavigate(`/marketplace`)}
+              style={{
+                flex: "0 0 auto",
+                width: `calc(50% - ${GAP / 2}px)`,
+                scrollSnapAlign: "start",
+                background: "#fff",
+                borderRadius: CARD_RADIUS,
+                border: `0.5px solid ${HAIRLINE}`,
+                overflow: "hidden",
+                cursor: "pointer",
+              }}
+            >
+              <div
+                style={{
+                  height: 130,
+                  background: image
+                    ? `url(${image}) center/cover`
+                    : "linear-gradient(135deg, #E4E8EF, #F4F6F8)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {!image && <IconShoppingBag size={32} color="#B8C0CC" stroke={1.5} />}
+              </div>
+              <div style={{ padding: 12 }}>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: NAVY,
+                    lineHeight: 1.3,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {p.title}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: BLUE, marginTop: 4 }}>
+                  {p.price_display ? formatMoneyDisplay(p.price_display) : ""}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {products.length > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 6 }}>
+          {products.map((_, i) => (
+            <span
+              key={i}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: i === activeIndex ? NAVY : "#D1D5DB",
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       <TileRow>
         {SHOP_TILES.map((t) => (
