@@ -649,19 +649,24 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
     id: "mock",
     title: "How to pass your standards check",
     description: "A step-by-step guide to help you prepare, stay calm and pass with confidence.",
+    video_url: null,
+    video_embed_url: null,
     thumbnail_url: null,
     category: "Training",
+    is_published: true,
+    sort_order: null,
     duration_label: "18 min",
     duration_minutes: 18,
     created_at: new Date().toISOString(),
-    source: "learn",
+    source: "howto",
   } as ProTvVideo;
 
   const hasThumb = Boolean(v.thumbnail_url);
   const thumb = v.thumbnail_url || proRadioLogo.url;
   const categoryLabel = (v.category || "Training").toUpperCase();
   const thumbDuration = v.duration_minutes != null ? `${v.duration_minutes}:00` : "18:00";
-  const sourceLabel = v.source === "bitesize" ? "Bitesize" : "EDP Learn";
+  const sourceLabel =
+    v.source === "howto" ? "PRO TV" : v.source === "bitesize" ? "Bitesize" : "EDP Learn";
 
   return (
     <section style={{ ...POPPINS }}>
