@@ -671,7 +671,7 @@ function PerksCard({
 /* ------------------------------------------------------------------ */
 
 function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
-  const rows = comments.slice(0, 2);
+  const rows = comments.slice(0, 7);
 
   const newCount = comments.filter((c) => Date.now() - new Date(c.created_at).getTime() < 86400000).length;
 
