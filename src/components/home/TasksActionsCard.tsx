@@ -203,7 +203,7 @@ type Props = {
   userId?: string | null;
   /** Override the live rows (used for design mock-ups). */
   items?: TaskItem[];
-  /** Max rows shown before "See all". */
+  /** Max rows shown before "See all". Defaults to 2 to match the compact reference design. */
   limit?: number;
   onSeeAll?: () => void;
 };
