@@ -35,6 +35,7 @@ import proImage from "@/assets/pro-image.png.asset.json";
 import proLogo from "@/assets/pro-logo-padded.png";
 import proRadioLogo from "@/assets/pro-radio-logo.png.asset.json";
 import proRadio2 from "@/assets/pro-radio-2.png.asset.json";
+import proRadio3 from "@/assets/pro-radio-3.png.asset.json";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SORA = { fontFamily: "Sora, Poppins, sans-serif" } as const;
@@ -395,7 +396,7 @@ const STATION_TILES: { name: string; icon: React.ReactNode; fillIcon?: boolean; 
     selectedColor: "#22C55E",
     icon: (
       <img
-        src={proRadio2.url}
+        src={proRadio3.url}
         alt=""
         style={{ width: "100%", height: "100%", objectFit: "contain" }}
       />
