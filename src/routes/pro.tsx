@@ -812,7 +812,7 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
                 ...SORA,
                 margin: 0,
                 color: NAVY,
-                fontSize: 17,
+                fontSize: 13,
                 fontWeight: 800,
                 lineHeight: 1.22,
                 letterSpacing: -0.3,
