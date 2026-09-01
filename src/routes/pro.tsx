@@ -221,7 +221,7 @@ function normalizeLearnForTv(row: LearnVideo & { created_at: string }): ProTvVid
     description: row.description ?? null,
     thumbnail_url: row.thumbnail_url ?? null,
     category: row.categories?.[0] ?? row.source ?? "Learn",
-    duration_label: formatVideoDuration(row),
+    duration_label: formatVideoDuration(row) || null,
     duration_minutes: minutes,
     created_at: row.created_at,
     source: "learn",
