@@ -13,9 +13,13 @@ import ShowcasePageBody from "@/components/learn/ShowcasePageBody";
 type LearnTab = "learn" | "bitesize" | "showcase";
 
 export const Route = createFileRoute("/dsm-learn")({
-  validateSearch: (search: Record<string, unknown>): { tab?: LearnTab } => {
+  validateSearch: (search: Record<string, unknown>): { tab?: LearnTab; video?: string } => {
     const t = search.tab;
-    return t === "learn" || t === "bitesize" || t === "showcase" ? { tab: t } : {};
+    const v = typeof search.video === "string" ? search.video : undefined;
+    return {
+      ...(t === "learn" || t === "bitesize" || t === "showcase" ? { tab: t } : {}),
+      ...(v ? { video: v } : {}),
+    };
   },
   head: () => ({
     meta: [
@@ -49,7 +53,7 @@ const TABS: { id: LearnTab; label: string }[] = [
 function DSMLearnPage() {
   const navigate = useNavigate();
   const goBack = useGoBack();
-  const { tab } = Route.useSearch();
+  const { tab, video } = Route.useSearch();
   const active: LearnTab = tab ?? "learn";
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -113,8 +117,8 @@ function DSMLearnPage() {
           />
         </div>
 
-        {active === "learn" && <LearnPageBody />}
-        {active === "bitesize" && <BitesizePageBody uploadRequest={uploadRequest} />}
+        {active === "learn" && <LearnPageBody videoId={video} />}
+        {active === "bitesize" && <BitesizePageBody uploadRequest={uploadRequest} videoId={video} />}
         {active === "showcase" && <ShowcasePageBody uploadRequest={uploadRequest} />}
       </div>
     </DSMTopSheet>

@@ -82,8 +82,10 @@ const inputStyle: React.CSSProperties = {
 
 export default function BitesizePageBody({
   uploadRequest = 0,
+  videoId,
 }: {
   uploadRequest?: number;
+  videoId?: string;
 }) {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -166,6 +168,16 @@ export default function BitesizePageBody({
         setVideos((data as BitesizeVideo[] | null) ?? []);
       });
   }, [isAdmin]);
+
+  const [autoOpened, setAutoOpened] = useState(false);
+  useEffect(() => {
+    if (autoOpened || !videoId || videos.length === 0) return;
+    const match = videos.find((v) => v.id === videoId);
+    if (match) {
+      setPlayingVideo(match);
+      setAutoOpened(true);
+    }
+  }, [videoId, videos, autoOpened]);
 
   const filtered =
     activeCategory === "All" ? videos : videos.filter((v) => v.category === activeCategory);
