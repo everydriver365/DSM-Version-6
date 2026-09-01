@@ -20,7 +20,7 @@ const BLUE = "#2C97DE";
 const MUTED = "#536579";
 const LINE = "#E4E8EF";
 
-export type MediaTabKey = "news" | "tv" | "podcasts";
+export type MediaTabKey = "news" | "tv" | "podcasts" | "live";
 
 interface MediaHubProps {
   onNavigate?: (to: string) => void;
@@ -1376,6 +1376,7 @@ export function MediaHub({ onNavigate }: MediaHubProps) {
         {activeTab === "news" ? <NewsTab onNavigate={go} /> : null}
         {activeTab === "tv" ? <TvTab onNavigate={go} /> : null}
         {activeTab === "podcasts" ? <PodcastsTab /> : null}
+        {activeTab === "live" ? <LiveTab onNavigate={go} /> : null}
       </div>
     </div>
   );
