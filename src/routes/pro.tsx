@@ -1006,14 +1006,12 @@ function ProPage() {
             .order("sort_order", { ascending: true })
             .limit(1),
           supabase
-            .from("showcase_comments")
-            .select(
-              "id, body, created_at, author_name, instructor:instructors!instructor_id(id, name)"
-            )
+            .from("local_chat_messages")
+            .select("id, body, created_at, instructors(name)")
             .is("deleted_at", null)
-            .is("parent_id", null)
             .order("created_at", { ascending: false })
-            .limit(5),
+            .limit(2),
+
           sbGet<
             ShopListing[]
           >(
