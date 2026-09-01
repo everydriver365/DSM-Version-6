@@ -633,6 +633,8 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
 
   const thumb = v.thumbnail_url || proImage.url;
   const categoryLabel = (v.category || "Training").toUpperCase();
+  const thumbDuration = v.duration_minutes != null ? `${v.duration_minutes}:00` : "18:00";
+  const sourceLabel = v.source === "bitesize" ? "Bitesize" : "EDP Learn";
 
   return (
     <section style={{ ...POPPINS }}>
