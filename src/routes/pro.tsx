@@ -730,7 +730,7 @@ function PerkSlide({ p, onNavigate }: { p: FeaturedPerk; onNavigate: (to: string
         <div style={{ marginTop: 6, fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.4 }}>
           {offerParts.map((part, i) =>
             /^\d+%$/.test(part) ? (
-              <span key={i} style={{ color: "#C084FC", fontWeight: 800 }}>
+              <span key={i} style={{ color: "#6FB4F2", fontWeight: 800 }}>
                 {part}
               </span>
             ) : (
