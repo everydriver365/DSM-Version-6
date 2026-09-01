@@ -1096,17 +1096,6 @@ export function MediaHub({ onNavigate }: MediaHubProps) {
       >
         <div
           style={{
-            color: "#fff",
-            fontSize: 20,
-            fontWeight: 700,
-            letterSpacing: 1,
-            paddingBottom: 6,
-          }}
-        >
-          MEDIA
-        </div>
-        <div
-          style={{
             display: "flex",
             gap: 0,
             borderBottom: "1px solid rgba(255,255,255,0.1)",
