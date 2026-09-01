@@ -193,14 +193,43 @@ function perkTint(seed: string): [string, string] {
   return palettes[n]!;
 }
 
+/**
+ * No perk row in Supabase has a hero_image_url yet, so fall back to the
+ * bundled partner brand mark when we can recognise the partner by name.
+ */
+const PARTNER_LOGOS: { match: RegExp; url: string }[] = [
+  { match: /pirkx/i, url: pirkxLogoAsset.url },
+  { match: /perkbox/i, url: perkboxLogoAsset.url },
+  { match: /\bdia\b|driving instructors association/i, url: diaLogoAsset.url },
+  { match: /hmca/i, url: hmcaLogoAsset.url },
+  { match: /benn?enden/i, url: bennendenLogoAsset.url },
+  { match: /vitality/i, url: vitalityLogoAsset.url },
+];
+
+function partnerLogo(...names: (string | null | undefined)[]): string | null {
+  const haystack = names.filter(Boolean).join(" ");
+  if (!haystack.trim()) return null;
+  return PARTNER_LOGOS.find((l) => l.match.test(haystack))?.url ?? null;
+}
+
+/** Resolve the best available image for a perk, and how it should be fitted. */
+function perkImage(perk: Perk): { src: string | null; contain: boolean } {
+  const hero = perk.hero_image_url?.trim();
+  if (hero) return { src: hero, contain: false };
+  const logo = partnerLogo(perk.partner?.name, perk.name);
+  return logo ? { src: logo, contain: true } : { src: null, contain: false };
+}
+
 function PerkHeroImage({
   src,
   alt,
   initial,
+  contain = false,
 }: {
   src: string | null;
   alt: string;
   initial: string;
+  contain?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   if (src?.trim() && !failed) {
@@ -209,7 +238,19 @@ function PerkHeroImage({
         src={src}
         alt={alt}
         onError={() => setFailed(true)}
-        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        style={
+          contain
+            ? {
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                display: "block",
+                background: "#fff",
+                padding: 14,
+                boxSizing: "border-box",
+              }
+            : { width: "100%", height: "100%", objectFit: "cover", display: "block" }
+        }
       />
     );
   }
@@ -226,6 +267,7 @@ function PerkHeroImage({
     </span>
   );
 }
+
 
 /** Large featured tile shown at the top of a tab, matching the PRO TV featured card. */
 function FeaturedCard({
