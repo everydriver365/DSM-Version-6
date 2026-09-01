@@ -203,7 +203,7 @@ type Props = {
   userId?: string | null;
   /** Override the live rows (used for design mock-ups). */
   items?: TaskItem[];
-  /** Max rows shown before "See all". */
+  /** Max rows shown before "See all". Defaults to 2 to match the compact reference design. */
   limit?: number;
   onSeeAll?: () => void;
 };
@@ -242,7 +242,7 @@ function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
   );
 }
 
-export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) {
+export function TasksActionsCard({ userId, items, limit = 2, onSeeAll }: Props) {
   const navigate = useNavigate();
   const live = useTaskItems(items ? null : userId);
   const all = items ?? live;
@@ -257,7 +257,7 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
         borderRadius: 30,
         border: `0.5px solid ${HAIRLINE}`,
         boxShadow: "0 8px 24px rgba(11,31,58,0.06)",
-        padding: "22px 18px 18px",
+        padding: "20px 20px 22px",
         fontFamily: PF,
       }}
     >
@@ -304,7 +304,7 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
         </button>
       </div>
 
-      <div>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         {rows.map((item, i) => {
           const Icon = item.Icon ?? IconListCheck;
           const tone = TONES[item.tone];
@@ -318,7 +318,9 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                 display: "flex",
                 alignItems: "center",
                 gap: 14,
-                padding: "14px 16px",
+                padding: "16px 18px",
+                marginLeft: 0,
+                marginRight: 0,
                 background: "transparent",
                 border: "none",
                 borderTop: i === 0 ? "none" : `0.5px solid ${HAIRLINE}`,
@@ -326,16 +328,15 @@ export function TasksActionsCard({ userId, items, limit = 4, onSeeAll }: Props) 
                 cursor: "pointer",
                 fontFamily: PF,
                 position: "relative",
-                borderRadius: 16,
               }}
             >
-              {/* Left accent line */}
+              {/* Full-height left accent line */}
               <span
                 style={{
                   position: "absolute",
                   left: 0,
-                  top: 18,
-                  bottom: 18,
+                  top: 12,
+                  bottom: 12,
                   width: 4,
                   borderRadius: 999,
                   background: tone.accent,
