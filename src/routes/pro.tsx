@@ -1092,7 +1092,9 @@ function ProPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [videoRes, perkRes, commentsRes, listingsRes] = await Promise.allSettled([
+        const [videoRes, perkRes, chatRes, listingsRes, alertsRes, tvRes, bitesizeRes, perkFeedRes, shopFeedRes] =
+          await Promise.allSettled([
+
           supabase
             .from("howto_videos")
             .select(
