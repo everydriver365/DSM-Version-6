@@ -1520,45 +1520,37 @@ function RootComponent() {
         const SUPABASE_ANON_KEY =
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
-        // Check if instructor has an external calendar URL before syncing
+        // Only sync when Google Calendar is connected
         const instRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}&select=external_calendar_url`,
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${userId}&select=google_calendar_connected`,
           { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
         );
         const instData = await instRes.json();
-        const url: string | undefined = instData?.[0]?.external_calendar_url;
-        if (!url) return;
-        // Guard against malformed values stored in the DB
-        try {
-          const u = new URL(url);
-          if (u.protocol !== "https:" && u.protocol !== "http:" && u.protocol !== "webcal:") return;
-        } catch {
-          return;
-        }
+        if (!instData?.[0]?.google_calendar_connected) return;
 
         // Silent background sync
         localStorage.setItem(`dsm:calendar-sync:${userId}`, String(Date.now()));
-        const syncRes = await fetch(`${SUPABASE_URL}/functions/v1/sync-external-calendar`, {
+        const syncRes = await fetch(`${SUPABASE_URL}/functions/v1/sync-google-calendar`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             apikey: SUPABASE_ANON_KEY,
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ instructorId: userId }),
+          body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
         });
         if (!syncRes.ok) {
           // e.g. the calendar provider rate-limited us (HTTP 429) — ignore silently
-          console.warn('[calendar] External calendar sync skipped:', syncRes.status);
+          console.warn('[calendar] Google Calendar sync skipped:', syncRes.status);
           return;
         }
 
-        console.log('[calendar] External calendar synced on app open');
+        console.log('[calendar] Google Calendar synced on app open');
         window.dispatchEvent(new Event('calendar-synced'));
 
       } catch (err) {
         // Silent fail — never block app load
-        console.warn('[calendar] External calendar sync failed:', err);
+        console.warn('[calendar] Google Calendar sync failed:', err);
       }
     };
 

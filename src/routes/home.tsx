@@ -122,14 +122,14 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 async function syncToGoogleCalendar(userId: string, token: string) {
   try {
-    const res = await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/sync-google-calendar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         apikey: SUPABASE_ANON_KEY,
         Authorization: 'Bearer ' + token,
       },
-      body: JSON.stringify({ instructorId: userId }),
+      body: JSON.stringify({ instructorId: userId, instructor_id: userId }),
     });
     if (!res.ok) {
       // Calendar provider rate-limited (429) or errored — don't block the user
