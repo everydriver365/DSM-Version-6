@@ -7426,16 +7426,16 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                            <div
-                              aria-hidden
-                              style={{
-                                width: 3,
-                                borderRadius: 12,
-                                background: isCancelled ? '#9CA3AF' : '#1877D6',
-                                flexShrink: 0,
-                                alignSelf: 'stretch',
-                              }}
-                            />
+                          <div
+                            aria-hidden
+                            style={{
+                              width: 3,
+                              borderRadius: 12,
+                              background: '#1877D6',
+                              flexShrink: 0,
+                              alignSelf: 'stretch',
+                            }}
+                          />
                             <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                                 <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
