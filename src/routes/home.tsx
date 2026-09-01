@@ -5455,13 +5455,9 @@ function HomePage() {
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 0 }}>
       <div
         style={{
-          display: "flex",
-          width: "200vw",
-          height: "100%",
-          position: "relative",
-          transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-          left: activePage === 0 ? 0 : "-100vw",
-          willChange: "left",
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
         }}
         onTouchStart={(e) => {
           // Ignore swipes that start inside a nested horizontal scroller (e.g. quick-access pager)
@@ -5506,11 +5502,14 @@ function HomePage() {
       >
         <div
           style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
             width: "100vw",
-            height: "100%",
+            left: activePage === 0 ? 0 : "-100vw",
+            transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
-            flexShrink: 0,
           }}
         >
           <PageLayout className="pb-safe" style={{ ...POPPINS, minHeight: '100%', display: 'flex', flexDirection: 'column', paddingTop: GLOBAL_HEADER_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
@@ -10627,11 +10626,14 @@ function HomePage() {
         </div>
         <div
           style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
             width: "100vw",
-            height: "100%",
+            left: activePage === 0 ? "100vw" : 0,
+            transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
-            flexShrink: 0,
           }}
         >
           <ProPage />
