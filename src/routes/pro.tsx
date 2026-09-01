@@ -641,7 +641,8 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
     source: "learn",
   } as ProTvVideo;
 
-  const thumb = v.thumbnail_url || proImage.url;
+  const hasThumb = Boolean(v.thumbnail_url);
+  const thumb = v.thumbnail_url || proRadioLogo.url;
   const categoryLabel = (v.category || "Training").toUpperCase();
   const thumbDuration = v.duration_minutes != null ? `${v.duration_minutes}:00` : "18:00";
   const sourceLabel = v.source === "bitesize" ? "Bitesize" : "EDP Learn";
@@ -727,7 +728,14 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
             <img
               src={thumb}
               alt={v.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: hasThumb ? "cover" : "contain",
+                padding: hasThumb ? 0 : 12,
+                background: hasThumb ? "transparent" : "#FFFFFF",
+                display: "block",
+              }}
             />
 
             {/* Play button */}
@@ -804,7 +812,7 @@ function ProTvCard({ video, onNavigate }: { video: ProTvVideo | null; onNavigate
                 ...SORA,
                 margin: 0,
                 color: NAVY,
-                fontSize: 17,
+                fontSize: 13,
                 fontWeight: 800,
                 lineHeight: 1.22,
                 letterSpacing: -0.3,
