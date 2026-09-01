@@ -5522,7 +5522,7 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? 0 : "-100vw",
+            left: activePage === 0 ? 0 : activePage === 1 ? "-100vw" : "-200vw",
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
