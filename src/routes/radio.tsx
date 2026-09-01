@@ -567,7 +567,6 @@ function RadioPage() {
             <StationTile
               key={station.name}
               station={station}
-              isSelected={radio.selectedStation === station.name}
               isPlaying={radio.isPlaying}
               isFavorite={radio.favorites.includes(station.name)}
               onToggle={() => handleStationToggle(station)}
