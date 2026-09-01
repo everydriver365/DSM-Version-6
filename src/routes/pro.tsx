@@ -645,7 +645,12 @@ function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
 
   return (
     <section>
-      <SectionHeader eyebrow="Pro Radio" actionLabel="Listen live" onAction={() => onNavigate("/radio")} />
+      <SectionHeader
+        eyebrow="Pro Radio"
+        title="Ad free radio for ADIs and PDIs"
+        actionLabel="Listen live"
+        onAction={() => onNavigate("/radio")}
+      />
       <div
         style={{
           margin: `0 ${PAD}px`,
@@ -779,7 +784,7 @@ function PodcastsSection({
   if (episodes.length === 0) return null;
   return (
     <section>
-      <SectionHeader eyebrow="Podcasts" onAction={onOpen} />
+      <SectionHeader eyebrow="Podcasts" title="Listen on the road" onAction={onOpen} />
       <div style={SCROLL_ROW}>
         {episodes.slice(0, 8).map((ep) => (
           <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 142, cursor: "pointer" }}>
@@ -872,7 +877,11 @@ function ShopSection({
   if (listings.length === 0) return null;
   return (
     <section>
-      <SectionHeader eyebrow="Pro Shop" onAction={() => onNavigate("/marketplace")} />
+      <SectionHeader
+        eyebrow="Pro Shop"
+        title="Kit for your car"
+        onAction={() => onNavigate("/marketplace")}
+      />
       <div style={SCROLL_ROW}>
         {listings.map((l) => {
           const image = l.thumbnail_url || l.image_urls?.[0] || null;
