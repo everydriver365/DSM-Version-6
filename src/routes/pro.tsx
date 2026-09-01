@@ -686,6 +686,35 @@ function PerksCard({
 // Community card
 /* ------------------------------------------------------------------ */
 
+const SOURCE_BADGES: Record<string, { label: string; icon: React.ReactNode; bg: string; color: string }> = {
+  "Chat room": { label: "Chat room", icon: <IconMessages size={10} />, bg: "#EAF5FC", color: "#2C97DE" },
+  "Video comment": { label: "Video comment", icon: <IconDeviceTv size={10} />, bg: "#FEE2E2", color: "#E53935" },
+  "Community post": { label: "Community post", icon: <IconUsers size={10} />, bg: "#DCFCE7", color: "#16A34A" },
+  "Local alert": { label: "Local alert", icon: <IconAlertTriangle size={10} />, bg: "#FEF3C7", color: "#F59E0B" },
+};
+
+function SourceBadge({ source }: { source?: string }) {
+  const config = SOURCE_BADGES[source || "Community post"] ?? SOURCE_BADGES["Community post"];
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 3,
+        fontSize: 10,
+        fontWeight: 600,
+        borderRadius: 20,
+        padding: "2px 8px",
+        background: config.bg,
+        color: config.color,
+      }}
+    >
+      {config.icon}
+      {config.label}
+    </span>
+  );
+}
+
 function CommunityCard({ comments, onNavigate }: { comments: CommunityComment[]; onNavigate: (to: string) => void }) {
   const rows = comments.slice(0, 7);
 
