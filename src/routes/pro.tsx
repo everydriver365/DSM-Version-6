@@ -11,17 +11,17 @@ import {
 import { PageLayout } from "@/components/PageLayout";
 import { useProRadioContext } from "@/hooks/useProRadio";
 import { supabase } from "@/lib/supabaseClient";
-import { toast } from "@/lib/toast";
 import { type PodcastEpisode } from "@/lib/podcasts";
 import { getPodcastEpisodes } from "@/lib/podcasts.functions";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const PAGE_BG = "#F4F6F8";
+const PAGE_BG = "#F7F8FA";
 const NAVY = "#0B2341";
 const BLUE = "#2C97DE";
 const MUTED = "#536579";
 const HAIRLINE = "#E4E8EF";
-const PURPLE = "#7B61FF";
+
+const PAD = 18;
 
 const CLAMP = (lines: number) =>
   ({
@@ -30,6 +30,18 @@ const CLAMP = (lines: number) =>
     WebkitBoxOrient: "vertical" as const,
     overflow: "hidden",
   }) as const;
+
+const SCROLL_ROW = {
+  display: "flex",
+  gap: 12,
+  overflowX: "auto" as const,
+  WebkitOverflowScrolling: "touch" as const,
+  scrollbarWidth: "none" as const,
+  scrollSnapType: "x proximity" as const,
+  padding: `0 ${PAD}px 4px`,
+};
+
+const CARD_SNAP = { scrollSnapAlign: "start" as const, flexShrink: 0 };
 
 /* ------------------------------------------------------------------ */
 // Types
@@ -56,6 +68,16 @@ type ShopListing = {
   category?: string | null;
 };
 
+type Perk = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  saving: string | null;
+  hero_image_url: string | null;
+  partner?: { name: string | null } | null;
+};
+
 /* ------------------------------------------------------------------ */
 // Helpers
 /* ------------------------------------------------------------------ */
@@ -70,235 +92,270 @@ function formatMoneyDisplay(raw: string | null): string {
 
 function formatDuration(secs: number | null): string {
   if (!secs || secs <= 0) return "";
-  const mins = Math.round(secs / 60);
-  return `${mins} min`;
+  return `${Math.round(secs / 60)} min`;
 }
-
-const STATIONS: { name: string; stream: string; comingSoon: boolean }[] = [
-  { name: "PRO Live", stream: "https://ice1.somafm.com/groovesalad-256-mp3", comingSoon: false },
-  { name: "PRO 80s", stream: "", comingSoon: true },
-  { name: "PRO 90s", stream: "", comingSoon: true },
-  { name: "PRO 00s", stream: "", comingSoon: true },
-  { name: "PRO Chill", stream: "", comingSoon: true },
-  { name: "PRO Xmas", stream: "", comingSoon: true },
-];
 
 /* ------------------------------------------------------------------ */
 // Shared bits
 /* ------------------------------------------------------------------ */
 
 function SectionHeader({
+  eyebrow,
   title,
   subtitle,
-  onSeeAll,
+  actionLabel,
+  onAction,
 }: {
-  title: string;
-  subtitle: string;
-  onSeeAll?: () => void;
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  actionLabel?: string;
+  onAction?: () => void;
 }) {
   return (
     <div
       style={{
-        padding: "16px 16px 10px",
+        padding: `26px ${PAD}px 12px`,
         display: "flex",
-        alignItems: "flex-start",
+        alignItems: "flex-end",
         justifyContent: "space-between",
         gap: 12,
       }}
     >
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{title}</div>
-        <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>{subtitle}</div>
+        {eyebrow && (
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              color: NAVY,
+              textTransform: "uppercase",
+            }}
+          >
+            {eyebrow}
+          </div>
+        )}
+        {title && (
+          <div style={{ fontSize: 17, fontWeight: 700, color: NAVY, marginTop: 4, lineHeight: 1.25 }}>
+            {title}
+          </div>
+        )}
+        {subtitle && (
+          <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.35 }}>{subtitle}</div>
+        )}
       </div>
-      {onSeeAll && (
+      {onAction && (
         <button
           type="button"
-          onClick={onSeeAll}
+          onClick={onAction}
           style={{
             ...POPPINS,
             background: "none",
             border: "none",
             padding: 0,
             flexShrink: 0,
-            fontSize: 12,
+            fontSize: 13,
+            fontWeight: 600,
             color: BLUE,
             cursor: "pointer",
+            whiteSpace: "nowrap",
           }}
         >
-          See all →
+          {actionLabel ?? "See all"} ›
         </button>
       )}
     </div>
   );
 }
 
-const SCROLL_ROW = {
-  display: "flex",
-  gap: 10,
-  overflowX: "auto" as const,
-  WebkitOverflowScrolling: "touch" as const,
-  scrollbarWidth: "none" as const,
-};
-
 /* ------------------------------------------------------------------ */
-// Section 1 — Featured
+// 1 — Perks rail
 /* ------------------------------------------------------------------ */
 
-function FeaturedCard({
-  video,
-  onOpen,
+function PerksSection({
+  perks,
+  onNavigate,
 }: {
-  video: HowtoVideo | null;
-  onOpen: () => void;
+  perks: Perk[];
+  onNavigate: (to: string) => void;
 }) {
-  const radio = useProRadioContext();
-  const np = radio.nowPlaying;
-  const radioMode = !video;
-
-  const title = video?.title ?? (np?.title && np.title !== "PRO Radio" ? np.title : "PRO Live Radio");
-  const radioDescription = [np?.artist, np?.album].filter(Boolean).join(" — ");
-  const description =
-    video?.description ??
-    (radioMode && radioDescription
-      ? radioDescription
-      : "Ad free radio made for driving instructors — music, chat and company on every drive.");
-  const thumb = video?.thumbnail_url ?? (radioMode ? np?.artwork ?? null : null);
-
-
+  if (perks.length === 0) return null;
   return (
-    <div
-      onClick={onOpen}
-      style={{
-        background: "#fff",
-        borderRadius: 16,
-        overflow: "hidden",
-        margin: "0 16px 20px",
-        boxShadow: "0 4px 20px rgba(11,35,65,0.1)",
-        cursor: "pointer",
-      }}
-    >
-      <div
-        style={{
-          height: 200,
-          background: "linear-gradient(135deg, #0B2341, #1a3a6b)",
-          position: "relative",
-        }}
-      >
-        {thumb && (
-          <img
-            src={thumb}
-            alt={title}
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        )}
-
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(0,0,0,0.2)",
-          }}
-        >
-          <span
+    <section>
+      <SectionHeader
+        eyebrow="Perks"
+        title="Your exclusive member benefits"
+        actionLabel="See all perks"
+        onAction={() => onNavigate("/perks")}
+      />
+      <div style={SCROLL_ROW}>
+        {perks.map((p) => (
+          <div
+            key={p.id}
+            onClick={() => onNavigate(`/perks/${p.id}`)}
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
-              border: "2px solid rgba(255,255,255,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              ...CARD_SNAP,
+              width: 208,
+              background: "#fff",
+              borderRadius: 14,
+              border: `0.5px solid ${HAIRLINE}`,
+              boxShadow: "0 1px 3px rgba(11,35,65,0.06)",
+              overflow: "hidden",
+              cursor: "pointer",
             }}
           >
-            <IconPlayerPlay size={28} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 3 }} />
-          </span>
-        </div>
-
-        <span
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            margin: 12,
-            background: BLUE,
-            color: "#fff",
-            fontSize: 9,
-            fontWeight: 700,
-            borderRadius: 4,
-            padding: "2px 8px",
-            letterSpacing: 0.5,
-          }}
-        >
-          FEATURED
-        </span>
-
-        <span
-          style={{
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            margin: 10,
-            background: "rgba(0,0,0,0.6)",
-            color: "#fff",
-            fontSize: 10,
-            borderRadius: 4,
-            padding: "2px 7px",
-          }}
-        >
-          {video ? "18:00" : "LIVE"}
-        </span>
+            <div
+              style={{
+                height: 116,
+                background: "#EDF1F6",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+              }}
+            >
+              {p.hero_image_url ? (
+                <img
+                  src={p.hero_image_url}
+                  alt={p.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              ) : (
+                <IconGift size={28} color="#B9C4D2" stroke={1.6} />
+              )}
+              <span
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  bottom: 10,
+                  background: "#fff",
+                  color: BLUE,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  borderRadius: 6,
+                  padding: "3px 8px",
+                  boxShadow: "0 1px 4px rgba(11,35,65,0.15)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                {p.saving?.trim() || "Exclusive"}
+              </span>
+            </div>
+            <div style={{ padding: "10px 12px 13px" }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...CLAMP(1) }}>
+                {p.partner?.name || p.name}
+              </div>
+              <div style={{ fontSize: 12, color: MUTED, marginTop: 3, ...CLAMP(1) }}>
+                {p.description?.trim() || p.category || p.name}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-
-      <div style={{ background: NAVY, padding: "14px 16px" }}>
-        <div style={{ color: "#fff", fontSize: 17, fontWeight: 700, lineHeight: 1.3, marginBottom: 6 }}>
-          {title}
-        </div>
-        <div
-          style={{
-            color: "rgba(255,255,255,0.6)",
-            fontSize: 13,
-            lineHeight: 1.4,
-            marginBottom: 10,
-            ...CLAMP(2),
-          }}
-        >
-          {description}
-        </div>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen();
-          }}
-          style={{
-            ...POPPINS,
-            background: BLUE,
-            color: "#fff",
-            fontSize: 13,
-            fontWeight: 700,
-            borderRadius: 10,
-            padding: "9px 20px",
-            border: "none",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <IconPlayerPlay size={14} color="#fff" fill="#fff" stroke={1.2} />
-          Listen now
-        </button>
-      </div>
-    </div>
+    </section>
   );
 }
 
 /* ------------------------------------------------------------------ */
-// Section 2 — PRO TV
+// 2 — Featured hero
+/* ------------------------------------------------------------------ */
+
+function FeaturedCard({ video, onOpen }: { video: HowtoVideo | null; onOpen: () => void }) {
+  if (!video) return null;
+  return (
+    <section>
+      <SectionHeader eyebrow="Featured" />
+      <div
+        onClick={onOpen}
+        style={{
+          margin: `0 ${PAD}px`,
+          borderRadius: 16,
+          overflow: "hidden",
+          position: "relative",
+          background: NAVY,
+          boxShadow: "0 6px 22px rgba(11,35,65,0.12)",
+          cursor: "pointer",
+        }}
+      >
+        <div style={{ height: 230, background: "linear-gradient(135deg,#0B2341,#1a3a6b)" }}>
+          {video.thumbnail_url && (
+            <img
+              src={video.thumbnail_url}
+              alt={video.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          )}
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            padding: "56px 16px 16px",
+            background:
+              "linear-gradient(to bottom, rgba(11,35,65,0) 0%, rgba(11,35,65,0.85) 45%, #0B2341 100%)",
+          }}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              background: BLUE,
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              borderRadius: 4,
+              padding: "3px 8px",
+              marginBottom: 8,
+            }}
+          >
+            FEATURED
+          </span>
+          <div style={{ color: "#fff", fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>
+            {video.title}
+          </div>
+          {video.description && (
+            <div
+              style={{
+                color: "rgba(255,255,255,0.7)",
+                fontSize: 13,
+                lineHeight: 1.4,
+                marginTop: 6,
+                ...CLAMP(2),
+              }}
+            >
+              {video.description}
+            </div>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                background: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconPlayerPlay size={16} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 2 }} />
+            </span>
+            <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>Watch now</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+// 3 — PRO TV
 /* ------------------------------------------------------------------ */
 
 function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => void }) {
@@ -306,26 +363,26 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
   return (
     <section>
       <SectionHeader
-        title="PRO TV"
+        eyebrow="Pro TV"
         subtitle="Helpful videos to make you a better driver."
-        onSeeAll={onOpen}
+        onAction={onOpen}
       />
-      <div style={{ ...SCROLL_ROW, padding: "0 16px 16px" }}>
+      <div style={SCROLL_ROW}>
         {videos.map((v) => (
           <div
             key={v.id}
             onClick={onOpen}
-            style={{
-              width: 150,
-              flexShrink: 0,
-              background: "#fff",
-              borderRadius: 12,
-              border: `0.5px solid ${HAIRLINE}`,
-              overflow: "hidden",
-              cursor: "pointer",
-            }}
+            style={{ ...CARD_SNAP, width: 168, cursor: "pointer" }}
           >
-            <div style={{ height: 85, background: NAVY, position: "relative" }}>
+            <div
+              style={{
+                height: 100,
+                borderRadius: 12,
+                background: NAVY,
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
               {v.thumbnail_url && (
                 <img
                   src={v.thumbnail_url}
@@ -337,39 +394,52 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "rgba(0,0,0,0.2)",
+                  background: "rgba(11,35,65,0.18)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <IconPlayerPlay size={16} color="#fff" fill="#fff" stroke={1.2} />
-              </div>
-              {v.category && (
                 <span
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    margin: 5,
-                    background: BLUE,
-                    color: "#fff",
-                    fontSize: 8,
-                    fontWeight: 700,
-                    borderRadius: 3,
-                    padding: "1px 5px",
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    border: "2px solid rgba(255,255,255,0.85)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {v.category.toUpperCase()}
+                  <IconPlayerPlay size={14} color="#fff" fill="#fff" stroke={1.2} style={{ marginLeft: 2 }} />
                 </span>
-              )}
+              </div>
             </div>
+            {v.category && (
+              <span
+                style={{
+                  display: "inline-block",
+                  marginTop: 8,
+                  background: BLUE,
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                  textTransform: "uppercase",
+                }}
+              >
+                {v.category}
+              </span>
+            )}
             <div
               style={{
-                padding: "8px 8px 10px",
-                fontSize: 12,
+                marginTop: 6,
+                fontSize: 13,
                 fontWeight: 600,
                 color: NAVY,
+                lineHeight: 1.3,
                 ...CLAMP(2),
               }}
             >
@@ -383,52 +453,38 @@ function ProTvSection({ videos, onOpen }: { videos: HowtoVideo[]; onOpen: () => 
 }
 
 /* ------------------------------------------------------------------ */
-// Section 3 — PRO Radio
+// 4 — PRO Radio (compact)
 /* ------------------------------------------------------------------ */
 
-function RadioSection() {
+function RadioSection({ onNavigate }: { onNavigate: (to: string) => void }) {
   const radio = useProRadioContext();
-  const selected = radio.selectedStation || "PRO Live";
   const [artworkFailed, setArtworkFailed] = useState(false);
   useEffect(() => {
     setArtworkFailed(false);
   }, [radio.nowPlaying?.artwork]);
 
-
-  const handleStation = (s: (typeof STATIONS)[number]) => {
-    if (s.comingSoon) {
-      toast(`${s.name} coming soon! 🎧`);
-      return;
-    }
-    radio.setStation({ name: s.name, stream: s.stream });
-  };
+  const station = radio.selectedStation || "PRO Live";
 
   return (
-    <div
-      style={{
-        background: "#fff",
-        borderRadius: 14,
-        overflow: "hidden",
-        margin: "0 16px 20px",
-        border: `0.5px solid ${HAIRLINE}`,
-      }}
-    >
+    <section>
+      <SectionHeader eyebrow="Pro Radio" actionLabel="Listen live" onAction={() => onNavigate("/radio")} />
       <div
         style={{
-          background: "linear-gradient(135deg, #0B2341, #1a3a6b)",
-          padding: 16,
+          margin: `0 ${PAD}px`,
+          borderRadius: 14,
+          background: NAVY,
+          padding: 14,
           display: "flex",
           alignItems: "center",
-          gap: 14,
+          gap: 12,
         }}
       >
         <div
           style={{
-            width: 52,
-            height: 52,
-            borderRadius: 12,
-            background: "rgba(44,151,222,0.2)",
-            border: "1px solid rgba(44,151,222,0.3)",
+            width: 54,
+            height: 54,
+            borderRadius: 10,
+            background: "rgba(255,255,255,0.08)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -439,19 +495,17 @@ function RadioSection() {
           {radio.nowPlaying?.artwork && !artworkFailed ? (
             <img
               src={radio.nowPlaying.artwork}
-              alt={radio.nowPlaying.title || "Now playing artwork"}
+              alt={radio.nowPlaying.title || "Now playing"}
               onError={() => setArtworkFailed(true)}
-              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 8 }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           ) : (
-            <IconRadio size={26} color={BLUE} stroke={2} />
+            <IconRadio size={24} color={BLUE} stroke={2} />
           )}
         </div>
 
-
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: "#fff", fontSize: 15, fontWeight: 700 }}>PRO Radio</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
             {radio.isPlaying && (
               <span
                 style={{
@@ -466,36 +520,43 @@ function RadioSection() {
                 LIVE
               </span>
             )}
+            <span
+              style={{
+                color: BLUE,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              On air now
+            </span>
           </div>
           <div
             style={{
-              color: "rgba(255,255,255,0.5)",
-              fontSize: 12,
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 700,
               marginTop: 3,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
           >
-            {radio.isPlaying
-              ? radio.nowPlaying?.title || "On air now"
-              : "Ad free radio for ADIs and PDIs"}
+            {radio.isPlaying ? radio.nowPlaying?.title || station : station}
           </div>
           <div
             style={{
-              color: "rgba(255,255,255,0.35)",
-              fontSize: 11,
+              color: "rgba(255,255,255,0.55)",
+              fontSize: 12,
               marginTop: 1,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
           >
-            {radio.isPlaying && radio.nowPlaying?.artist
-              ? radio.nowPlaying.artist
-              : radio.showName || selected}
+            {radio.nowPlaying?.artist || radio.showName || "Ad free radio for ADIs and PDIs"}
           </div>
-
         </div>
 
         <button
@@ -522,50 +583,12 @@ function RadioSection() {
           )}
         </button>
       </div>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 6,
-          padding: "10px 14px",
-        }}
-      >
-        {STATIONS.map((s) => {
-          const active = selected === s.name;
-          return (
-            <button
-              key={s.name}
-              type="button"
-              onClick={() => handleStation(s)}
-              style={{
-                ...POPPINS,
-                flex: "1 1 calc(33.333% - 4px)",
-                minWidth: 0,
-                borderRadius: 999,
-                padding: "8px 10px",
-                fontSize: 11,
-                fontWeight: 700,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                background: active ? BLUE : "#F4F6F8",
-                color: active ? "#fff" : MUTED,
-                border: active ? "none" : `0.5px solid ${HAIRLINE}`,
-              }}
-            >
-              {s.name}
-            </button>
-          );
-        })}
-      </div>
-    </div>
+    </section>
   );
 }
 
 /* ------------------------------------------------------------------ */
-// Section 4 — Podcasts
+// 5 — Podcasts
 /* ------------------------------------------------------------------ */
 
 function PodcastsSection({
@@ -578,35 +601,17 @@ function PodcastsSection({
   if (episodes.length === 0) return null;
   return (
     <section>
-      <SectionHeader
-        title="Podcasts"
-        subtitle="Expert interviews, real stories and driving tips."
-        onSeeAll={onOpen}
-      />
-      <div style={{ ...SCROLL_ROW, padding: "0 16px 16px" }}>
-        {episodes.slice(0, 6).map((ep) => (
-          <div
-            key={ep.id}
-            onClick={onOpen}
-            style={{
-              width: 160,
-              flexShrink: 0,
-              background: "#fff",
-              borderRadius: 12,
-              border: `0.5px solid ${HAIRLINE}`,
-              overflow: "hidden",
-              cursor: "pointer",
-              padding: 10,
-            }}
-          >
+      <SectionHeader eyebrow="Podcasts" onAction={onOpen} />
+      <div style={SCROLL_ROW}>
+        {episodes.slice(0, 8).map((ep) => (
+          <div key={ep.id} onClick={onOpen} style={{ ...CARD_SNAP, width: 168, cursor: "pointer" }}>
             <div
               style={{
-                width: 60,
-                height: 60,
-                borderRadius: 8,
+                height: 100,
+                borderRadius: 12,
                 background: "#EAF5FC",
+                position: "relative",
                 overflow: "hidden",
-                marginBottom: 8,
               }}
             >
               {ep.imageUrl && (
@@ -616,31 +621,57 @@ function PodcastsSection({
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
               )}
-            </div>
-            <div style={{ fontSize: 9, color: MUTED, marginBottom: 3, ...CLAMP(1) }}>
-              {ep.showName}
-            </div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 6, ...CLAMP(2) }}>
-              {ep.title}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 10, color: MUTED, flex: 1 }}>
-                {formatDuration(ep.durationSecs)}
-              </span>
-              <span
+              <div
                 style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  background: NAVY,
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(11,35,65,0.25)",
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
+                  alignItems: "flex-end",
+                  justifyContent: "space-between",
+                  padding: 8,
                 }}
               >
-                <IconPlayerPlay size={12} color="#fff" fill="#fff" stroke={1.2} />
-              </span>
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.9)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconPlayerPlay size={12} color={NAVY} fill={NAVY} stroke={1.2} style={{ marginLeft: 1 }} />
+                </span>
+                {formatDuration(ep.durationSecs) && (
+                  <span
+                    style={{
+                      background: "rgba(0,0,0,0.55)",
+                      color: "#fff",
+                      fontSize: 10,
+                      borderRadius: 4,
+                      padding: "2px 6px",
+                    }}
+                  >
+                    {formatDuration(ep.durationSecs)}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 8, ...CLAMP(1) }}>{ep.showName}</div>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: NAVY,
+                marginTop: 2,
+                lineHeight: 1.3,
+                ...CLAMP(2),
+              }}
+            >
+              {ep.title}
             </div>
           </div>
         ))}
@@ -650,72 +681,7 @@ function PodcastsSection({
 }
 
 /* ------------------------------------------------------------------ */
-// Section 5 — Perks banner
-/* ------------------------------------------------------------------ */
-
-function PerksBanner({ onNavigate }: { onNavigate: (to: string) => void }) {
-  return (
-    <div
-      onClick={() => onNavigate("/perks")}
-      style={{
-        position: "relative",
-        background: "#fff",
-        borderRadius: 14,
-        margin: "0 16px 20px",
-        border: `0.5px solid ${HAIRLINE}`,
-        overflow: "hidden",
-        cursor: "pointer",
-      }}
-    >
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: 4,
-          background: PURPLE,
-        }}
-      />
-      <div
-        style={{
-          padding: "14px 16px 14px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <span
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: "#F0EBFF",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <IconGift size={20} color={PURPLE} stroke={2} />
-        </span>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>PRO Perks</div>
-          <div style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>
-            Exclusive discounts and offers for EDP members.
-          </div>
-        </div>
-        <span style={{ fontSize: 12, fontWeight: 600, color: PURPLE, flexShrink: 0 }}>
-          Explore →
-        </span>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-// Section 6 — PRO Shop
+// 6 — PRO Shop
 /* ------------------------------------------------------------------ */
 
 function ShopSection({
@@ -728,12 +694,8 @@ function ShopSection({
   if (listings.length === 0) return null;
   return (
     <section>
-      <SectionHeader
-        title="PRO Shop"
-        subtitle="Premium products and resources."
-        onSeeAll={() => onNavigate("/marketplace")}
-      />
-      <div style={{ ...SCROLL_ROW, padding: "0 16px 24px" }}>
+      <SectionHeader eyebrow="Pro Shop" onAction={() => onNavigate("/marketplace")} />
+      <div style={SCROLL_ROW}>
         {listings.map((l) => {
           const image = l.thumbnail_url || l.image_urls?.[0] || null;
           return (
@@ -741,8 +703,8 @@ function ShopSection({
               key={l.id}
               onClick={() => onNavigate("/marketplace")}
               style={{
-                width: 140,
-                flexShrink: 0,
+                ...CARD_SNAP,
+                width: 150,
                 background: "#fff",
                 borderRadius: 12,
                 border: `0.5px solid ${HAIRLINE}`,
@@ -752,8 +714,8 @@ function ShopSection({
             >
               <div
                 style={{
-                  height: 80,
-                  background: "#F4F6F8",
+                  height: 100,
+                  background: "#F1F4F8",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -769,12 +731,12 @@ function ShopSection({
                   <IconShoppingBag size={24} color="#D1D5DB" stroke={1.6} />
                 )}
               </div>
-              <div style={{ padding: "8px 10px 10px" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, ...CLAMP(2) }}>
+              <div style={{ padding: "9px 10px 11px" }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: NAVY, lineHeight: 1.3, ...CLAMP(2) }}>
                   {l.title}
                 </div>
                 {l.price_display && (
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#16A34A", marginTop: 4 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: BLUE, marginTop: 4 }}>
                     {formatMoneyDisplay(l.price_display)}
                   </div>
                 )}
@@ -798,13 +760,13 @@ export const Route = createFileRoute("/pro")({
       {
         name: "description",
         content:
-          "Your professional hub: featured videos, PRO Radio, podcasts, perks and the PRO Shop for driving instructors.",
+          "Your PRO membership: exclusive perks, featured videos, PRO Radio, podcasts and the PRO Shop for driving instructors.",
       },
       { property: "og:title", content: "PRO — Every Driver Pro" },
       {
         property: "og:description",
         content:
-          "Your professional hub: featured videos, PRO Radio, podcasts, perks and the PRO Shop for driving instructors.",
+          "Your PRO membership: exclusive perks, featured videos, PRO Radio, podcasts and the PRO Shop for driving instructors.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -826,11 +788,12 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
   const [videos, setVideos] = useState<HowtoVideo[]>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
+  const [perks, setPerks] = useState<Perk[]>([]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [videoRes, shopRes] = await Promise.allSettled([
+      const [videoRes, shopRes, perkRes] = await Promise.allSettled([
         supabase
           .from("howto_videos")
           .select(
@@ -846,6 +809,12 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
           .limit(6),
+        supabase
+          .from("benefit_perks")
+          .select("id, name, description, category, saving, hero_image_url, partner:benefit_partners(name)")
+          .eq("active", true)
+          .order("sort_order", { ascending: true })
+          .limit(8),
       ]);
       if (cancelled) return;
 
@@ -854,6 +823,9 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
       }
       if (shopRes.status === "fulfilled" && Array.isArray(shopRes.value.data)) {
         setListings(shopRes.value.data as unknown as ShopListing[]);
+      }
+      if (perkRes.status === "fulfilled" && Array.isArray(perkRes.value.data)) {
+        setPerks(perkRes.value.data as unknown as Perk[]);
       }
     })();
     return () => {
@@ -887,18 +859,32 @@ export function ProPage({ onNavigateToMedia }: { onNavigateToMedia?: () => void 
           paddingBottom: "calc(90px + env(safe-area-inset-bottom, 0px))",
         }}
       >
-        <div style={{ padding: "16px 16px 8px" }}>
-          <div style={{ fontSize: 22, fontWeight: 700, color: NAVY, letterSpacing: 0.5 }}>PRO</div>
-          <div style={{ fontSize: 13, color: MUTED, marginTop: 4 }}>
+        <header style={{ padding: `18px ${PAD}px 2px` }}>
+          <h1
+            style={{
+              fontSize: 40,
+              fontWeight: 800,
+              color: NAVY,
+              margin: 0,
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+            }}
+          >
+            PRO
+          </h1>
+          <div style={{ fontSize: 15, fontWeight: 600, color: MUTED, marginTop: 8 }}>
+            Your PRO membership
+          </div>
+          <div style={{ fontSize: 13, color: MUTED, marginTop: 2, lineHeight: 1.4, maxWidth: 280 }}>
             Premium content, expert advice and exclusive benefits.
           </div>
-        </div>
+        </header>
 
+        <PerksSection perks={perks} onNavigate={go} />
         <FeaturedCard video={featured} onOpen={openMedia} />
         <ProTvSection videos={rest.length > 0 ? rest : videos} onOpen={openMedia} />
-        <RadioSection />
+        <RadioSection onNavigate={go} />
         <PodcastsSection episodes={episodes} onOpen={openMedia} />
-        <PerksBanner onNavigate={go} />
         <ShopSection listings={listings} onNavigate={go} />
       </div>
     </PageLayout>
