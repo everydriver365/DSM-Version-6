@@ -1644,6 +1644,8 @@ export function BenefitPartnersSection() {
               exclusive: false,
               active: true,
               sort_order: partners.length,
+              video_url: null,
+              video_embed_url: null,
             });
             setPartnerSheetOpen(true);
           }}
