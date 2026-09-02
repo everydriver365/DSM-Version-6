@@ -373,8 +373,7 @@ export function ProTeaserPage({
             .from("local_chat_messages")
             .select("id, message, created_at, instructors(name)")
             .is("deleted_at", null)
-            .order("created_at", { ascending: false })
-            .limit(2),
+            .order("created_at", { ascending: false }),
         ]);
 
 
