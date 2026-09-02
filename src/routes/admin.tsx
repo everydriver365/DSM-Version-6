@@ -1367,6 +1367,7 @@ export function BenefitPartnersSection() {
   // ---- perk search & filter ------------------------------------------------
   const [perkSearch, setPerkSearch] = useState("");
   const [perkPartnerFilter, setPerkPartnerFilter] = useState<string | "all">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
   const [allPerks, setAllPerks] = useState<BenefitPerk[]>([]);
 
   // ---- perk form validation ------------------------------------------------
