@@ -6420,28 +6420,30 @@ function HomePage() {
         <div
           onClick={() => navigate({ to: '/perks' as never })}
           style={{
-            background: 'linear-gradient(135deg, #0F6E56, #18A999)',
-            borderRadius: 12,
-            padding: '12px 14px',
+            background: '#FFFFFF',
+            border: '1px solid rgba(24, 169, 153, 0.35)',
+            borderRadius: 20,
+            boxShadow: '0 2px 14px rgba(11, 31, 58, 0.06)',
+            padding: '14px 16px',
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
+            gap: 14,
             cursor: 'pointer',
             marginBottom: 4,
           }}
         >
           <div
             style={{
-              width: 52,
-              height: 52,
-              borderRadius: 12,
-              background: 'rgba(64, 224, 208, 0.58)',
+              width: 74,
+              height: 74,
+              borderRadius: 18,
+              background: 'rgba(24, 169, 153, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
               overflow: 'hidden',
-              padding: 4,
+              padding: 6,
             }}
           >
             <img
@@ -6451,14 +6453,27 @@ function HomePage() {
             />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ color: '#0B1F3A', fontSize: 15, fontWeight: 700, marginBottom: 3, fontFamily: 'Poppins, sans-serif', lineHeight: 1.25 }}>
               PRO Perks · 58 benefits
             </div>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ color: '#5A6B82', fontSize: 12, fontFamily: 'Poppins, sans-serif', lineHeight: 1.4 }}>
               Save £1,000s — GP access, retail discounts and more
             </div>
           </div>
-          <IconChevronRight size={18} color="rgba(255,255,255,0.5)" style={{ flexShrink: 0 }} />
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: '50%',
+              background: 'rgba(24, 169, 153, 0.12)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <IconChevronRight size={18} color="#18A999" style={{ flexShrink: 0 }} />
+          </div>
         </div>
       </div>
 
