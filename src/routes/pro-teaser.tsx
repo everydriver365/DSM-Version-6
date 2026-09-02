@@ -81,6 +81,14 @@ const TEAL = "#18A999";
 const AMBER = "#F59E0B";
 const RED = "#E53935";
 
+const MINI_STATIONS: { name: string; stream: string }[] = [
+  { name: "PRO 80s", stream: "https://0n-80s.radionetz.de/0n-80s.mp3" },
+  { name: "PRO 90s", stream: "https://0n-90s.radionetz.de/0n-90s.mp3" },
+  { name: "PRO 00s", stream: "https://stream.laut.fm/00er" },
+  { name: "PRO Chill", stream: "https://0n-chillout.radionetz.de/0n-chillout.mp3" },
+  { name: "PRO Drive", stream: "https://0n-rock.radionetz.de/0n-rock.mp3" },
+];
+
 function timeAgo(value: string | null | undefined): string {
   if (!value) return "";
   const then = new Date(value).getTime();
@@ -979,6 +987,76 @@ export function ProTeaserPage({
               Real talk for real instructors
             </div>
           </div>
+        </div>
+
+        {/* 5 smaller station tiles */}
+        <div
+          style={{
+            padding: "0 12px 12px",
+            display: "grid",
+            gridTemplateColumns: "repeat(5, 1fr)",
+            gap: 8,
+          }}
+        >
+          {MINI_STATIONS.map((station) => {
+            const isSelected = radio.selectedStation === station.name;
+            const isPlaying = isSelected && radio.isPlaying;
+            return (
+              <button
+                key={station.name}
+                type="button"
+                onClick={() => radio.playStream(station.stream, station.name)}
+                style={{
+                  borderRadius: 8,
+                  padding: 10,
+                  background: isSelected ? BLUE : "#fff",
+                  border: `1px solid ${isSelected ? BLUE : "#E9EDF2"}`,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 6,
+                    background: isSelected
+                      ? "rgba(255,255,255,0.18)"
+                      : "#F4F6F8",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {isPlaying ? (
+                    <IconPlayerPause
+                      size={14}
+                      color={isSelected ? "#fff" : "#536579"}
+                    />
+                  ) : (
+                    <IconRadio
+                      size={14}
+                      color={isSelected ? "#fff" : "#536579"}
+                    />
+                  )}
+                </div>
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: isSelected ? "#fff" : NAVY,
+                    textAlign: "center",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {station.name}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
       </div>
