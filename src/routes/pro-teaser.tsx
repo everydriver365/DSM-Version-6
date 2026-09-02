@@ -576,58 +576,124 @@ export function ProTeaserPage({
           action="Browse all →"
           onAction={() => go("/marketplace")}
         />
-        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
-          {(listings.length > 0 ? listings : []).slice(0, 2).map((l, i) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            padding: "0 16px 12px",
+          }}
+        >
+          {(listings.length > 0 ? listings : []).slice(0, 2).map((l) => {
+            const priceIsBad = !l.price_display || !/\d/.test(l.price_display);
+            return (
+              <div
+                key={l.id}
+                onClick={() => go("/marketplace")}
+                style={{
+                  background: "#fff",
+                  borderRadius: 8,
+                  border: "1px solid #E4E8EF",
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  padding: 12,
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    width: 76,
+                    height: 76,
+                    flexShrink: 0,
+                    borderRadius: 8,
+                    background: l.thumbnail_url
+                      ? `#EEF2F7 url(${l.thumbnail_url}) center/cover no-repeat`
+                      : "#EEF2F7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {!l.thumbnail_url && <IconCamera size={26} color="#aaa" />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: NAVY,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      marginBottom: 3,
+                    }}
+                  >
+                    {l.title ?? "Listing"}
+                  </div>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      background: "#EFF6FF",
+                      color: BLUE,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      borderRadius: 8,
+                      padding: "2px 8px",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {l.category || "PRO Shop"}
+                  </span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
+                    }}
+                  >
+                    {priceIsBad ? (
+                      <span style={{ fontSize: 13, color: "#888" }}>
+                        No price set
+                      </span>
+                    ) : (
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: NAVY,
+                        }}
+                      >
+                        {l.price_display}
+                      </span>
+                    )}
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: BLUE,
+                      }}
+                    >
+                      View ›
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          {listings.length === 0 && (
             <div
-              key={l.id}
-              onClick={() => go("/marketplace")}
               style={{
-                flex: 1,
-                padding: 12,
-                cursor: "pointer",
-                borderRight: i === 0 ? "1px solid #F0F0F0" : undefined,
+                padding: 16,
+                fontSize: 12,
+                color: "#888",
+                background: "#fff",
+                borderRadius: 8,
+                border: "1px solid #E4E8EF",
               }}
             >
-              <div
-                style={{
-                  height: 70,
-                  borderRadius: 8,
-                  marginBottom: 8,
-                  background: "#F4F6F8",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {l.thumbnail_url ? (
-                  <img
-                    src={l.thumbnail_url}
-                    alt={l.title ?? "Listing"}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                ) : (
-                  <IconCamera size={28} color="#aaa" />
-                )}
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: NAVY,
-                  marginBottom: 3,
-                  lineHeight: 1.3,
-                }}
-              >
-                {l.title ?? "Listing"}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#16A34A" }}>
-                {l.price_display ?? "See price"}
-              </div>
-            </div>
-          ))}
-          {listings.length === 0 && (
-            <div style={{ flex: 1, padding: 16, fontSize: 12, color: "#888" }}>
               {loading ? "Loading listings…" : "No listings yet."}
             </div>
           )}
