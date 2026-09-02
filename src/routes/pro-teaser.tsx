@@ -247,7 +247,7 @@ export function ProTeaserPage({
     }, 3000);
 
     (async () => {
-      const [perkRes, catRes, shopRes, tvRes, newsRes, postRes] =
+      const [perkRes, catRes, shopRes, tvRes, bitesizeRes, newsRes, postRes] =
         await Promise.allSettled([
           supabase
             .from("benefit_perks")
@@ -272,6 +272,13 @@ export function ProTeaserPage({
             .order("sort_order", { ascending: true })
             .limit(2),
           supabase
+            .from("bitesize_videos")
+            .select("id, title, category, thumbnail_url, video_url, created_at")
+            .eq("is_published", true)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(4),
+          supabase
             .from("news_articles")
             .select("id, title, category, image_url, published_at, source")
             .eq("is_hidden", false)
@@ -284,6 +291,7 @@ export function ProTeaserPage({
             .order("created_at", { ascending: false })
             .limit(2),
         ]);
+
 
       if (cancelled) return;
 
