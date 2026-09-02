@@ -278,7 +278,7 @@ export function ProTeaserPage({
             )
             .eq("is_published", true)
             .order("sort_order", { ascending: true })
-            .limit(2),
+            .limit(4),
           supabase
             .from("bitesize_videos")
             .select("id, title, category, thumbnail_url, video_url, created_at")
