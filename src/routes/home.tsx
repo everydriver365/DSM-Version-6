@@ -10758,55 +10758,27 @@ function HomePage() {
           padding: 3,
         }}
       >
-        <button
-          type="button"
-          onClick={() => setActivePage(0)}
-          style={{
-            padding: "5px 16px",
-            borderRadius: 18,
-            fontSize: 11,
-            fontWeight: 700,
-            border: "none",
-            background: activePage === 0 ? "#fff" : "transparent",
-            color: activePage === 0 ? "#0B2341" : "rgba(255,255,255,0.5)",
-            cursor: "pointer",
-          }}
-        >
-          TODAY
-        </button>
-        <button
-          type="button"
-          onClick={() => setActivePage(1)}
-          style={{
-            padding: "5px 16px",
-            borderRadius: 18,
-            fontSize: 11,
-            fontWeight: 700,
-            border: "none",
-            background: activePage === 1 ? "#fff" : "transparent",
-            color: activePage === 1 ? "#0B2341" : "rgba(255,255,255,0.5)",
-            cursor: "pointer",
-          }}
-        >
-          PRO
-        </button>
-        <button
-          type="button"
-          onClick={() => setActivePage(2)}
-          style={{
-            padding: "5px 16px",
-            borderRadius: 18,
-            fontSize: 11,
-            fontWeight: 700,
-            border: "none",
-            background: activePage === 2 ? "#fff" : "transparent",
-            color: activePage === 2 ? "#0B2341" : "rgba(255,255,255,0.5)",
-            cursor: "pointer",
-          }}
-        >
-          MEDIA
-        </button>
+        {(["TODAY", "PRO", "FULL", "MEDIA"] as const).map((label, idx) => (
+          <button
+            key={label}
+            type="button"
+            onClick={() => setActivePage(idx)}
+            style={{
+              padding: "5px 14px",
+              borderRadius: 18,
+              fontSize: 11,
+              fontWeight: 700,
+              border: "none",
+              background: activePage === idx ? "#fff" : "transparent",
+              color: activePage === idx ? "#0B2341" : "rgba(255,255,255,0.5)",
+              cursor: "pointer",
+            }}
+          >
+            {label}
+          </button>
+        ))}
       </div>
+
 
       {/* Page dots */}
       <div
