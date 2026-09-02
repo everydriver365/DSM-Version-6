@@ -102,6 +102,44 @@ interface PerkExplainer {
   iconColor: string;
 }
 
+const PERK_EXPLAINERS: PerkExplainer[] = [
+  {
+    id: "bennenden",
+    name: "Bennenden Health",
+    description: "Private healthcare",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#E8F8F4",
+    iconColor: "#18A999",
+  },
+  {
+    id: "perkbox",
+    name: "Perkbox",
+    description: "Retail discounts",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#EAF5FC",
+    iconColor: "#2C97DE",
+  },
+  {
+    id: "pirkx",
+    name: "Pirkx",
+    description: "Wellbeing platform",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#F0EBFF",
+    iconColor: "#7B61FF",
+  },
+  {
+    id: "dia",
+    name: "DIA Membership",
+    description: "Professional body",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#FEF9EC",
+    iconColor: "#F59E0B",
+  },
+];
 
 const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
   { likes: 12, comments: 3 },
