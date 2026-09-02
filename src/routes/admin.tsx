@@ -16,6 +16,19 @@ export const Route = createFileRoute("/admin")({
 
 type Status = "checking" | "allowed" | "denied";
 
+const PERK_CATEGORIES = [
+  "Health",
+  "Shopping",
+  "Professional",
+  "Wellbeing",
+  "Finance",
+  "Travel",
+  "Technology",
+  "Education",
+  "Legal",
+  "Insurance",
+] as const;
+
 function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <div
@@ -1354,6 +1367,7 @@ export function BenefitPartnersSection() {
   // ---- perk search & filter ------------------------------------------------
   const [perkSearch, setPerkSearch] = useState("");
   const [perkPartnerFilter, setPerkPartnerFilter] = useState<string | "all">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
   const [allPerks, setAllPerks] = useState<BenefitPerk[]>([]);
 
   // ---- perk form validation ------------------------------------------------
@@ -1605,6 +1619,11 @@ export function BenefitPartnersSection() {
     });
   }, [allPerks, perkSearch, perkPartnerFilter]);
 
+  const filteredPartners = useMemo(() => {
+    if (categoryFilter === "all") return partners;
+    return partners.filter((p) => p.category === categoryFilter);
+  }, [partners, categoryFilter]);
+
   const partnerName = (id: string) => partners.find((p) => p.id === id)?.name ?? "Unknown";
 
   return (
@@ -1761,6 +1780,42 @@ export function BenefitPartnersSection() {
         )}
       </div>
 
+      {/* Category filter pills */}
+      <div
+        style={{
+          margin: "0 16px 12px",
+          display: "flex",
+          gap: 8,
+          overflowX: "auto",
+          paddingBottom: 4,
+          scrollbarWidth: "none",
+        }}
+      >
+        {["All", ...PERK_CATEGORIES].map((cat) => {
+          const active = categoryFilter === (cat === "All" ? "all" : cat);
+          return (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setCategoryFilter(cat === "All" ? "all" : cat)}
+              style={{
+                flexShrink: 0,
+                padding: "6px 14px",
+                borderRadius: 999,
+                border: "none",
+                fontSize: 12,
+                fontWeight: tokens.fontWeight.bold,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                background: active ? "#0B2341" : "#F4F6F8",
+                color: active ? "#fff" : "#536579",
+              }}
+            >
+              {cat}
+            </button>
+          );
+        })}
+      </div>
 
       <div
         style={{
@@ -1771,10 +1826,12 @@ export function BenefitPartnersSection() {
           overflow: "hidden",
         }}
       >
-        {partners.length === 0 && (
-          <div style={{ padding: 16, fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>No partners yet.</div>
+        {filteredPartners.length === 0 && (
+          <div style={{ padding: 16, fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>
+            {partners.length === 0 ? "No partners yet." : "No partners match this category."}
+          </div>
         )}
-        {partners.map((partner, i) => {
+        {filteredPartners.map((partner, i) => {
           const tierStyle = PARTNER_TIER_STYLE[partner.min_tier] ?? PARTNER_TIER_STYLE.free;
           return (
             <div
@@ -2339,12 +2396,27 @@ export function BenefitPartnersSection() {
               </div>
 
               <div style={partnerLabelStyle}>Category</div>
-              <input
+              <select
                 value={editingPartner.category ?? ""}
                 onChange={(e) => patch({ category: e.target.value })}
-                placeholder="Health, Shopping, etc"
-                style={partnerInputStyle}
-              />
+                style={{
+                  width: "100%",
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  border: "1px solid #E4E8EF",
+                  fontSize: 13,
+                  color: "#0B2341",
+                  background: "#fff",
+                  marginBottom: 12,
+                }}
+              >
+                <option value="">Select category...</option>
+                {PERK_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
 
               <div style={partnerLabelStyle}>Saving text</div>
               <input
