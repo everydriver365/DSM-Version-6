@@ -2038,6 +2038,81 @@ export function BenefitPartnersSection() {
 
           );
         })}
+
+        {(() => {
+          const uncategorised = filteredAllPerks.filter((p) => !p.partner_id);
+          if (uncategorised.length === 0) return null;
+          return (
+            <>
+              <div style={{ padding: "16px 16px 8px", borderTop: "1px solid #F1F5F9" }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.textMuted,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  Uncategorised ({uncategorised.length})
+                </div>
+              </div>
+              <div style={{ background: "#F8FAFC", padding: "12px 16px" }}>
+                {uncategorised.map((perk: any) => (
+                  <div
+                    key={perk.id}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      alignItems: "center",
+                      padding: "8px 0",
+                      borderBottom: "1px solid #F0F4F8",
+                    }}
+                  >
+                    <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.navy, flex: 1, minWidth: 0 }}>
+                      {perk.name}
+                    </span>
+                    {perk.coming_soon && (
+                      <span
+                        style={{
+                          background: "#FEF3C7",
+                          color: "#B45309",
+                          fontSize: tokens.fontSize.sm,
+                          fontWeight: tokens.fontWeight.bold,
+                          borderRadius: 999,
+                          padding: "4px 10px",
+                        }}
+                      >
+                        Coming soon
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      aria-label="Edit perk"
+                      onClick={() => {
+                        setEditingPerk({ ...perk });
+                        setPerkSheetOpen(true);
+                      }}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                    >
+                      <IconPencil size={15} stroke={1.8} color="#6B7686" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Delete perk"
+                      onClick={() => {
+                        if (confirm(`Delete ${perk.name}?`)) deletePerk(perk);
+                      }}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                    >
+                      <IconTrash size={15} stroke={1.8} color="#CC2229" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          );
+        })()}
       </div>
 
       {partnerSheetOpen && editingPartner && (
