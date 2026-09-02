@@ -278,7 +278,7 @@ export function ProTeaserPage({
             )
             .eq("is_published", true)
             .order("sort_order", { ascending: true })
-            .limit(2),
+            .limit(4),
           supabase
             .from("bitesize_videos")
             .select("id, title, category, thumbnail_url, video_url, created_at")
@@ -362,7 +362,7 @@ export function ProTeaserPage({
             }))
           : [];
 
-      setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 2));
+      setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 4));
 
 
       if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
@@ -1069,15 +1069,21 @@ export function ProTeaserPage({
           action="See all →"
           onAction={() => onNavigateToMedia?.()}
         />
-        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
-          {videos.slice(0, 2).map((v, i) => (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 8,
+            padding: "0 16px 16px",
+            borderTop: "1px solid #F0F0F0",
+          }}
+        >
+          {videos.slice(0, 4).map((v, i) => (
             <div
               key={v.id}
               onClick={() => onNavigateToMedia?.()}
               style={{
-                flex: 1,
                 cursor: "pointer",
-                borderRight: i === 0 ? "1px solid #F0F0F0" : undefined,
               }}
             >
               <div
@@ -1086,6 +1092,7 @@ export function ProTeaserPage({
                   background: "#E8EDF2",
                   position: "relative",
                   overflow: "hidden",
+                  borderRadius: 8,
                 }}
               >
                 {v.thumbnail_url && (
@@ -1154,7 +1161,7 @@ export function ProTeaserPage({
                   Watch
                 </div>
               </div>
-              <div style={{ padding: "10px 12px" }}>
+              <div style={{ padding: "10px 0 0" }}>
                 <div style={{ fontSize: 9, color: "#536579", marginBottom: 3 }}>
                   {v.category ?? "PRO TV"}
                 </div>
@@ -1172,7 +1179,7 @@ export function ProTeaserPage({
             </div>
           ))}
           {videos.length === 0 && (
-            <div style={{ flex: 1, padding: 16, fontSize: 12, color: "#888" }}>
+            <div style={{ gridColumn: "1 / -1", padding: 16, fontSize: 12, color: "#888" }}>
               {loading ? "Loading videos…" : "No videos yet."}
             </div>
           )}
