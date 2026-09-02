@@ -270,7 +270,7 @@ export function ProTeaserPage({
             .eq("is_active", true)
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
-            .limit(2),
+            .limit(4),
           supabase
             .from("howto_videos")
             .select(
