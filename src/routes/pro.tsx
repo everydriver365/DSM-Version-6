@@ -704,7 +704,13 @@ export function ProPage(_props: { onNavigateToMedia?: () => void } = {}) {
                 <button
                   key={t.key}
                   type="button"
-                  onClick={() => setActiveTab(t.key)}
+                  onClick={() => {
+                    setActiveTab(t.key);
+                    navigate({
+                      to: "/pro",
+                      search: (prev: { tab?: string }) => ({ ...prev, tab: t.key }),
+                    });
+                  }}
                   style={{
                     background: "transparent",
                     border: "none",
