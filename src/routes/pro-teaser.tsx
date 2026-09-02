@@ -454,7 +454,7 @@ export function ProTeaserPage({
             name: r.name ?? "",
             video_url: r.video_url ?? null,
             video_embed_url: r.video_embed_url ?? null,
-            partner: r.partner ?? null,
+            partner: { id: String(r.id), name: r.name ?? "" },
           })),
         );
       }
