@@ -317,10 +317,7 @@ export function ProTeaserPage({
     name: string;
     video_url: string | null;
     video_embed_url: string | null;
-    partner: {
-      id: string;
-      name: string;
-    } | null;
+    icon_color: string | null;
   }>>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [videos, setVideos] = useState<TvVideo[]>([]);
