@@ -2748,3 +2748,10 @@ function toEmbedUrl(url: string): string | null {
   if (url.includes("/embed/") || url.includes("player.vimeo")) return url;
   return null;
 }
+
+function getVideoThumbnail(url: string): string | null {
+  if (!url) return null;
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (yt) return `https://img.youtube.com/vi/${yt[1]}/hqdefault.jpg`;
+  return null;
+}
