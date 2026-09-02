@@ -5,6 +5,7 @@ import {
   IconCamera,
   IconGift,
   IconHeart,
+  IconMicrophone,
   IconPlayerPause,
   IconPlayerPlay,
   IconRadio,
@@ -708,60 +709,126 @@ export function ProTeaserPage({
           action="All stations →"
           onAction={() => go("/radio")}
         />
-        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.15fr 1fr",
+            gap: 10,
+            padding: 12,
+            borderTop: "1px solid #F0F0F0",
+          }}
+        >
+          {/* PRO Live — primary */}
           <div
             onClick={() => go("/radio")}
             style={{
-              flex: 1,
-              padding: 12,
-              borderRight: "1px solid #F0F0F0",
+              position: "relative",
+              overflow: "hidden",
+              borderRadius: 8,
               cursor: "pointer",
+              background: `linear-gradient(160deg, ${BLUE} 0%, #0F5FB5 62%, #0B3F7D 100%)`,
+              boxShadow: "0 6px 16px rgba(24,119,214,0.22)",
+              padding: 12,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              minHeight: 168,
             }}
           >
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+            {/* equaliser detail */}
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                right: 8,
+                bottom: 10,
+                display: "flex",
+                alignItems: "flex-end",
+                gap: 3,
+                opacity: 0.35,
+              }}
+            >
+              {[10, 20, 14, 26, 16, 8].map((h, i) => (
+                <span
+                  key={i}
+                  style={{
+                    width: 3,
+                    height: h,
+                    borderRadius: 2,
+                    background: "#fff",
+                    display: "block",
+                  }}
+                />
+              ))}
+            </div>
+
+            <div
+              style={{ display: "flex", alignItems: "center", gap: 8 }}
+            >
               <div
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  background: "#EAF5FC",
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.18)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
                 }}
               >
-                <IconRadio size={20} color={BLUE} />
+                <IconRadio size={19} color="#fff" />
               </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
-                  {radio.selectedStation ?? "PRO Live"}
-                </div>
-                <div
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  background: RED,
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 800,
+                  letterSpacing: 0.6,
+                  padding: "3px 8px",
+                  borderRadius: 999,
+                }}
+              >
+                <span
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 3,
-                    marginTop: 2,
+                    width: 5,
+                    height: 5,
+                    borderRadius: 5,
+                    background: "#fff",
+                    display: "inline-block",
                   }}
-                >
-                  <span
-                    style={{
-                      width: 4,
-                      height: 4,
-                      borderRadius: 4,
-                      background: RED,
-                      display: "inline-block",
-                    }}
-                  />
-                  <span style={{ color: RED, fontSize: 9, fontWeight: 700 }}>LIVE</span>
-                </div>
+                />
+                LIVE
+              </span>
+            </div>
+
+            <div>
+              <div
+                style={{
+                  fontSize: 17,
+                  fontWeight: 800,
+                  color: "#fff",
+                  letterSpacing: -0.3,
+                }}
+              >
+                {radio.selectedStation ?? "PRO Live"}
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.85)",
+                  marginTop: 2,
+                }}
+              >
+                {radio.nowPlaying?.title ?? "Hope"}
+                {radio.nowPlaying?.artist ? ` · ${radio.nowPlaying.artist}` : " · Gold Lounge"}
               </div>
             </div>
-            <div style={{ fontSize: 11, color: "#536579", marginBottom: 8 }}>
-              {radio.nowPlaying?.title ?? "PRO Radio"}
-              {radio.nowPlaying?.artist ? ` · ${radio.nowPlaying.artist}` : ""}
-            </div>
+
             <button
               type="button"
               onClick={(e) => {
@@ -769,72 +836,128 @@ export function ProTeaserPage({
                 radio.toggle();
               }}
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                background: BLUE,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                background: "#fff",
                 border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.18)",
               }}
               aria-label={radio.isPlaying ? "Pause radio" : "Play radio"}
             >
               {radio.isPlaying ? (
-                <IconPlayerPause size={14} color="#fff" />
+                <IconPlayerPause size={20} color={BLUE} />
               ) : (
-                <IconPlayerPlay size={14} color="#fff" />
+                <IconPlayerPlay size={20} color={BLUE} />
               )}
             </button>
+
+            <div
+              style={{
+                marginTop: "auto",
+                fontSize: 10,
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.9)",
+              }}
+            >
+              Feel good driving, all day long
+            </div>
           </div>
 
+          {/* PRO Talk — secondary */}
           <div
             onClick={() => go("/radio")}
-            style={{ flex: 1, padding: 12, opacity: 0.5, cursor: "pointer" }}
+            style={{
+              borderRadius: 8,
+              cursor: "pointer",
+              background: "#F6F8FA",
+              border: "1px solid #E9EDF2",
+              padding: 12,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              minHeight: 168,
+            }}
           >
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  background: "#F4F6F8",
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: "#ECEFF3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
                 }}
               >
-                <IconRadio size={20} color="#aaa" />
+                <IconMicrophone size={18} color="#9AA5B1" />
               </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
-                  PRO Talk
-                </div>
-                <div style={{ fontSize: 9, color: "#888", marginTop: 2 }}>
-                  Coming soon
-                </div>
+              <span
+                style={{
+                  background: "#E7EBF0",
+                  color: "#6B7885",
+                  fontSize: 9,
+                  fontWeight: 800,
+                  letterSpacing: 0.6,
+                  padding: "3px 8px",
+                  borderRadius: 999,
+                }}
+              >
+                COMING SOON
+              </span>
+            </div>
+
+            <div>
+              <div
+                style={{
+                  fontSize: 17,
+                  fontWeight: 800,
+                  color: NAVY,
+                  letterSpacing: -0.3,
+                }}
+              >
+                PRO Talk
+              </div>
+              <div style={{ fontSize: 11, color: "#7A8794", marginTop: 2 }}>
+                Instructor talk radio, launching soon.
               </div>
             </div>
-            <div style={{ fontSize: 11, color: "#888", marginBottom: 8 }}>
-              Instructor talk radio, launching soon.
-            </div>
+
             <div
+              aria-hidden
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                background: "#E4E8EF",
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                background: "#fff",
+                border: "1px solid #E1E6EC",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <IconPlayerPlay size={14} color="#aaa" />
+              <IconPlayerPlay size={20} color="#C2CAD3" />
+            </div>
+
+            <div
+              style={{
+                marginTop: "auto",
+                fontSize: 10,
+                fontWeight: 600,
+                color: "#8C97A3",
+              }}
+            >
+              Real talk for real instructors
             </div>
           </div>
         </div>
+
       </div>
 
       {/* ============ SECTION 5 — PRO TV ============ */}
