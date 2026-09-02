@@ -1869,6 +1869,7 @@ export function ProTeaserPage({
           action="See all →"
           onAction={() => go("/community")}
           badge="2 new"
+          description="Connect with other instructors, share tips and find cover in your area"
         />
         <div
           ref={communityScrollRef}
