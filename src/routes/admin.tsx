@@ -1252,7 +1252,10 @@ type BenefitPartner = {
   exclusive: boolean;
   active: boolean;
   sort_order: number;
+  video_url: string | null;
+  video_embed_url: string | null;
 };
+
 
 type BenefitPerk = {
   id: string;
