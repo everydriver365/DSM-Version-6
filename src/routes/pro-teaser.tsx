@@ -13,6 +13,7 @@ import {
   IconRadio,
   IconShoppingBag,
 } from "@tabler/icons-react";
+import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
