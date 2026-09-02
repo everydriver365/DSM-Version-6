@@ -854,27 +854,51 @@ export function ProTeaserPage({
         {/* Perk explainers */}
         <div
           style={{
-            padding: "0 16px 6px",
-            fontSize: 10,
-            fontWeight: 700,
-            color: "#536579",
-            textTransform: "uppercase",
-            letterSpacing: ".6px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 16px 8px",
           }}
         >
-          Perk explainers
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              color: "#1877D6",
+            }}
+          >
+            PERK EXPLAINERS
+          </span>
+          <button
+            type="button"
+            onClick={() => go("/perks")}
+            style={{
+              fontSize: 11,
+              color: "#2C97DE",
+              fontWeight: 600,
+              cursor: "pointer",
+              background: "transparent",
+              border: "none",
+              padding: 0,
+            }}
+          >
+            See all →
+          </button>
         </div>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 8,
-            padding: "0 16px 12px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+            gap: 10,
+            padding: "0 16px 16px",
           }}
         >
           {perkExplainers.slice(0, 4).map((tile) => {
             const thumb = getVideoThumbnail(tile.videoUrl, tile.thumbnailUrl);
             const hasThumb = Boolean(thumb);
+            const accent = tile.iconColor;
             return (
               <div
                 key={tile.id}
@@ -886,96 +910,114 @@ export function ProTeaserPage({
                   }
                 }}
                 style={{
-                  position: "relative",
-                  borderRadius: 10,
+                  background: "#fff",
+                  borderRadius: 16,
                   overflow: "hidden",
                   cursor: "pointer",
-                  minHeight: 90,
-                  background: tile.color,
+                  border: "1px solid #EEF2F7",
+                  boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                {hasThumb && (
-                  <>
-                    <img
-                      src={thumb!}
-                      alt={tile.name}
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(transparent, rgba(0,0,0,0.65))",
-                      }}
-                    />
-                  </>
-                )}
                 <div
                   style={{
                     position: "relative",
-                    zIndex: 1,
-                    padding: 10,
-                    height: "100%",
+                    width: "100%",
+                    aspectRatio: "16 / 10",
+                    background: hasThumb ? "#0B1F3A" : tile.color,
+                    overflow: "hidden",
+                  }}
+                >
+                  {hasThumb && (
+                    <>
+                      <img
+                        src={thumb!}
+                        alt={tile.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background:
+                            "linear-gradient(135deg, rgba(0,0,0,0.28), transparent 55%)",
+                        }}
+                      />
+                    </>
+                  )}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      left: 10,
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: accent,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    <IconPlayerPlay size={14} color="#fff" fill="#fff" />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    height: 3,
+                    background: accent,
+                    flexShrink: 0,
+                  }}
+                />
+                <div
+                  style={{
+                    padding: "12px 12px 14px",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-between",
-                    boxSizing: "border-box",
+                    gap: 4,
+                    flex: 1,
                   }}
                 >
                   <div
                     style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      background: hasThumb
-                        ? tile.videoUrl
-                          ? tile.iconColor
-                          : "rgba(255,255,255,0.3)"
-                        : `${tile.iconColor}66`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#0B1F3A",
+                      lineHeight: 1.25,
                     }}
                   >
-                    <IconPlayerPlay size={12} color="#fff" />
+                    {tile.name}
                   </div>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: hasThumb ? "#fff" : NAVY,
-                        lineHeight: 1.2,
-                        marginBottom: 2,
-                      }}
-                    >
-                      {tile.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 10,
-                        color: hasThumb ? "rgba(255,255,255,0.7)" : "#536579",
-                      }}
-                    >
-                      {tile.description}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 600,
-                        color: hasThumb ? "rgba(255,255,255,0.8)" : tile.iconColor,
-                        opacity: tile.videoUrl ? 1 : 0.5,
-                        marginTop: 3,
-                      }}
-                    >
-                      Watch →
-                    </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#6B7686",
+                      lineHeight: 1.35,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {tile.description}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: accent,
+                      marginTop: "auto",
+                      paddingTop: 6,
+                      opacity: tile.videoUrl ? 1 : 0.5,
+                    }}
+                  >
+                    Watch →
                   </div>
                 </div>
               </div>
