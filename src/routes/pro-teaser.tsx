@@ -292,7 +292,9 @@ export function ProTeaserPage({
             .limit(4),
           supabase
             .from("news_articles")
-            .select("id, title, category, image_url, published_at, source")
+            .select(
+              "id, title, category, image_url, published_at, source, description, read_time_mins",
+            )
             .eq("is_hidden", false)
             .order("published_at", { ascending: false })
             .limit(2),
