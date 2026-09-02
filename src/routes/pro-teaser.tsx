@@ -364,8 +364,7 @@ export function ProTeaserPage({
             .from("benefit_partners")
             .select("id, name, video_url, video_embed_url, icon_color")
             .eq("active", true)
-            .or("video_url.not.is.null,video_embed_url.not.is.null")
-            .limit(4),
+            .limit(8),
           supabase
             .from("news_articles")
             .select(
