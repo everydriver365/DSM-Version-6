@@ -6435,7 +6435,6 @@ function HomePage() {
               width: 40,
               height: 40,
               borderRadius: 10,
-              background: 'rgba(255,255,255,0.15)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
