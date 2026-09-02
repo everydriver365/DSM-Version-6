@@ -1063,6 +1063,7 @@ export function ProTeaserPage({
           color={AMBER}
           action="Browse all →"
           onAction={() => go("/marketplace")}
+          description="Premium products and exclusive deals for professional instructors"
         />
         <div
           style={{
