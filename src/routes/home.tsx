@@ -10793,30 +10793,18 @@ function HomePage() {
           pointerEvents: "none",
         }}
       >
-        <div
-          style={{
-            width: activePage === 0 ? 20 : 8,
-            height: 4,
-            borderRadius: 2,
-            background: activePage === 0 ? "#0B2341" : "rgba(11,35,65,0.2)",
-          }}
-        />
-        <div
-          style={{
-            width: activePage === 1 ? 20 : 8,
-            height: 4,
-            borderRadius: 2,
-            background: activePage === 1 ? "#0B2341" : "rgba(11,35,65,0.2)",
-          }}
-        />
-        <div
-          style={{
-            width: activePage === 2 ? 20 : 8,
-            height: 4,
-            borderRadius: 2,
-            background: activePage === 2 ? "#0B2341" : "rgba(11,35,65,0.2)",
-          }}
-        />
+        {[0, 1, 2, 3].map((idx) => (
+          <div
+            key={idx}
+            style={{
+              width: activePage === idx ? 20 : 8,
+              height: 4,
+              borderRadius: 2,
+              background: activePage === idx ? "#0B2341" : "rgba(11,35,65,0.2)",
+            }}
+          />
+        ))}
+
       </div>
     </div>
   );
