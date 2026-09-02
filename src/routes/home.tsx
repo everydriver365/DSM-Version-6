@@ -38,6 +38,8 @@ import { computeDayGaps } from "@/lib/gapDetection";
 
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import ProPage from "@/routes/pro.tsx";
+import { ProTeaserPage } from "@/routes/pro-teaser.tsx";
+
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
@@ -5509,7 +5511,7 @@ function HomePage() {
           const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
           const dt = Date.now() - touchStartTime.current;
           const threshold = dt < 300 ? 30 : 80;
-          if (dx < -threshold && activePage < 2) {
+          if (dx < -threshold && activePage < 3) {
             setActivePage(activePage + 1);
           } else if (dx > threshold && activePage > 0) {
             setActivePage(activePage - 1);
@@ -5523,7 +5525,8 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? 0 : activePage === 1 ? "-100vw" : "-200vw",
+            left: `${(0 - activePage) * 100}vw`,
+
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
@@ -10695,13 +10698,18 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? "100vw" : activePage === 1 ? 0 : "-100vw",
+            left: `${(1 - activePage) * 100}vw`,
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
+            background: "#fff",
           }}
         >
-          <ProPage onNavigateToMedia={() => setActivePage(2)} />
+          <ProTeaserPage
+            onNavigate={(to) => navigate({ to: to as never })}
+            onNavigateToMedia={() => setActivePage(3)}
+            supabase={supabase}
+          />
         </div>
         <div
           style={{
@@ -10709,7 +10717,21 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 2 ? 0 : activePage === 1 ? "100vw" : "200vw",
+            left: `${(2 - activePage) * 100}vw`,
+            transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          <ProPage onNavigateToMedia={() => setActivePage(3)} />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            width: "100vw",
+            left: `${(3 - activePage) * 100}vw`,
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
@@ -10718,6 +10740,7 @@ function HomePage() {
         >
           <MediaHub onNavigate={(to) => navigate({ to: to as never })} />
         </div>
+
       </div>
 
       {/* TODAY / PRO pill tabs */}
@@ -10735,55 +10758,27 @@ function HomePage() {
           padding: 3,
         }}
       >
-        <button
-          type="button"
-          onClick={() => setActivePage(0)}
-          style={{
-            padding: "5px 16px",
-            borderRadius: 18,
-            fontSize: 11,
-            fontWeight: 700,
-            border: "none",
-            background: activePage === 0 ? "#fff" : "transparent",
-            color: activePage === 0 ? "#0B2341" : "rgba(255,255,255,0.5)",
-            cursor: "pointer",
-          }}
-        >
-          TODAY
-        </button>
-        <button
-          type="button"
-          onClick={() => setActivePage(1)}
-          style={{
-            padding: "5px 16px",
-            borderRadius: 18,
-            fontSize: 11,
-            fontWeight: 700,
-            border: "none",
-            background: activePage === 1 ? "#fff" : "transparent",
-            color: activePage === 1 ? "#0B2341" : "rgba(255,255,255,0.5)",
-            cursor: "pointer",
-          }}
-        >
-          PRO
-        </button>
-        <button
-          type="button"
-          onClick={() => setActivePage(2)}
-          style={{
-            padding: "5px 16px",
-            borderRadius: 18,
-            fontSize: 11,
-            fontWeight: 700,
-            border: "none",
-            background: activePage === 2 ? "#fff" : "transparent",
-            color: activePage === 2 ? "#0B2341" : "rgba(255,255,255,0.5)",
-            cursor: "pointer",
-          }}
-        >
-          MEDIA
-        </button>
+        {(["TODAY", "PRO", "FULL", "MEDIA"] as const).map((label, idx) => (
+          <button
+            key={label}
+            type="button"
+            onClick={() => setActivePage(idx)}
+            style={{
+              padding: "5px 14px",
+              borderRadius: 18,
+              fontSize: 11,
+              fontWeight: 700,
+              border: "none",
+              background: activePage === idx ? "#fff" : "transparent",
+              color: activePage === idx ? "#0B2341" : "rgba(255,255,255,0.5)",
+              cursor: "pointer",
+            }}
+          >
+            {label}
+          </button>
+        ))}
       </div>
+
 
       {/* Page dots */}
       <div
@@ -10798,30 +10793,18 @@ function HomePage() {
           pointerEvents: "none",
         }}
       >
-        <div
-          style={{
-            width: activePage === 0 ? 20 : 8,
-            height: 4,
-            borderRadius: 2,
-            background: activePage === 0 ? "#0B2341" : "rgba(11,35,65,0.2)",
-          }}
-        />
-        <div
-          style={{
-            width: activePage === 1 ? 20 : 8,
-            height: 4,
-            borderRadius: 2,
-            background: activePage === 1 ? "#0B2341" : "rgba(11,35,65,0.2)",
-          }}
-        />
-        <div
-          style={{
-            width: activePage === 2 ? 20 : 8,
-            height: 4,
-            borderRadius: 2,
-            background: activePage === 2 ? "#0B2341" : "rgba(11,35,65,0.2)",
-          }}
-        />
+        {[0, 1, 2, 3].map((idx) => (
+          <div
+            key={idx}
+            style={{
+              width: activePage === idx ? 20 : 8,
+              height: 4,
+              borderRadius: 2,
+              background: activePage === idx ? "#0B2341" : "rgba(11,35,65,0.2)",
+            }}
+          />
+        ))}
+
       </div>
     </div>
   );

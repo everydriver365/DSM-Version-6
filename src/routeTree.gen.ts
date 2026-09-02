@@ -45,6 +45,7 @@ import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProTeaserRouteImport } from './routes/pro-teaser'
 import { Route as ProTeachRouteImport } from './routes/pro-teach'
 import { Route as ProRouteImport } from './routes/pro'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -363,6 +364,11 @@ const QuickaccessRoute = QuickaccessRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProTeaserRoute = ProTeaserRouteImport.update({
+  id: '/pro-teaser',
+  path: '/pro-teaser',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProTeachRoute = ProTeachRouteImport.update({
@@ -1140,6 +1146,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/pro': typeof ProRoute
   '/pro-teach': typeof ProTeachRoute
+  '/pro-teaser': typeof ProTeaserRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1315,6 +1322,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/pro': typeof ProRoute
   '/pro-teach': typeof ProTeachRoute
+  '/pro-teaser': typeof ProTeaserRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1492,6 +1500,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/pro': typeof ProRoute
   '/pro-teach': typeof ProTeachRoute
+  '/pro-teaser': typeof ProTeaserRoute
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
@@ -1671,6 +1680,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/pro'
     | '/pro-teach'
+    | '/pro-teaser'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -1846,6 +1856,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/pro'
     | '/pro-teach'
+    | '/pro-teaser'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -2022,6 +2033,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/pro'
     | '/pro-teach'
+    | '/pro-teaser'
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
@@ -2200,6 +2212,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProRoute: typeof ProRoute
   ProTeachRoute: typeof ProTeachRoute
+  ProTeaserRoute: typeof ProTeaserRoute
   ProfileRoute: typeof ProfileRoute
   QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
@@ -2538,6 +2551,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro-teaser': {
+      id: '/pro-teaser'
+      path: '/pro-teaser'
+      fullPath: '/pro-teaser'
+      preLoaderRoute: typeof ProTeaserRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pro-teach': {
@@ -3665,6 +3685,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProRoute: ProRoute,
   ProTeachRoute: ProTeachRoute,
+  ProTeaserRoute: ProTeaserRoute,
   ProfileRoute: ProfileRoute,
   QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,

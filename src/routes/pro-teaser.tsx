@@ -1,0 +1,1064 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import {
+  IconBriefcase,
+  IconCamera,
+  IconGift,
+  IconHeart,
+  IconPlayerPause,
+  IconPlayerPlay,
+  IconRadio,
+  IconShoppingBag,
+} from "@tabler/icons-react";
+import { supabase as defaultSupabase } from "@/lib/supabaseClient";
+import { useProRadioContext } from "@/hooks/useProRadio";
+
+/* ------------------------------------------------------------------ */
+// Types
+/* ------------------------------------------------------------------ */
+
+interface FeaturedPerk {
+  id: string;
+  name: string | null;
+  saving: string | null;
+  category: string | null;
+  description: string | null;
+}
+
+interface PerkCategory {
+  name: string;
+  count: number;
+}
+
+interface ShopListing {
+  id: string;
+  title: string | null;
+  price_display: string | null;
+  thumbnail_url: string | null;
+  category: string | null;
+}
+
+interface TvVideo {
+  id: string;
+  title: string | null;
+  category: string | null;
+  thumbnail_url: string | null;
+  video_embed_url: string | null;
+  video_url: string | null;
+}
+
+interface NewsArticle {
+  id: string;
+  title: string | null;
+  category: string | null;
+  image_url: string | null;
+  published_at: string | null;
+  source: string | null;
+}
+
+interface CommunityPost {
+  id: string;
+  body: string | null;
+  created_at: string | null;
+  authorName: string | null;
+}
+
+export interface ProTeaserProps {
+  onNavigate?: (to: string) => void;
+  onNavigateToMedia?: () => void;
+  supabase?: any;
+  session?: any;
+}
+
+/* ------------------------------------------------------------------ */
+// Helpers
+/* ------------------------------------------------------------------ */
+
+const NAVY = "#0B2341";
+const BLUE = "#2C97DE";
+const TEAL = "#18A999";
+const AMBER = "#F59E0B";
+const RED = "#E53935";
+
+function timeAgo(value: string | null | undefined): string {
+  if (!value) return "";
+  const then = new Date(value).getTime();
+  if (Number.isNaN(then)) return "";
+  const mins = Math.max(0, Math.round((Date.now() - then) / 60000));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.round(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return `${Math.round(days / 7)}w ago`;
+}
+
+function categoryIcon(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("health")) return <IconHeart size={22} color={TEAL} />;
+  if (n.includes("shop") || n.includes("retail"))
+    return <IconShoppingBag size={22} color={TEAL} />;
+  if (n.includes("professional") || n.includes("business"))
+    return <IconBriefcase size={22} color={TEAL} />;
+  return <IconGift size={22} color={TEAL} />;
+}
+
+function categoryBlurb(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("health")) return "GP · Mental health";
+  if (n.includes("shop") || n.includes("retail")) return "Retail · Cinema";
+  if (n.includes("professional") || n.includes("business")) return "DIA · CPD";
+  return "Member benefits";
+}
+
+function newsCategoryColor(category: string | null) {
+  const c = (category ?? "").toLowerCase();
+  if (c.includes("road") || c.includes("safety")) return RED;
+  if (c.includes("motor")) return BLUE;
+  return "rgba(255,255,255,0.7)";
+}
+
+function SectionHeaderRow({
+  label,
+  color,
+  action,
+  onAction,
+  badge,
+}: {
+  label: string;
+  color: string;
+  action: string;
+  onAction: () => void;
+  badge?: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "12px 16px 8px",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: ".6px",
+            color,
+          }}
+        >
+          {label}
+        </span>
+        {badge && (
+          <span
+            style={{
+              background: RED,
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 700,
+              borderRadius: 8,
+              padding: "1px 6px",
+            }}
+          >
+            {badge}
+          </span>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={onAction}
+        style={{
+          fontSize: 11,
+          color: BLUE,
+          fontWeight: 600,
+          cursor: "pointer",
+          background: "transparent",
+          border: "none",
+          padding: 0,
+        }}
+      >
+        {action}
+      </button>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+// Page
+/* ------------------------------------------------------------------ */
+
+export const Route = createFileRoute("/pro-teaser")({
+  head: () => ({
+    meta: [
+      { title: "PRO Overview — Every Driver Pro" },
+      {
+        name: "description",
+        content:
+          "A snapshot of your Every Driver PRO ecosystem: perks, PRO Shop, radio, PRO TV, news and community.",
+      },
+      { property: "og:title", content: "PRO Overview — Every Driver Pro" },
+      {
+        property: "og:description",
+        content:
+          "A snapshot of your Every Driver PRO ecosystem: perks, PRO Shop, radio, PRO TV, news and community.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: () => <ProTeaserRoute />,
+});
+
+function ProTeaserRoute() {
+  const navigate = useNavigate();
+  return (
+    <ProTeaserPage
+      onNavigate={(to) => navigate({ to: to as never })}
+      onNavigateToMedia={() => navigate({ to: "/home" as never })}
+    />
+  );
+}
+
+export function ProTeaserPage({
+  onNavigate,
+  onNavigateToMedia,
+  supabase = defaultSupabase,
+}: ProTeaserProps = {}) {
+  const radio = useProRadioContext();
+
+  const [loading, setLoading] = useState(true);
+  const [featuredPerk, setFeaturedPerk] = useState<FeaturedPerk | null>(null);
+  const [perkCategories, setPerkCategories] = useState<PerkCategory[]>([]);
+  const [perkTotal, setPerkTotal] = useState(0);
+  const [listings, setListings] = useState<ShopListing[]>([]);
+  const [videos, setVideos] = useState<TvVideo[]>([]);
+  const [news, setNews] = useState<NewsArticle[]>([]);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const timeout = window.setTimeout(() => {
+      if (!cancelled) setLoading(false);
+    }, 3000);
+
+    (async () => {
+      const [perkRes, catRes, shopRes, tvRes, newsRes, postRes] =
+        await Promise.allSettled([
+          supabase
+            .from("benefit_perks")
+            .select("id, name, saving, category, description")
+            .eq("active", true)
+            .order("sort_order", { ascending: true })
+            .limit(1),
+          supabase.from("benefit_perks").select("category").eq("active", true),
+          supabase
+            .from("marketplace_listings")
+            .select("id, title, price_display, image_urls, marketplace_categories(name)")
+            .eq("is_active", true)
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("howto_videos")
+            .select(
+              "id, title, category, thumbnail_url, video_embed_url, video_url, sort_order",
+            )
+            .eq("is_published", true)
+            .order("sort_order", { ascending: true })
+            .limit(2),
+          supabase
+            .from("news_articles")
+            .select("id, title, category, image_url, published_at, source")
+            .eq("is_hidden", false)
+            .order("published_at", { ascending: false })
+            .limit(2),
+          supabase
+            .from("local_chat_messages")
+            .select("id, message, created_at, instructors(name)")
+            .is("deleted_at", null)
+            .order("created_at", { ascending: false })
+            .limit(2),
+        ]);
+
+      if (cancelled) return;
+
+      if (perkRes.status === "fulfilled") {
+        const row = (perkRes.value.data ?? [])[0];
+        if (row) setFeaturedPerk(row as FeaturedPerk);
+      }
+
+      if (catRes.status === "fulfilled" && Array.isArray(catRes.value.data)) {
+        const rows = catRes.value.data as { category: string | null }[];
+        setPerkTotal(rows.length);
+        const counts = new Map<string, number>();
+        for (const r of rows) {
+          const key = (r.category ?? "").trim();
+          if (!key) continue;
+          counts.set(key, (counts.get(key) ?? 0) + 1);
+        }
+        setPerkCategories(
+          [...counts.entries()]
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 3),
+        );
+      }
+
+      if (shopRes.status === "fulfilled" && Array.isArray(shopRes.value.data)) {
+        setListings(
+          (shopRes.value.data as any[]).map((r) => ({
+            id: String(r.id),
+            title: r.title ?? null,
+            price_display: r.price_display ?? null,
+            thumbnail_url: Array.isArray(r.image_urls) ? (r.image_urls[0] ?? null) : null,
+            category: r.marketplace_categories?.name ?? null,
+          })),
+        );
+      }
+
+      if (tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)) {
+        setVideos(
+          (tvRes.value.data as any[]).map((r) => ({
+            id: String(r.id),
+            title: r.title ?? null,
+            category: r.category ?? null,
+            thumbnail_url: r.thumbnail_url ?? null,
+            video_embed_url: r.video_embed_url ?? null,
+            video_url: r.video_url ?? null,
+          })),
+        );
+      }
+
+      if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
+        setNews(newsRes.value.data as NewsArticle[]);
+      }
+
+      if (postRes.status === "fulfilled" && Array.isArray(postRes.value.data)) {
+        setPosts(
+          (postRes.value.data as any[]).map((r) => ({
+            id: String(r.id),
+            body: r.message ?? null,
+            created_at: r.created_at ?? null,
+            authorName: r.instructors?.name ?? null,
+          })),
+        );
+      }
+
+      setLoading(false);
+    })();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [supabase]);
+
+  const go = (to: string) => onNavigate?.(to);
+  const perkCountLabel = useMemo(
+    () => (perkTotal > 0 ? `${perkTotal} Perks` : "Perks"),
+    [perkTotal],
+  );
+
+  return (
+    <div
+      style={{
+        background: "#fff",
+        minHeight: "100dvh",
+        paddingBottom: 100,
+        fontFamily: "Poppins, system-ui, sans-serif",
+      }}
+    >
+      {/* ============ SECTION 1 — PRO HEADER ============ */}
+      <div
+        style={{
+          padding: "calc(env(safe-area-inset-top, 0px) + 44px) 16px 16px",
+          borderBottom: "1px solid #F0F0F0",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: BLUE,
+            textTransform: "uppercase",
+            letterSpacing: "1.5px",
+            marginBottom: 8,
+          }}
+        >
+          Every Driver PRO
+        </div>
+        <div
+          style={{
+            fontSize: 30,
+            fontWeight: 900,
+            color: NAVY,
+            lineHeight: 1.1,
+            marginBottom: 8,
+          }}
+        >
+          Your professional ecosystem
+        </div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {[perkCountLabel, "PRO Shop", "Radio", "PRO TV", "News", "Community"].map(
+            (tag) => (
+              <span
+                key={tag}
+                style={{
+                  fontSize: 11,
+                  color: "#536579",
+                  background: "#F4F6F8",
+                  borderRadius: 4,
+                  padding: "3px 8px",
+                }}
+              >
+                {tag}
+              </span>
+            ),
+          )}
+        </div>
+      </div>
+
+      {/* ============ SECTION 2 — PRO PERKS ============ */}
+      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
+        <SectionHeaderRow
+          label="PRO Perks"
+          color={TEAL}
+          action="See all →"
+          onAction={() => go("/perks")}
+        />
+
+        <div
+          style={{
+            padding: "16px 16px 12px",
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 14,
+              background: "#E8F8F4",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconGift size={28} color={TEAL} />
+          </div>
+          <div>
+            <div
+              style={{
+                color: TEAL,
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".6px",
+                marginBottom: 4,
+              }}
+            >
+              PRO Perks
+            </div>
+            <div
+              style={{
+                fontSize: 19,
+                fontWeight: 700,
+                color: NAVY,
+                lineHeight: 1.2,
+                marginBottom: 3,
+              }}
+            >
+              Save £1,000s every year
+            </div>
+            <div style={{ fontSize: 12, color: "#888" }}>
+              {perkTotal > 0 ? perkTotal : "Exclusive"} exclusive benefits for EDP members
+            </div>
+          </div>
+        </div>
+
+        {perkCategories.length > 0 && (
+          <div style={{ display: "flex", gap: 8, padding: "0 16px 12px" }}>
+            {perkCategories.map((cat) => (
+              <div
+                key={cat.name}
+                onClick={() => go("/perks")}
+                style={{
+                  flex: 1,
+                  background: "#E8F8F4",
+                  borderRadius: 10,
+                  padding: 12,
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <span style={{ display: "block", marginBottom: 6 }}>
+                  {categoryIcon(cat.name)}
+                </span>
+                <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>
+                  {cat.name}
+                </div>
+                <div style={{ fontSize: 11, color: TEAL, marginTop: 2 }}>
+                  {cat.count}
+                </div>
+                <div style={{ fontSize: 10, color: "#888", marginTop: 3 }}>
+                  {categoryBlurb(cat.name)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {featuredPerk && (
+          <div
+            onClick={() => go("/perks")}
+            style={{
+              margin: "0 16px 14px",
+              background: "#F7FDF9",
+              borderRadius: 10,
+              padding: 12,
+              border: "0.5px solid #C8EFE4",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                background: TEAL,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconHeart size={18} color="#fff" />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  color: TEAL,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  marginBottom: 2,
+                }}
+              >
+                Featured perk
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
+                {featuredPerk.name ?? "Member perk"}
+              </div>
+              <div style={{ fontSize: 11, color: "#888" }}>
+                {featuredPerk.saving ?? featuredPerk.category ?? "Exclusive to PRO"}
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: BLUE, fontWeight: 700 }}>Claim →</div>
+          </div>
+        )}
+      </div>
+
+      {/* ============ SECTION 3 — PRO SHOP ============ */}
+      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
+        <SectionHeaderRow
+          label="PRO Shop"
+          color={AMBER}
+          action="Browse all →"
+          onAction={() => go("/marketplace")}
+        />
+        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
+          {(listings.length > 0 ? listings : []).slice(0, 2).map((l, i) => (
+            <div
+              key={l.id}
+              onClick={() => go("/marketplace")}
+              style={{
+                flex: 1,
+                padding: 12,
+                cursor: "pointer",
+                borderRight: i === 0 ? "1px solid #F0F0F0" : undefined,
+              }}
+            >
+              <div
+                style={{
+                  height: 70,
+                  borderRadius: 8,
+                  marginBottom: 8,
+                  background: "#F4F6F8",
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {l.thumbnail_url ? (
+                  <img
+                    src={l.thumbnail_url}
+                    alt={l.title ?? "Listing"}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <IconCamera size={28} color="#aaa" />
+                )}
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: NAVY,
+                  marginBottom: 3,
+                  lineHeight: 1.3,
+                }}
+              >
+                {l.title ?? "Listing"}
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#16A34A" }}>
+                {l.price_display ?? "See price"}
+              </div>
+            </div>
+          ))}
+          {listings.length === 0 && (
+            <div style={{ flex: 1, padding: 16, fontSize: 12, color: "#888" }}>
+              {loading ? "Loading listings…" : "No listings yet."}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ============ SECTION 4 — PRO RADIO ============ */}
+      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
+        <SectionHeaderRow
+          label="PRO Radio"
+          color={BLUE}
+          action="All stations →"
+          onAction={() => go("/radio")}
+        />
+        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
+          <div
+            onClick={() => go("/radio")}
+            style={{
+              flex: 1,
+              padding: 12,
+              borderRight: "1px solid #F0F0F0",
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
+                  background: "#EAF5FC",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconRadio size={20} color={BLUE} />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
+                  {radio.selectedStation ?? "PRO Live"}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    marginTop: 2,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: 4,
+                      background: RED,
+                      display: "inline-block",
+                    }}
+                  />
+                  <span style={{ color: RED, fontSize: 9, fontWeight: 700 }}>LIVE</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: "#536579", marginBottom: 8 }}>
+              {radio.nowPlaying?.title ?? "PRO Radio"}
+              {radio.nowPlaying?.artist ? ` · ${radio.nowPlaying.artist}` : ""}
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                radio.toggle();
+              }}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                background: BLUE,
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+              aria-label={radio.isPlaying ? "Pause radio" : "Play radio"}
+            >
+              {radio.isPlaying ? (
+                <IconPlayerPause size={14} color="#fff" />
+              ) : (
+                <IconPlayerPlay size={14} color="#fff" />
+              )}
+            </button>
+          </div>
+
+          <div
+            onClick={() => go("/radio")}
+            style={{ flex: 1, padding: 12, opacity: 0.5, cursor: "pointer" }}
+          >
+            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
+                  background: "#F4F6F8",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconRadio size={20} color="#aaa" />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
+                  PRO Talk
+                </div>
+                <div style={{ fontSize: 9, color: "#888", marginTop: 2 }}>
+                  Coming soon
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: "#888", marginBottom: 8 }}>
+              Instructor talk radio, launching soon.
+            </div>
+            <div
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                background: "#E4E8EF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <IconPlayerPlay size={14} color="#aaa" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ============ SECTION 5 — PRO TV ============ */}
+      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
+        <SectionHeaderRow
+          label="PRO TV"
+          color={BLUE}
+          action="See all →"
+          onAction={() => onNavigateToMedia?.()}
+        />
+        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
+          {videos.slice(0, 2).map((v, i) => (
+            <div
+              key={v.id}
+              onClick={() => onNavigateToMedia?.()}
+              style={{
+                flex: 1,
+                cursor: "pointer",
+                borderRight: i === 0 ? "1px solid #F0F0F0" : undefined,
+              }}
+            >
+              <div
+                style={{
+                  height: 80,
+                  background: "#E8EDF2",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                {v.thumbnail_url && (
+                  <img
+                    src={v.thumbnail_url}
+                    alt={v.title ?? "Video"}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      background: "rgba(11,35,65,0.12)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconPlayerPlay
+                      size={13}
+                      color={NAVY}
+                      style={{ marginLeft: 1 }}
+                    />
+                  </div>
+                </div>
+                {i === 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      left: 6,
+                      background: BLUE,
+                      color: "#fff",
+                      fontSize: 8,
+                      fontWeight: 700,
+                      borderRadius: 3,
+                      padding: "1px 5px",
+                    }}
+                  >
+                    NEW
+                  </div>
+                )}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 6,
+                    right: 6,
+                    background: "rgba(0,0,0,0.4)",
+                    color: "#fff",
+                    fontSize: 9,
+                    borderRadius: 3,
+                    padding: "1px 5px",
+                  }}
+                >
+                  Watch
+                </div>
+              </div>
+              <div style={{ padding: "10px 12px" }}>
+                <div style={{ fontSize: 9, color: "#536579", marginBottom: 3 }}>
+                  {v.category ?? "PRO TV"}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: NAVY,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {v.title ?? "Untitled"}
+                </div>
+              </div>
+            </div>
+          ))}
+          {videos.length === 0 && (
+            <div style={{ flex: 1, padding: 16, fontSize: 12, color: "#888" }}>
+              {loading ? "Loading videos…" : "No videos yet."}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ============ SECTION 6 — NEWS ============ */}
+      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
+        <SectionHeaderRow
+          label="News"
+          color={RED}
+          action="See all →"
+          onAction={() => onNavigateToMedia?.()}
+        />
+        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
+          {news.slice(0, 2).map((a, i) => (
+            <div
+              key={a.id}
+              onClick={() => onNavigateToMedia?.()}
+              style={{
+                flex: 1,
+                cursor: "pointer",
+                borderRight: i === 0 ? "1px solid #F0F0F0" : undefined,
+              }}
+            >
+              <div
+                style={{
+                  height: 90,
+                  position: "relative",
+                  background: "#2a3545",
+                  overflow: "hidden",
+                }}
+              >
+                {a.image_url && (
+                  <img
+                    src={a.image_url}
+                    alt={a.title ?? "Article"}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(transparent, rgba(0,0,0,0.7))",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: "8px 10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: ".4px",
+                      marginBottom: 3,
+                      color: newsCategoryColor(a.category),
+                    }}
+                  >
+                    {a.category ?? a.source ?? "News"}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: "#fff",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {a.title ?? "Untitled"}
+                  </div>
+                </div>
+              </div>
+              <div style={{ padding: "7px 10px", fontSize: 10, color: "#888" }}>
+                {timeAgo(a.published_at)}
+              </div>
+            </div>
+          ))}
+          {news.length === 0 && (
+            <div style={{ flex: 1, padding: 16, fontSize: 12, color: "#888" }}>
+              {loading ? "Loading news…" : "No articles yet."}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ============ SECTION 7 — COMMUNITY ============ */}
+      <div style={{ padding: "14px 16px" }}>
+        <SectionHeaderRow
+          label="Community"
+          color={TEAL}
+          action="See all →"
+          onAction={() => go("/community")}
+          badge={posts.length > 0 ? `${posts.length} new` : undefined}
+        />
+        <div style={{ display: "flex", gap: 12 }}>
+          {posts.slice(0, 2).map((p, i) => (
+            <div
+              key={p.id}
+              onClick={() => go("/community")}
+              style={{
+                flex: 1,
+                cursor: "pointer",
+                borderRight: i === 0 ? "1px solid #F4F4F4" : undefined,
+                paddingRight: i === 0 ? 12 : undefined,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  marginBottom: 6,
+                }}
+              >
+                <div
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: 13,
+                    background: i === 0 ? BLUE : TEAL,
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  {(p.authorName ?? "E").charAt(0).toUpperCase()}
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>
+                  {p.authorName ?? "EDP member"}
+                </div>
+                <div style={{ fontSize: 10, color: "#888" }}>
+                  {timeAgo(p.created_at)}
+                </div>
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#444",
+                  lineHeight: 1.4,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {p.body ?? ""}
+              </div>
+            </div>
+          ))}
+          {posts.length === 0 && (
+            <div style={{ flex: 1, fontSize: 12, color: "#888" }}>
+              {loading ? "Loading community…" : "No posts yet."}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ProTeaserPage;
