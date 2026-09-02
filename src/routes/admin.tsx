@@ -1595,7 +1595,7 @@ export function BenefitPartnersSection() {
     setEditingPartner((prev) => (prev ? { ...prev, ...changes } : prev));
   }
 
-  const filteredPerks = useMemo(() => {
+  const filteredAllPerks = useMemo(() => {
     const q = perkSearch.trim().toLowerCase();
     return allPerks.filter((perk) => {
       const matchesName = perk.name.toLowerCase().includes(q);
