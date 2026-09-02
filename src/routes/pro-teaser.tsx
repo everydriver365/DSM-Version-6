@@ -1528,6 +1528,7 @@ export function ProTeaserPage({
           color={BLUE}
           action="See all →"
           onAction={() => onNavigateToMedia?.()}
+          description="Helpful videos to make you a better instructor and grow your business"
         />
         <div
           style={{
