@@ -62,6 +62,11 @@ export interface RadioState {
  */
 export function useProRadio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  /** Last stream the user selected, so play()/lock-screen resume the right one. */
+  const currentStreamRef = useRef<{ url: string; name: string }>({
+    url: STREAM_URL,
+    name: "PRO Live",
+  });
   const savedPrefs =
     typeof window !== "undefined"
       ? (() => {
@@ -221,6 +226,7 @@ export function useProRadio() {
   const playStream = useCallback((streamUrl: string, stationName: string) => {
     const audio = audioRef.current;
     if (!audio || !streamUrl) return;
+    currentStreamRef.current = { url: streamUrl, name: stationName };
     // Reload the stream so we always join at the live edge
     audio.src = streamUrl;
     audio.load();
@@ -236,7 +242,8 @@ export function useProRadio() {
   }, []);
 
   const play = useCallback(() => {
-    playStream(STREAM_URL, "PRO Live");
+    const { url, name } = currentStreamRef.current;
+    playStream(url || STREAM_URL, name || "PRO Live");
   }, [playStream]);
 
   const setStation = useCallback(

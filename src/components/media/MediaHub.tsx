@@ -383,12 +383,13 @@ function getEmbedUrl(url: string | null | undefined): string | null {
   return null;
 }
 
+function isPlayable(video: { embed_url?: string | null; video_url?: string | null }) {
+  return Boolean(getEmbedUrl(video.embed_url) ?? getEmbedUrl(video.video_url) ?? video.video_url);
+}
+
 function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void }) {
   const embedUrl = getEmbedUrl(video.embed_url) ?? getEmbedUrl(video.video_url);
 
-  if (!embedUrl && !video.video_url) {
-    toast.info("Video coming soon");
-  }
 
   return (
     <div
@@ -436,7 +437,23 @@ function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void 
               playsInline
               style={{ width: "100%", borderRadius: 8, background: "#000" }}
             />
-          ) : null}
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                padding: "32px 16px",
+                borderRadius: 8,
+                background: "rgba(255,255,255,0.08)",
+                color: "#fff",
+                fontSize: 14,
+                textAlign: "center",
+                ...POPPINS,
+              }}
+            >
+              Video coming soon
+            </div>
+          )}
+
           <div
             style={{
               color: "#fff",
@@ -641,7 +658,7 @@ function TvTab({ onNavigate: _onNavigate }: { onNavigate: (to: string) => void }
   }, [filtered, featured]);
 
   function play(v: VideoItem) {
-    if (!v.embed_url && !v.video_url) {
+    if (!isPlayable(v)) {
       toast.info("Video coming soon");
       return;
     }
