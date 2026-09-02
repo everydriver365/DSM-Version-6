@@ -356,7 +356,40 @@ function PlayOverlay({ size = 48 }: { size?: number }) {
   );
 }
 
+function getEmbedUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+
+  // Already an embed URL
+  if (
+    url.includes("player.vimeo.com") ||
+    url.includes("youtube.com/embed") ||
+    url.includes("youtu.be")
+  ) {
+    return url;
+  }
+
+  // Convert vimeo.com/123456 to player.vimeo.com/video/123456
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
+  // Convert youtube.com/watch?v=xxx to youtube.com/embed/xxx
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (ytMatch) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  }
+
+  return null;
+}
+
 function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void }) {
+  const embedUrl = getEmbedUrl(video.embed_url) ?? getEmbedUrl(video.video_url);
+
+  if (!embedUrl && !video.video_url) {
+    toast.info("Video coming soon");
+  }
+
   return (
     <div
       style={{
@@ -388,13 +421,13 @@ function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void 
         }}
       >
         <div style={{ width: "100%" }}>
-          {video.embed_url ? (
+          {embedUrl ? (
             <iframe
-              src={video.embed_url}
+              src={embedUrl}
               title={video.title}
               style={{ width: "100%", height: 220, border: "none", borderRadius: 8 }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
               allowFullScreen
+              allow="autoplay; fullscreen"
             />
           ) : video.video_url ? (
             <video
