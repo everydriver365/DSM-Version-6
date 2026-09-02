@@ -98,6 +98,62 @@ const MINI_STATIONS: { name: string; stream: string; color: string }[] = [
   { name: "PRO Drive", stream: "https://0n-rock.radionetz.de/0n-rock.mp3", color: "#F97316" },
 ];
 
+interface PerkExplainer {
+  id: string;
+  name: string;
+  description: string;
+  videoUrl: string | null;
+  color: string;
+  iconColor: string;
+}
+
+const PERK_EXPLAINERS: PerkExplainer[] = [
+  {
+    id: "bennenden",
+    name: "Bennenden Health",
+    description: "Private healthcare",
+    videoUrl: null,
+    color: "#E8F8F4",
+    iconColor: "#18A999",
+  },
+  {
+    id: "perkbox",
+    name: "Perkbox",
+    description: "Retail discounts",
+    videoUrl: null,
+    color: "#EAF5FC",
+    iconColor: "#2C97DE",
+  },
+  {
+    id: "pirkx",
+    name: "Pirkx",
+    description: "Wellbeing platform",
+    videoUrl: null,
+    color: "#F0EBFF",
+    iconColor: "#7B61FF",
+  },
+  {
+    id: "dia",
+    name: "DIA Membership",
+    description: "Professional body",
+    videoUrl: null,
+    color: "#FEF9EC",
+    iconColor: "#F59E0B",
+  },
+];
+
+function getVideoEmbedUrl(url: string | null): string | null {
+  if (!url) return null;
+  if (url.includes("player.vimeo.com") || url.includes("youtube.com/embed") || url.includes("youtu.be")) {
+    return url;
+  }
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  return null;
+}
+
 function timeAgo(value: string | null | undefined): string {
   if (!value) return "";
   const then = new Date(value).getTime();
