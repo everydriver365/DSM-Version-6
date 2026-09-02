@@ -1492,7 +1492,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
 
       {/* Main explore card */}
       <div
-        onClick={() => go("/pro")}
+        onClick={() => onExploreSwipe?.()}
         style={{ ...cardStyle, padding: 16, cursor: "pointer", marginBottom: 12 }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -1581,7 +1581,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           onClick={(e) => {
             e.stopPropagation();
             if (onExploreSwipe) onExploreSwipe();
-            else go("/pro");
+            else go("/pro-teaser");
           }}
           style={{
             marginTop: 16,
@@ -7622,6 +7622,10 @@ function HomePage() {
                 tapLight();
                 if (tile.route === "/search") {
                   setUniversalSearchOpen(true);
+                  return;
+                }
+                if (tile.route === "/pro") {
+                  setActivePage(1);
                   return;
                 }
                 navigate({ to: tile.route as never });
