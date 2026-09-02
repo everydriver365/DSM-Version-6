@@ -312,6 +312,7 @@ export function ProTeaserPage({
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [explainerVideo, setExplainerVideo] = useState<PerkExplainer | null>(null);
 
   useEffect(() => {
     let cancelled = false;
