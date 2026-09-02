@@ -376,7 +376,7 @@ export function ProTeaserPage({
     }, 3000);
 
     (async () => {
-      const [catRes, shopRes, tvRes, bitesizeRes, newsRes, postRes] =
+      const [catRes, shopRes, tvRes, bitesizeRes, perkVideosRes, newsRes, postRes] =
         await Promise.allSettled([
           supabase.from("benefit_perks").select("category").eq("active", true),
           supabase
@@ -400,6 +400,14 @@ export function ProTeaserPage({
             .eq("is_published", true)
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
+            .limit(4),
+          supabase
+            .from("benefit_perks")
+            .select(
+              "id, name, video_url, video_embed_url, partner:benefit_partners!partner_id(id, name)",
+            )
+            .not("video_url", "is", null)
+            .not("video_url", "eq", "")
             .limit(4),
           supabase
             .from("news_articles")
@@ -475,6 +483,22 @@ export function ProTeaserPage({
           : [];
 
       setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 4));
+
+      if (
+        perkVideosRes.status === "fulfilled" &&
+        Array.isArray(perkVideosRes.value.data)
+      ) {
+        setPerkVideos(
+          (perkVideosRes.value.data as any[]).map((r) => ({
+            id: String(r.id),
+            name: r.name ?? "",
+            video_url: r.video_url ?? null,
+            video_embed_url: r.video_embed_url ?? null,
+            partner: r.partner ?? null,
+          })),
+        );
+      }
+
 
 
       if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
