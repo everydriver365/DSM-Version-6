@@ -1543,7 +1543,10 @@ export function BenefitPartnersSection() {
       console.error("[admin] benefit_partners load error", error);
       return;
     }
-    setPartners((data ?? []) as BenefitPartner[]);
+    const list = (data ?? []) as BenefitPartner[];
+    setPartners(list);
+    // Perk lists are shown expanded by default, so load them up front.
+    await Promise.all(list.map((p) => loadPartnerPerks(p.id)));
   }
 
   useEffect(() => {
