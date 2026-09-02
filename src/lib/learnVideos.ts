@@ -37,49 +37,53 @@ export interface LearnVideo {
 }
 
 export const VIDEO_CATEGORIES = [
-  "Getting Started",
+  "Getting started",
+  "Calendar sync",
+  "Payments",
+  "Pupils",
+  "Schedule & lessons",
   "How To",
-  "Training",
   "CPD",
-  "Business",
-  "Wellbeing",
-  "News",
-  "Showcase",
+  "Perks",
+  "EDP",
 ] as const;
 
 export type VideoCategory = (typeof VIDEO_CATEGORIES)[number];
 
 export const VIDEO_CATEGORY_EMOJI: Record<string, string> = {
-  "Getting Started": "🚀",
+  "Getting started": "🚀",
+  "Calendar sync": "📅",
+  "Payments": "💳",
+  "Pupils": "🎓",
+  "Schedule & lessons": "📆",
   "How To": "🎯",
-  "Training": "🎓",
   "CPD": "📋",
-  "Business": "💼",
-  "Wellbeing": "🌿",
-  "News": "📰",
-  "Showcase": "🏆",
+  "Perks": "🎁",
+  "EDP": "⚡",
 };
 
 export const BITESIZE_CATEGORIES = [
-  "Getting Started",
+  "Getting started",
+  "Calendar sync",
+  "Payments",
+  "Pupils",
+  "Schedule & lessons",
   "How To",
-  "Training",
   "CPD",
-  "Business",
-  "Wellbeing",
-  "News",
-  "Showcase",
+  "Perks",
+  "EDP",
 ] as const;
 
 export const BITESIZE_CATEGORY_EMOJI: Record<string, string> = {
-  "Getting Started": "🚀",
+  "Getting started": "🚀",
+  "Calendar sync": "📅",
+  "Payments": "💳",
+  "Pupils": "🎓",
+  "Schedule & lessons": "📆",
   "How To": "🎯",
-  "Training": "🎓",
   "CPD": "📋",
-  "Business": "💼",
-  "Wellbeing": "🌿",
-  "News": "📰",
-  "Showcase": "🏆",
+  "Perks": "🎁",
+  "EDP": "⚡",
 };
 
 export const AUDIENCE_LABEL: Record<string, string> = {
