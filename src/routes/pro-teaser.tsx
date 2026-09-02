@@ -397,6 +397,7 @@ export function ProTeaserPage({
             fontWeight: 900,
             color: NAVY,
             lineHeight: 1.1,
+            marginTop: 10,
             marginBottom: 8,
           }}
         >
