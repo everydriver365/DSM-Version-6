@@ -5,6 +5,7 @@ import {
   IconCamera,
   IconGift,
   IconHeart,
+  IconMicrophone,
   IconPlayerPause,
   IconPlayerPlay,
   IconRadio,
