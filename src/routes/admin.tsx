@@ -1350,8 +1350,6 @@ export function BenefitPartnersSection() {
   const [savingPerk, setSavingPerk] = useState(false);
   const [uploadingPartnerLogo, setUploadingPartnerLogo] = useState(false);
   const [uploadingPartnerHero, setUploadingPartnerHero] = useState(false);
-  const [uploadingPerkHero, setUploadingPerkHero] = useState(false);
-  const [uploadingPerkGallery, setUploadingPerkGallery] = useState(false);
 
   // ---- perk search & filter ------------------------------------------------
   const [perkSearch, setPerkSearch] = useState("");
