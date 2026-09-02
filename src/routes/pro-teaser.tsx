@@ -1925,24 +1925,23 @@ export function ProTeaserPage({
       </div>
 
       {/* Perk explainer video modal */}
-      {explainerVideo && (
+      {perkVideo && (
         <div
-          onClick={() => setExplainerVideo(null)}
+          onClick={() => setPerkVideo(null)}
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.9)",
+            background: "rgba(0,0,0,0.92)",
             zIndex: 200,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            padding: 16,
           }}
         >
           <button
             type="button"
-            onClick={() => setExplainerVideo(null)}
+            onClick={() => setPerkVideo(null)}
             style={{
               position: "absolute",
               top: 20,
@@ -1954,31 +1953,13 @@ export function ProTeaserPage({
           >
             <IconX size={24} color="#fff" />
           </button>
-          {(() => {
-            const embedUrl = getVideoEmbedUrl(explainerVideo.videoUrl);
-            if (embedUrl) {
-              return (
-                <iframe
-                  src={embedUrl}
-                  title={explainerVideo.name}
-                  style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
-                  allowFullScreen
-                  allow="autoplay; fullscreen"
-                />
-              );
-            }
-            if (explainerVideo.videoUrl) {
-              return (
-                <video
-                  src={explainerVideo.videoUrl}
-                  controls
-                  autoPlay
-                  style={{ width: "100%", maxWidth: 390, height: 220 }}
-                />
-              );
-            }
-            return null;
-          })()}
+          <iframe
+            src={perkVideo}
+            title="Perk explainer video"
+            style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
+            allowFullScreen
+            allow="autoplay; fullscreen"
+          />
         </div>
       )}
     </div>
