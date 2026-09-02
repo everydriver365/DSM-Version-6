@@ -1358,6 +1358,7 @@ export function BenefitPartnersSection() {
 
   // ---- perk form validation ------------------------------------------------
   const [perkErrors, setPerkErrors] = useState<Record<string, string>>({});
+  const partnerVideoInputRef = useRef<HTMLInputElement>(null);
   const perkGalleryInputRef = useRef<HTMLInputElement>(null);
   const perkVideoInputRef = useRef<HTMLInputElement>(null);
 
