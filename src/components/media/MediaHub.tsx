@@ -383,12 +383,13 @@ function getEmbedUrl(url: string | null | undefined): string | null {
   return null;
 }
 
+function isPlayable(video: { embed_url?: string | null; video_url?: string | null }) {
+  return Boolean(getEmbedUrl(video.embed_url) ?? getEmbedUrl(video.video_url) ?? video.video_url);
+}
+
 function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void }) {
   const embedUrl = getEmbedUrl(video.embed_url) ?? getEmbedUrl(video.video_url);
 
-  if (!embedUrl && !video.video_url) {
-    toast.info("Video coming soon");
-  }
 
   return (
     <div
