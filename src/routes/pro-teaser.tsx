@@ -537,15 +537,24 @@ export function ProTeaserPage({
   }, [posts]);
 
   const perkExplainers = useMemo<PerkExplainer[]>(() => {
-    const fromPartners = perkVideos.map((p) => ({
-      id: p.id,
-      name: p.name,
-      description: p.name,
-      videoUrl: p.video_embed_url ?? p.video_url,
-      thumbnailUrl: null,
-      color: p.icon_color ? `${p.icon_color}22` : "#E8F8F4",
-      iconColor: p.icon_color ?? "#18A999",
-    }));
+    const fromPartners = perkVideos.map((p) => {
+      const fallback = PERK_EXPLAINERS.find(
+        (e) =>
+          e.id === p.id ||
+          e.name.toLowerCase() === (p.name ?? "").toLowerCase(),
+      );
+      return {
+        id: p.id,
+        name: p.name,
+        description: fallback?.description ?? p.name,
+        videoUrl: p.video_embed_url ?? p.video_url,
+        thumbnailUrl: null,
+        color: p.icon_color
+          ? `${p.icon_color}22`
+          : (fallback?.color ?? "#E8F8F4"),
+        iconColor: p.icon_color ?? fallback?.iconColor ?? "#18A999",
+      };
+    });
 
     const partnerIds = new Set(fromPartners.map((p) => p.id));
     const fillers = PERK_EXPLAINERS.filter(
