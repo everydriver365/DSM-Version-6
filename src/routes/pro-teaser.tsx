@@ -863,7 +863,7 @@ export function ProTeaserPage({
             padding: "0 16px 12px",
           }}
         >
-          {perkExplainers.map((tile) => {
+          {perkExplainers.slice(0, 4).map((tile) => {
             const thumb = getVideoThumbnail(tile.videoUrl, tile.thumbnailUrl);
             const hasThumb = Boolean(thumb);
             return (
