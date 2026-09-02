@@ -286,7 +286,7 @@ function VideoForm({
       let thumbnailUrl = initial?.thumbnail_url ?? null;
       if (source === "youtube") {
         if (!youtubeUrl.trim()) {
-          toast.error("Paste a YouTube link");
+          toast.error("Paste a video link");
           setSaving(false);
           return;
         }
@@ -679,13 +679,13 @@ function VideoForm({
 
       {source === "youtube" ? (
         <>
-          <label style={labelStyle} htmlFor="lv-yt">YouTube link</label>
+          <label style={labelStyle} htmlFor="lv-yt">Video URL (YouTube or Vimeo)</label>
           <input
             id="lv-yt"
             style={inputStyle}
             value={youtubeUrl}
             onChange={(e) => setYoutubeUrl(e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
+            placeholder="YouTube or Vimeo URL"
           />
           {derivedYoutubeThumb && (
             <div

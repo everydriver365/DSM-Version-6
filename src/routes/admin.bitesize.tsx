@@ -162,7 +162,7 @@ function AdminBitesizePage() {
       return;
     }
     if (source === "youtube" && !youtubeUrl.trim()) {
-      toast.error("Please enter a YouTube URL");
+      toast.error("Please enter a video URL");
       return;
     }
     if (source === "upload" && !videoFile) {
@@ -809,7 +809,7 @@ function AdminBitesizePage() {
                   }}
                 >
                   <IconBrandYoutube size={16} />
-                  YouTube URL
+                  Video URL (YouTube or Vimeo)
                 </button>
               </div>
 
@@ -874,7 +874,7 @@ function AdminBitesizePage() {
                   type="text"
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="Paste YouTube URL..."
+                  placeholder="YouTube or Vimeo URL"
                   style={{
                     width: "100%",
                     fontSize: 14,
