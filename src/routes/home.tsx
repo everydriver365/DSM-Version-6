@@ -3021,13 +3021,23 @@ function HomePage() {
         .limit(5);
       if (nextErr) console.error("[home] next lesson fetch error", nextErr);
       const nowTime = londonTimeString();
+      const nowSecs = (() => {
+        const [h, m, s] = nowTime.split(":").map(Number);
+        return (h || 0) * 3600 + (m || 0) * 60 + (s || 0);
+      })();
+      // Keep showing the lesson that's currently running: only advance once the
+      // lesson's END time (start + duration) has passed.
       const validNext = (nextRows ?? []).find((l) => {
         if (l.lesson_date > todayYmd) return true;
         const lt = (l.lesson_time ?? "00:00:00").slice(0, 8);
         const lessonTime = lt.length === 5 ? `${lt}:00` : lt;
-        return lessonTime > nowTime;
+        const [h, m, s] = lessonTime.split(":").map(Number);
+        const startSecs = (h || 0) * 3600 + (m || 0) * 60 + (s || 0);
+        const endSecs = startSecs + ((l.duration_minutes ?? 60) * 60);
+        return endSecs > nowSecs;
       });
       setNextLesson((validNext ?? null) as unknown as LessonRow | null);
+
 
       // Write next lesson for CarPlay
       if (validNext) {
