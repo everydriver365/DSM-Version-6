@@ -1619,6 +1619,11 @@ export function BenefitPartnersSection() {
     });
   }, [allPerks, perkSearch, perkPartnerFilter]);
 
+  const filteredPartners = useMemo(() => {
+    if (categoryFilter === "all") return partners;
+    return partners.filter((p) => p.category === categoryFilter);
+  }, [partners, categoryFilter]);
+
   const partnerName = (id: string) => partners.find((p) => p.id === id)?.name ?? "Unknown";
 
   return (
