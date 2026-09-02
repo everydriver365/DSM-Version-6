@@ -1654,6 +1654,7 @@ export function ProTeaserPage({
           color={RED}
           action="See all →"
           onAction={() => onNavigateToMedia?.()}
+          description="Latest driving industry news, road safety updates and motoring stories"
         />
         <div
           style={{
