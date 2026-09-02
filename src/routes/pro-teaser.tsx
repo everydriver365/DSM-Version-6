@@ -116,14 +116,14 @@ function getVideoThumbnail(
   if (!videoUrl) return null;
 
   const ytPatterns = [
-    /youtube\.com\/watch\?v=([^&\s]+)/,
-    /youtu\.be\/([^?\s]+)/,
-    /youtube\.com\/embed\/([^?\s]+)/,
+    /youtube\.com\/watch\?v=([^&\s?]+)/,
+    /youtu\.be\/([^?\s&]+)/,
+    /youtube\.com\/embed\/([^?\s&]+)/,
   ];
   for (const pattern of ytPatterns) {
     const match = videoUrl.match(pattern);
-    if (match) {
-      return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
+    if (match?.[1]) {
+      return `https://img.youtube.com` + `/vi/${match[1]}/mqdefault.jpg`;
     }
   }
 
@@ -140,19 +140,19 @@ function getPerkEmbedUrl(url: string): string {
   }
 
   const ytPatterns = [
-    /youtube\.com\/watch\?v=([^&\s]+)/,
-    /youtu\.be\/([^?\s]+)/,
+    /youtube\.com\/watch\?v=([^&\s?]+)/,
+    /youtu\.be\/([^?\s&]+)/,
   ];
   for (const pattern of ytPatterns) {
     const match = url.match(pattern);
-    if (match) {
-      return `https://www.youtube.com/embed/${match[1]}`;
+    if (match?.[1]) {
+      return `https://www.youtube.com` + `/embed/${match[1]}`;
     }
   }
 
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) {
-    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    return `https://player.vimeo.com` + `/video/${vimeoMatch[1]}`;
   }
 
   return url;
