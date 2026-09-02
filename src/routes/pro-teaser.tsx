@@ -144,6 +144,11 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
   },
 ];
 
+const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
+  { likes: 12, comments: 3 },
+  { likes: 8, comments: 1 },
+];
+
 function getVideoEmbedUrl(url: string | null): string | null {
   if (!url) return null;
   if (url.includes("player.vimeo.com") || url.includes("youtube.com/embed") || url.includes("youtu.be")) {
