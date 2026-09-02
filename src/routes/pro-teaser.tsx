@@ -678,7 +678,7 @@ export function ProTeaserPage({
             </div>
             <button
               type="button"
-              onClick={() => go("/perks")}
+              onClick={() => go("/pro?tab=perks")}
               style={{
                 background: "none",
                 border: "none",
@@ -788,9 +788,9 @@ export function ProTeaserPage({
                   key={cat.name}
                   role="button"
                   tabIndex={0}
-                  onClick={() => go("/perks")}
+                  onClick={() => go("/pro?tab=perks")}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") go("/perks");
+                    if (e.key === "Enter" || e.key === " ") go("/pro?tab=perks");
                   }}
                   style={{
                     background: tint,

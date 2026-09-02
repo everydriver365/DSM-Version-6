@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
@@ -630,10 +630,12 @@ const TABS: { key: ProTabKey; label: string }[] = [
 export function ProPage(_props: { onNavigateToMedia?: () => void } = {}) {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
+  const search = useSearch({ from: "/pro" }) as { tab?: string } | undefined;
 
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [perks, setPerks] = useState<Perk[]>([]);
-  const [activeTab, setActiveTab] = useState<ProTabKey>("perks");
+  const initialTab = search?.tab === "shop" ? "shop" : "perks";
+  const [activeTab, setActiveTab] = useState<ProTabKey>(initialTab);
 
   useEffect(() => {
     let cancelled = false;
@@ -702,7 +704,13 @@ export function ProPage(_props: { onNavigateToMedia?: () => void } = {}) {
                 <button
                   key={t.key}
                   type="button"
-                  onClick={() => setActiveTab(t.key)}
+                  onClick={() => {
+                    setActiveTab(t.key);
+                    navigate({
+                      to: "/pro",
+                      search: (prev: { tab?: string }) => ({ ...prev, tab: t.key }),
+                    });
+                  }}
                   style={{
                     background: "transparent",
                     border: "none",
