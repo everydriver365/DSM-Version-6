@@ -650,47 +650,59 @@ export function ProTeaserPage({
       {/* ============ SECTION 2 — PRO PERKS ============ */}
       <div style={{ borderBottom: "1px solid #F0F0F0", paddingBottom: 16 }}>
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "12px 16px 14px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-            <img
-              src={proLogoAsset.url}
-              alt="PRO"
-              style={{ height: 26, width: "auto", display: "block", flexShrink: 0 }}
-            />
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                color: NAVY,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              PRO PERKS
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => go("/perks")}
+        <div style={{ padding: "14px 16px 10px" }}>
+          <div
             style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              fontSize: 12,
-              fontWeight: 600,
-              color: PRO_BLUE,
-              cursor: "pointer",
-              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 4,
             }}
           >
-            See all →
-          </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+              <img
+                src={proLogoAsset.url}
+                alt="PRO"
+                style={{ height: 26, width: "auto", display: "block", flexShrink: 0 }}
+              />
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: NAVY,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                PRO PERKS
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => go("/perks")}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                fontSize: 12,
+                fontWeight: 600,
+                color: PRO_BLUE,
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              See all →
+            </button>
+          </div>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#0B2341",
+              lineHeight: 1.4,
+            }}
+          >
+            Save money every day with 58 exclusive benefits for EDP members
+          </div>
         </div>
 
         {/* Hero */}
