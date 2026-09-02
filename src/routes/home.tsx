@@ -6432,15 +6432,16 @@ function HomePage() {
         >
           <div
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
+              width: 52,
+              height: 52,
+              borderRadius: 12,
+              background: 'rgba(64, 224, 208, 0.28)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
               overflow: 'hidden',
-              padding: 3,
+              padding: 4,
             }}
           >
             <img
