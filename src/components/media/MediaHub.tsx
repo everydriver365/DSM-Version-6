@@ -658,7 +658,7 @@ function TvTab({ onNavigate: _onNavigate }: { onNavigate: (to: string) => void }
   }, [filtered, featured]);
 
   function play(v: VideoItem) {
-    if (!v.embed_url && !v.video_url) {
+    if (!isPlayable(v)) {
       toast.info("Video coming soon");
       return;
     }
