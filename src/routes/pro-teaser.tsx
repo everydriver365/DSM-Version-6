@@ -678,7 +678,7 @@ export function ProTeaserPage({
             </div>
             <button
               type="button"
-              onClick={() => navigate({ to: "/pro", search: { tab: "perks" } })}
+              onClick={() => go("/pro?tab=perks")}
               style={{
                 background: "none",
                 border: "none",
