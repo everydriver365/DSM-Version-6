@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   IconBriefcase,
   IconCamera,
+  IconClock,
+  IconDotsVertical,
   IconGift,
   IconHeart,
   IconMicrophone,
