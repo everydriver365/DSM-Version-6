@@ -1595,7 +1595,7 @@ export function BenefitPartnersSection() {
     setEditingPartner((prev) => (prev ? { ...prev, ...changes } : prev));
   }
 
-  const filteredPerks = useMemo(() => {
+  const filteredAllPerks = useMemo(() => {
     const q = perkSearch.trim().toLowerCase();
     return allPerks.filter((perk) => {
       const matchesName = perk.name.toLowerCase().includes(q);
@@ -1748,80 +1748,15 @@ export function BenefitPartnersSection() {
           </select>
         </div>
 
-        {filteredPerks.length > 0 && (
+        {filteredAllPerks.length > 0 && (
           <div style={{ marginTop: 12, fontSize: 12, color: tokens.textSecondary }}>
-            {filteredPerks.length} perk{filteredPerks.length === 1 ? "" : "s"} found
+            {filteredAllPerks.length} perk{filteredAllPerks.length === 1 ? "" : "s"} found
           </div>
         )}
 
-        {perkSearch && filteredPerks.length === 0 && (
+        {perkSearch && filteredAllPerks.length === 0 && (
           <div style={{ marginTop: 12, fontSize: 12, color: tokens.textMuted }}>
             No perks match your search.
-          </div>
-        )}
-
-        {filteredPerks.length > 0 && (
-          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-            {filteredPerks.map((perk) => (
-              <div
-                key={perk.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "12px 16px",
-                  background: "#F8FAFC",
-                  borderRadius: tokens.radiusCard,
-                  border: "1px solid #F0F4F8",
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
-                    {perk.name}
-                  </div>
-                  <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>
-                    {partnerName(perk.partner_id)}
-                    {perk.category ? ` · ${perk.category}` : ""}
-                  </div>
-                </div>
-                {perk.coming_soon && (
-                  <span
-                    style={{
-                      background: "#FEF3C7",
-                      color: "#B45309",
-                      fontSize: tokens.fontSize.sm,
-                      fontWeight: tokens.fontWeight.bold,
-                      borderRadius: 999,
-                      padding: "4px 10px",
-                      flexShrink: 0,
-                    }}
-                  >
-                    Coming soon
-                  </span>
-                )}
-                <button
-                  type="button"
-                  aria-label="Edit perk"
-                  onClick={() => {
-                    setEditingPerk({ ...perk });
-                    setPerkSheetOpen(true);
-                  }}
-                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
-                >
-                  <IconPencil size={15} stroke={1.8} color="#6B7686" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Delete perk"
-                  onClick={() => {
-                    if (confirm(`Delete ${perk.name}?`)) deletePerk(perk);
-                  }}
-                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
-                >
-                  <IconTrash size={15} stroke={1.8} color="#CC2229" />
-                </button>
-              </div>
-            ))}
           </div>
         )}
       </div>
@@ -1953,7 +1888,7 @@ export function BenefitPartnersSection() {
             </div>
 
             {(() => {
-              const perksForPartner = (partnerPerks[partner.id] ?? []) as any[];
+              const perksForPartner = filteredAllPerks.filter((p) => p.partner_id === partner.id);
               const counts = new Map<string, number>();
               for (const p of perksForPartner) {
                 const key = (p.name ?? "").trim().toLowerCase();
@@ -1961,51 +1896,169 @@ export function BenefitPartnersSection() {
               }
               const duplicates = [...counts.entries()].filter(([, n]) => n > 1);
               return (
-                <div style={{ padding: "0 16px 8px" }}>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      fontWeight: tokens.fontWeight.bold,
-                      color: tokens.textMuted,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    Perks ({perksForPartner.length})
-                  </div>
-                  {duplicates.length > 0 && (
+                <>
+                  <div style={{ padding: "0 16px 8px" }}>
                     <div
                       style={{
-                        marginTop: 6,
-                        background: "#FEF3C7",
-                        color: "#B45309",
-                        borderRadius: 8,
-                        padding: "6px 10px",
                         fontSize: 11,
-                        fontWeight: tokens.fontWeight.semibold,
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.textMuted,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
                       }}
                     >
-                      Duplicate perk name{duplicates.length > 1 ? "s" : ""}:{" "}
-                      {duplicates.map(([n]) => n).join(", ")}
+                      Perks ({perksForPartner.length})
                     </div>
-                  )}
-                </div>
+                    {duplicates.length > 0 && (
+                      <div
+                        style={{
+                          marginTop: 6,
+                          background: "#FEF3C7",
+                          color: "#B45309",
+                          borderRadius: 8,
+                          padding: "6px 10px",
+                          fontSize: 11,
+                          fontWeight: tokens.fontWeight.semibold,
+                        }}
+                      >
+                        Duplicate perk name{duplicates.length > 1 ? "s" : ""}:{" "}
+                        {duplicates.map(([n]) => n).join(", ")}
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      background: "#F8FAFC",
+                      borderTop: "1px solid #E4E8EF",
+                      padding: "12px 16px",
+                    }}
+                  >
+                    {perksForPartner.length === 0 && (
+                      <div style={{ fontSize: 12, color: tokens.textMuted }}>No perks yet.</div>
+                    )}
+                    {perksForPartner.map((perk: any) => (
+                      <div
+                        key={perk.id}
+                        style={{
+                          display: "flex",
+                          gap: 10,
+                          alignItems: "center",
+                          padding: "8px 0",
+                          borderBottom: "1px solid #F0F4F8",
+                        }}
+                      >
+                        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.navy, flex: 1, minWidth: 0 }}>
+                          {perk.name}
+                        </span>
+                        {perk.coming_soon && (
+                          <span
+                            style={{
+                              background: "#FEF3C7",
+                              color: "#B45309",
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.bold,
+                              borderRadius: 999,
+                              padding: "4px 10px",
+                            }}
+                          >
+                            Coming soon
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          aria-label="Edit perk"
+                          onClick={() => {
+                            setEditingPerk({ ...perk });
+                            setPerkSheetOpen(true);
+                          }}
+                          style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        >
+                          <IconPencil size={15} stroke={1.8} color="#6B7686" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Delete perk"
+                          onClick={() => {
+                            if (confirm(`Delete ${perk.name}?`)) deletePerk(perk);
+                          }}
+                          style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        >
+                          <IconTrash size={15} stroke={1.8} color="#CC2229" />
+                        </button>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingPerk({
+                          id: "new",
+                          partner_id: partner.id,
+                          name: "",
+                          description: "",
+                          detail_text: "",
+                          hero_image_url: null,
+                          gallery_urls: [],
+                          video_url: null,
+                          video_embed_url: null,
+                          bullet_points: [],
+                          links: [],
+                          category: partner.category,
+                          saving: "",
+                          min_tier: partner.min_tier,
+                          cta_label: partner.cta_label,
+                          cta_action: partner.cta_action,
+                          coming_soon: true,
+                          active: true,
+                          sort_order: perksForPartner.length,
+                        });
+                        setPerkSheetOpen(true);
+                      }}
+                      style={{
+                        background: "#EFF6FF",
+                        color: tokens.blue,
+                        borderRadius: tokens.radiusCard,
+                        padding: "5px 16px",
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.bold,
+                        border: "none",
+                        cursor: "pointer",
+                        marginTop: 8,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      Add perk +
+                    </button>
+                  </div>
+                </>
               );
             })()}
+            </div>
 
-            {true && (
-              <div
-                style={{
-                  background: "#F8FAFC",
-                  borderTop: "1px solid #E4E8EF",
-                  padding: "12px 16px",
-                }}
-              >
+          );
+        })}
 
-                {(partnerPerks[partner.id] ?? []).length === 0 && (
-                  <div style={{ fontSize: 12, color: tokens.textMuted }}>No perks yet.</div>
-                )}
-                {(partnerPerks[partner.id] ?? []).map((perk: any) => (
+        {(() => {
+          const uncategorised = filteredAllPerks.filter((p) => !p.partner_id);
+          if (uncategorised.length === 0) return null;
+          return (
+            <>
+              <div style={{ padding: "16px 16px 8px", borderTop: "1px solid #F1F5F9" }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.textMuted,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  Uncategorised ({uncategorised.length})
+                </div>
+              </div>
+              <div style={{ background: "#F8FAFC", padding: "12px 16px" }}>
+                {uncategorised.map((perk: any) => (
                   <div
                     key={perk.id}
                     style={{
@@ -2056,54 +2109,10 @@ export function BenefitPartnersSection() {
                     </button>
                   </div>
                 ))}
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingPerk({
-                      id: "new",
-                      partner_id: partner.id,
-                      name: "",
-                      description: "",
-                      detail_text: "",
-                      hero_image_url: null,
-                      gallery_urls: [],
-                      video_url: null,
-                      video_embed_url: null,
-                      bullet_points: [],
-                      links: [],
-                      category: partner.category,
-                      saving: "",
-                      min_tier: partner.min_tier,
-                      cta_label: partner.cta_label,
-                      cta_action: partner.cta_action,
-                      coming_soon: true,
-                      active: true,
-                      sort_order: (partnerPerks[partner.id] ?? []).length,
-                    });
-                    setPerkSheetOpen(true);
-                  }}
-                  style={{
-                    background: "#EFF6FF",
-                    color: tokens.blue,
-                    borderRadius: tokens.radiusCard,
-                    padding: "5px 16px",
-                    fontSize: tokens.fontSize.sm,
-                    fontWeight: tokens.fontWeight.bold,
-                    border: "none",
-                    cursor: "pointer",
-                    marginTop: 8,
-                    fontFamily: "Poppins, sans-serif",
-                  }}
-                >
-                  Add perk +
-                </button>
               </div>
-            )}
-            </div>
-
+            </>
           );
-        })}
+        })()}
       </div>
 
       {partnerSheetOpen && editingPartner && (
