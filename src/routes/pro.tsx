@@ -630,10 +630,12 @@ const TABS: { key: ProTabKey; label: string }[] = [
 export function ProPage(_props: { onNavigateToMedia?: () => void } = {}) {
   const navigate = useNavigate();
   const go = (to: string) => navigate({ to: to as never });
+  const search = useSearch({ from: "/pro" }) as { tab?: string } | undefined;
 
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [perks, setPerks] = useState<Perk[]>([]);
-  const [activeTab, setActiveTab] = useState<ProTabKey>("perks");
+  const initialTab = search?.tab === "shop" ? "shop" : "perks";
+  const [activeTab, setActiveTab] = useState<ProTabKey>(initialTab);
 
   useEffect(() => {
     let cancelled = false;
