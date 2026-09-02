@@ -610,13 +610,13 @@ export function ProTeaserPage({
         />
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
             gap: 10,
             padding: "0 16px 12px",
           }}
         >
-          {(listings.length > 0 ? listings : []).slice(0, 2).map((l) => {
+          {(listings.length > 0 ? listings : []).slice(0, 4).map((l) => {
             const priceIsBad = !l.price_display || !/\d/.test(l.price_display);
             return (
               <div
@@ -627,18 +627,17 @@ export function ProTeaserPage({
                   borderRadius: 8,
                   border: "1px solid #E4E8EF",
                   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                  padding: 12,
+                  padding: 10,
                   display: "flex",
-                  gap: 12,
-                  alignItems: "center",
+                  flexDirection: "column",
+                  gap: 8,
                   cursor: "pointer",
                 }}
               >
                 <div
                   style={{
-                    width: 76,
-                    height: 76,
-                    flexShrink: 0,
+                    width: "100%",
+                    height: 90,
                     borderRadius: 8,
                     background: l.thumbnail_url
                       ? `#EEF2F7 url(${l.thumbnail_url}) center/cover no-repeat`
@@ -650,10 +649,10 @@ export function ProTeaserPage({
                 >
                   {!l.thumbnail_url && <IconCamera size={26} color="#aaa" />}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ minWidth: 0 }}>
                   <div
                     style={{
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: 600,
                       color: NAVY,
                       overflow: "hidden",
@@ -669,10 +668,10 @@ export function ProTeaserPage({
                       display: "inline-block",
                       background: "#EFF6FF",
                       color: BLUE,
-                      fontSize: 10,
+                      fontSize: 9,
                       fontWeight: 700,
                       borderRadius: 8,
-                      padding: "2px 8px",
+                      padding: "2px 6px",
                       marginBottom: 6,
                     }}
                   >
@@ -687,13 +686,13 @@ export function ProTeaserPage({
                     }}
                   >
                     {priceIsBad ? (
-                      <span style={{ fontSize: 13, color: "#888" }}>
+                      <span style={{ fontSize: 11, color: "#888" }}>
                         No price set
                       </span>
                     ) : (
                       <span
                         style={{
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: 700,
                           color: NAVY,
                         }}
@@ -703,7 +702,7 @@ export function ProTeaserPage({
                     )}
                     <span
                       style={{
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: 700,
                         color: BLUE,
                       }}
@@ -718,6 +717,7 @@ export function ProTeaserPage({
           {listings.length === 0 && (
             <div
               style={{
+                gridColumn: "1 / -1",
                 padding: 16,
                 fontSize: 12,
                 color: "#888",
