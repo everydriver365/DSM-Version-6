@@ -788,10 +788,9 @@ export function ProTeaserPage({
                   key={cat.name}
                   role="button"
                   tabIndex={0}
-                  onClick={() => navigate({ to: "/pro", search: { tab: "perks" } })}
+                  onClick={() => go("/pro?tab=perks")}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ")
-                      navigate({ to: "/pro", search: { tab: "perks" } });
+                    if (e.key === "Enter" || e.key === " ") go("/pro?tab=perks");
                   }}
                   style={{
                     background: tint,
