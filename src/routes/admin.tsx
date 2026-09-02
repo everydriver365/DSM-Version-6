@@ -2428,7 +2428,164 @@ export function BenefitPartnersSection() {
                 onChange={(e) => patch({ sort_order: Number(e.target.value) || 0 })}
                 style={partnerInputStyle}
               />
+
+              <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, textTransform: "uppercase", marginTop: 16, marginBottom: 8 }}>
+                VIDEO
+              </div>
+
+              <div
+                style={{
+                  background: "#E5E5EA",
+                  borderRadius: tokens.radiusCard,
+                  padding: 4,
+                  display: "flex",
+                  gap: 4,
+                  marginBottom: 12,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setPartnerVideoMode("embed")}
+                  style={{
+                    flex: 1,
+                    borderRadius: tokens.radiusCard,
+                    border: "none",
+                    padding: "6px 16px",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
+                    fontFamily: "Poppins, sans-serif",
+                    cursor: "pointer",
+                    background: partnerVideoMode === "embed" ? "#fff" : "transparent",
+                    color: partnerVideoMode === "embed" ? "#0B1F3A" : "#6B6B6F",
+                    boxShadow: partnerVideoMode === "embed" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  }}
+                >
+                  Embed URL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPartnerVideoMode("upload")}
+                  style={{
+                    flex: 1,
+                    borderRadius: tokens.radiusCard,
+                    border: "none",
+                    padding: "6px 16px",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
+                    fontFamily: "Poppins, sans-serif",
+                    cursor: "pointer",
+                    background: partnerVideoMode === "upload" ? "#fff" : "transparent",
+                    color: partnerVideoMode === "upload" ? "#0B1F3A" : "#6B6B6F",
+                    boxShadow: partnerVideoMode === "upload" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  }}
+                >
+                  Upload file
+                </button>
+              </div>
+
+              {partnerVideoMode === "embed" ? (
+                <>
+                  <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 6 }}>
+                    YouTube or Vimeo URL
+                  </div>
+                  <input
+                    value={editingPartner.video_embed_url ?? ""}
+                    onChange={(e) => patch({ video_embed_url: e.target.value })}
+                    placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+                    style={partnerInputStyle}
+                  />
+                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>
+                    Paste a YouTube or Vimeo URL
+                  </div>
+                  {toEmbedUrl(editingPartner.video_embed_url ?? "") ? (
+                    <iframe
+                      src={toEmbedUrl(editingPartner.video_embed_url ?? "") ?? undefined}
+                      title="Video preview"
+                      allowFullScreen
+                      style={{
+                        width: "100%",
+                        aspectRatio: "16/9",
+                        borderRadius: 10,
+                        border: "1px solid #E4E8EF",
+                        marginTop: 8,
+                      }}
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime"
+                    style={{ display: "none" }}
+                    ref={partnerVideoInputRef}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (file.size > 500 * 1024 * 1024) {
+                        toast.error("Video must be under 500MB");
+                        return;
+                      }
+                      const ext = file.name.split(".").pop();
+                      const path = `benefits/partners/video/${editingPartner.id}-${Date.now()}.${ext}`;
+                      const { error } = await supabase.storage
+                        .from("marketplace-videos")
+                        .upload(path, file, { upsert: true, contentType: file.type });
+                      if (!error) {
+                        const { data: { publicUrl } } = supabase.storage
+                          .from("marketplace-videos")
+                          .getPublicUrl(path);
+                        patch({ video_url: publicUrl });
+                        toast.success("Video uploaded");
+                      } else {
+                        toast.error("Upload failed");
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                  {editingPartner.video_url ? (
+                    <video
+                      src={editingPartner.video_url}
+                      controls
+                      style={{
+                        width: "100%",
+                        borderRadius: 8,
+                        maxHeight: 200,
+                        marginBottom: 8,
+                        border: "1px solid #E4E8EF",
+                      }}
+                    />
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => partnerVideoInputRef.current?.click()}
+                    style={{
+                      background: "#EFF6FF",
+                      color: tokens.blue,
+                      border: "none",
+                      borderRadius: tokens.radiusCard,
+                      padding: "10px 16px",
+                      fontSize: 12,
+                      fontWeight: tokens.fontWeight.bold,
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {editingPartner.video_url ? "Replace video" : "Upload video"}
+                  </button>
+                  {editingPartner.video_url && (
+                    <button
+                      type="button"
+                      onClick={() => patch({ video_url: null })}
+                      style={{ ...removeImageBtnStyle, marginLeft: 8 }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </>
+              )}
             </div>
+
 
             <button
               type="button"
