@@ -17,6 +17,7 @@ import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payment
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
 import proLogo from "@/assets/pro-logo.png.asset.json";
+import proLogoBanner from "@/assets/pro-logo-banner.png.asset.json";
 import edp3dHero from "@/assets/edp-3d-hero.png.asset.json";
 
 
@@ -6426,7 +6427,7 @@ function HomePage() {
             alignItems: 'center',
             gap: 12,
             cursor: 'pointer',
-            marginBottom: 10,
+            marginBottom: 4,
           }}
         >
           <div
@@ -6439,9 +6440,15 @@ function HomePage() {
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
+              overflow: 'hidden',
+              padding: 3,
             }}
           >
-            <IconGift size={20} color="#FFFFFF" />
+            <img
+              src={proLogoBanner.url}
+              alt="PRO"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+            />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2, fontFamily: 'Poppins, sans-serif' }}>
