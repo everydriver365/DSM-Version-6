@@ -3517,7 +3517,16 @@ function HomePage() {
   }, [nextLesson, notifPermission]);
 
 
-  const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now && l.status !== "cancelled") ?? null;
+  // A lesson stays "current" until its end time (start + duration) has passed,
+  // so the Next lesson tile doesn't jump ahead mid-lesson. Re-evaluated on the
+  // minute tick via `now`.
+  const lessonEndMs = (l: LessonRow) =>
+    lessonDateTime(l).getTime() + ((l.duration_minutes ?? 60) * 60000);
+  const nowMsTick = now.getTime();
+  const upcoming =
+    (nextLesson && lessonEndMs(nextLesson) > nowMsTick ? nextLesson : null) ??
+    lessons.find((l) => lessonEndMs(l) > nowMsTick && l.status !== "cancelled" && l.status !== "completed") ??
+    null;
 
   // Voice assistant (ED) command events
   useEffect(() => {
