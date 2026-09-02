@@ -2024,20 +2024,32 @@ export function ProTeaserPage({
               position: "absolute",
               top: 20,
               right: 20,
-              background: "transparent",
-              border: "none",
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
+              zIndex: 201,
             }}
           >
             <IconX size={24} color="#fff" />
           </button>
-          <iframe
-            src={perkVideo}
-            title="Perk explainer video"
-            style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
-            allowFullScreen
-            allow="autoplay; fullscreen"
-          />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+          >
+            <iframe
+              src={perkVideo}
+              title="Perk explainer video"
+              style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
+              allowFullScreen
+              allow="autoplay; fullscreen"
+            />
+          </div>
         </div>
       )}
     </div>
