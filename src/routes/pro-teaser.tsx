@@ -102,6 +102,44 @@ interface PerkExplainer {
   iconColor: string;
 }
 
+const PERK_EXPLAINERS: PerkExplainer[] = [
+  {
+    id: "bennenden",
+    name: "Bennenden Health",
+    description: "Private healthcare",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#E8F8F4",
+    iconColor: "#18A999",
+  },
+  {
+    id: "perkbox",
+    name: "Perkbox",
+    description: "Retail discounts",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#EAF5FC",
+    iconColor: "#2C97DE",
+  },
+  {
+    id: "pirkx",
+    name: "Pirkx",
+    description: "Wellbeing platform",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#F0EBFF",
+    iconColor: "#7B61FF",
+  },
+  {
+    id: "dia",
+    name: "DIA Membership",
+    description: "Professional body",
+    videoUrl: null,
+    thumbnailUrl: null,
+    color: "#FEF9EC",
+    iconColor: "#F59E0B",
+  },
+];
 
 const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
   { likes: 12, comments: 3 },
@@ -317,10 +355,7 @@ export function ProTeaserPage({
     name: string;
     video_url: string | null;
     video_embed_url: string | null;
-    partner: {
-      id: string;
-      name: string;
-    } | null;
+    icon_color: string | null;
   }>>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [videos, setVideos] = useState<TvVideo[]>([]);
@@ -367,8 +402,7 @@ export function ProTeaserPage({
             .from("benefit_partners")
             .select("id, name, video_url, video_embed_url, icon_color")
             .eq("active", true)
-            .or("video_url.not.is.null,video_embed_url.not.is.null")
-            .limit(4),
+            .limit(8),
           supabase
             .from("news_articles")
             .select(
@@ -448,13 +482,16 @@ export function ProTeaserPage({
         perkVideosRes.status === "fulfilled" &&
         Array.isArray(perkVideosRes.value.data)
       ) {
+        const partnersWithVideo = (perkVideosRes.value.data as any[]).filter(
+          (p) => p.video_url || p.video_embed_url,
+        );
         setPerkVideos(
-          (perkVideosRes.value.data as any[]).map((r) => ({
+          partnersWithVideo.map((r) => ({
             id: String(r.id),
             name: r.name ?? "",
             video_url: r.video_url ?? null,
             video_embed_url: r.video_embed_url ?? null,
-            partner: { id: String(r.id), name: r.name ?? "" },
+            icon_color: r.icon_color ?? null,
           })),
         );
       }
@@ -500,55 +537,22 @@ export function ProTeaserPage({
   }, [posts]);
 
   const perkExplainers = useMemo<PerkExplainer[]>(() => {
-    if (perkVideos.length > 0) {
-      return perkVideos.map((p) => ({
-        id: p.id,
-        name: p.partner?.name ?? p.name,
-        description: p.name,
-        videoUrl: p.video_embed_url ?? p.video_url,
-        thumbnailUrl: null,
-        color: "#E8F8F4",
-        iconColor: "#18A999",
-      }));
-    }
-    return [
-      {
-        id: "bennenden",
-        name: "Bennenden Health",
-        description: "Private healthcare",
-        videoUrl: null,
-        thumbnailUrl: null,
-        color: "#E8F8F4",
-        iconColor: "#18A999",
-      },
-      {
-        id: "perkbox",
-        name: "Perkbox",
-        description: "Retail discounts",
-        videoUrl: null,
-        thumbnailUrl: null,
-        color: "#EAF5FC",
-        iconColor: "#2C97DE",
-      },
-      {
-        id: "pirkx",
-        name: "Pirkx",
-        description: "Wellbeing platform",
-        videoUrl: null,
-        thumbnailUrl: null,
-        color: "#F0EBFF",
-        iconColor: "#7B61FF",
-      },
-      {
-        id: "dia",
-        name: "DIA Membership",
-        description: "Professional body",
-        videoUrl: null,
-        thumbnailUrl: null,
-        color: "#FEF9EC",
-        iconColor: "#F59E0B",
-      },
-    ];
+    const fromPartners = perkVideos.map((p) => ({
+      id: p.id,
+      name: p.name,
+      description: p.name,
+      videoUrl: p.video_embed_url ?? p.video_url,
+      thumbnailUrl: null,
+      color: p.icon_color ? `${p.icon_color}22` : "#E8F8F4",
+      iconColor: p.icon_color ?? "#18A999",
+    }));
+
+    const partnerIds = new Set(fromPartners.map((p) => p.id));
+    const fillers = PERK_EXPLAINERS.filter(
+      (p) => !partnerIds.has(p.id),
+    ).slice(0, Math.max(0, 4 - fromPartners.length));
+
+    return [...fromPartners, ...fillers].slice(0, 4);
   }, [perkVideos]);
 
 
@@ -859,7 +863,7 @@ export function ProTeaserPage({
             padding: "0 16px 12px",
           }}
         >
-          {perkExplainers.map((tile) => {
+          {perkExplainers.slice(0, 4).map((tile) => {
             const thumb = getVideoThumbnail(tile.videoUrl, tile.thumbnailUrl);
             const hasThumb = Boolean(thumb);
             return (
