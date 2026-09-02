@@ -267,12 +267,12 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
               type="button"
               onClick={item.onPress}
               style={{
-                width: "100%",
+              width: "100%",
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
                 padding: "12px 0",
-                background: "transparent",
+                background: "#fff",
                 border: "none",
                 borderBottom: i === rows.length - 1 ? "none" : `0.5px solid ${HAIRLINE}`,
                 textAlign: "left",
