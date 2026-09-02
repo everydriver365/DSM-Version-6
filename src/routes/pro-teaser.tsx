@@ -320,6 +320,8 @@ export function ProTeaserPage({
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [explainerVideo, setExplainerVideo] = useState<PerkExplainer | null>(null);
+  const [communityPage, setCommunityPage] = useState(0);
+  const communityScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
