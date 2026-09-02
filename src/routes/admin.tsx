@@ -16,6 +16,19 @@ export const Route = createFileRoute("/admin")({
 
 type Status = "checking" | "allowed" | "denied";
 
+const PERK_CATEGORIES = [
+  "Health",
+  "Shopping",
+  "Professional",
+  "Wellbeing",
+  "Finance",
+  "Travel",
+  "Technology",
+  "Education",
+  "Legal",
+  "Insurance",
+] as const;
+
 function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
   return (
     <div
