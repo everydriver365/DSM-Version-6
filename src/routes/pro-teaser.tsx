@@ -329,18 +329,33 @@ export function ProTeaserPage({
         );
       }
 
-      if (tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)) {
-        setVideos(
-          (tvRes.value.data as any[]).map((r) => ({
-            id: String(r.id),
-            title: r.title ?? null,
-            category: r.category ?? null,
-            thumbnail_url: r.thumbnail_url ?? null,
-            video_embed_url: r.video_embed_url ?? null,
-            video_url: r.video_url ?? null,
-          })),
-        );
-      }
+      const howtoVideos: TvVideo[] =
+        tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)
+          ? (tvRes.value.data as any[]).map((r) => ({
+              id: String(r.id),
+              title: r.title ?? null,
+              category: r.category ?? null,
+              thumbnail_url: r.thumbnail_url ?? null,
+              video_embed_url: r.video_embed_url ?? null,
+              video_url: r.video_url ?? null,
+            }))
+          : [];
+
+      const bitesizeVideos: TvVideo[] =
+        bitesizeRes.status === "fulfilled" &&
+        Array.isArray(bitesizeRes.value.data)
+          ? (bitesizeRes.value.data as any[]).map((r) => ({
+              id: String(r.id),
+              title: r.title ?? null,
+              category: r.category ?? null,
+              thumbnail_url: r.thumbnail_url ?? null,
+              video_embed_url: null,
+              video_url: r.video_url ?? null,
+            }))
+          : [];
+
+      setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 2));
+
 
       if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
         setNews(newsRes.value.data as NewsArticle[]);
