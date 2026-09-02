@@ -25,14 +25,6 @@ import { useProRadioContext } from "@/hooks/useProRadio";
 // Types
 /* ------------------------------------------------------------------ */
 
-interface FeaturedPerk {
-  id: string;
-  name: string | null;
-  saving: string | null;
-  category: string | null;
-  description: string | null;
-}
-
 interface PerkCategory {
   name: string;
   count: number;
@@ -312,7 +304,6 @@ export function ProTeaserPage({
   const radio = useProRadioContext();
 
   const [loading, setLoading] = useState(true);
-  const [featuredPerk, setFeaturedPerk] = useState<FeaturedPerk | null>(null);
   const [perkCategories, setPerkCategories] = useState<PerkCategory[]>([]);
   const [perkTotal, setPerkTotal] = useState(0);
   const [listings, setListings] = useState<ShopListing[]>([]);
@@ -330,14 +321,8 @@ export function ProTeaserPage({
     }, 3000);
 
     (async () => {
-      const [perkRes, catRes, shopRes, tvRes, bitesizeRes, newsRes, postRes] =
+      const [catRes, shopRes, tvRes, bitesizeRes, newsRes, postRes] =
         await Promise.allSettled([
-          supabase
-            .from("benefit_perks")
-            .select("id, name, saving, category, description")
-            .eq("active", true)
-            .order("sort_order", { ascending: true })
-            .limit(1),
           supabase.from("benefit_perks").select("category").eq("active", true),
           supabase
             .from("marketplace_listings")
@@ -379,11 +364,6 @@ export function ProTeaserPage({
 
 
       if (cancelled) return;
-
-      if (perkRes.status === "fulfilled") {
-        const row = (perkRes.value.data ?? [])[0];
-        if (row) setFeaturedPerk(row as FeaturedPerk);
-      }
 
       if (catRes.status === "fulfilled" && Array.isArray(catRes.value.data)) {
         const rows = catRes.value.data as { category: string | null }[];
@@ -855,103 +835,6 @@ export function ProTeaserPage({
           ))}
         </div>
 
-        {/* Featured perk */}
-        {featuredPerk && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => go("/perks")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") go("/perks");
-            }}
-            style={{
-              margin: "0 16px",
-              background: "#fff",
-              borderRadius: 18,
-              border: "1px solid #E4E8EF",
-              boxShadow: "0 1px 4px rgba(11,35,65,0.05)",
-              padding: 13,
-              display: "flex",
-              alignItems: "center",
-              gap: 13,
-              cursor: "pointer",
-            }}
-          >
-            <div
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 14,
-                background: `linear-gradient(135deg, ${PRO_BLUE} 0%, ${PRO_TEAL} 100%)`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconHeart size={26} color="#fff" stroke={1.8} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  color: PRO_TEAL,
-                  fontSize: 10,
-                  fontWeight: 800,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                FEATURED PERK
-              </div>
-              <div
-                style={{
-                  fontSize: 14.5,
-                  fontWeight: 700,
-                  color: NAVY,
-                  marginTop: 3,
-                  lineHeight: 1.2,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {featuredPerk.name ?? "Member perk"}
-              </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "#8A94A3",
-                  marginTop: 2,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {featuredPerk.saving ?? featuredPerk.category ?? "Exclusive to PRO"}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                go("/perks");
-              }}
-              style={{
-                flexShrink: 0,
-                border: `1.5px solid ${PRO_BLUE}`,
-                color: PRO_BLUE,
-                background: "#fff",
-                borderRadius: 20,
-                padding: "8px 14px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              Claim →
-            </button>
-          </div>
-        )}
       </div>
 
 
