@@ -97,6 +97,7 @@ interface PerkExplainer {
   name: string;
   description: string;
   videoUrl: string | null;
+  thumbnailUrl: string | null;
   color: string;
   iconColor: string;
 }
@@ -107,6 +108,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "Bennenden Health",
     description: "Private healthcare",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#E8F8F4",
     iconColor: "#18A999",
   },
@@ -115,6 +117,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "Perkbox",
     description: "Retail discounts",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#EAF5FC",
     iconColor: "#2C97DE",
   },
@@ -123,6 +126,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "Pirkx",
     description: "Wellbeing platform",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#F0EBFF",
     iconColor: "#7B61FF",
   },
@@ -131,6 +135,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "DIA Membership",
     description: "Professional body",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#FEF9EC",
     iconColor: "#F59E0B",
   },
