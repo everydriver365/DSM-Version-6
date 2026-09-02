@@ -10696,13 +10696,18 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? "100vw" : activePage === 1 ? 0 : "-100vw",
+            left: `${(1 - activePage) * 100}vw`,
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
+            background: "#fff",
           }}
         >
-          <ProPage onNavigateToMedia={() => setActivePage(2)} />
+          <ProTeaserPage
+            onNavigate={(to) => navigate({ to: to as never })}
+            onNavigateToMedia={() => setActivePage(3)}
+            supabase={supabase}
+          />
         </div>
         <div
           style={{
@@ -10710,7 +10715,21 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 2 ? 0 : activePage === 1 ? "100vw" : "200vw",
+            left: `${(2 - activePage) * 100}vw`,
+            transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          <ProPage onNavigateToMedia={() => setActivePage(3)} />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            width: "100vw",
+            left: `${(3 - activePage) * 100}vw`,
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
@@ -10719,6 +10738,7 @@ function HomePage() {
         >
           <MediaHub onNavigate={(to) => navigate({ to: to as never })} />
         </div>
+
       </div>
 
       {/* TODAY / PRO pill tabs */}
