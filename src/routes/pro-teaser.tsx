@@ -501,6 +501,59 @@ export function ProTeaserPage({
     return pairs;
   }, [posts]);
 
+  const perkExplainers = useMemo<PerkExplainer[]>(() => {
+    if (perkVideos.length > 0) {
+      return perkVideos.map((p) => ({
+        id: p.id,
+        name: p.partner?.name ?? p.name,
+        description: p.name,
+        videoUrl: p.video_embed_url ?? p.video_url,
+        thumbnailUrl: null,
+        color: "#E8F8F4",
+        iconColor: "#18A999",
+      }));
+    }
+    return [
+      {
+        id: "bennenden",
+        name: "Bennenden Health",
+        description: "Private healthcare",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#E8F8F4",
+        iconColor: "#18A999",
+      },
+      {
+        id: "perkbox",
+        name: "Perkbox",
+        description: "Retail discounts",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#EAF5FC",
+        iconColor: "#2C97DE",
+      },
+      {
+        id: "pirkx",
+        name: "Pirkx",
+        description: "Wellbeing platform",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#F0EBFF",
+        iconColor: "#7B61FF",
+      },
+      {
+        id: "dia",
+        name: "DIA Membership",
+        description: "Professional body",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#FEF9EC",
+        iconColor: "#F59E0B",
+      },
+    ];
+  }, [perkVideos]);
+
+
   const onCommunityScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const page = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
