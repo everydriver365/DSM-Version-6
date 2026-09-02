@@ -102,44 +102,6 @@ interface PerkExplainer {
   iconColor: string;
 }
 
-const PERK_EXPLAINERS: PerkExplainer[] = [
-  {
-    id: "bennenden",
-    name: "Bennenden Health",
-    description: "Private healthcare",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#E8F8F4",
-    iconColor: "#18A999",
-  },
-  {
-    id: "perkbox",
-    name: "Perkbox",
-    description: "Retail discounts",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#EAF5FC",
-    iconColor: "#2C97DE",
-  },
-  {
-    id: "pirkx",
-    name: "Pirkx",
-    description: "Wellbeing platform",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#F0EBFF",
-    iconColor: "#7B61FF",
-  },
-  {
-    id: "dia",
-    name: "DIA Membership",
-    description: "Professional body",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#FEF9EC",
-    iconColor: "#F59E0B",
-  },
-];
 
 const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
   { likes: 12, comments: 3 },
@@ -153,23 +115,49 @@ function getVideoThumbnail(
   if (thumbnailUrl) return thumbnailUrl;
   if (!videoUrl) return null;
 
-  const ytMatch = videoUrl.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?]+)/,
-  );
-  if (ytMatch) {
-    return `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg`;
+  const ytPatterns = [
+    /youtube\.com\/watch\?v=([^&\s]+)/,
+    /youtu\.be\/([^?\s]+)/,
+    /youtube\.com\/embed\/([^?\s]+)/,
+  ];
+  for (const pattern of ytPatterns) {
+    const match = videoUrl.match(pattern);
+    if (match) {
+      return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
+    }
   }
 
   return null;
 }
 
+
 function getPerkEmbedUrl(url: string): string {
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  if (
+    url.includes("youtube.com/embed") ||
+    url.includes("player.vimeo.com")
+  ) {
+    return url;
+  }
+
+  const ytPatterns = [
+    /youtube\.com\/watch\?v=([^&\s]+)/,
+    /youtu\.be\/([^?\s]+)/,
+  ];
+  for (const pattern of ytPatterns) {
+    const match = url.match(pattern);
+    if (match) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+  }
+
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
   return url;
 }
+
 
 function timeAgo(value: string | null | undefined): string {
   if (!value) return "";
@@ -324,12 +312,23 @@ export function ProTeaserPage({
   const [loading, setLoading] = useState(true);
   const [perkCategories, setPerkCategories] = useState<PerkCategory[]>([]);
   const [perkTotal, setPerkTotal] = useState(0);
+  const [perkVideos, setPerkVideos] = useState<Array<{
+    id: string;
+    name: string;
+    video_url: string | null;
+    video_embed_url: string | null;
+    partner: {
+      id: string;
+      name: string;
+    } | null;
+  }>>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [perkVideo, setPerkVideo] = useState<string | null>(null);
   const [communityPage, setCommunityPage] = useState(0);
+
   const communityScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -339,7 +338,7 @@ export function ProTeaserPage({
     }, 3000);
 
     (async () => {
-      const [catRes, shopRes, tvRes, bitesizeRes, newsRes, postRes] =
+      const [catRes, shopRes, tvRes, bitesizeRes, perkVideosRes, newsRes, postRes] =
         await Promise.allSettled([
           supabase.from("benefit_perks").select("category").eq("active", true),
           supabase
@@ -363,6 +362,14 @@ export function ProTeaserPage({
             .eq("is_published", true)
             .is("deleted_at", null)
             .order("created_at", { ascending: false })
+            .limit(4),
+          supabase
+            .from("benefit_perks")
+            .select(
+              "id, name, video_url, video_embed_url, partner:benefit_partners!partner_id(id, name)",
+            )
+            .not("video_url", "is", null)
+            .not("video_url", "eq", "")
             .limit(4),
           supabase
             .from("news_articles")
@@ -439,6 +446,22 @@ export function ProTeaserPage({
 
       setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 4));
 
+      if (
+        perkVideosRes.status === "fulfilled" &&
+        Array.isArray(perkVideosRes.value.data)
+      ) {
+        setPerkVideos(
+          (perkVideosRes.value.data as any[]).map((r) => ({
+            id: String(r.id),
+            name: r.name ?? "",
+            video_url: r.video_url ?? null,
+            video_embed_url: r.video_embed_url ?? null,
+            partner: r.partner ?? null,
+          })),
+        );
+      }
+
+
 
       if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
         setNews(newsRes.value.data as NewsArticle[]);
@@ -477,6 +500,59 @@ export function ProTeaserPage({
     }
     return pairs;
   }, [posts]);
+
+  const perkExplainers = useMemo<PerkExplainer[]>(() => {
+    if (perkVideos.length > 0) {
+      return perkVideos.map((p) => ({
+        id: p.id,
+        name: p.partner?.name ?? p.name,
+        description: p.name,
+        videoUrl: p.video_embed_url ?? p.video_url,
+        thumbnailUrl: null,
+        color: "#E8F8F4",
+        iconColor: "#18A999",
+      }));
+    }
+    return [
+      {
+        id: "bennenden",
+        name: "Bennenden Health",
+        description: "Private healthcare",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#E8F8F4",
+        iconColor: "#18A999",
+      },
+      {
+        id: "perkbox",
+        name: "Perkbox",
+        description: "Retail discounts",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#EAF5FC",
+        iconColor: "#2C97DE",
+      },
+      {
+        id: "pirkx",
+        name: "Pirkx",
+        description: "Wellbeing platform",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#F0EBFF",
+        iconColor: "#7B61FF",
+      },
+      {
+        id: "dia",
+        name: "DIA Membership",
+        description: "Professional body",
+        videoUrl: null,
+        thumbnailUrl: null,
+        color: "#FEF9EC",
+        iconColor: "#F59E0B",
+      },
+    ];
+  }, [perkVideos]);
+
 
   const onCommunityScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
@@ -785,7 +861,7 @@ export function ProTeaserPage({
             padding: "0 16px 12px",
           }}
         >
-          {PERK_EXPLAINERS.map((tile) => {
+          {perkExplainers.map((tile) => {
             const thumb = getVideoThumbnail(tile.videoUrl, tile.thumbnailUrl);
             const hasThumb = Boolean(thumb);
             return (
