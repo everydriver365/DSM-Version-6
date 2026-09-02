@@ -444,13 +444,16 @@ export function ProTeaserPage({
         perkVideosRes.status === "fulfilled" &&
         Array.isArray(perkVideosRes.value.data)
       ) {
+        const partnersWithVideo = (perkVideosRes.value.data as any[]).filter(
+          (p) => p.video_url || p.video_embed_url,
+        );
         setPerkVideos(
-          (perkVideosRes.value.data as any[]).map((r) => ({
+          partnersWithVideo.map((r) => ({
             id: String(r.id),
             name: r.name ?? "",
             video_url: r.video_url ?? null,
             video_embed_url: r.video_embed_url ?? null,
-            partner: { id: String(r.id), name: r.name ?? "" },
+            icon_color: r.icon_color ?? null,
           })),
         );
       }
