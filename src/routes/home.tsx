@@ -6440,9 +6440,15 @@ function HomePage() {
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
+              overflow: 'hidden',
+              padding: 3,
             }}
           >
-            <IconGift size={20} color="#FFFFFF" />
+            <img
+              src={proLogoBanner.url}
+              alt="PRO"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+            />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2, fontFamily: 'Poppins, sans-serif' }}>
