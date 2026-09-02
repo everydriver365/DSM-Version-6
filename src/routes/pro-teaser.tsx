@@ -1808,6 +1808,64 @@ export function ProTeaserPage({
           )}
         </div>
       </div>
+
+      {/* Perk explainer video modal */}
+      {explainerVideo && (
+        <div
+          onClick={() => setExplainerVideo(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.9)",
+            zIndex: 200,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setExplainerVideo(null)}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <IconX size={24} color="#fff" />
+          </button>
+          {(() => {
+            const embedUrl = getVideoEmbedUrl(explainerVideo.videoUrl);
+            if (embedUrl) {
+              return (
+                <iframe
+                  src={embedUrl}
+                  title={explainerVideo.name}
+                  style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
+                  allowFullScreen
+                  allow="autoplay; fullscreen"
+                />
+              );
+            }
+            if (explainerVideo.videoUrl) {
+              return (
+                <video
+                  src={explainerVideo.videoUrl}
+                  controls
+                  autoPlay
+                  style={{ width: "100%", maxWidth: 390, height: 220 }}
+                />
+              );
+            }
+            return null;
+          })()}
+        </div>
+      )}
     </div>
   );
 }
