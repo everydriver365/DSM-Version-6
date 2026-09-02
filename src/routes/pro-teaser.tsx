@@ -920,17 +920,18 @@ export function ProTeaserPage({
       <div style={{ borderBottom: "1px solid #F0F0F0" }}>
         <SectionHeaderRow
           label="PRO Radio"
-          color={BLUE}
+          color={PRO_TEAL}
           action="All stations →"
           onAction={() => go("/radio")}
         />
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1.15fr 1fr",
+            gridTemplateColumns: "1.1fr 1fr",
             gap: 10,
             padding: 12,
             borderTop: "1px solid #F0F0F0",
+            alignItems: "stretch",
           }}
         >
           {/* PRO Live — primary */}
@@ -939,15 +940,15 @@ export function ProTeaserPage({
             style={{
               position: "relative",
               overflow: "hidden",
-              borderRadius: 8,
+              borderRadius: 14,
               cursor: "pointer",
-              background: `linear-gradient(160deg, ${BLUE} 0%, #0F5FB5 62%, #0B3F7D 100%)`,
-              boxShadow: "0 6px 16px rgba(24,119,214,0.22)",
+              background: `linear-gradient(135deg, #0F5FB5 0%, ${PRO_BLUE} 45%, ${PRO_TEAL} 100%)`,
+              boxShadow: "0 8px 20px rgba(24,119,214,0.22)",
               padding: 12,
               display: "flex",
               flexDirection: "column",
-              gap: 8,
-              minHeight: 168,
+              gap: 10,
+              minHeight: 196,
             }}
           >
             {/* equaliser detail */}
@@ -955,56 +956,54 @@ export function ProTeaserPage({
               aria-hidden
               style={{
                 position: "absolute",
-                right: 8,
-                bottom: 10,
+                right: 10,
+                bottom: 12,
                 display: "flex",
                 alignItems: "flex-end",
                 gap: 3,
-                opacity: 0.35,
               }}
             >
-              {[10, 20, 14, 26, 16, 8].map((h, i) => (
+              {[10, 18, 26, 34, 22, 14, 8].map((h, i) => (
                 <span
                   key={i}
                   style={{
-                    width: 3,
+                    width: 4,
                     height: h,
-                    borderRadius: 2,
-                    background: "#fff",
+                    borderRadius: 3,
+                    background: "rgba(255,255,255,0.55)",
                     display: "block",
                   }}
                 />
               ))}
             </div>
 
-            <div
-              style={{ display: "flex", alignItems: "center", gap: 8 }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 8,
-                  background: "rgba(255,255,255,0.18)",
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: "rgba(255,255,255,0.9)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
                 }}
               >
-                <IconRadio size={19} color="#fff" />
+                <IconRadio size={20} color={PRO_BLUE} stroke={1.9} />
               </div>
               <span
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 4,
+                  gap: 5,
                   background: RED,
                   color: "#fff",
                   fontSize: 9,
                   fontWeight: 800,
-                  letterSpacing: 0.6,
-                  padding: "3px 8px",
+                  letterSpacing: 0.7,
+                  padding: "4px 9px",
                   borderRadius: 999,
                 }}
               >
@@ -1024,19 +1023,23 @@ export function ProTeaserPage({
             <div>
               <div
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   fontWeight: 800,
                   color: "#fff",
-                  letterSpacing: -0.3,
+                  letterSpacing: -0.4,
+                  lineHeight: 1.1,
                 }}
               >
                 {radio.selectedStation ?? "PRO Live"}
               </div>
               <div
                 style={{
-                  fontSize: 11,
-                  color: "rgba(255,255,255,0.85)",
-                  marginTop: 2,
+                  fontSize: 11.5,
+                  color: "rgba(255,255,255,0.9)",
+                  marginTop: 3,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {radio.nowPlaying?.title ?? "Hope"}
@@ -1051,32 +1054,34 @@ export function ProTeaserPage({
                 radio.toggle();
               }}
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
+                width: 48,
+                height: 48,
+                borderRadius: 24,
                 background: "#fff",
                 border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.18)",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.2)",
               }}
               aria-label={radio.isPlaying ? "Pause radio" : "Play radio"}
             >
               {radio.isPlaying ? (
-                <IconPlayerPause size={20} color={BLUE} />
+                <IconPlayerPause size={22} color={PRO_BLUE} />
               ) : (
-                <IconPlayerPlay size={20} color={BLUE} />
+                <IconPlayerPlay size={22} color={PRO_BLUE} fill={PRO_BLUE} />
               )}
             </button>
 
             <div
               style={{
                 marginTop: "auto",
-                fontSize: 10,
-                fontWeight: 600,
-                color: "rgba(255,255,255,0.9)",
+                fontSize: 10.5,
+                fontWeight: 700,
+                color: "rgba(255,255,255,0.95)",
+                position: "relative",
+                zIndex: 1,
               }}
             >
               Feel good driving, all day long
@@ -1087,40 +1092,40 @@ export function ProTeaserPage({
           <div
             onClick={() => go("/radio")}
             style={{
-              borderRadius: 8,
+              borderRadius: 14,
               cursor: "pointer",
-              background: "#F6F8FA",
-              border: "1px solid #E9EDF2",
+              background: "#F5FBFA",
+              border: "1px solid #E4EFEE",
               padding: 12,
               display: "flex",
               flexDirection: "column",
-              gap: 8,
-              minHeight: 168,
+              gap: 10,
+              minHeight: 196,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 8,
-                  background: "#ECEFF3",
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  background: "#E4F5F2",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
                 }}
               >
-                <IconMicrophone size={18} color="#9AA5B1" />
+                <IconMicrophone size={19} color={PRO_TEAL} stroke={1.9} />
               </div>
               <span
                 style={{
-                  background: "#E7EBF0",
-                  color: "#6B7885",
+                  background: "#DFF3F0",
+                  color: "#0E8C7C",
                   fontSize: 9,
                   fontWeight: 800,
-                  letterSpacing: 0.6,
-                  padding: "3px 8px",
+                  letterSpacing: 0.7,
+                  padding: "4px 9px",
                   borderRadius: 999,
                 }}
               >
@@ -1131,15 +1136,16 @@ export function ProTeaserPage({
             <div>
               <div
                 style={{
-                  fontSize: 17,
+                  fontSize: 20,
                   fontWeight: 800,
                   color: NAVY,
-                  letterSpacing: -0.3,
+                  letterSpacing: -0.4,
+                  lineHeight: 1.1,
                 }}
               >
                 PRO Talk
               </div>
-              <div style={{ fontSize: 11, color: "#7A8794", marginTop: 2 }}>
+              <div style={{ fontSize: 11.5, color: "#7A8794", marginTop: 3, lineHeight: 1.35 }}>
                 Instructor talk radio, launching soon.
               </div>
             </div>
@@ -1147,25 +1153,27 @@ export function ProTeaserPage({
             <div
               aria-hidden
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
+                width: 48,
+                height: 48,
+                borderRadius: 24,
                 background: "#fff",
-                border: "1px solid #E1E6EC",
+                border: "1px solid #E1EBEA",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                boxShadow: "0 2px 6px rgba(11,35,65,0.06)",
               }}
             >
-              <IconPlayerPlay size={20} color="#C2CAD3" />
+              <IconPlayerPlay size={22} color="#9FD8D0" />
             </div>
 
             <div
               style={{
                 marginTop: "auto",
-                fontSize: 10,
+                fontSize: 10.5,
                 fontWeight: 600,
                 color: "#8C97A3",
+                lineHeight: 1.35,
               }}
             >
               Real talk for real instructors
@@ -1176,7 +1184,7 @@ export function ProTeaserPage({
         {/* 5 smaller station tiles */}
         <div
           style={{
-            padding: "0 12px 12px",
+            padding: "0 12px 14px",
             display: "grid",
             gridTemplateColumns: "repeat(5, 1fr)",
             gap: 8,
@@ -1191,47 +1199,40 @@ export function ProTeaserPage({
                 type="button"
                 onClick={() => radio.playStream(station.stream, station.name)}
                 style={{
-                  borderRadius: 8,
-                  padding: 10,
-                  background: isSelected ? BLUE : "#fff",
-                  border: `1px solid ${isSelected ? BLUE : "#E9EDF2"}`,
+                  borderRadius: 12,
+                  padding: "10px 4px",
+                  background: "#fff",
+                  border: `1px solid ${isSelected ? station.color : "#EBEEF2"}`,
+                  boxShadow: "0 1px 3px rgba(11,35,65,0.05)",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: 6,
+                  gap: 7,
                   cursor: "pointer",
                 }}
               >
                 <div
                   style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 6,
-                    background: isSelected
-                      ? "rgba(255,255,255,0.18)"
-                      : `${station.color}15`,
+                    width: 30,
+                    height: 30,
+                    borderRadius: 9,
+                    background: `${station.color}1A`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
                   {isPlaying ? (
-                    <IconPlayerPause
-                      size={14}
-                      color={isSelected ? "#fff" : station.color}
-                    />
+                    <IconPlayerPause size={15} color={station.color} />
                   ) : (
-                    <IconRadio
-                      size={14}
-                      color={isSelected ? "#fff" : station.color}
-                    />
+                    <IconRadio size={15} color={station.color} stroke={1.9} />
                   )}
                 </div>
                 <span
                   style={{
                     fontSize: 10,
                     fontWeight: 700,
-                    color: isSelected ? "#fff" : NAVY,
+                    color: NAVY,
                     textAlign: "center",
                     lineHeight: 1.2,
                   }}
@@ -1242,6 +1243,7 @@ export function ProTeaserPage({
             );
           })}
         </div>
+
 
       </div>
 
