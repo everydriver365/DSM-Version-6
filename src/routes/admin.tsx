@@ -1952,34 +1952,48 @@ export function BenefitPartnersSection() {
               </div>
             </div>
 
-            <div style={{ padding: "0 12px 10px" }}>
-              <button
-                type="button"
-                onClick={async () => {
-                  if (expandedPartner === partner.id) {
-                    setExpandedPartner(null);
-                  } else {
-                    setExpandedPartner(partner.id);
-                    await loadPartnerPerks(partner.id);
-                  }
-                }}
-                style={{
-                  background: tokens.canvas,
-                  color: tokens.textSecondary,
-                  borderRadius: tokens.radiusCard,
-                  padding: "4px 16px",
-                  fontSize: tokens.fontSize.sm,
-                  fontWeight: tokens.fontWeight.semibold,
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                Manage perks ({(partnerPerks[partner.id] ?? []).length})
-              </button>
-            </div>
+            {(() => {
+              const perksForPartner = (partnerPerks[partner.id] ?? []) as any[];
+              const counts = new Map<string, number>();
+              for (const p of perksForPartner) {
+                const key = (p.name ?? "").trim().toLowerCase();
+                counts.set(key, (counts.get(key) ?? 0) + 1);
+              }
+              const duplicates = [...counts.entries()].filter(([, n]) => n > 1);
+              return (
+                <div style={{ padding: "0 16px 8px" }}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      fontWeight: tokens.fontWeight.bold,
+                      color: tokens.textMuted,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    Perks ({perksForPartner.length})
+                  </div>
+                  {duplicates.length > 0 && (
+                    <div
+                      style={{
+                        marginTop: 6,
+                        background: "#FEF3C7",
+                        color: "#B45309",
+                        borderRadius: 8,
+                        padding: "6px 10px",
+                        fontSize: 11,
+                        fontWeight: tokens.fontWeight.semibold,
+                      }}
+                    >
+                      Duplicate perk name{duplicates.length > 1 ? "s" : ""}:{" "}
+                      {duplicates.map(([n]) => n).join(", ")}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
-            {expandedPartner === partner.id && (
+            {true && (
               <div
                 style={{
                   background: "#F8FAFC",
@@ -1987,6 +2001,7 @@ export function BenefitPartnersSection() {
                   padding: "12px 16px",
                 }}
               >
+
                 {(partnerPerks[partner.id] ?? []).length === 0 && (
                   <div style={{ fontSize: 12, color: tokens.textMuted }}>No perks yet.</div>
                 )}
