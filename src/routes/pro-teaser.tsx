@@ -80,6 +80,8 @@ export interface ProTeaserProps {
 /* ------------------------------------------------------------------ */
 
 const NAVY = "#0B2341";
+const PRO_BLUE = "#1877D6";
+const PRO_TEAL = "#00BFA5";
 const BLUE = "#2C97DE";
 const TEAL = "#18A999";
 const AMBER = "#F59E0B";
