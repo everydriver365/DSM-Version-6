@@ -324,12 +324,23 @@ export function ProTeaserPage({
   const [loading, setLoading] = useState(true);
   const [perkCategories, setPerkCategories] = useState<PerkCategory[]>([]);
   const [perkTotal, setPerkTotal] = useState(0);
+  const [perkVideos, setPerkVideos] = useState<Array<{
+    id: string;
+    name: string;
+    video_url: string | null;
+    video_embed_url: string | null;
+    partner: {
+      id: string;
+      name: string;
+    } | null;
+  }>>([]);
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [perkVideo, setPerkVideo] = useState<string | null>(null);
   const [communityPage, setCommunityPage] = useState(0);
+
   const communityScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
