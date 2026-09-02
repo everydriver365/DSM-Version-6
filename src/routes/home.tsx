@@ -5509,7 +5509,7 @@ function HomePage() {
           const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
           const dt = Date.now() - touchStartTime.current;
           const threshold = dt < 300 ? 30 : 80;
-          if (dx < -threshold && activePage < 2) {
+          if (dx < -threshold && activePage < 3) {
             setActivePage(activePage + 1);
           } else if (dx > threshold && activePage > 0) {
             setActivePage(activePage - 1);
@@ -5523,7 +5523,8 @@ function HomePage() {
             top: 0,
             bottom: 0,
             width: "100vw",
-            left: activePage === 0 ? 0 : activePage === 1 ? "-100vw" : "-200vw",
+            left: `${(0 - activePage) * 100}vw`,
+
             transition: "left 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch",
