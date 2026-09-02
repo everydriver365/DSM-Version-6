@@ -743,6 +743,95 @@ export function ProTeaserPage({
           </div>
         )}
 
+        {/* Perk explainers */}
+        <div
+          style={{
+            padding: "0 16px 6px",
+            fontSize: 10,
+            fontWeight: 700,
+            color: "#536579",
+            textTransform: "uppercase",
+            letterSpacing: ".6px",
+          }}
+        >
+          Perk explainers
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 8,
+            padding: "0 16px 12px",
+          }}
+        >
+          {PERK_EXPLAINERS.map((tile) => (
+            <div
+              key={tile.id}
+              onClick={() => {
+                if (tile.videoUrl) {
+                  setExplainerVideo(tile);
+                } else {
+                  toast.info(`${tile.name} video coming soon`);
+                }
+              }}
+              style={{
+                background: tile.color,
+                borderRadius: 10,
+                padding: 12,
+                cursor: "pointer",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 8,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: NAVY,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {tile.name}
+                </span>
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: tile.iconColor,
+                    opacity: tile.videoUrl ? 1 : 0.4,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconPlayerPlay size={12} color="#fff" />
+                </span>
+              </div>
+              <div style={{ fontSize: 10, color: "#536579", marginBottom: 6 }}>
+                {tile.description}
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: tile.iconColor,
+                  opacity: tile.videoUrl ? 1 : 0.5,
+                }}
+              >
+                Watch →
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* Featured perk */}
         {featuredPerk && (
           <div
