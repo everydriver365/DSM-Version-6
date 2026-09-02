@@ -146,16 +146,29 @@ const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
   { likes: 8, comments: 1 },
 ];
 
-function getVideoEmbedUrl(url: string | null): string | null {
-  if (!url) return null;
-  if (url.includes("player.vimeo.com") || url.includes("youtube.com/embed") || url.includes("youtu.be")) {
-    return url;
+function getVideoThumbnail(
+  videoUrl: string | null,
+  thumbnailUrl: string | null,
+): string | null {
+  if (thumbnailUrl) return thumbnailUrl;
+  if (!videoUrl) return null;
+
+  const ytMatch = videoUrl.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?]+)/,
+  );
+  if (ytMatch) {
+    return `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg`;
   }
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+
+  return null;
+}
+
+function getPerkEmbedUrl(url: string): string {
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  return null;
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  return url;
 }
 
 function timeAgo(value: string | null | undefined): string {
