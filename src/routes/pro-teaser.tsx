@@ -361,6 +361,7 @@ export function ProTeaserPage({
   onNavigateToMedia,
   supabase = defaultSupabase,
 }: ProTeaserProps = {}) {
+  const navigate = useNavigate();
   const radio = useProRadioContext();
 
   const [loading, setLoading] = useState(true);
