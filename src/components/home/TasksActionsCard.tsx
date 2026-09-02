@@ -274,6 +274,7 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
                 padding: "12px 0",
                 background: "#fff",
                 border: "none",
+                borderRadius: 8,
                 borderBottom: i === rows.length - 1 ? "none" : `0.5px solid ${HAIRLINE}`,
                 textAlign: "left",
                 cursor: "pointer",
