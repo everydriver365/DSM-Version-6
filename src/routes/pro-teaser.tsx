@@ -362,7 +362,7 @@ export function ProTeaserPage({
             }))
           : [];
 
-      setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 2));
+      setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 4));
 
 
       if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
