@@ -364,12 +364,10 @@ export function ProTeaserPage({
             .order("created_at", { ascending: false })
             .limit(4),
           supabase
-            .from("benefit_perks")
-            .select(
-              "id, name, video_url, video_embed_url, partner:benefit_partners!partner_id(id, name)",
-            )
-            .not("video_url", "is", null)
-            .not("video_url", "eq", "")
+            .from("benefit_partners")
+            .select("id, name, video_url, video_embed_url, icon_color")
+            .eq("active", true)
+            .or("video_url.not.is.null,video_embed_url.not.is.null")
             .limit(4),
           supabase
             .from("news_articles")
