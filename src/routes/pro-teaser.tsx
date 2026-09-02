@@ -170,12 +170,32 @@ function getVideoThumbnail(
 
 
 function getPerkEmbedUrl(url: string): string {
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  if (
+    url.includes("youtube.com/embed") ||
+    url.includes("player.vimeo.com")
+  ) {
+    return url;
+  }
+
+  const ytPatterns = [
+    /youtube\.com\/watch\?v=([^&\s]+)/,
+    /youtu\.be\/([^?\s]+)/,
+  ];
+  for (const pattern of ytPatterns) {
+    const match = url.match(pattern);
+    if (match) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+  }
+
   const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
   return url;
 }
+
 
 function timeAgo(value: string | null | undefined): string {
   if (!value) return "";
