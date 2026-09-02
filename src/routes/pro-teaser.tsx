@@ -471,6 +471,20 @@ export function ProTeaserPage({
     [perkTotal],
   );
 
+  const postPairs = useMemo(() => {
+    const pairs: CommunityPost[][] = [];
+    for (let i = 0; i < posts.length; i += 2) {
+      pairs.push(posts.slice(i, i + 2));
+    }
+    return pairs;
+  }, [posts]);
+
+  const onCommunityScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const page = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+    setCommunityPage(page);
+  };
+
   return (
     <div
       style={{
