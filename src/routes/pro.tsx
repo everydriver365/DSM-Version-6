@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { PageLayout } from "@/components/PageLayout";
