@@ -97,6 +97,7 @@ interface PerkExplainer {
   name: string;
   description: string;
   videoUrl: string | null;
+  thumbnailUrl: string | null;
   color: string;
   iconColor: string;
 }
@@ -107,6 +108,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "Bennenden Health",
     description: "Private healthcare",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#E8F8F4",
     iconColor: "#18A999",
   },
@@ -115,6 +117,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "Perkbox",
     description: "Retail discounts",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#EAF5FC",
     iconColor: "#2C97DE",
   },
@@ -123,6 +126,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "Pirkx",
     description: "Wellbeing platform",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#F0EBFF",
     iconColor: "#7B61FF",
   },
@@ -131,6 +135,7 @@ const PERK_EXPLAINERS: PerkExplainer[] = [
     name: "DIA Membership",
     description: "Professional body",
     videoUrl: null,
+    thumbnailUrl: null,
     color: "#FEF9EC",
     iconColor: "#F59E0B",
   },
@@ -141,16 +146,29 @@ const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
   { likes: 8, comments: 1 },
 ];
 
-function getVideoEmbedUrl(url: string | null): string | null {
-  if (!url) return null;
-  if (url.includes("player.vimeo.com") || url.includes("youtube.com/embed") || url.includes("youtu.be")) {
-    return url;
+function getVideoThumbnail(
+  videoUrl: string | null,
+  thumbnailUrl: string | null,
+): string | null {
+  if (thumbnailUrl) return thumbnailUrl;
+  if (!videoUrl) return null;
+
+  const ytMatch = videoUrl.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?]+)/,
+  );
+  if (ytMatch) {
+    return `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg`;
   }
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+
+  return null;
+}
+
+function getPerkEmbedUrl(url: string): string {
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-  return null;
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  return url;
 }
 
 function timeAgo(value: string | null | undefined): string {
@@ -310,7 +328,7 @@ export function ProTeaserPage({
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
-  const [explainerVideo, setExplainerVideo] = useState<PerkExplainer | null>(null);
+  const [perkVideo, setPerkVideo] = useState<string | null>(null);
   const [communityPage, setCommunityPage] = useState(0);
   const communityScrollRef = useRef<HTMLDivElement>(null);
 
@@ -767,72 +785,115 @@ export function ProTeaserPage({
             padding: "0 16px 12px",
           }}
         >
-          {PERK_EXPLAINERS.map((tile) => (
-            <div
-              key={tile.id}
-              onClick={() => {
-                if (tile.videoUrl) {
-                  setExplainerVideo(tile);
-                } else {
-                  toast.info(`${tile.name} video coming soon`);
-                }
-              }}
-              style={{
-                background: tile.color,
-                borderRadius: 10,
-                padding: 12,
-                cursor: "pointer",
-                position: "relative",
-              }}
-            >
+          {PERK_EXPLAINERS.map((tile) => {
+            const thumb = getVideoThumbnail(tile.videoUrl, tile.thumbnailUrl);
+            const hasThumb = Boolean(thumb);
+            return (
               <div
+                key={tile.id}
+                onClick={() => {
+                  if (tile.videoUrl) {
+                    setPerkVideo(getPerkEmbedUrl(tile.videoUrl));
+                  } else {
+                    toast.info(`${tile.name} coming soon`);
+                  }
+                }}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: 8,
+                  position: "relative",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  cursor: "pointer",
+                  minHeight: 90,
+                  background: tile.color,
                 }}
               >
-                <span
+                {hasThumb && (
+                  <>
+                    <img
+                      src={thumb!}
+                      alt={tile.name}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(transparent, rgba(0,0,0,0.65))",
+                      }}
+                    />
+                  </>
+                )}
+                <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: NAVY,
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {tile.name}
-                </span>
-                <span
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: tile.iconColor,
-                    opacity: tile.videoUrl ? 1 : 0.4,
+                    position: "relative",
+                    zIndex: 1,
+                    padding: 10,
+                    height: "100%",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxSizing: "border-box",
                   }}
                 >
-                  <IconPlayerPlay size={12} color="#fff" />
-                </span>
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: hasThumb
+                        ? tile.videoUrl
+                          ? tile.iconColor
+                          : "rgba(255,255,255,0.3)"
+                        : `${tile.iconColor}66`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconPlayerPlay size={12} color="#fff" />
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: hasThumb ? "#fff" : NAVY,
+                        lineHeight: 1.2,
+                        marginBottom: 2,
+                      }}
+                    >
+                      {tile.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: hasThumb ? "rgba(255,255,255,0.7)" : "#536579",
+                      }}
+                    >
+                      {tile.description}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: hasThumb ? "rgba(255,255,255,0.8)" : tile.iconColor,
+                        opacity: tile.videoUrl ? 1 : 0.5,
+                        marginTop: 3,
+                      }}
+                    >
+                      Watch →
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div style={{ fontSize: 10, color: "#536579", marginBottom: 6 }}>
-                {tile.description}
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color: tile.iconColor,
-                  opacity: tile.videoUrl ? 1 : 0.5,
-                }}
-              >
-                Watch →
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>
@@ -1864,24 +1925,23 @@ export function ProTeaserPage({
       </div>
 
       {/* Perk explainer video modal */}
-      {explainerVideo && (
+      {perkVideo && (
         <div
-          onClick={() => setExplainerVideo(null)}
+          onClick={() => setPerkVideo(null)}
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.9)",
+            background: "rgba(0,0,0,0.92)",
             zIndex: 200,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            padding: 16,
           }}
         >
           <button
             type="button"
-            onClick={() => setExplainerVideo(null)}
+            onClick={() => setPerkVideo(null)}
             style={{
               position: "absolute",
               top: 20,
@@ -1893,31 +1953,13 @@ export function ProTeaserPage({
           >
             <IconX size={24} color="#fff" />
           </button>
-          {(() => {
-            const embedUrl = getVideoEmbedUrl(explainerVideo.videoUrl);
-            if (embedUrl) {
-              return (
-                <iframe
-                  src={embedUrl}
-                  title={explainerVideo.name}
-                  style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
-                  allowFullScreen
-                  allow="autoplay; fullscreen"
-                />
-              );
-            }
-            if (explainerVideo.videoUrl) {
-              return (
-                <video
-                  src={explainerVideo.videoUrl}
-                  controls
-                  autoPlay
-                  style={{ width: "100%", maxWidth: 390, height: 220 }}
-                />
-              );
-            }
-            return null;
-          })()}
+          <iframe
+            src={perkVideo}
+            title="Perk explainer video"
+            style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
+            allowFullScreen
+            allow="autoplay; fullscreen"
+          />
         </div>
       )}
     </div>
