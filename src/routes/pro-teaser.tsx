@@ -328,7 +328,7 @@ export function ProTeaserPage({
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
-  const [explainerVideo, setExplainerVideo] = useState<PerkExplainer | null>(null);
+  const [perkVideo, setPerkVideo] = useState<string | null>(null);
   const [communityPage, setCommunityPage] = useState(0);
   const communityScrollRef = useRef<HTMLDivElement>(null);
 
