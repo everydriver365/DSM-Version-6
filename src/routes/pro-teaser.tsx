@@ -81,12 +81,12 @@ const TEAL = "#18A999";
 const AMBER = "#F59E0B";
 const RED = "#E53935";
 
-const MINI_STATIONS: { name: string; stream: string }[] = [
-  { name: "PRO 80s", stream: "https://0n-80s.radionetz.de/0n-80s.mp3" },
-  { name: "PRO 90s", stream: "https://0n-90s.radionetz.de/0n-90s.mp3" },
-  { name: "PRO 00s", stream: "https://stream.laut.fm/00er" },
-  { name: "PRO Chill", stream: "https://0n-chillout.radionetz.de/0n-chillout.mp3" },
-  { name: "PRO Drive", stream: "https://0n-rock.radionetz.de/0n-rock.mp3" },
+const MINI_STATIONS: { name: string; stream: string; color: string }[] = [
+  { name: "PRO 80s", stream: "https://0n-80s.radionetz.de/0n-80s.mp3", color: "#8B5CF6" },
+  { name: "PRO 90s", stream: "https://0n-90s.radionetz.de/0n-90s.mp3", color: "#EC4899" },
+  { name: "PRO 00s", stream: "https://stream.laut.fm/00er", color: "#06B6D4" },
+  { name: "PRO Chill", stream: "https://0n-chillout.radionetz.de/0n-chillout.mp3", color: "#10B981" },
+  { name: "PRO Drive", stream: "https://0n-rock.radionetz.de/0n-rock.mp3", color: "#F97316" },
 ];
 
 function timeAgo(value: string | null | undefined): string {
@@ -1025,7 +1025,7 @@ export function ProTeaserPage({
                     borderRadius: 6,
                     background: isSelected
                       ? "rgba(255,255,255,0.18)"
-                      : "#F4F6F8",
+                      : `${station.color}15`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1034,12 +1034,12 @@ export function ProTeaserPage({
                   {isPlaying ? (
                     <IconPlayerPause
                       size={14}
-                      color={isSelected ? "#fff" : "#536579"}
+                      color={isSelected ? "#fff" : station.color}
                     />
                   ) : (
                     <IconRadio
                       size={14}
-                      color={isSelected ? "#fff" : "#536579"}
+                      color={isSelected ? "#fff" : station.color}
                     />
                   )}
                 </div>
