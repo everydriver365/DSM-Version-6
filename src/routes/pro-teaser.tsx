@@ -1756,79 +1756,227 @@ export function ProTeaserPage({
       </div>
 
       {/* ============ SECTION 7 — COMMUNITY ============ */}
-      <div style={{ padding: "14px 16px" }}>
+      <div style={{ paddingTop: 14 }}>
         <SectionHeaderRow
           label="Community"
           color={TEAL}
           action="See all →"
           onAction={() => go("/community")}
-          badge={posts.length > 0 ? `${posts.length} new` : undefined}
+          badge="2 new"
         />
-        <div style={{ display: "flex", gap: 12 }}>
-          {posts.slice(0, 2).map((p, i) => (
-            <div
-              key={p.id}
-              onClick={() => go("/community")}
-              style={{
-                flex: 1,
-                cursor: "pointer",
-                borderRight: i === 0 ? "1px solid #F4F4F4" : undefined,
-                paddingRight: i === 0 ? 12 : undefined,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  marginBottom: 6,
-                }}
-              >
-                <div
-                  style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: 13,
-                    background: i === 0 ? BLUE : TEAL,
-                    color: "#fff",
-                    fontSize: 10,
-                    fontWeight: 700,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  {(p.authorName ?? "E").charAt(0).toUpperCase()}
-                </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>
-                  {p.authorName ?? "EDP member"}
-                </div>
-                <div style={{ fontSize: 10, color: "#888" }}>
-                  {timeAgo(p.created_at)}
-                </div>
-              </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "#444",
-                  lineHeight: 1.4,
-                  display: "-webkit-box",
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {p.body ?? ""}
-              </div>
-            </div>
-          ))}
-          {posts.length === 0 && (
-            <div style={{ flex: 1, fontSize: 12, color: "#888" }}>
+        <div
+          ref={communityScrollRef}
+          onScroll={onCommunityScroll}
+          style={{
+            display: "flex",
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {postPairs.length === 0 ? (
+            <div style={{ padding: "0 16px", fontSize: 12, color: "#888" }}>
               {loading ? "Loading community…" : "No posts yet."}
             </div>
+          ) : (
+            postPairs.map((pair, pageIndex) => (
+              <div
+                key={pageIndex}
+                style={{
+                  flex: "0 0 100%",
+                  scrollSnapAlign: "start",
+                  display: "flex",
+                  gap: 8,
+                  padding: "0 16px",
+                  boxSizing: "border-box",
+                }}
+              >
+                {pair.map((p, cardIndex) => {
+                  const globalIndex = pageIndex * 2 + cardIndex;
+                  const { likes, comments } =
+                    COMMUNITY_COUNTS[globalIndex] ?? {
+                      likes: 0,
+                      comments: 0,
+                    };
+                  return (
+                    <div
+                      key={p.id}
+                      onClick={() => go("/community")}
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        background: "#fff",
+                        borderRadius: 12,
+                        border: "1px solid #F0F0F0",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                        padding: 12,
+                        display: "flex",
+                        flexDirection: "column",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          marginBottom: 10,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 16,
+                            background: "#EAF8F6",
+                            color: TEAL,
+                            fontSize: 12,
+                            fontWeight: 700,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {(p.authorName ?? "E")
+                            .charAt(0)
+                            .toUpperCase()}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: NAVY,
+                              lineHeight: 1.3,
+                            }}
+                          >
+                            {p.authorName ?? "EDP member"}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#888" }}>
+                            {timeAgo(p.created_at)}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            padding: 4,
+                            cursor: "pointer",
+                            color: "#888",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <IconDotsVertical size={16} />
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          color: "#222",
+                          lineHeight: 1.45,
+                          flex: 1,
+                          marginBottom: 12,
+                          whiteSpace: "pre-wrap",
+                        }}
+                      >
+                        {p.body ?? ""}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          paddingTop: 8,
+                          borderTop: "1px solid #F5F5F5",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#666",
+                          }}
+                        >
+                          <IconHeart size={16} color="#666" fill="none" />
+                          {likes}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#666",
+                          }}
+                        >
+                          <IconMessageCircle
+                            size={16}
+                            color="#666"
+                            fill="none"
+                          />
+                          {comments}
+                        </div>
+                        <div style={{ flex: 1 }} />
+                        <button
+                          type="button"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            padding: 4,
+                            cursor: "pointer",
+                            color: "#666",
+                          }}
+                        >
+                          <IconBookmark
+                            size={16}
+                            color="#666"
+                            fill="none"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))
           )}
         </div>
+        {postPairs.length > 1 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 4,
+              marginTop: 12,
+              paddingBottom: 14,
+            }}
+          >
+            {postPairs.map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  width: i === communityPage ? 16 : 6,
+                  height: 6,
+                  borderRadius: 3,
+                  background: i === communityPage ? NAVY : "#D9D9D9",
+                  transition: "all 0.2s ease",
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Perk explainer video modal */}
