@@ -242,64 +242,80 @@ function SectionHeaderRow({
   action,
   onAction,
   badge,
+  description,
 }: {
   label: string;
   color: string;
   action: string;
   onAction: () => void;
   badge?: string;
+  description?: string;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "12px 16px 8px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: ".6px",
-            color,
-          }}
-        >
-          {label}
-        </span>
-        {badge && (
-          <span
-            style={{
-              background: RED,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 700,
-              borderRadius: 8,
-              padding: "1px 6px",
-            }}
-          >
-            {badge}
-          </span>
-        )}
-      </div>
-      <button
-        type="button"
-        onClick={onAction}
+    <div style={{ padding: "14px 16px 10px" }}>
+      <div
         style={{
-          fontSize: 11,
-          color: BLUE,
-          fontWeight: 600,
-          cursor: "pointer",
-          background: "transparent",
-          border: "none",
-          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 4,
         }}
       >
-        {action}
-      </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              color,
+            }}
+          >
+            {label}
+          </span>
+          {badge && (
+            <span
+              style={{
+                background: RED,
+                color: "#fff",
+                fontSize: 9,
+                fontWeight: 700,
+                borderRadius: 8,
+                padding: "1px 6px",
+              }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onAction}
+          style={{
+            fontSize: 11,
+            color: BLUE,
+            fontWeight: 600,
+            cursor: "pointer",
+            background: "transparent",
+            border: "none",
+            padding: 0,
+          }}
+        >
+          {action}
+        </button>
+      </div>
+      {description && (
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: "#0B2341",
+            lineHeight: 1.4,
+          }}
+        >
+          {description}
+        </div>
+      )}
     </div>
   );
 }
@@ -634,47 +650,59 @@ export function ProTeaserPage({
       {/* ============ SECTION 2 — PRO PERKS ============ */}
       <div style={{ borderBottom: "1px solid #F0F0F0", paddingBottom: 16 }}>
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "12px 16px 14px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-            <img
-              src={proLogoAsset.url}
-              alt="PRO"
-              style={{ height: 26, width: "auto", display: "block", flexShrink: 0 }}
-            />
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                color: NAVY,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              PRO PERKS
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => go("/perks")}
+        <div style={{ padding: "14px 16px 10px" }}>
+          <div
             style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              fontSize: 12,
-              fontWeight: 600,
-              color: PRO_BLUE,
-              cursor: "pointer",
-              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 4,
             }}
           >
-            See all →
-          </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+              <img
+                src={proLogoAsset.url}
+                alt="PRO"
+                style={{ height: 26, width: "auto", display: "block", flexShrink: 0 }}
+              />
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: NAVY,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                PRO PERKS
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => go("/perks")}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                fontSize: 12,
+                fontWeight: 600,
+                color: PRO_BLUE,
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              See all →
+            </button>
+          </div>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#0B2341",
+              lineHeight: 1.4,
+            }}
+          >
+            Save money every day with 58 exclusive benefits for EDP members
+          </div>
         </div>
 
         {/* Hero */}
@@ -1035,6 +1063,7 @@ export function ProTeaserPage({
           color={AMBER}
           action="Browse all →"
           onAction={() => go("/marketplace")}
+          description="Premium products and exclusive deals for professional instructors"
         />
         <div
           style={{
@@ -1167,6 +1196,7 @@ export function ProTeaserPage({
           color={PRO_TEAL}
           action="All stations →"
           onAction={() => go("/radio")}
+          description="Music and talk radio to keep you going between lessons"
         />
         <div
           style={{
@@ -1498,6 +1528,7 @@ export function ProTeaserPage({
           color={BLUE}
           action="See all →"
           onAction={() => onNavigateToMedia?.()}
+          description="Helpful videos to make you a better instructor and grow your business"
         />
         <div
           style={{
@@ -1623,6 +1654,7 @@ export function ProTeaserPage({
           color={RED}
           action="See all →"
           onAction={() => onNavigateToMedia?.()}
+          description="Latest driving industry news, road safety updates and motoring stories"
         />
         <div
           style={{
@@ -1837,6 +1869,7 @@ export function ProTeaserPage({
           action="See all →"
           onAction={() => go("/community")}
           badge="2 new"
+          description="Connect with other instructors, share tips and find cover in your area"
         />
         <div
           ref={communityScrollRef}
