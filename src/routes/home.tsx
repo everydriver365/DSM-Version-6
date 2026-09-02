@@ -6426,7 +6426,7 @@ function HomePage() {
             alignItems: 'center',
             gap: 12,
             cursor: 'pointer',
-            marginBottom: 10,
+            marginBottom: 4,
           }}
         >
           <div
