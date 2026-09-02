@@ -57,6 +57,8 @@ interface NewsArticle {
   image_url: string | null;
   published_at: string | null;
   source: string | null;
+  description?: string | null;
+  read_time_mins?: number | null;
 }
 
 interface CommunityPost {
