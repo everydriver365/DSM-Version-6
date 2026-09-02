@@ -11,9 +11,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { calculateOutstandingOwed } from "@/lib/paymentsOwed";
 
 const PF = "Poppins, sans-serif";
-const HF = "Sora, Poppins, sans-serif";
 const NAVY = "#0B1F3A";
-const BLUE = "#1877D6";
 const MUTED = "#6B7A8F";
 const HAIRLINE = "#E5E7EB";
 
@@ -219,9 +217,9 @@ function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
         alignItems: "center",
         gap: 6,
         flexShrink: 0,
-        padding: "6px 12px",
+        padding: "4px 10px",
         borderRadius: 999,
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: 600,
         color: t.pillText,
         background: t.pillBg,
@@ -231,8 +229,8 @@ function ValuePill({ value, tone }: { value: string; tone: TaskTone }) {
       {!isMoney && (
         <span
           style={{
-            width: 6,
-            height: 6,
+            width: 5,
+            height: 5,
             borderRadius: "50%",
             background: t.pillText,
           }}
@@ -255,16 +253,11 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
       {header}
       <div
         style={{
-          background: "#FFFFFF",
-          borderRadius: 8,
-          border: `0.5px solid ${HAIRLINE}`,
-          boxShadow: "0 8px 24px rgba(11,31,58,0.06)",
-          padding: 0,
+          display: "flex",
+          flexDirection: "column",
           fontFamily: PF,
         }}
       >
-
-      <div style={{ display: "flex", flexDirection: "column" }}>
         {rows.map((item, i) => {
           const Icon = item.Icon ?? IconListCheck;
           const tone = TONES[item.tone];
@@ -277,37 +270,32 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
-                gap: 14,
-                padding: "16px 18px",
-                marginLeft: 0,
-                marginRight: 0,
+                gap: 12,
+                padding: "12px 0",
                 background: "transparent",
                 border: "none",
-                borderTop: i === 0 ? "none" : `0.5px solid ${HAIRLINE}`,
+                borderBottom: i === rows.length - 1 ? "none" : `0.5px solid ${HAIRLINE}`,
                 textAlign: "left",
                 cursor: "pointer",
                 fontFamily: PF,
-                position: "relative",
               }}
             >
-              {/* Full-height left accent line */}
+              {/* Thin status accent line beside the icon */}
               <span
                 style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 12,
-                  bottom: 12,
-                  width: 4,
-                  borderRadius: 999,
+                  width: 3,
+                  height: 20,
+                  borderRadius: 2,
+                  flexShrink: 0,
                   background: tone.accent,
                 }}
               />
 
               <span
                 style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 14,
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
                   flexShrink: 0,
                   background: item.iconBg ?? tone.iconBg,
                   display: "inline-flex",
@@ -315,7 +303,7 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
                   justifyContent: "center",
                 }}
               >
-                <Icon size={24} color={item.iconColor ?? tone.iconColor} stroke={1.7} />
+                <Icon size={18} color={item.iconColor ?? tone.iconColor} stroke={1.8} />
               </span>
 
               <span
@@ -329,7 +317,7 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
               >
                 <span
                   style={{
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: 600,
                     color: NAVY,
                     whiteSpace: "nowrap",
@@ -342,7 +330,7 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
                 {item.subtitle && (
                   <span
                     style={{
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: 400,
                       color: MUTED,
                       whiteSpace: "nowrap",
@@ -355,18 +343,17 @@ export function TasksActionsCard({ userId, items, limit = 2, header }: Props) {
                 )}
               </span>
 
-              <span style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                 {item.value ? (
                   <ValuePill value={item.value} tone={item.tone} />
                 ) : null}
-                <IconChevronRight size={20} color="#C7CDD9" stroke={2} style={{ flexShrink: 0 }} />
+                <IconChevronRight size={16} color="#C7CDD9" stroke={2} style={{ flexShrink: 0 }} />
               </span>
             </button>
           );
         })}
       </div>
-    </div>
-  </>
+    </>
   );
 }
 
