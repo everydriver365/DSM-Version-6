@@ -12,7 +12,9 @@ import {
   IconPlayerPlay,
   IconRadio,
   IconShoppingBag,
+  IconX,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
@@ -95,6 +97,62 @@ const MINI_STATIONS: { name: string; stream: string; color: string }[] = [
   { name: "PRO Chill", stream: "https://0n-chillout.radionetz.de/0n-chillout.mp3", color: "#10B981" },
   { name: "PRO Drive", stream: "https://0n-rock.radionetz.de/0n-rock.mp3", color: "#F97316" },
 ];
+
+interface PerkExplainer {
+  id: string;
+  name: string;
+  description: string;
+  videoUrl: string | null;
+  color: string;
+  iconColor: string;
+}
+
+const PERK_EXPLAINERS: PerkExplainer[] = [
+  {
+    id: "bennenden",
+    name: "Bennenden Health",
+    description: "Private healthcare",
+    videoUrl: null,
+    color: "#E8F8F4",
+    iconColor: "#18A999",
+  },
+  {
+    id: "perkbox",
+    name: "Perkbox",
+    description: "Retail discounts",
+    videoUrl: null,
+    color: "#EAF5FC",
+    iconColor: "#2C97DE",
+  },
+  {
+    id: "pirkx",
+    name: "Pirkx",
+    description: "Wellbeing platform",
+    videoUrl: null,
+    color: "#F0EBFF",
+    iconColor: "#7B61FF",
+  },
+  {
+    id: "dia",
+    name: "DIA Membership",
+    description: "Professional body",
+    videoUrl: null,
+    color: "#FEF9EC",
+    iconColor: "#F59E0B",
+  },
+];
+
+function getVideoEmbedUrl(url: string | null): string | null {
+  if (!url) return null;
+  if (url.includes("player.vimeo.com") || url.includes("youtube.com/embed") || url.includes("youtu.be")) {
+    return url;
+  }
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  return null;
+}
 
 function timeAgo(value: string | null | undefined): string {
   if (!value) return "";
@@ -254,6 +312,7 @@ export function ProTeaserPage({
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [explainerVideo, setExplainerVideo] = useState<PerkExplainer | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -683,6 +742,95 @@ export function ProTeaserPage({
             })}
           </div>
         )}
+
+        {/* Perk explainers */}
+        <div
+          style={{
+            padding: "0 16px 6px",
+            fontSize: 10,
+            fontWeight: 700,
+            color: "#536579",
+            textTransform: "uppercase",
+            letterSpacing: ".6px",
+          }}
+        >
+          Perk explainers
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 8,
+            padding: "0 16px 12px",
+          }}
+        >
+          {PERK_EXPLAINERS.map((tile) => (
+            <div
+              key={tile.id}
+              onClick={() => {
+                if (tile.videoUrl) {
+                  setExplainerVideo(tile);
+                } else {
+                  toast.info(`${tile.name} video coming soon`);
+                }
+              }}
+              style={{
+                background: tile.color,
+                borderRadius: 10,
+                padding: 12,
+                cursor: "pointer",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 8,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: NAVY,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {tile.name}
+                </span>
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: tile.iconColor,
+                    opacity: tile.videoUrl ? 1 : 0.4,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconPlayerPlay size={12} color="#fff" />
+                </span>
+              </div>
+              <div style={{ fontSize: 10, color: "#536579", marginBottom: 6 }}>
+                {tile.description}
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: tile.iconColor,
+                  opacity: tile.videoUrl ? 1 : 0.5,
+                }}
+              >
+                Watch →
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* Featured perk */}
         {featuredPerk && (
@@ -1660,6 +1808,64 @@ export function ProTeaserPage({
           )}
         </div>
       </div>
+
+      {/* Perk explainer video modal */}
+      {explainerVideo && (
+        <div
+          onClick={() => setExplainerVideo(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.9)",
+            zIndex: 200,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setExplainerVideo(null)}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <IconX size={24} color="#fff" />
+          </button>
+          {(() => {
+            const embedUrl = getVideoEmbedUrl(explainerVideo.videoUrl);
+            if (embedUrl) {
+              return (
+                <iframe
+                  src={embedUrl}
+                  title={explainerVideo.name}
+                  style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
+                  allowFullScreen
+                  allow="autoplay; fullscreen"
+                />
+              );
+            }
+            if (explainerVideo.videoUrl) {
+              return (
+                <video
+                  src={explainerVideo.videoUrl}
+                  controls
+                  autoPlay
+                  style={{ width: "100%", maxWidth: 390, height: 220 }}
+                />
+              );
+            }
+            return null;
+          })()}
+        </div>
+      )}
     </div>
   );
 }
