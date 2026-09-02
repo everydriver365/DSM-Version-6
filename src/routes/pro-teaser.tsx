@@ -242,64 +242,80 @@ function SectionHeaderRow({
   action,
   onAction,
   badge,
+  description,
 }: {
   label: string;
   color: string;
   action: string;
   onAction: () => void;
   badge?: string;
+  description?: string;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "12px 16px 8px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: ".6px",
-            color,
-          }}
-        >
-          {label}
-        </span>
-        {badge && (
-          <span
-            style={{
-              background: RED,
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 700,
-              borderRadius: 8,
-              padding: "1px 6px",
-            }}
-          >
-            {badge}
-          </span>
-        )}
-      </div>
-      <button
-        type="button"
-        onClick={onAction}
+    <div style={{ padding: "14px 16px 10px" }}>
+      <div
         style={{
-          fontSize: 11,
-          color: BLUE,
-          fontWeight: 600,
-          cursor: "pointer",
-          background: "transparent",
-          border: "none",
-          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 4,
         }}
       >
-        {action}
-      </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              color,
+            }}
+          >
+            {label}
+          </span>
+          {badge && (
+            <span
+              style={{
+                background: RED,
+                color: "#fff",
+                fontSize: 9,
+                fontWeight: 700,
+                borderRadius: 8,
+                padding: "1px 6px",
+              }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onAction}
+          style={{
+            fontSize: 11,
+            color: BLUE,
+            fontWeight: 600,
+            cursor: "pointer",
+            background: "transparent",
+            border: "none",
+            padding: 0,
+          }}
+        >
+          {action}
+        </button>
+      </div>
+      {description && (
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: "#0B2341",
+            lineHeight: 1.4,
+          }}
+        >
+          {description}
+        </div>
+      )}
     </div>
   );
 }
