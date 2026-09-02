@@ -462,149 +462,324 @@ export function ProTeaserPage({
       </div>
 
       {/* ============ SECTION 2 — PRO PERKS ============ */}
-      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
-        <SectionHeaderRow
-          label="PRO Perks"
-          color={TEAL}
-          action="See all →"
-          onAction={() => go("/perks")}
-        />
-
+      <div style={{ borderBottom: "1px solid #F0F0F0", paddingBottom: 16 }}>
+        {/* Header */}
         <div
           style={{
-            padding: "16px 16px 12px",
             display: "flex",
-            gap: 12,
             alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 16px 14px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+            <img
+              src={proLogoAsset.url}
+              alt="PRO"
+              style={{ height: 26, width: "auto", display: "block", flexShrink: 0 }}
+            />
+            <span
+              style={{
+                fontSize: 15,
+                fontWeight: 800,
+                color: NAVY,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              PRO PERKS
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => go("/perks")}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              fontSize: 12,
+              fontWeight: 600,
+              color: PRO_BLUE,
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            See all →
+          </button>
+        </div>
+
+        {/* Hero */}
+        <div
+          style={{
+            margin: "0 16px 14px",
+            background: "#F0F7FC",
+            borderRadius: 18,
+            padding: 14,
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            border: "1px solid rgba(24,119,214,0.08)",
           }}
         >
           <div
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 14,
-              background: "#E8F8F4",
+              width: 84,
+              height: 84,
+              borderRadius: 18,
+              background: "linear-gradient(135deg, #E1EEF7 0%, #EAF5FD 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
             }}
           >
-            <IconGift size={28} color={TEAL} />
+            <img
+              src={proLogoAsset.url}
+              alt="PRO"
+              style={{ width: 62, height: "auto", display: "block" }}
+            />
           </div>
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                color: TEAL,
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: 10,
+                fontWeight: 800,
+                color: PRO_TEAL,
                 textTransform: "uppercase",
-                letterSpacing: ".6px",
-                marginBottom: 4,
+                letterSpacing: "0.1em",
               }}
             >
-              PRO Perks
+              PRO PERKS
             </div>
             <div
               style={{
-                fontSize: 19,
-                fontWeight: 700,
+                fontSize: 22,
+                fontWeight: 800,
                 color: NAVY,
-                lineHeight: 1.2,
-                marginBottom: 3,
+                lineHeight: 1.05,
+                marginTop: 5,
+                letterSpacing: "-0.02em",
               }}
             >
               Save £1,000s every year
             </div>
-            <div style={{ fontSize: 12, color: "#888" }}>
+            <div style={{ fontSize: 12.5, color: "#536579", marginTop: 5 }}>
               {perkTotal > 0 ? perkTotal : "Exclusive"} exclusive benefits for EDP members
             </div>
           </div>
         </div>
 
+        {/* Category cards */}
         {perkCategories.length > 0 && (
-          <div style={{ display: "flex", gap: 8, padding: "0 16px 12px" }}>
-            {perkCategories.map((cat) => (
-              <div
-                key={cat.name}
-                onClick={() => go("/perks")}
-                style={{
-                  flex: 1,
-                  background: "#E8F8F4",
-                  borderRadius: 10,
-                  padding: 12,
-                  textAlign: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <span style={{ display: "block", marginBottom: 6 }}>
-                  {categoryIcon(cat.name)}
-                </span>
-                <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>
-                  {cat.name}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${Math.min(perkCategories.length, 3)}, 1fr)`,
+              gap: 10,
+              margin: "0 16px 14px",
+            }}
+          >
+            {perkCategories.slice(0, 3).map((cat) => {
+              const n = cat.name.toLowerCase();
+              const isPro = /professional|dia|cpd|training|business|insurance|legal|finance/.test(n);
+              const isShop = /shop|retail|cinema|leisure|lifestyle|entertainment|food|dining/.test(n);
+              const color = isPro ? PRO_TEAL : PRO_BLUE;
+              const tint = isPro ? "#EAF9F7" : "#EAF5FD";
+              const Icon = isPro ? IconBriefcase : isShop ? IconShoppingBag : IconHeart;
+              return (
+                <div
+                  key={cat.name}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => go("/perks")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") go("/perks");
+                  }}
+                  style={{
+                    background: tint,
+                    border: "1px solid rgba(11,35,65,0.05)",
+                    borderRadius: 16,
+                    padding: "12px 10px",
+                    position: "relative",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    minWidth: 0,
+                  }}
+                >
+                  <span
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      width: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      background: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 1px 3px rgba(11,35,65,0.08)",
+                      fontSize: 11,
+                      fontWeight: 800,
+                      color,
+                    }}
+                  >
+                    ›
+                  </span>
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 10,
+                      background: "rgba(255,255,255,0.85)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Icon size={18} color={color} stroke={1.8} />
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: NAVY,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {cat.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 800,
+                      color,
+                      marginTop: 1,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {cat.count}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: "#8A94A3",
+                      marginTop: "auto",
+                      paddingTop: 8,
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {categoryBlurb(cat.name)}
+                  </div>
                 </div>
-                <div style={{ fontSize: 11, color: TEAL, marginTop: 2 }}>
-                  {cat.count}
-                </div>
-                <div style={{ fontSize: 10, color: "#888", marginTop: 3 }}>
-                  {categoryBlurb(cat.name)}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
+        {/* Featured perk */}
         {featuredPerk && (
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => go("/perks")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") go("/perks");
+            }}
             style={{
-              margin: "0 16px 14px",
-              background: "#F7FDF9",
-              borderRadius: 10,
-              padding: 12,
-              border: "0.5px solid #C8EFE4",
+              margin: "0 16px",
+              background: "#fff",
+              borderRadius: 18,
+              border: "1px solid #E4E8EF",
+              boxShadow: "0 1px 4px rgba(11,35,65,0.05)",
+              padding: 13,
               display: "flex",
               alignItems: "center",
-              gap: 10,
+              gap: 13,
               cursor: "pointer",
             }}
           >
             <div
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 8,
-                background: TEAL,
+                width: 60,
+                height: 60,
+                borderRadius: 14,
+                background: `linear-gradient(135deg, ${PRO_BLUE} 0%, ${PRO_TEAL} 100%)`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <IconHeart size={18} color="#fff" />
+              <IconHeart size={26} color="#fff" stroke={1.8} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
-                  color: TEAL,
+                  color: PRO_TEAL,
                   fontSize: 10,
-                  fontWeight: 700,
-                  marginBottom: 2,
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
                 }}
               >
-                Featured perk
+                FEATURED PERK
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
+              <div
+                style={{
+                  fontSize: 14.5,
+                  fontWeight: 700,
+                  color: NAVY,
+                  marginTop: 3,
+                  lineHeight: 1.2,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {featuredPerk.name ?? "Member perk"}
               </div>
-              <div style={{ fontSize: 11, color: "#888" }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#8A94A3",
+                  marginTop: 2,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {featuredPerk.saving ?? featuredPerk.category ?? "Exclusive to PRO"}
               </div>
             </div>
-            <div style={{ fontSize: 11, color: BLUE, fontWeight: 700 }}>Claim →</div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                go("/perks");
+              }}
+              style={{
+                flexShrink: 0,
+                border: `1.5px solid ${PRO_BLUE}`,
+                color: PRO_BLUE,
+                background: "#fff",
+                borderRadius: 20,
+                padding: "8px 14px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Claim →
+            </button>
           </div>
         )}
       </div>
+
 
       {/* ============ SECTION 3 — PRO SHOP ============ */}
       <div style={{ borderBottom: "1px solid #F0F0F0" }}>
