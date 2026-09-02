@@ -6414,6 +6414,47 @@ function HomePage() {
 
 
 
+      {/* ============ PRO PERKS BANNER ============ */}
+      <div style={SECTION_WRAPPER_STYLE}>
+        <div
+          onClick={() => navigate({ to: '/perks' as never })}
+          style={{
+            background: 'linear-gradient(135deg, #0F6E56, #18A999)',
+            borderRadius: 12,
+            padding: '12px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            cursor: 'pointer',
+            marginBottom: 10,
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 10,
+              background: 'rgba(255,255,255,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <IconGift size={20} color="#FFFFFF" />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, marginBottom: 2, fontFamily: 'Poppins, sans-serif' }}>
+              PRO Perks · 58 benefits
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontFamily: 'Poppins, sans-serif' }}>
+              Save £1,000s — GP access, retail discounts and more
+            </div>
+          </div>
+          <IconChevronRight size={18} color="rgba(255,255,255,0.5)" style={{ flexShrink: 0 }} />
+        </div>
+      </div>
+
       {/* ============ REDESIGNED HOME BODY (Poppins, Tabler, light) ============ */}
       {(() => {
         const PF = 'Poppins, sans-serif';
