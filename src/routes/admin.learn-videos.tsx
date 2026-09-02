@@ -286,7 +286,7 @@ function VideoForm({
       let thumbnailUrl = initial?.thumbnail_url ?? null;
       if (source === "youtube") {
         if (!youtubeUrl.trim()) {
-          toast.error("Paste a YouTube link");
+          toast.error("Paste a video link");
           setSaving(false);
           return;
         }
