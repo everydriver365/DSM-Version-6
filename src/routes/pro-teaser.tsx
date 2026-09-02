@@ -153,15 +153,21 @@ function getVideoThumbnail(
   if (thumbnailUrl) return thumbnailUrl;
   if (!videoUrl) return null;
 
-  const ytMatch = videoUrl.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?]+)/,
-  );
-  if (ytMatch) {
-    return `https://img.youtube.com/vi/${ytMatch[1]}/mqdefault.jpg`;
+  const ytPatterns = [
+    /youtube\.com\/watch\?v=([^&\s]+)/,
+    /youtu\.be\/([^?\s]+)/,
+    /youtube\.com\/embed\/([^?\s]+)/,
+  ];
+  for (const pattern of ytPatterns) {
+    const match = videoUrl.match(pattern);
+    if (match) {
+      return `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
+    }
   }
 
   return null;
 }
+
 
 function getPerkEmbedUrl(url: string): string {
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
