@@ -1196,7 +1196,7 @@ export function ProTeaserPage({
           color={PRO_TEAL}
           action="All stations →"
           onAction={() => go("/radio")}
-          description="Music and talk radio to keep you going between lessons"
+          description="Music and talk radio to keep you going between lessons, all ad free."
         />
         <div
           style={{
