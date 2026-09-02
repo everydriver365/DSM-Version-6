@@ -1200,22 +1200,37 @@ export function ProTeaserPage({
           action="See all →"
           onAction={() => onNavigateToMedia?.()}
         />
-        <div style={{ display: "flex", borderTop: "1px solid #F0F0F0" }}>
-          {news.slice(0, 2).map((a, i) => (
-            <div
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 12,
+            padding: "4px 16px 18px",
+            alignItems: "stretch",
+          }}
+        >
+          {news.slice(0, 2).map((a) => (
+            <article
               key={a.id}
               onClick={() => onNavigateToMedia?.()}
               style={{
-                flex: 1,
                 cursor: "pointer",
-                borderRight: i === 0 ? "1px solid #F0F0F0" : undefined,
+                background: "#fff",
+                border: "1px solid #ECECEC",
+                borderRadius: 10,
+                boxShadow: "0 1px 3px rgba(16,24,40,0.06)",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                minWidth: 0,
               }}
             >
               <div
                 style={{
-                  height: 90,
                   position: "relative",
-                  background: "#2a3545",
+                  width: "100%",
+                  aspectRatio: "16 / 9",
+                  background: "#22303F",
                   overflow: "hidden",
                 }}
               >
@@ -1223,6 +1238,7 @@ export function ProTeaserPage({
                   <img
                     src={a.image_url}
                     alt={a.title ?? "Article"}
+                    loading="lazy"
                     style={{
                       position: "absolute",
                       inset: 0,
@@ -1237,49 +1253,152 @@ export function ProTeaserPage({
                     position: "absolute",
                     inset: 0,
                     background:
-                      "linear-gradient(transparent, rgba(0,0,0,0.7))",
+                      "linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, transparent 38%, rgba(0,0,0,0.55) 100%)",
                   }}
                 />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    left: 8,
+                    background: RED,
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 800,
+                    letterSpacing: ".6px",
+                    textTransform: "uppercase",
+                    padding: "3px 6px",
+                    borderRadius: 3,
+                    maxWidth: "80%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {a.category ?? a.source ?? "News"}
+                </span>
                 <div
                   style={{
                     position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    padding: "8px 10px",
+                    bottom: 8,
+                    left: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: ".4px",
-                      marginBottom: 3,
-                      color: newsCategoryColor(a.category),
+                      width: 20,
+                      height: 20,
+                      borderRadius: "50%",
+                      background: "rgba(0,0,0,0.6)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    {a.category ?? a.source ?? "News"}
-                  </div>
-                  <div
+                    <IconPlayerPlay size={11} color="#fff" fill="#fff" />
+                  </span>
+                  <span
                     style={{
-                      fontSize: 12,
-                      fontWeight: 700,
                       color: "#fff",
-                      lineHeight: 1.3,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      textShadow: "0 1px 2px rgba(0,0,0,0.5)",
                     }}
                   >
-                    {a.title ?? "Untitled"}
-                  </div>
+                    {a.read_time_mins ? `${a.read_time_mins}:00` : "2:48"}
+                  </span>
                 </div>
               </div>
-              <div style={{ padding: "7px 10px", fontSize: 10, color: "#888" }}>
-                {timeAgo(a.published_at)}
+
+              <div
+                style={{
+                  padding: "10px 12px 12px",
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: 15,
+                    fontWeight: 800,
+                    lineHeight: 1.22,
+                    letterSpacing: "-0.2px",
+                    color: "#111827",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {a.title ?? "Untitled"}
+                </h3>
+                {a.description && (
+                  <p
+                    style={{
+                      margin: "5px 0 0",
+                      fontSize: 11.5,
+                      lineHeight: 1.4,
+                      color: "#6B7280",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {a.description}
+                  </p>
+                )}
               </div>
-            </div>
+
+              <div
+                style={{
+                  borderTop: "1px solid #F2F2F2",
+                  padding: "8px 12px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                }}
+              >
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                    minWidth: 0,
+                    fontSize: 10.5,
+                    color: "#8A8F98",
+                    fontWeight: 500,
+                  }}
+                >
+                  <IconClock size={13} color="#8A8F98" />
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {timeAgo(a.published_at)}
+                  </span>
+                </span>
+                <IconDotsVertical size={14} color="#B0B4BA" />
+              </div>
+            </article>
           ))}
           {news.length === 0 && (
-            <div style={{ flex: 1, padding: 16, fontSize: 12, color: "#888" }}>
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                padding: "18px 4px",
+                fontSize: 12,
+                color: "#888",
+              }}
+            >
               {loading ? "Loading news…" : "No articles yet."}
             </div>
           )}
