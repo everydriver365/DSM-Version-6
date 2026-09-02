@@ -437,7 +437,23 @@ function VideoModal({ video, onClose }: { video: VideoItem; onClose: () => void 
               playsInline
               style={{ width: "100%", borderRadius: 8, background: "#000" }}
             />
-          ) : null}
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                padding: "32px 16px",
+                borderRadius: 8,
+                background: "rgba(255,255,255,0.08)",
+                color: "#fff",
+                fontSize: 14,
+                textAlign: "center",
+                ...POPPINS,
+              }}
+            >
+              Video coming soon
+            </div>
+          )}
+
           <div
             style={{
               color: "#fff",
