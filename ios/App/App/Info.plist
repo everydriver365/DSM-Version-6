@@ -26,6 +26,10 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Use Face ID to securely access EveryDriver Pro</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo of your receipt to attach to this expense</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a receipt photo from your library</string>
 	<key>NSContactsUsageDescription</key>
 	<string>DSM needs access to your contacts to import pupil details</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
