@@ -392,30 +392,103 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
       )}
 
       <Field label="Receipt (optional)">
-        <label
+        <div
           style={{
-            display: "inline-flex",
-            alignItems: "center",
+            display: "flex",
             gap: 8,
-            padding: "12px 16px",
-            border: BORDER,
-            background: "#fff",
-            borderRadius: tokens.radiusCard,
-            cursor: "pointer",
-            color: NAVY,
-            fontSize: tokens.fontSize.base,
-            fontWeight: tokens.fontWeight.semibold,
+            marginTop: 6,
           }}
         >
-          <IconUpload stroke={1.5} size={16} />
-          {receiptFile ? receiptFile.name : "Choose file"}
+          {Capacitor.isNativePlatform() && (
+            <button
+              type="button"
+              onClick={takePhoto}
+              style={{
+                flex: 1,
+                background: NAVY,
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 600,
+                borderRadius: 10,
+                padding: "10px 0",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+              }}
+            >
+              <IconCamera size={16} color="#fff" />
+              Take photo
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              if (Capacitor.isNativePlatform()) {
+                chooseFromLibrary();
+              } else {
+                fileInputRef.current?.click();
+              }
+            }}
+            style={{
+              flex: 1,
+              background: "#F4F6F8",
+              color: NAVY,
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 10,
+              padding: "10px 0",
+              border: "0.5px solid #E4E8EF",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+            }}
+          >
+            <IconPhoto size={16} color="#536579" />
+            Choose file
+          </button>
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*,application/pdf"
             style={{ display: "none" }}
             onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)}
           />
-        </label>
+        </div>
+
+        {receiptFile && (
+          <div style={{ marginTop: 8 }}>
+            <img
+              src={URL.createObjectURL(receiptFile)}
+              alt="Receipt preview"
+              style={{
+                width: "100%",
+                maxHeight: 160,
+                objectFit: "cover",
+                borderRadius: 10,
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setReceiptFile(null)}
+              style={{
+                fontSize: 11,
+                color: "#E53935",
+                cursor: "pointer",
+                marginTop: 4,
+                background: "transparent",
+                border: "none",
+                padding: 0,
+              }}
+            >
+              ✕ Remove receipt
+            </button>
+          </div>
+        )}
       </Field>
     </BottomSheet>
   );
