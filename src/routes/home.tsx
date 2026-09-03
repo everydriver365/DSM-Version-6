@@ -1950,10 +1950,17 @@ function HomePage() {
         setNoteSheetOpen(true);
         break;
       case "eol": {
-        const candidate =
-          lessons.find((l) => !l.eol_completed && l.status !== "cancelled") ?? null;
-        if (candidate) setEolLesson(candidate);
-        else toast.info("No lesson available to complete");
+        const candidates = lessons.filter(
+          (l) => !l.eol_completed && l.status !== "cancelled",
+        );
+        if (candidates.length === 0) {
+          toast.info("No lessons to complete");
+        } else if (candidates.length === 1) {
+          setEolLesson(candidates[0]);
+        } else {
+          setEolCandidates(candidates);
+          setEolPickerOpen(true);
+        }
         break;
       }
       case "enquiry":
