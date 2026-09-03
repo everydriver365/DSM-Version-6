@@ -25,3 +25,5 @@
 - [ ] Media page: add a LIVE tab for Zoom sessions (from DSM Live page)
 - [x] PRO Perks promo on home navigates to /pro-teaser
 - [x] Add "Add expense" shortcut to home FAB
+- [ ] Add "Report alert" (road closure etc) to the home FAB
+- [ ] Next lesson tile: navigate arrow next to test centre name when the next item is a test
