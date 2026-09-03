@@ -10394,7 +10394,6 @@ function HomePage() {
 
             {eolCandidates.map((lesson) => {
               const pupilName =
-                lesson.pupils?.first_name ??
                 lesson.pupils?.name ??
                 lesson.event_title ??
                 "Lesson";
