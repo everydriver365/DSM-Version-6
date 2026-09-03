@@ -6347,6 +6347,20 @@ function HomePage() {
                     </>
                   )}
 
+                  {etaLabel && (
+                    <>
+                      <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
+                      <span style={{
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.semibold,
+                        color: isLate ? '#CC2229' : '#0B1F3A',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        Arrive {etaLabel}
+                      </span>
+                    </>
+                  )}
+
                   {weatherData && (() => {
                     const raw = weatherData.icon || '';
                     const iconUrl = /^https?:\/\//.test(raw)
