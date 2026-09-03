@@ -32,33 +32,44 @@ function RootRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const cachedSession = (() => {
-      try {
-        const key = Object.keys(localStorage).find(
-          (k) =>
-            k.includes("supabase.auth.token") ||
-            (k.includes("sb-") && k.includes("-auth-token"))
-        );
-        if (!key) return null;
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        return parsed?.access_token ? parsed : null;
-      } catch {
-        return null;
-      }
-    })();
+    let cancelled = false;
 
-    if (cachedSession) {
-      navigate({ to: "/home", replace: true });
-      return;
+    // Check localStorage for a cached Supabase session first
+    // to avoid network round trip
+    try {
+      const key = Object.keys(localStorage).find(
+        (k) =>
+          (k.includes("sb-") && k.includes("-auth-token")) ||
+          k.includes("supabase.auth.token")
+      );
+      if (key) {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const token =
+            parsed?.access_token ?? parsed?.currentSession?.access_token;
+          if (token && !cancelled) {
+            navigate({
+              to: "/home",
+              replace: true,
+            });
+            return;
+          }
+        }
+      }
+    } catch {
+      // fall through to async check
     }
 
-    let cancelled = false;
+    // No cached session — check with Supabase
     supabase.auth.getSession().then(({ data }) => {
       if (cancelled) return;
-      navigate({ to: data.session ? "/home" : "/login", replace: true });
+      navigate({
+        to: data.session ? "/home" : "/login",
+        replace: true,
+      });
     });
+
     return () => {
       cancelled = true;
     };
@@ -66,16 +77,47 @@ function RootRedirect() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0B1F3A]"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#0B1F3A",
+        fontFamily: "Poppins, sans-serif",
+      }}
     >
-      <div className="text-white text-[20px] font-semibold tracking-wide">
-        Every Driver <span style={{ color: "#1877D6" }}>Pro</span>
-      </div>
-      <div className="mt-2 text-[13px] text-[#9CA3AF]">Driving School Management</div>
       <div
-        className="mt-6 h-6 w-6 rounded-full border-2 border-white/20 border-t-white animate-spin"
-        aria-label="Loading"
+        style={{
+          color: "#fff",
+          fontSize: 20,
+          fontWeight: 600,
+          letterSpacing: "0.05em",
+        }}
+      >
+        Every Driver{" "}
+        <span style={{ color: "#1877D6" }}>Pro</span>
+      </div>
+      <div
+        style={{
+          marginTop: 8,
+          fontSize: 13,
+          color: "#9CA3AF",
+        }}
+      >
+        Driving School Management
+      </div>
+      <div
+        style={{
+          marginTop: 24,
+          width: 24,
+          height: 24,
+          borderRadius: "50%",
+          border: "2px solid rgba(255,255,255,0.2)",
+          borderTopColor: "#fff",
+          animation: "spin 0.8s linear infinite",
+        }}
       />
     </div>
   );
