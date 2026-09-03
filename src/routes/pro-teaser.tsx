@@ -3,6 +3,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IconBookmark,
   IconBriefcase,
+  IconBulb,
+  IconPlus,
+
   IconCamera,
   IconClock,
   IconDotsVertical,
