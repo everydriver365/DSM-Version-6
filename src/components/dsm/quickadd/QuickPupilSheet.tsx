@@ -54,10 +54,16 @@ export function QuickPupilSheet({
     }
     try {
       const { Contacts } = await import("@capacitor-community/contacts");
+      console.log("[contacts] plugin loaded");
 
-      let permission = await Contacts.checkPermissions();
-      if (permission.contacts !== "granted") {
-        permission = await Contacts.requestPermissions();
+      const permCheck = await Contacts.checkPermissions();
+      console.log("[contacts] current permission:", JSON.stringify(permCheck));
+
+      let permission = permCheck;
+      if (permCheck.contacts !== "granted") {
+        const permReq = await Contacts.requestPermissions();
+        console.log("[contacts] after request:", JSON.stringify(permReq));
+        permission = permReq;
       }
       if (permission.contacts !== "granted") {
         toast.error("Please allow contacts access in Settings → EveryDriver Pro → Contacts");
