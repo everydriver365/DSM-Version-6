@@ -70,6 +70,7 @@ function RootRedirect() {
 
     // No cached session — check with Supabase
     supabase.auth.getSession().then(({ data }) => {
+      console.log("[auth] session:", data.session ? "found" : "none");
       if (cancelled) return;
       navigate({
         to: data.session ? "/home" : "/login",
