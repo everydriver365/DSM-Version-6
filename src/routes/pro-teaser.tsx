@@ -540,10 +540,6 @@ export function ProTeaserPage({
   }, [supabase]);
 
   const go = (to: string) => onNavigate?.(to);
-  const perkCountLabel = useMemo(
-    () => (perkTotal > 0 ? `${perkTotal} Perks` : "Perks"),
-    [perkTotal],
-  );
 
   const postPairs = useMemo(() => {
     const pairs: CommunityPost[][] = [];
