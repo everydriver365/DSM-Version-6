@@ -2,7 +2,10 @@ import { useState } from "react";
 import { toast } from "@/lib/toast";
 import { BottomSheet } from "../BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
-import { FONT, TextField, SheetFooter } from "./fields";
+import { FONT, NAVY, TextField, SheetFooter } from "./fields";
+import { IconAddressBook, IconX } from "@tabler/icons-react";
+import { Contacts } from "@capacitor-community/contacts";
+import { Capacitor } from "@capacitor/core";
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
@@ -23,6 +26,9 @@ export function QuickPupilSheet({
   const [address, setAddress] = useState("");
   const [postcode, setPostcode] = useState("");
   const [saving, setSaving] = useState(false);
+  const [contactsList, setContactsList] = useState<any[]>([]);
+  const [contactsPickerOpen, setContactsPickerOpen] = useState(false);
+  const [contactSearch, setContactSearch] = useState("");
 
   if (!open) return null;
 
@@ -41,6 +47,65 @@ export function QuickPupilSheet({
     reset();
     onClose();
   };
+
+  async function importFromContacts() {
+    if (!Capacitor.isNativePlatform()) {
+      toast.info("Contacts import only available on device");
+      return;
+    }
+    try {
+      const permission = await Contacts.requestPermissions();
+      if (permission.contacts !== "granted") {
+        toast.error("Contacts permission denied");
+        return;
+      }
+      const result = await Contacts.getContacts({
+        projection: {
+          name: true,
+          phones: true,
+          postalAddresses: true,
+          emails: true,
+        },
+      });
+
+      if (Contacts.pickContact) {
+        const picked = await Contacts.pickContact({
+          projection: {
+            name: true,
+            phones: true,
+            postalAddresses: true,
+          },
+        });
+        if (picked?.contact) {
+          fillFromContact(picked.contact);
+        }
+        return;
+      }
+
+      setContactsList(result.contacts ?? []);
+      setContactsPickerOpen(true);
+    } catch (err) {
+      if (String(err).includes("cancelled")) return;
+      toast.error("Could not access contacts");
+    }
+  }
+
+  function fillFromContact(contact: any) {
+    const given = contact.name?.given ?? "";
+    const family = contact.name?.family ?? "";
+    const phone = contact.phones?.[0]?.number ?? "";
+    const address = contact.postalAddresses?.[0];
+    const addressStr = [address?.street, address?.city, address?.postcode]
+      .filter(Boolean)
+      .join(", ");
+
+    if (given) setFirstName(given);
+    if (family) setLastName(family);
+    if (phone) setPhone(phone.replace(/\s/g, ""));
+    if (addressStr) setAddress(addressStr);
+
+    toast.success("Contact imported");
+  }
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -89,41 +154,206 @@ export function QuickPupilSheet({
   };
 
   return (
-    <BottomSheet
-      title="Add pupil"
-      subtitle="The essentials — you can add more later"
-      onClose={close}
-      footer={<SheetFooter onCancel={close} onSave={handleSave} saving={saving} saveLabel="Add pupil" />}
-    >
-      <div style={{ fontFamily: FONT }}>
-        <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="First name" />
-        <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Last name" />
-        <TextField label="Phone" value={phone} onChange={setPhone} placeholder="07…" inputMode="tel" />
-        <TextField label="Address" value={address} onChange={setAddress} placeholder="Pickup address" />
-        <TextField label="Postcode" value={postcode} onChange={setPostcode} placeholder="e.g. TN1 1AA" />
-        {onOpenFullForm && (
-          <button
-            type="button"
-            onClick={() => {
-              reset();
-              onOpenFullForm();
-            }}
+    <>
+      <BottomSheet
+        title="Add pupil"
+        subtitle="The essentials — you can add more later"
+        onClose={close}
+        footer={<SheetFooter onCancel={close} onSave={handleSave} saving={saving} saveLabel="Add pupil" />}
+      >
+        <div style={{ fontFamily: FONT }}>
+          {Capacitor.isNativePlatform() && (
+            <button
+              type="button"
+              onClick={importFromContacts}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                background: "#F4F6F8",
+                border: "0.5px solid #E4E8EF",
+                borderRadius: 10,
+                padding: "11px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#0B2341",
+                cursor: "pointer",
+                marginBottom: 12,
+                fontFamily: FONT,
+              }}
+            >
+              <IconAddressBook size={18} color="#2C97DE" />
+              Import from contacts
+            </button>
+          )}
+          <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="First name" />
+          <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Last name" />
+          <TextField label="Phone" value={phone} onChange={setPhone} placeholder="07…" inputMode="tel" />
+          <TextField label="Address" value={address} onChange={setAddress} placeholder="Pickup address" />
+          <TextField label="Postcode" value={postcode} onChange={setPostcode} placeholder="e.g. TN1 1AA" />
+          {onOpenFullForm && (
+            <button
+              type="button"
+              onClick={() => {
+                reset();
+                onOpenFullForm();
+              }}
+              style={{
+                width: "100%",
+                padding: "12px 0",
+                background: "transparent",
+                border: "none",
+                color: "#1877D6",
+                fontFamily: FONT,
+                fontSize: 13.5,
+                fontWeight: 600,
+              }}
+            >
+              Open full pupil form
+            </button>
+          )}
+        </div>
+      </BottomSheet>
+
+      {contactsPickerOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,31,58,0.35)",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+          onClick={() => setContactsPickerOpen(false)}
+        >
+          <div
             style={{
-              width: "100%",
-              padding: "12px 0",
-              background: "transparent",
-              border: "none",
-              color: "#1877D6",
+              background: "#fff",
+              borderRadius: "20px 20px 0 0",
+              maxHeight: "75vh",
+              display: "flex",
+              flexDirection: "column",
               fontFamily: FONT,
-              fontSize: 13.5,
-              fontWeight: 600,
             }}
+            onClick={(e) => e.stopPropagation()}
           >
-            Open full pupil form
-          </button>
-        )}
-      </div>
-    </BottomSheet>
+            <div
+              style={{
+                padding: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>Choose contact</span>
+              <button
+                type="button"
+                onClick={() => setContactsPickerOpen(false)}
+                style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
+              >
+                <IconX size={22} color="#536579" />
+              </button>
+            </div>
+
+            <div style={{ padding: "0 16px 8px" }}>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={contactSearch}
+                onChange={(e) => setContactSearch(e.target.value)}
+                style={{
+                  width: "100%",
+                  background: "#F4F6F8",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  border: "0.5px solid #E4E8EF",
+                  fontSize: 13,
+                  fontFamily: FONT,
+                  color: NAVY,
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto" }}>
+              {contactsList
+                .filter((c) => {
+                  const term = contactSearch.toLowerCase();
+                  const display = (c.name?.display ?? "").toLowerCase();
+                  const given = (c.name?.given ?? "").toLowerCase();
+                  const family = (c.name?.family ?? "").toLowerCase();
+                  return !term || display.includes(term) || given.includes(term) || family.includes(term);
+                })
+                .map((contact, idx) => {
+                  const name =
+                    contact.name?.display ||
+                    `${contact.name?.given ?? ""} ${contact.name?.family ?? ""}`.trim() ||
+                    "Unknown";
+                  const phone = contact.phones?.[0]?.number ?? "";
+                  return (
+                    <button
+                      key={contact.contactId || idx}
+                      type="button"
+                      onClick={() => {
+                        fillFromContact(contact);
+                        setContactsPickerOpen(false);
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        borderBottom: "0.5px solid #F4F6F8",
+                        background: "#fff",
+                        border: "none",
+                        cursor: "pointer",
+                        textAlign: "left",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: "50%",
+                          background: "#EAF5FC",
+                          display: "grid",
+                          placeItems: "center",
+                          color: "#2C97DE",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {name.charAt(0).toUpperCase()}
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "#0B2341",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {name}
+                        </div>
+                        {phone && <div style={{ fontSize: 11, color: "#536579", marginTop: 2 }}>{phone}</div>}
+                      </div>
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
