@@ -2042,7 +2042,7 @@ export function ProTeaserPage({
         <div
           style={{
             background: `linear-gradient(160deg, #1FB89F 0%, ${TEAL} 55%, #0E8C7C 100%)`,
-            borderRadius: "0 0 44% 44% / 0 0 44px 44px",
+            borderRadius: "8px 8px 44% 44% / 8px 8px 44px 44px",
             padding: "22px 16px 26px",
             display: "flex",
             flexDirection: "column",
