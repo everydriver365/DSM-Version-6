@@ -32,6 +32,28 @@ function RootRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const cachedSession = (() => {
+      try {
+        const key = Object.keys(localStorage).find(
+          (k) =>
+            k.includes("supabase.auth.token") ||
+            (k.includes("sb-") && k.includes("-auth-token"))
+        );
+        if (!key) return null;
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed?.access_token ? parsed : null;
+      } catch {
+        return null;
+      }
+    })();
+
+    if (cachedSession) {
+      navigate({ to: "/home", replace: true });
+      return;
+    }
+
     let cancelled = false;
     supabase.auth.getSession().then(({ data }) => {
       if (cancelled) return;
@@ -58,5 +80,3 @@ function RootRedirect() {
     </div>
   );
 }
-
-export default RootRedirect;

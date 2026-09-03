@@ -983,7 +983,14 @@ function RootComponent() {
   // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!Capacitor.isNativePlatform() && window.innerWidth > 768) {
+    const isIframe = (() => {
+      try {
+        return window.self !== window.top;
+      } catch {
+        return true;
+      }
+    })();
+    if (!Capacitor.isNativePlatform() && !isIframe && window.innerWidth > 768) {
       window.location.href = "https://desktop.everydriver.pro";
     }
   }, []);
