@@ -1307,6 +1307,12 @@ export function ProTeaserPage({
             }}
           >
             {/* Background waveform */}
+            <style>{`
+              @keyframes proWave {
+                0%, 100% { transform: scaleY(0.35); }
+                50% { transform: scaleY(1); }
+              }
+            `}</style>
             <div
               aria-hidden
               style={{
@@ -1316,19 +1322,23 @@ export function ProTeaserPage({
                 display: "flex",
                 alignItems: "flex-end",
                 gap: 4,
-                opacity: 0.35,
+                opacity: 0.45,
               }}
             >
               {[18, 32, 24, 42, 30, 48, 26, 38, 22, 44, 28, 52, 34, 46, 20].map(
                 (h, i) => (
                   <span
                     key={i}
+                    className="pro-wave-bar"
                     style={{
                       width: 5,
                       height: h,
                       borderRadius: 3,
                       background: "#fff",
                       display: "block",
+                      transformOrigin: "bottom",
+                      animation: `proWave ${1.2 + (i % 3) * 0.2}s ease-in-out infinite`,
+                      animationDelay: `${i * 0.08}s`,
                     }}
                   />
                 )
