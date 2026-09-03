@@ -123,6 +123,7 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
   const [endDate, setEndDate] = useState("");
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let alive = true;
