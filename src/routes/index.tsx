@@ -34,49 +34,58 @@ function RootRedirect() {
   useEffect(() => {
     let cancelled = false;
 
-    console.log(
-      "[auth] localStorage keys:",
-      Object.keys(localStorage).filter(
-        (k) => k.includes("sb") || k.includes("supabase")
-      )
-    );
-
-    // Check localStorage for a cached Supabase session first
-    // to avoid network round trip
     try {
-      const key = Object.keys(localStorage).find(
-        (k) =>
-          (k.includes("sb-") && k.includes("-auth-token")) ||
-          k.includes("supabase.auth.token")
-      );
-      if (key) {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
+      console.log("[auth] starting redirect check");
+
+      // localStorage check
+      try {
+        const keys = Object.keys(localStorage);
+        console.log("[auth] all keys:", keys.join(", "));
+        const key = keys.find(
+          (k) =>
+            (k.includes("sb-") && k.includes("-auth-token")) ||
+            k.includes("supabase.auth.token")
+        );
+        console.log("[auth] session key found:", key ?? "none");
+        if (key) {
+          const raw = localStorage.getItem(key);
+          const parsed = JSON.parse(raw ?? "{}");
           const token =
             parsed?.access_token ?? parsed?.currentSession?.access_token;
+          console.log("[auth] token:", token ? "found" : "none");
           if (token && !cancelled) {
-            navigate({
-              to: "/home",
-              replace: true,
-            });
+            navigate({ to: "/home", replace: true });
             return;
           }
         }
+      } catch (e) {
+        console.error("[auth] localStorage error:", e);
       }
-    } catch {
-      // fall through to async check
-    }
 
-    // No cached session — check with Supabase
-    supabase.auth.getSession().then(({ data }) => {
-      console.log("[auth] session:", data.session ? "found" : "none");
-      if (cancelled) return;
-      navigate({
-        to: data.session ? "/home" : "/login",
-        replace: true,
-      });
-    });
+      supabase.auth
+        .getSession()
+        .then(({ data, error }) => {
+          console.log(
+            "[auth] getSession result:",
+            data.session ? "found" : "none",
+            error
+          );
+          if (cancelled) return;
+          navigate({
+            to: data.session ? "/home" : "/login",
+            replace: true,
+          });
+        })
+        .catch((e) => {
+          console.error("[auth] getSession error:", e);
+          if (!cancelled) {
+            navigate({ to: "/login", replace: true });
+          }
+        });
+    } catch (e) {
+      console.error("[auth] FATAL error:", e);
+      navigate({ to: "/login", replace: true });
+    }
 
     return () => {
       cancelled = true;
