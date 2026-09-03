@@ -1,24 +1,47 @@
-# Why the TestFlight build is slow and won't sign in
+# Refine Community section on PRO teaser page
 
-## What we know so far
+## Goal
+Make the Community preview on `/pro-teaser` feel calmer, more cohesive and premium by removing the large teal curved hero and any strong coloured vertical accent lines, while keeping all required labels, badges and content.
 
-- The iOS app is a thin shell: `capacitor.config.ts` sets `server.url = https://app.everydriver.pro`, so TestFlight loads the live website over the network instead of bundled files. That alone explains slow first paint and the "flash" between pages — every navigation is a live web load, and the splash hides before the page is ready.
-- The live site is up (returns 200) and you confirmed the same site works in Safari on the same phone, so this is a native-shell problem, not a broken deploy.
-- The Supabase client (`src/lib/supabaseClient.ts`) is created with default options — no explicit session storage, `persistSession`, or `detectSessionInUrl` settings. In a remote-URL WKWebView this is the usual cause of "login appears to do nothing": the session is written but the shell reloads the remote page and the session isn't picked up.
-- The installed TestFlight binary predates the camera / contacts / biometric plugin work, so the live JS now calls native plugins that do not exist in that binary.
+## Current state
+The Community section in `src/routes/pro-teaser.tsx` has:
+- A full-width curved teal gradient hero with the Community icon, "COMMUNITY" title and "2 new" badge.
+- White post cards with a light grey border (`#EDEFF3`) and soft shadow.
+- A TIP/COVER AVAILABLE badge, engagement icons, pagination dots and a navy "Create post" CTA panel at the bottom.
 
-The exact sign-in failure is not yet confirmed, so the first step is to capture the real error rather than guess.
+## Changes
+In `src/routes/pro-teaser.tsx`, update only Section 7 (COMMUNITY):
 
-## Plan
+1. **Remove the curved teal hero header.**
+   - Replace it with a compact inline section header that matches the style of other PRO teaser sections.
+   - Keep the small teal `IconUsers`, the uppercase "COMMUNITY" label, the red "2 new" badge and the "See all →" action on the right.
 
-1. **Capture the actual failure.** Add temporary on-screen diagnostics to the login screen (visible error text plus a debug line showing platform, whether a session exists after sign-in, and any thrown plugin/storage error). Connect the device to Safari Web Inspector and read console output from the TestFlight build to confirm whether the failure is a Supabase auth error, a storage write failure, or a missing-plugin exception.
-2. **Harden session storage for WKWebView.** Configure the Supabase client explicitly with `persistSession: true`, `autoRefreshToken: true`, `detectSessionInUrl: false`, and a storage adapter that falls back safely when `localStorage` is unavailable or cleared by iOS. Then navigate after sign-in only once `getSession()` resolves, instead of immediately.
-3. **Make the shell resilient to missing plugins.** Audit every native plugin call that can run on app start (biometrics, badge, OneSignal, splash screen) and guard each behind a capability check so an older binary degrades instead of blocking the UI.
-4. **Fix the perceived slowness and flash.** Hide the splash screen only after the app's first screen is ready rather than on a fixed 2s timer, and add a lightweight loading state so the webview does not show a white flash while the remote page loads.
-5. **Ship a fresh TestFlight build.** The current binary is out of date relative to the site's JS; after the fixes, a new build must be uploaded so native plugins and the web code match.
+2. **Keep the intro text.**
+   - Keep the navy heading: "Connect with other instructors, share tips and find cover in your area".
+   - Keep the subtitle: "Learn. Share. Support each other.".
 
-## Technical notes
+3. **Ensure no coloured structural accents on post cards.**
+   - Cards remain clean white.
+   - Use an extremely subtle border (`#F0F1F4` or very pale teal equivalent) and a restrained shadow.
+   - Do not add any solid teal/green/purple vertical left border or large left accent stripe.
+   - Keep rounded corners.
 
-- Files expected to change: `src/lib/supabaseClient.ts`, `src/routes/login.tsx`, `src/routes/__root.tsx` (plugin guards / splash timing). `capacitor.config.ts` will not be touched.
-- Keeping `server.url` pointing at the live domain means every app update to web code goes live without a new build, but native plugin changes always require a new TestFlight upload. Worth deciding later whether to bundle the web assets instead.
-- No database or Supabase schema changes are involved.
+4. **Keep post card content unchanged.**
+   - Two compact post previews per carousel page.
+   - Author avatar, name, time-ago, more-options button.
+   - TIP badge in teal, COVER AVAILABLE badge in purple.
+   - Post title/excerpt.
+   - Engagement icons/counts (heart, comment, bookmark).
+   - Carousel pagination dots below the cards.
+
+5. **Remove the "Create post" CTA panel.**
+   - The user explicitly does not want the navy "Have something to share?" panel in this section.
+
+6. **Ensure visual cohesion.**
+   - No large coloured backgrounds or header artwork.
+   - Section should sit between surrounding PRO teaser sections without feeling like a separate app screen.
+   - Keep bottom navigation untouched (it is rendered externally).
+
+## Verification
+- Run `tsgo` typecheck.
+- Open the preview at `/pro-teaser`, scroll to Community, and confirm the teal hero and Create post panel are gone, the new inline header is visible, and the cards still show two previews with correct badges and pagination dots.
