@@ -4,7 +4,6 @@ import { BottomSheet } from "../BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 import { FONT, NAVY, TextField, SheetFooter } from "./fields";
 import { IconAddressBook, IconX } from "@tabler/icons-react";
-import { Contacts } from "@capacitor-community/contacts";
 import { Capacitor } from "@capacitor/core";
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
@@ -50,42 +49,55 @@ export function QuickPupilSheet({
 
   async function importFromContacts() {
     if (!Capacitor.isNativePlatform()) {
-      toast.info("Contacts import only available on device");
+      toast.info("Only available on device");
       return;
     }
     try {
-      const permission = await Contacts.requestPermissions();
+      const { Contacts } = await import("@capacitor-community/contacts");
+
+      let permission = await Contacts.checkPermissions();
       if (permission.contacts !== "granted") {
-        toast.error("Contacts permission denied");
+        permission = await Contacts.requestPermissions();
+      }
+      if (permission.contacts !== "granted") {
+        toast.error("Please allow contacts access in Settings → EveryDriver Pro → Contacts");
         return;
       }
-      const result = await Contacts.getContacts({
-        projection: {
-          name: true,
-          phones: true,
-          postalAddresses: true,
-          emails: true,
-        },
-      });
 
-      if (Contacts.pickContact) {
-        const picked = await Contacts.pickContact({
+      try {
+        const result = await Contacts.pickContact({
           projection: {
             name: true,
             phones: true,
             postalAddresses: true,
           },
         });
-        if (picked?.contact) {
-          fillFromContact(picked.contact);
+        if (result?.contact) {
+          fillFromContact(result.contact);
+          return;
         }
+      } catch (pickErr) {
+        console.log("[contacts] pickContact failed:", pickErr);
+      }
+
+      const { contacts } = await Contacts.getContacts({
+        projection: {
+          name: true,
+          phones: true,
+          postalAddresses: true,
+        },
+      });
+
+      if (!contacts?.length) {
+        toast.info("No contacts found");
         return;
       }
 
-      setContactsList(result.contacts ?? []);
+      setContactsList(contacts);
       setContactsPickerOpen(true);
     } catch (err) {
-      if (String(err).includes("cancelled")) return;
+      console.error("[contacts] error:", err);
+      if (String(err).includes("cancelled") || String(err).includes("cancel")) return;
       toast.error("Could not access contacts");
     }
   }
