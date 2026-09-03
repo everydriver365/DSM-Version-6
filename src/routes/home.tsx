@@ -100,7 +100,7 @@ type QuickAddKey =
   | "lesson" | "test" | "pupil" | "payment" | "expense" | "unavailability" | "availability" | "event"
   | "course" | "note" | "eol" | "enquiry" | "call" | "proteach" | "report";
 
-const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
+const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" | "Community" }[] = [
   { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6", group: "Teaching" },
   { key: "test", label: "Add test", icon: IconCalendarEvent, bg: "#F59E0B", group: "Teaching" },
   { key: "eol", label: "End of lesson", icon: IconFlagCheck, bg: "#2C97DE", group: "Teaching" },
@@ -114,9 +114,11 @@ const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus;
   { key: "note", label: "Add note", icon: IconNote, bg: "#536579", group: "People" },
   { key: "payment", label: "Take payment", icon: IconCreditCard, bg: "#16A34A", group: "Business" },
   { key: "course", label: "Add course", icon: IconSchool, bg: "#0B2341", group: "Business" },
+  { key: "report", label: "Report alert", icon: IconAlertTriangle, bg: "#E53935", group: "Community" },
 ];
 
-const QUICK_ADD_GROUPS = ["Teaching", "People", "Business"] as const;
+const QUICK_ADD_GROUPS = ["Teaching", "People", "Business", "Community"] as const;
+
 
 
 
