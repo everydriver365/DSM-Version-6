@@ -1,6 +1,8 @@
 import { tokens } from "@/lib/tokens";
-import { useEffect, useState } from "react";
-import { IconUpload } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { IconCamera, IconPhoto } from "@tabler/icons-react";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Capacitor } from "@capacitor/core";
 import { toast } from "@/lib/toast";
 import { supabase } from "../../lib/supabaseClient";
 import { BottomSheet } from "../dsm/BottomSheetV2";
@@ -121,6 +123,7 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
   const [endDate, setEndDate] = useState("");
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let alive = true;
@@ -143,6 +146,52 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
     setEndDate("");
     setReceiptFile(null);
   };
+
+  async function takePhoto() {
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+        saveToGallery: false,
+      });
+      if (photo.dataUrl) {
+        const res = await fetch(photo.dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], `receipt_${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
+        setReceiptFile(file);
+      }
+    } catch (err) {
+      if (String(err).includes("cancelled")) return;
+      toast.error("Camera not available");
+    }
+  }
+
+  async function chooseFromLibrary() {
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Photos,
+        saveToGallery: false,
+      });
+      if (photo.dataUrl) {
+        const res = await fetch(photo.dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], `receipt_${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
+        setReceiptFile(file);
+      }
+    } catch (err) {
+      if (String(err).includes("cancelled")) return;
+      toast.error("Could not open library");
+    }
+  }
 
   const submit = async () => {
     if (!instructorId) {
@@ -343,30 +392,103 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
       )}
 
       <Field label="Receipt (optional)">
-        <label
+        <div
           style={{
-            display: "inline-flex",
-            alignItems: "center",
+            display: "flex",
             gap: 8,
-            padding: "12px 16px",
-            border: BORDER,
-            background: "#fff",
-            borderRadius: tokens.radiusCard,
-            cursor: "pointer",
-            color: NAVY,
-            fontSize: tokens.fontSize.base,
-            fontWeight: tokens.fontWeight.semibold,
+            marginTop: 6,
           }}
         >
-          <IconUpload stroke={1.5} size={16} />
-          {receiptFile ? receiptFile.name : "Choose file"}
+          {Capacitor.isNativePlatform() && (
+            <button
+              type="button"
+              onClick={takePhoto}
+              style={{
+                flex: 1,
+                background: NAVY,
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 600,
+                borderRadius: 10,
+                padding: "10px 0",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+              }}
+            >
+              <IconCamera size={16} color="#fff" />
+              Take photo
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              if (Capacitor.isNativePlatform()) {
+                chooseFromLibrary();
+              } else {
+                fileInputRef.current?.click();
+              }
+            }}
+            style={{
+              flex: 1,
+              background: "#F4F6F8",
+              color: NAVY,
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 10,
+              padding: "10px 0",
+              border: "0.5px solid #E4E8EF",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+            }}
+          >
+            <IconPhoto size={16} color="#536579" />
+            Choose file
+          </button>
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*,application/pdf"
             style={{ display: "none" }}
             onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)}
           />
-        </label>
+        </div>
+
+        {receiptFile && (
+          <div style={{ marginTop: 8 }}>
+            <img
+              src={URL.createObjectURL(receiptFile)}
+              alt="Receipt preview"
+              style={{
+                width: "100%",
+                maxHeight: 160,
+                objectFit: "cover",
+                borderRadius: 10,
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setReceiptFile(null)}
+              style={{
+                fontSize: 11,
+                color: "#E53935",
+                cursor: "pointer",
+                marginTop: 4,
+                background: "transparent",
+                border: "none",
+                padding: 0,
+              }}
+            >
+              ✕ Remove receipt
+            </button>
+          </div>
+        )}
       </Field>
     </BottomSheet>
   );

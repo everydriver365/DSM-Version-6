@@ -1,6 +1,7 @@
 # Task Roadmap
 
 - [x] Home FAB EOL picker for multiple candidate lessons
+- [x] Add camera receipt capture to expense sheet
 - [x] Remove PRO Radio banner from home page
 - [x] Use the PRO logo on the EDP PRO teaser tile on home.tsx
 - [ ] Redesign Tasks & Actions card to exact locked design system spec
