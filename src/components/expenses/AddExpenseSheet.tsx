@@ -1,6 +1,8 @@
 import { tokens } from "@/lib/tokens";
-import { useEffect, useState } from "react";
-import { IconUpload } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { IconCamera, IconPhoto, IconUpload } from "@tabler/icons-react";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Capacitor } from "@capacitor/core";
 import { toast } from "@/lib/toast";
 import { supabase } from "../../lib/supabaseClient";
 import { BottomSheet } from "../dsm/BottomSheetV2";
