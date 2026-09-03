@@ -6230,8 +6230,37 @@ function HomePage() {
                     }}>
                       Driving Test : {[upcomingTestCentre, upcomingTestTime ? `Test at ${upcomingTestTime}` : null].filter(Boolean).join(' · ')}
                     </span>
+                    {upcomingTestCentre && (
+                      <button
+                        type="button"
+                        aria-label={`Navigate to ${upcomingTestCentre}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(
+                            `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${upcomingTestCentre} Driving Test Centre`)}&travelmode=driving`,
+                            '_blank',
+                          );
+                        }}
+                        style={{
+                          flexShrink: 0,
+                          width: 24,
+                          height: 24,
+                          borderRadius: 8,
+                          border: 'none',
+                          background: '#FEECEC',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          padding: 0,
+                        }}
+                      >
+                        <IconNavigation stroke={1.8} size={14} color="#CC2229" />
+                      </button>
+                    )}
                   </div>
                 )}
+
               </div>
 
               {/* Reasons row */}
