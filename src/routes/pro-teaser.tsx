@@ -596,7 +596,7 @@ export function ProTeaserPage({
       {/* ============ SECTION 1 — PRO HEADER ============ */}
       <div
         style={{
-          padding: "calc(env(safe-area-inset-top, 0px) + 44px) 16px 24px",
+          padding: "calc(env(safe-area-inset-top, 0px) + 64px) 16px 24px",
           borderBottom: "1px solid #F0F0F0",
         }}
       >
