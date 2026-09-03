@@ -97,7 +97,7 @@ import UniversalSearch from "@/components/dsm/UniversalSearch";
 import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
-  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "availability" | "event"
+  | "lesson" | "test" | "pupil" | "payment" | "expense" | "unavailability" | "availability" | "event"
   | "course" | "note" | "eol" | "enquiry" | "call" | "proteach";
 
 const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
@@ -1924,6 +1924,9 @@ function HomePage() {
         break;
       case "payment":
         navigate({ to: "/take-payment" as never });
+        break;
+      case "expense":
+        setAddExpenseOpen(true);
         break;
       case "unavailability":
         setUnavailabilitySheetOpen(true);
@@ -6437,7 +6440,7 @@ function HomePage() {
       {/* ============ PRO PERKS BANNER ============ */}
       <div style={SECTION_WRAPPER_STYLE}>
         <div
-          onClick={() => navigate({ to: '/perks' as never })}
+          onClick={() => navigate({ to: '/pro-teaser' as never })}
           style={{
             background: '#FFFFFF',
             border: '1px solid rgba(24, 169, 153, 0.35)',
@@ -9938,6 +9941,7 @@ function HomePage() {
               { key: "test", label: "Add test", bg: "#F59E0B", Icon: IconCalendarEvent },
               { key: "pupil", label: "Add pupil", bg: "#18A999", Icon: IconUserPlus },
               { key: "payment", label: "Take payment", bg: "#16A34A", Icon: IconCreditCard },
+              { key: "expense", label: "Add expense", bg: "#0B1F3A", Icon: IconReceipt },
               { key: "unavailability", label: "Add unavailability", bg: "#E53935", Icon: IconCalendarOff },
               { key: "note", label: "Add note", bg: "#536579", Icon: IconNote },
               { key: "eol", label: "End of lesson", bg: "#0B2341", Icon: IconFlagCheck },

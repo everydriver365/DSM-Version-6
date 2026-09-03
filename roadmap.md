@@ -21,3 +21,5 @@
 - [x] Replace placeholder PRO perk / shop copy with real descriptions
 - [x] Perk tiles: fall back to bundled partner logos when hero_image_url is empty
 - [ ] Media page: add a LIVE tab for Zoom sessions (from DSM Live page)
+- [x] PRO Perks promo on home navigates to /pro-teaser
+- [x] Add "Add expense" shortcut to home FAB

@@ -24,6 +24,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID to securely access EveryDriver Pro</string>
 	<key>NSContactsUsageDescription</key>
 	<string>DSM needs access to your contacts to import pupil details</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
