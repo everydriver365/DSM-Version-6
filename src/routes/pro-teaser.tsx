@@ -14,6 +14,7 @@ import {
   IconPlayerPlay,
   IconRadio,
   IconShoppingBag,
+  IconStar,
   IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
