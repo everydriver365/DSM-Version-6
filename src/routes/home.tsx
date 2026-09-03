@@ -1925,6 +1925,9 @@ function HomePage() {
       case "payment":
         navigate({ to: "/take-payment" as never });
         break;
+      case "expense":
+        setAddExpenseOpen(true);
+        break;
       case "unavailability":
         setUnavailabilitySheetOpen(true);
         break;
