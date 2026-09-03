@@ -34,6 +34,13 @@ function RootRedirect() {
   useEffect(() => {
     let cancelled = false;
 
+    console.log(
+      "[auth] localStorage keys:",
+      Object.keys(localStorage).filter(
+        (k) => k.includes("sb") || k.includes("supabase")
+      )
+    );
+
     // Check localStorage for a cached Supabase session first
     // to avoid network round trip
     try {
@@ -63,6 +70,7 @@ function RootRedirect() {
 
     // No cached session — check with Supabase
     supabase.auth.getSession().then(({ data }) => {
+      console.log("[auth] session:", data.session ? "found" : "none");
       if (cancelled) return;
       navigate({
         to: data.session ? "/home" : "/login",
