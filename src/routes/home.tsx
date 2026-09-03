@@ -1971,7 +1971,14 @@ function HomePage() {
       case "call":
         setLogCallSheetOpen(true);
         break;
+      case "report":
+        navigate({ to: "/community" as never, search: { tab: "alerts" } as never });
+        window.setTimeout(() => {
+          window.dispatchEvent(new Event("dsm-open-report-sheet"));
+        }, 400);
+        break;
     }
+
   };
 
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
