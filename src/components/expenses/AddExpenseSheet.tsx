@@ -147,6 +147,52 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
     setReceiptFile(null);
   };
 
+  async function takePhoto() {
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+        saveToGallery: false,
+      });
+      if (photo.dataUrl) {
+        const res = await fetch(photo.dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], `receipt_${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
+        setReceiptFile(file);
+      }
+    } catch (err) {
+      if (String(err).includes("cancelled")) return;
+      toast.error("Camera not available");
+    }
+  }
+
+  async function chooseFromLibrary() {
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Photos,
+        saveToGallery: false,
+      });
+      if (photo.dataUrl) {
+        const res = await fetch(photo.dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], `receipt_${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
+        setReceiptFile(file);
+      }
+    } catch (err) {
+      if (String(err).includes("cancelled")) return;
+      toast.error("Could not open library");
+    }
+  }
+
   const submit = async () => {
     if (!instructorId) {
       toast.error("Please sign in");
