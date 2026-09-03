@@ -2037,69 +2037,49 @@ export function ProTeaserPage({
       </div>
 
       {/* ============ SECTION 7 — COMMUNITY ============ */}
-      <div style={{ paddingTop: 14 }}>
-        {/* Curved teal hero */}
-        <div
-          style={{
-            background: `linear-gradient(160deg, #1FB89F 0%, ${TEAL} 55%, #0E8C7C 100%)`,
-            borderRadius: "8px 8px 44% 44% / 8px 8px 44px 44px",
-            padding: "22px 16px 26px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
+      <div style={{ padding: "24px 0 20px" }}>
+        {/* Inline header */}
+        <div style={{ padding: "0 16px 14px" }}>
           <div
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              background: "#fff",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 6px 18px rgba(0,0,0,0.14)",
+              justifyContent: "space-between",
+              marginBottom: 8,
             }}
           >
-            <IconUsers size={30} color={TEAL} stroke={1.9} />
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              style={{
-                fontFamily: "Sora, sans-serif",
-                fontSize: 18,
-                fontWeight: 800,
-                letterSpacing: 1,
-                color: "#fff",
-                textTransform: "uppercase",
-              }}
-            >
-              Community
-            </span>
-            <span
-              style={{
-                background: RED,
-                color: "#fff",
-                fontSize: 11,
-                fontWeight: 700,
-                borderRadius: 999,
-                padding: "3px 10px",
-              }}
-            >
-              2 new
-            </span>
-          </div>
-        </div>
-
-        {/* Intro */}
-        <div style={{ padding: "12px 16px 4px" }}>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <IconUsers size={18} color={TEAL} stroke={1.8} />
+              <span
+                style={{
+                  fontFamily: "Sora, sans-serif",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  letterSpacing: 1,
+                  color: TEAL,
+                  textTransform: "uppercase",
+                }}
+              >
+                Community
+              </span>
+              <span
+                style={{
+                  background: RED,
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 800,
+                  borderRadius: 999,
+                  padding: "2px 8px",
+                }}
+              >
+                2 new
+              </span>
+            </div>
             <button
               type="button"
               onClick={() => go("/community")}
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 700,
                 color: BLUE,
                 cursor: "pointer",
@@ -2113,9 +2093,9 @@ export function ProTeaserPage({
           </div>
           <h2
             style={{
-              margin: "6px 0 0",
+              margin: 0,
               fontFamily: "Sora, sans-serif",
-              fontSize: 21,
+              fontSize: 20,
               fontWeight: 800,
               color: NAVY,
               lineHeight: 1.25,
@@ -2125,7 +2105,7 @@ export function ProTeaserPage({
             Connect with other instructors, share tips and find cover in your
             area
           </h2>
-          <p style={{ margin: "8px 0 0", fontSize: 14, color: "#6B7686" }}>
+          <p style={{ margin: "6px 0 0", fontSize: 14, color: "#6B7686" }}>
             Learn. Share. Support each other.
           </p>
         </div>
@@ -2140,7 +2120,7 @@ export function ProTeaserPage({
             scrollbarWidth: "none",
             msOverflowStyle: "none",
             WebkitOverflowScrolling: "touch",
-            paddingTop: 14,
+            paddingTop: 6,
           }}
         >
           {postPairs.length === 0 ? (
@@ -2179,8 +2159,8 @@ export function ProTeaserPage({
                       style={{
                         background: "#fff",
                         borderRadius: 18,
-                        border: "1px solid #EDEFF3",
-                        boxShadow: "0 3px 12px rgba(11,35,65,0.05)",
+                        border: "1px solid #F0F1F4",
+                        boxShadow: "0 3px 12px rgba(11,35,65,0.04)",
                         padding: 16,
                         display: "flex",
                         flexDirection: "column",
@@ -2382,83 +2362,6 @@ export function ProTeaserPage({
             ))}
           </div>
         )}
-
-        {/* Create post CTA */}
-        <div style={{ padding: "16px 16px 20px" }}>
-          <div
-            style={{
-              background: NAVY,
-              borderRadius: 20,
-              padding: 16,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 14,
-                background: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconUsers size={24} color={TEAL} stroke={1.9} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "#fff" }}>
-                Have something to share?
-              </div>
-              <div
-                style={{
-                  fontSize: 12.5,
-                  color: "rgba(255,255,255,0.75)",
-                  lineHeight: 1.4,
-                  marginTop: 2,
-                }}
-              >
-                Create a post and connect with your local instructor community.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => go("/community")}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                background: TEAL,
-                border: "none",
-                color: "#fff",
-                fontSize: 13.5,
-                fontWeight: 800,
-                borderRadius: 999,
-                padding: "11px 14px",
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
-            >
-              Create post
-              <span
-                style={{
-                  width: 22,
-                  height: 22,
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.25)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <IconPlus size={14} stroke={3} />
-              </span>
-            </button>
-          </div>
-        </div>
       </div>
 
 
