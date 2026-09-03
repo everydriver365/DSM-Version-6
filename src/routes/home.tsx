@@ -1899,6 +1899,8 @@ function HomePage() {
   const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
+  const [eolPickerOpen, setEolPickerOpen] = useState(false);
+  const [eolCandidates, setEolCandidates] = useState<LessonRow[]>([]);
 
   // Quick-add bottom sheets (every FAB action opens a sheet except Add course)
   const [unavailabilitySheetOpen, setUnavailabilitySheetOpen] = useState(false);
@@ -1948,10 +1950,17 @@ function HomePage() {
         setNoteSheetOpen(true);
         break;
       case "eol": {
-        const candidate =
-          lessons.find((l) => !l.eol_completed && l.status !== "cancelled") ?? null;
-        if (candidate) setEolLesson(candidate);
-        else toast.info("No lesson available to complete");
+        const candidates = lessons.filter(
+          (l) => !l.eol_completed && l.status !== "cancelled",
+        );
+        if (candidates.length === 0) {
+          toast.info("No lessons to complete");
+        } else if (candidates.length === 1) {
+          setEolLesson(candidates[0]);
+        } else {
+          setEolCandidates(candidates);
+          setEolPickerOpen(true);
+        }
         break;
       }
       case "enquiry":
@@ -10325,6 +10334,131 @@ function HomePage() {
         onClose={() => setAddExpenseOpen(false)}
         onSaved={() => setReloadKey((k) => k + 1)}
       />
+
+      {eolPickerOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 200,
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          onClick={() => setEolPickerOpen(false)}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "16px 16px 0 0",
+              width: "100%",
+              paddingBottom: "env(safe-area-inset-bottom)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                padding: "16px",
+                borderBottom: "1px solid #F0F0F0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#0B2341",
+                }}
+              >
+                End of lesson
+              </span>
+              <IconX
+                size={20}
+                color="#536579"
+                onClick={() => setEolPickerOpen(false)}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+
+            <div
+              style={{
+                padding: "10px 16px 6px",
+                fontSize: 12,
+                color: "#536579",
+              }}
+            >
+              Which lesson are you completing?
+            </div>
+
+            {eolCandidates.map((lesson) => {
+              const pupilName =
+                lesson.pupils?.name ??
+                lesson.event_title ??
+                "Lesson";
+              const time = lesson.lesson_time?.slice(0, 5) ?? "";
+              return (
+                <div
+                  key={lesson.id}
+                  onClick={() => {
+                    setEolLesson(lesson);
+                    setEolPickerOpen(false);
+                  }}
+                  style={{
+                    padding: "14px 16px",
+                    borderBottom: "0.5px solid #F4F6F8",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      background: "#EAF5FC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      fontSize: 16,
+                      fontWeight: 700,
+                      color: "#2C97DE",
+                    }}
+                  >
+                    {pupilName[0]?.toUpperCase()}
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#0B2341",
+                        marginBottom: 2,
+                      }}
+                    >
+                      {pupilName}
+                    </div>
+                    <div style={{ fontSize: 12, color: "#536579" }}>
+                      {time}
+                      {lesson.duration_minutes ? ` · ${lesson.duration_minutes} mins` : ""}
+                      {lesson.pickup_location ? ` · ${lesson.pickup_location}` : ""}
+                    </div>
+                  </div>
+
+                  <IconChevronRight size={18} color="#D1D5DB" />
+                </div>
+              );
+            })}
+
+            <div style={{ height: 16 }} />
+          </div>
+        </div>
+      )}
 
       <LogMileageSheet
         open={logMileageOpen}
