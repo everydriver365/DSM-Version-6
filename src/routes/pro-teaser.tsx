@@ -600,50 +600,71 @@ export function ProTeaserPage({
       {/* ============ SECTION 1 — PRO HEADER ============ */}
       <div
         style={{
-          padding: "calc(env(safe-area-inset-top, 0px) + 44px) 16px 16px",
+          padding: "calc(env(safe-area-inset-top, 0px) + 44px) 16px 24px",
           borderBottom: "1px solid #F0F0F0",
         }}
       >
         <div
           style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: BLUE,
-            textTransform: "uppercase",
-            letterSpacing: "1.5px",
-            marginBottom: 8,
+            fontFamily: "Sora, Poppins, system-ui, sans-serif",
+            fontSize: 32,
+            fontWeight: 900,
+            color: NAVY,
+            lineHeight: 1.05,
+            letterSpacing: "-0.02em",
+            marginBottom: 10,
           }}
         >
-          Every Driver PRO
+          Your PRO Driver Hub
         </div>
         <div
           style={{
-            fontSize: 30,
-            fontWeight: 900,
-            color: NAVY,
-            lineHeight: 1.1,
-            marginTop: 10,
-            marginBottom: 8,
+            fontSize: 15,
+            fontWeight: 500,
+            color: "#536579",
+            lineHeight: 1.35,
+            maxWidth: 360,
+            marginBottom: 16,
           }}
         >
-          Your professional ecosystem
+          Everything you need to save money, stay informed and get more from your professional driving career.
         </div>
+        <div
+          style={{
+            width: 32,
+            height: 4,
+            borderRadius: 2,
+            background: PRO_BLUE,
+            marginBottom: 20,
+          }}
+        />
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {[perkCountLabel, "PRO Shop", "Radio", "PRO TV", "News", "Community"].map(
-            (tag) => (
-              <span
-                key={tag}
-                style={{
-                  fontSize: 11,
-                  color: "#536579",
-                  background: "#F4F6F8",
-                  borderRadius: 4,
-                  padding: "3px 8px",
-                }}
-              >
-                {tag}
-              </span>
-            ),
+          {["PRO Perks", "PRO Shop", "Radio", "PRO TV", "News", "Community"].map(
+            (tag, idx) => {
+              const selected = idx === 0;
+              return (
+                <span
+                  key={tag}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: selected ? "#fff" : "#536579",
+                    background: selected ? NAVY : "#F4F6F8",
+                    borderRadius: 999,
+                    padding: "5px 10px",
+                    boxShadow: selected
+                      ? "0 2px 6px rgba(11,35,65,0.18)"
+                      : undefined,
+                  }}
+                >
+                  {selected && <IconStar size={11} color="#fff" fill="#fff" />}
+                  {tag}
+                </span>
+              );
+            },
           )}
         </div>
       </div>
