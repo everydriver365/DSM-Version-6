@@ -1899,6 +1899,8 @@ function HomePage() {
   const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
+  const [eolPickerOpen, setEolPickerOpen] = useState(false);
+  const [eolCandidates, setEolCandidates] = useState<LessonRow[]>([]);
 
   // Quick-add bottom sheets (every FAB action opens a sheet except Add course)
   const [unavailabilitySheetOpen, setUnavailabilitySheetOpen] = useState(false);
