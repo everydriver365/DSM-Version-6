@@ -1,6 +1,6 @@
 import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
-import { IconCamera, IconPhoto, IconUpload } from "@tabler/icons-react";
+import { IconCamera, IconPhoto } from "@tabler/icons-react";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
 import { toast } from "@/lib/toast";
