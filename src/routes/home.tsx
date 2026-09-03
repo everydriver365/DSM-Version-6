@@ -6440,7 +6440,7 @@ function HomePage() {
       {/* ============ PRO PERKS BANNER ============ */}
       <div style={SECTION_WRAPPER_STYLE}>
         <div
-          onClick={() => navigate({ to: '/perks' as never })}
+          onClick={() => navigate({ to: '/pro-teaser' as never })}
           style={{
             background: '#FFFFFF',
             border: '1px solid rgba(24, 169, 153, 0.35)',
