@@ -9938,6 +9938,7 @@ function HomePage() {
               { key: "test", label: "Add test", bg: "#F59E0B", Icon: IconCalendarEvent },
               { key: "pupil", label: "Add pupil", bg: "#18A999", Icon: IconUserPlus },
               { key: "payment", label: "Take payment", bg: "#16A34A", Icon: IconCreditCard },
+              { key: "expense", label: "Add expense", bg: "#0B1F3A", Icon: IconReceipt },
               { key: "unavailability", label: "Add unavailability", bg: "#E53935", Icon: IconCalendarOff },
               { key: "note", label: "Add note", bg: "#536579", Icon: IconNote },
               { key: "eol", label: "End of lesson", bg: "#0B2341", Icon: IconFlagCheck },
