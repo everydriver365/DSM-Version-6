@@ -98,9 +98,9 @@ import { IconFlagCheck, IconNote } from "@tabler/icons-react";
 
 type QuickAddKey =
   | "lesson" | "test" | "pupil" | "payment" | "expense" | "unavailability" | "availability" | "event"
-  | "course" | "note" | "eol" | "enquiry" | "call" | "proteach";
+  | "course" | "note" | "eol" | "enquiry" | "call" | "proteach" | "report";
 
-const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" }[] = [
+const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string; group: "Teaching" | "People" | "Business" | "Community" }[] = [
   { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6", group: "Teaching" },
   { key: "test", label: "Add test", icon: IconCalendarEvent, bg: "#F59E0B", group: "Teaching" },
   { key: "eol", label: "End of lesson", icon: IconFlagCheck, bg: "#2C97DE", group: "Teaching" },
@@ -114,9 +114,11 @@ const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus;
   { key: "note", label: "Add note", icon: IconNote, bg: "#536579", group: "People" },
   { key: "payment", label: "Take payment", icon: IconCreditCard, bg: "#16A34A", group: "Business" },
   { key: "course", label: "Add course", icon: IconSchool, bg: "#0B2341", group: "Business" },
+  { key: "report", label: "Report alert", icon: IconAlertTriangle, bg: "#E53935", group: "Community" },
 ];
 
-const QUICK_ADD_GROUPS = ["Teaching", "People", "Business"] as const;
+const QUICK_ADD_GROUPS = ["Teaching", "People", "Business", "Community"] as const;
+
 
 
 
@@ -1969,7 +1971,14 @@ function HomePage() {
       case "call":
         setLogCallSheetOpen(true);
         break;
+      case "report":
+        navigate({ to: "/community" as never, search: { tab: "alerts" } as never });
+        window.setTimeout(() => {
+          window.dispatchEvent(new Event("dsm-open-report-sheet"));
+        }, 400);
+        break;
     }
+
   };
 
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
@@ -6230,8 +6239,37 @@ function HomePage() {
                     }}>
                       Driving Test : {[upcomingTestCentre, upcomingTestTime ? `Test at ${upcomingTestTime}` : null].filter(Boolean).join(' · ')}
                     </span>
+                    {upcomingTestCentre && (
+                      <button
+                        type="button"
+                        aria-label={`Navigate to ${upcomingTestCentre}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(
+                            `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${upcomingTestCentre} Driving Test Centre`)}&travelmode=driving`,
+                            '_blank',
+                          );
+                        }}
+                        style={{
+                          flexShrink: 0,
+                          width: 24,
+                          height: 24,
+                          borderRadius: 8,
+                          border: 'none',
+                          background: '#FEECEC',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          padding: 0,
+                        }}
+                      >
+                        <IconNavigation stroke={1.8} size={14} color="#CC2229" />
+                      </button>
+                    )}
                   </div>
                 )}
+
               </div>
 
               {/* Reasons row */}
