@@ -293,7 +293,7 @@ export function ProTeaserPage({
             aria-hidden
             style={{
               position: "absolute",
-              top: "calc(env(safe-area-inset-top, 0px) + 60px)",
+              top: "calc(env(safe-area-inset-top, 0px) + 70px)",
               right: 12,
               width: 118,
               textAlign: "center",
