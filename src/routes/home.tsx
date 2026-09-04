@@ -6338,15 +6338,6 @@ function HomePage() {
                     View 
                   </button>
 
-                  {driveData?.durationMinutes != null && (
-                    <>
-                      <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
-                      <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#1877D6' }}>
-                        {driveData.durationMinutes} min
-                      </span>
-                    </>
-                  )}
-
                   {etaLabel && (
                     <>
                       <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
