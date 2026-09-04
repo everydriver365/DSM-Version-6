@@ -876,14 +876,14 @@ export function ProTeaserPage({
                     border: "none",
                     cursor: "pointer",
                     fontFamily: "inherit",
-                    borderRadius: 12,
+                    borderRadius: 10,
                     background: "#E7F1FD",
                     color: BLUE,
-                    fontSize: 13,
+                    fontSize: 10,
                     fontWeight: 900,
-                    padding: "10px 12px",
+                    padding: "7px 9px",
                     width: "100%",
-                    marginTop: 12,
+                    marginTop: 9,
                     lineHeight: 1.2,
                   }}
                 >
