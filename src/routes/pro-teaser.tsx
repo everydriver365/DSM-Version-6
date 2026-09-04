@@ -880,7 +880,7 @@ export function ProTeaserPage({
                   gap: 6,
                 }}
               >
-                {["Basic profile", "List your lessons", "Receive enquiries", "Access to some content"].map((f) => (
+                {["5 page mini website", "List your lessons", "Receive enquiries", "Access to some content"].map((f) => (
                   <Tick key={f} color={BLUE}>
                     {f}
                   </Tick>
