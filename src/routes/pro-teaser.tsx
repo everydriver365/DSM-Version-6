@@ -306,11 +306,38 @@ export function ProTeaserPage({
           />
 
           <div style={{ position: "relative", maxWidth: 300 }}>
-            <img
-              src={diaLogoAsset.url}
-              alt="DIA"
-              style={{ height: 78, width: "auto", display: "block", marginBottom: 12 }}
-            />
+            <div
+              aria-label="DIA"
+              role="img"
+              style={{
+                width: 96,
+                height: 112,
+                marginBottom: 12,
+                display: "grid",
+                placeItems: "center",
+                background: `linear-gradient(160deg, #2C93F0, ${BLUE} 55%, #0F5FB0)`,
+                clipPath:
+                  "path('M48 0 L96 18 L96 62 C96 92 74 106 48 112 C22 106 0 92 0 62 L0 18 Z')",
+                boxShadow: "0 14px 26px rgba(24,119,214,0.28)",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: SORA,
+                  fontSize: 28,
+                  fontWeight: 900,
+                  color: "#fff",
+                  letterSpacing: "0.5px",
+                  border: "3px solid rgba(255,255,255,0.9)",
+                  borderRadius: 8,
+                  padding: "2px 8px",
+                  lineHeight: 1.1,
+                }}
+              >
+                DIA
+              </span>
+            </div>
+
             <span
               style={{
                 display: "inline-block",
