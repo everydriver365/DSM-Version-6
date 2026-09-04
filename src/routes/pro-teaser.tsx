@@ -317,7 +317,7 @@ export function ProTeaserPage({
             style={{
               margin: 0,
               marginTop: 20,
-              maxWidth: 250,
+              maxWidth: 260,
               fontFamily: SORA,
               fontSize: 32,
               fontWeight: 900,
@@ -326,11 +326,10 @@ export function ProTeaserPage({
               letterSpacing: "-0.5px",
             }}
           >
-            EVERYDRIVER{" "}
             <img
-              src={proLogoAsset.url}
-              alt="PRO"
-              style={{ height: 32, width: "auto", display: "inline-block", verticalAlign: "middle" }}
+              src={edpProLogoAsset.url}
+              alt="EveryDriver PRO"
+              style={{ width: "100%", maxWidth: 260, height: "auto", display: "block" }}
             />
           </h2>
           <p
