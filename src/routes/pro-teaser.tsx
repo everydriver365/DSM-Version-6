@@ -757,6 +757,7 @@ export function ProTeaserPage({
               display: "flex",
               gap: 12,
               overflowX: "auto",
+              alignItems: "stretch",
               padding: "10px 16px 4px",
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
