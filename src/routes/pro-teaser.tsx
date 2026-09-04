@@ -1137,6 +1137,7 @@ export function ProTeaserPage({
 
         {/* ============ 7 — TRUST + ADD-ONS ============ */}
         <section style={{ padding: "0 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["addons"]} onOpen={setOpenVideo} />
           <div
             style={{
               display: "grid",
