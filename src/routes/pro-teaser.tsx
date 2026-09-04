@@ -139,8 +139,8 @@ const WEBSITE_FREE = [
   "Showcase your lessons and areas covered",
 ];
 
-const BRANDS: { name: string; colour: string; italic?: boolean; offer: string }[] = [
-  { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards" },
+const BRANDS: { name: string; colour: string; italic?: boolean; offer: string; image?: string }[] = [
+  { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards", image: tescoPerkAsset.url },
   { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink" },
   { name: "Sainsbury's", colour: "#F06C00", offer: "Up to 10% off Gift Cards" },
   { name: "ASDA", colour: "#00A94F", offer: "Up to 10% off Gift Cards" },
