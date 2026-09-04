@@ -304,6 +304,7 @@ function GlobalMenu() {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState<{ name: string; email: string; profile_image_url: string | null; website_tier: string | null } | null>(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
