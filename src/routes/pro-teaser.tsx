@@ -505,7 +505,7 @@ export function ProTeaserPage({
                     padding: "5px 12px",
                   }}
                 >
-                  INCLUDED
+                  INCLUDED in PRO
                 </span>
               </div>
 
