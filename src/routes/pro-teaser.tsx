@@ -837,8 +837,54 @@ export function ProTeaserPage({
           />
         </section>
 
-        {/* ============ 7 — ADD-ONS ============ */}
+        {/* ============ 7 — TRUST + ADD-ONS ============ */}
         <section style={{ padding: "0 16px 24px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, minmax(0,1fr))",
+              gap: 10,
+              marginBottom: 16,
+            }}
+          >
+            {[
+              {
+                title: "SAVE MORE",
+                body: "Exclusive discounts that put money back in your pocket.",
+                colour: ORANGE,
+                icon: <IconPigMoney size={22} color={ORANGE} />,
+              },
+              {
+                title: "PROTECTED",
+                body: "Professional membership plus optional health cover in PRO+.",
+                colour: BLUE,
+                icon: <IconShieldCheck size={22} color={BLUE} />,
+              },
+              {
+                title: "STAY CONNECTED",
+                body: "Trusted news, advice and entertainment for driving instructors.",
+                colour: GREEN,
+                icon: <IconUsers size={22} color={GREEN} />,
+              },
+            ].map((t) => (
+              <div key={t.title} style={{ ...CARD, padding: 10 }}>
+                <div style={{ marginBottom: 6 }}>{t.icon}</div>
+                <div
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 900,
+                    letterSpacing: ".5px",
+                    color: t.colour,
+                    marginBottom: 3,
+                  }}
+                >
+                  {t.title}
+                </div>
+                <div style={{ fontSize: 10.5, color: GREY, lineHeight: 1.3 }}>{t.body}</div>
+              </div>
+            ))}
+          </div>
+
           <div
             style={{
               fontSize: 11.5,
@@ -875,6 +921,7 @@ export function ProTeaserPage({
             ))}
           </div>
         </section>
+
 
         {/* ============ 8 — FINAL CTA ============ */}
         <section style={{ padding: "0 16px 32px" }}>
