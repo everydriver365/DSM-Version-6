@@ -754,50 +754,43 @@ export function ProTeaserPage({
 
           <div
             style={{
-              display: "flex",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0,1fr))",
               gap: 12,
-              overflowX: "auto",
-              alignItems: "stretch",
               padding: "10px 16px 4px",
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch",
             }}
           >
-            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
-              <PlanCard
-                accent={ORANGE}
-                badge="MOST POPULAR"
-                name="PRO"
-                price="£24.99"
-                period="/month"
-                note="12-month commitment"
-                saving={null}
-                wasNow={null}
-                features={PRO_FEATURES}
-                cta="JOIN PRO"
-                footnote="£24.99 per month for 12 months"
-                onCta={() => go("/subscription")}
-              />
-            </div>
+            <PlanCard
+              accent={ORANGE}
+              badge="MOST POPULAR"
+              name="PRO"
+              price="£24.99"
+              period="/month"
+              note="12-month commitment"
+              saving={null}
+              wasNow={null}
+              features={PRO_FEATURES}
+              cta="JOIN PRO"
+              footnote="£24.99 per month for 12 months"
+              onCta={() => go("/subscription")}
+            />
 
-            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
-              <PlanCard
-                accent="#E8A020"
-                badge="BEST VALUE"
-                name="PRO ANNUAL"
-                price="£199.99"
-                period="/year"
-                note="Everything in PRO, paid yearly"
-                saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
-                wasNow={{ was: "£299.88", now: "£199.99 per year" }}
-                features={[]}
-                cta="JOIN PRO ANNUAL"
-                footnote="£199.99 per year"
-                onCta={() => go("/subscription")}
-              />
-            </div>
+            <PlanCard
+              accent="#E8A020"
+              badge="BEST VALUE"
+              name="PRO ANNUAL"
+              price="£199.99"
+              period="/year"
+              note="Everything in PRO, paid yearly"
+              saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
+              wasNow={{ was: "£299.88", now: "£199.99 per year" }}
+              features={[]}
+              cta="JOIN PRO ANNUAL"
+              footnote="£199.99 per year"
+              onCta={() => go("/subscription")}
+            />
 
-            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+            <div style={{ gridColumn: "span 2 / span 2" }}>
               <PlanCard
                 accent="#7C3AED"
                 badge="BEST VALUE"
