@@ -942,7 +942,7 @@ export function ProTeaserPage({
                       display: "inline-flex",
                       background: "#F1F4F8",
                       borderRadius: 999,
-                      padding: 3,
+                      padding: 2,
                     }}
                   >
                     {(["monthly", "annual"] as const).map((b) => (
@@ -955,8 +955,8 @@ export function ProTeaserPage({
                           cursor: "pointer",
                           fontFamily: "inherit",
                           borderRadius: 999,
-                          padding: "6px 14px",
-                          fontSize: 12.5,
+                          padding: "4px 10px",
+                          fontSize: 10.5,
                           fontWeight: 800,
                           background: billing === b ? BLUE : "transparent",
                           color: billing === b ? "#fff" : NAVY,
