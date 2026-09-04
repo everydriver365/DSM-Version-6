@@ -329,7 +329,7 @@ export function ProTeaserPage({
             <img
               src={edpProLogoAsset.url}
               alt="EveryDriver PRO"
-              style={{ width: "100%", maxWidth: 260, height: "auto", display: "block" }}
+              style={{ width: "100%", maxWidth: 195, height: "auto", display: "block" }}
             />
           </h2>
           <p
