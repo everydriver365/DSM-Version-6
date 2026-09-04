@@ -702,29 +702,60 @@ export function ProTeaserPage({
                   <div
                     key={b.name}
                     style={{
-                      flex: "0 0 84px",
+                      flex: b.image ? "0 0 110px" : "0 0 84px",
                       border: `1px solid ${LINE}`,
                       borderRadius: 10,
-                      padding: "10px 6px",
+                      padding: b.image ? 0 : "10px 6px",
                       textAlign: "center",
-                      background: "#FBFCFE",
+                      background: b.image ? "#fff" : "#FBFCFE",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
-                    <div
-                      style={{
-                        fontFamily: SORA,
-                        fontSize: 12,
-                        fontWeight: 900,
-                        color: b.colour,
-                        fontStyle: b.italic ? "italic" : "normal",
-                        lineHeight: 1.1,
-                      }}
-                    >
-                      {b.name}
-                    </div>
-                    <div style={{ fontSize: 9, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
-                      {b.offer}
-                    </div>
+                    {b.image ? (
+                      <>
+                        <img
+                          src={b.image}
+                          alt={`${b.name} offer`}
+                          style={{ width: "100%", height: 68, objectFit: "cover", display: "block" }}
+                        />
+                        <div style={{ padding: "6px 4px 8px" }}>
+                          <div
+                            style={{
+                              fontFamily: SORA,
+                              fontSize: 10,
+                              fontWeight: 900,
+                              color: b.colour,
+                              lineHeight: 1.1,
+                            }}
+                          >
+                            {b.name}
+                          </div>
+                          <div style={{ fontSize: 8.5, color: GREY, marginTop: 3, lineHeight: 1.25 }}>
+                            {b.offer}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          style={{
+                            fontFamily: SORA,
+                            fontSize: 12,
+                            fontWeight: 900,
+                            color: b.colour,
+                            fontStyle: b.italic ? "italic" : "normal",
+                            lineHeight: 1.1,
+                          }}
+                        >
+                          {b.name}
+                        </div>
+                        <div style={{ fontSize: 9, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
+                          {b.offer}
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
                 <div
