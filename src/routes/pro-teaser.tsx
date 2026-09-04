@@ -26,6 +26,7 @@ import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo.png.asset.json";
+import costaLogoAsset from "@/assets/costa-logo.jpg.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
@@ -138,9 +139,9 @@ const WEBSITE_FREE = [
   "Showcase your lessons and areas covered",
 ];
 
-const BRANDS: { name: string; colour: string; italic?: boolean; offer: string }[] = [
+const BRANDS: { name: string; colour: string; italic?: boolean; offer: string; logo?: string }[] = [
   { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards" },
-  { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink" },
+  { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink", logo: costaLogoAsset.url },
   { name: "Sainsbury's", colour: "#F06C00", offer: "Up to 10% off Gift Cards" },
   { name: "ASDA", colour: "#00A94F", offer: "Up to 10% off Gift Cards" },
   { name: "JUST EAT", colour: "#FF8000", italic: true, offer: "Up to 20% off" },
@@ -709,6 +710,19 @@ export function ProTeaserPage({
                       background: "#FBFCFE",
                     }}
                   >
+                    {b.logo && (
+                      <img
+                        src={b.logo}
+                        alt={`${b.name} logo`}
+                        style={{
+                          width: 34,
+                          height: 34,
+                          objectFit: "contain",
+                          margin: "0 auto 5px",
+                          display: "block",
+                        }}
+                      />
+                    )}
                     <div
                       style={{
                         fontFamily: SORA,
