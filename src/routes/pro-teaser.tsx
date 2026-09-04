@@ -1376,23 +1376,6 @@ function Wordmark({ name, accent, size = 34 }: { name: string; accent: string; s
         }}
       >
         <span>{name}</span>
-        <span
-          aria-hidden
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: Math.round(size * 0.72),
-            height: Math.round(size * 0.72),
-            borderRadius: 999,
-            background: accent,
-            color: "#fff",
-            fontSize: Math.round(size * 0.44),
-            lineHeight: 1,
-          }}
-        >
-          ★
-        </span>
       </div>
     </div>
   );
