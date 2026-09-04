@@ -817,9 +817,13 @@ export function ProTeaserPage({
 
         {/* ============ 3 — PRO PERKS ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
-          <ExplainerButton video={sectionVideos["perks"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
-            <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
+              </div>
+              <ExplainerButton video={sectionVideos["perks"]} onOpen={setOpenVideo} />
+            </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
               <button
