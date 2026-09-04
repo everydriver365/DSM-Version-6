@@ -25,6 +25,7 @@ import instructorHeroAsset from "@/assets/dia-instructor.png.asset.json";
 import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
+import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo-latest.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
@@ -1033,7 +1034,11 @@ export function ProTeaserPage({
                   justifyContent: "center",
                 }}
               >
-                <IconShoppingBag size={24} color={ORANGE} />
+                <img
+                  src={proShopLogoAsset.url}
+                  alt="PRO"
+                  style={{ width: 28, height: 28, objectFit: "contain" }}
+                />
               </div>
               <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
                 <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY, letterSpacing: ".2px" }}>
