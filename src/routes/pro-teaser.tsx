@@ -493,20 +493,6 @@ export function ProTeaserPage({
                   alt="DIA"
                   style={{ width: 54, height: 54, objectFit: "contain", borderRadius: 8 }}
                 />
-                <span
-                  style={{
-                    display: "inline-block",
-                    background: BLUE,
-                    color: "#fff",
-                    fontSize: 10,
-                    fontWeight: 800,
-                    letterSpacing: ".8px",
-                    borderRadius: 999,
-                    padding: "5px 12px",
-                  }}
-                >
-                  INCLUDED in PRO
-                </span>
               </div>
 
               <h1
