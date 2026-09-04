@@ -90,21 +90,33 @@ function SubscribePage() {
         navigate({ to: "/login" as never });
         return;
       }
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/create-gc-mandate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-          apikey: SUPABASE_ANON_KEY,
-        },
-        body: JSON.stringify({
-          instructor_id: session.user.id,
-          tier: selectedTier,
-          interval: selectedInterval,
-          return_url: `${window.location.origin}/subscribe/complete`,
-        }),
-      });
+      console.log('[subscribe] calling:', `${SUPABASE_URL}/functions/v1/create-gc-mandate`);
+      console.log('[subscribe] body:', JSON.stringify({
+        instructor_id: session.user.id,
+        tier: selectedTier,
+        interval: selectedInterval,
+        return_url: `${window.location.origin}/subscribe/complete`,
+      }));
+      const res = await fetch(
+        `${SUPABASE_URL}/functions/v1/create-gc-mandate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+            apikey: SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({
+            instructor_id: session.user.id,
+            tier: selectedTier,
+            interval: selectedInterval,
+            return_url: `${window.location.origin}/subscribe/complete`,
+          }),
+        }
+      );
+      console.log('[subscribe] response status:', res.status);
       const data = await res.json();
+      console.log('[subscribe] data:', JSON.stringify(data));
       if (data.redirect_url) {
         sessionStorage.setItem("gc_flow_id", data.flow_id);
         sessionStorage.setItem("gc_tier", selectedTier);
