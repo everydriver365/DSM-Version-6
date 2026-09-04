@@ -859,7 +859,7 @@ export function ProTeaserPage({
           <div style={{ display: "grid", gap: 18, padding: "18px 16px 4px" }}>
             {/* FREE */}
             <div style={{ ...CARD, padding: 16, display: "flex", gap: 14, alignItems: "center" }}>
-              <div style={{ flex: "1 1 0", minWidth: 0 }}>
+              <div style={{ flex: "0 0 116px", minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
                   EVERYDRIVER
                 </div>
@@ -880,6 +880,7 @@ export function ProTeaserPage({
                   gap: 6,
                 }}
               >
+
                 {["5 page mini website", "List your lessons", "Receive enquiries", "Access to some content"].map((f) => (
                   <Tick key={f} color={BLUE}>
                     {f}
