@@ -783,61 +783,6 @@ export function ProTeaserPage({
               </div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 18,
-                overflowX: "auto",
-                padding: "4px 0",
-                marginTop: 12,
-                WebkitOverflowScrolling: "touch",
-              }}
-            >
-              {BRANDS.map((b) =>
-                b.image ? (
-                  <img
-                    key={b.name}
-                    src={b.image}
-                    alt={b.name}
-                    style={{ flex: "0 0 auto", height: 28, width: "auto", borderRadius: 4 }}
-                  />
-                ) : (
-                  <div
-                    key={b.name}
-                    style={{
-                      flex: "0 0 auto",
-                      fontFamily: SORA,
-                      fontSize: 15,
-                      fontWeight: 900,
-                      color: b.colour,
-                      fontStyle: b.italic ? "italic" : "normal",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {b.name}
-                  </div>
-                ),
-              )}
-              <div
-                style={{
-                  flex: "0 0 auto",
-                  border: `1px solid ${LINE}`,
-                  borderRadius: 10,
-                  padding: "6px 12px",
-                  textAlign: "center",
-                  background: "#fff",
-                }}
-              >
-                <div style={{ fontFamily: SORA, fontSize: 14, fontWeight: 900, color: NAVY }}>
-                  +9000
-                </div>
-                <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
-                  MORE OFFERS
-                </div>
-              </div>
-            </div>
-
           </div>
         </section>
 

@@ -82,7 +82,14 @@ export function QuickPupilSheet({
           fillFromContact(result.contact);
           return;
         }
+        // Dismissed without selecting a contact — keep the form open.
+        return;
       } catch (pickErr) {
+        const errStr = String(pickErr);
+        if (errStr.toLowerCase().includes("cancel")) {
+          console.log("[contacts] pickContact cancelled by user");
+          return;
+        }
         console.log("[contacts] pickContact failed:", pickErr);
       }
 
