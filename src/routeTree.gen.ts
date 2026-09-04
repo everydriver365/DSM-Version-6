@@ -116,6 +116,7 @@ import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SubscribeIndexRouteImport } from './routes/subscribe.index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
@@ -124,6 +125,7 @@ import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
+import { Route as SubscribeCompleteRouteImport } from './routes/subscribe.complete'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
 import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as QuoteTokenRouteImport } from './routes/quote.$token'
@@ -722,6 +724,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscribeIndexRoute = SubscribeIndexRouteImport.update({
+  id: '/subscribe/',
+  path: '/subscribe/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuotesIndexRoute = QuotesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -760,6 +767,11 @@ const CoursesIndexRoute = CoursesIndexRouteImport.update({
 const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
   id: '/test-day/$pupilId',
   path: '/test-day/$pupilId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeCompleteRoute = SubscribeCompleteRouteImport.update({
+  id: '/subscribe/complete',
+  path: '/subscribe/complete',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReflectiveLogPupilIdRoute = ReflectiveLogPupilIdRouteImport.update({
@@ -1231,6 +1243,7 @@ export interface FileRoutesByFullPath {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
+  '/subscribe/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
@@ -1239,6 +1252,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/subscribe/': typeof SubscribeIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1407,6 +1421,7 @@ export interface FileRoutesByTo {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
+  '/subscribe/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses': typeof CoursesIndexRoute
   '/dsm-live': typeof DsmLiveIndexRoute
@@ -1415,6 +1430,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/subscribe': typeof SubscribeIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1587,6 +1603,7 @@ export interface FileRoutesById {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
+  '/subscribe/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
@@ -1595,6 +1612,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/subscribe/': typeof SubscribeIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1768,6 +1786,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
+    | '/subscribe/complete'
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
@@ -1776,6 +1795,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/subscribe/'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -1944,6 +1964,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
+    | '/subscribe/complete'
     | '/test-day/$pupilId'
     | '/courses'
     | '/dsm-live'
@@ -1952,6 +1973,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/subscribe'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -2123,6 +2145,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
+    | '/subscribe/complete'
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
@@ -2131,6 +2154,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/subscribe/'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -2286,11 +2310,13 @@ export interface RootRouteChildren {
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
   ReflectiveLogPupilIdRoute: typeof ReflectiveLogPupilIdRoute
+  SubscribeCompleteRoute: typeof SubscribeCompleteRoute
   TestDayPupilIdRoute: typeof TestDayPupilIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  SubscribeIndexRoute: typeof SubscribeIndexRoute
   ApiPublicNewsIngestRoute: typeof ApiPublicNewsIngestRoute
   ApiPublicSendLessonRemindersRoute: typeof ApiPublicSendLessonRemindersRoute
   ApiPublicSquareWebhookRoute: typeof ApiPublicSquareWebhookRoute
@@ -3062,6 +3088,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subscribe/': {
+      id: '/subscribe/'
+      path: '/subscribe'
+      fullPath: '/subscribe/'
+      preLoaderRoute: typeof SubscribeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quotes/': {
       id: '/quotes/'
       path: '/'
@@ -3116,6 +3149,13 @@ declare module '@tanstack/react-router' {
       path: '/test-day/$pupilId'
       fullPath: '/test-day/$pupilId'
       preLoaderRoute: typeof TestDayPupilIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/complete': {
+      id: '/subscribe/complete'
+      path: '/subscribe/complete'
+      fullPath: '/subscribe/complete'
+      preLoaderRoute: typeof SubscribeCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reflective-log/$pupilId': {
@@ -3768,11 +3808,13 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
   ReflectiveLogPupilIdRoute: ReflectiveLogPupilIdRoute,
+  SubscribeCompleteRoute: SubscribeCompleteRoute,
   TestDayPupilIdRoute: TestDayPupilIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  SubscribeIndexRoute: SubscribeIndexRoute,
   ApiPublicNewsIngestRoute: ApiPublicNewsIngestRoute,
   ApiPublicSendLessonRemindersRoute: ApiPublicSendLessonRemindersRoute,
   ApiPublicSquareWebhookRoute: ApiPublicSquareWebhookRoute,
