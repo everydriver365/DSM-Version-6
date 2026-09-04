@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import {
   IconCheck,
   IconChevronRight,
+  IconDeviceLaptop,
   IconDeviceTv,
+  IconPlayerPlayFilled,
+
   IconGift,
   IconHeart,
   IconMicrophone,
@@ -271,14 +274,169 @@ export function ProTeaserPage({
       }}
     >
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
+        {/* ============ 0 — PRO INTRO ============ */}
+        <section
+          style={{
+            position: "relative",
+            padding: "calc(env(safe-area-inset-top, 0px) + 56px) 16px 20px",
+            background: "linear-gradient(180deg, #F4F8FD 0%, #FFFFFF 100%)",
+          }}
+        >
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: "calc(env(safe-area-inset-top, 0px) + 60px)",
+              right: 12,
+              width: 118,
+              textAlign: "center",
+              fontFamily: "'Segoe Script', 'Brush Script MT', cursive",
+              fontSize: 21,
+              fontWeight: 700,
+              lineHeight: 1.15,
+              color: BLUE,
+              transform: "rotate(-6deg)",
+            }}
+          >
+            Instructors Stronger Together
+            <div
+              style={{
+                marginTop: 4,
+                height: 6,
+                borderBottom: `3px solid ${BLUE}`,
+                opacity: 0.35,
+                borderRadius: 999,
+              }}
+            />
+          </div>
+
+          <h1
+            style={{
+              margin: 0,
+              maxWidth: 250,
+              fontFamily: SORA,
+              fontSize: 32,
+              fontWeight: 900,
+              lineHeight: 1.05,
+              color: NAVY,
+              letterSpacing: "-0.5px",
+            }}
+          >
+            EVERYDRIVER <span style={{ color: ORANGE }}>PRO</span>
+          </h1>
+          <p
+            style={{
+              margin: "6px 0 0",
+              maxWidth: 260,
+              fontFamily: SORA,
+              fontSize: 18,
+              fontWeight: 700,
+              color: NAVY,
+              lineHeight: 1.25,
+            }}
+          >
+            More for your business. More for you.
+          </p>
+          <p
+            style={{
+              margin: "10px 0 0",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: GREY,
+              maxWidth: 330,
+            }}
+          >
+            EveryDriver PRO brings your professional membership, website,
+            exclusive perks, savings and instructor content together in one
+            place.
+          </p>
+
+          <div
+            style={{
+              margin: "18px 0 10px",
+              fontFamily: SORA,
+              fontSize: 13,
+              fontWeight: 900,
+              letterSpacing: ".8px",
+              color: GREY,
+            }}
+          >
+            PRO INCLUDES
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, minmax(0,1fr))",
+              gap: 8,
+            }}
+          >
+            {[
+              {
+                icon: <IconShieldCheck size={26} stroke={2} color={BLUE} />,
+                title: "DIA",
+                sub: "Professional membership",
+                bg: "#EAF3FD",
+              },
+              {
+                icon: <IconDeviceLaptop size={26} stroke={2} color="#E8365D" />,
+                title: "WEBSITE",
+                sub: "Build your online presence",
+                bg: "#FDEEF1",
+              },
+              {
+                icon: <IconGift size={26} stroke={2} color={GREEN} />,
+                title: "PERKS",
+                sub: "Everyday savings & benefits",
+                bg: "#E9F7EF",
+              },
+              {
+                icon: <IconPlayerPlayFilled size={22} color="#7C3AED" />,
+                title: "MEDIA",
+                sub: "Radio, TV, podcasts & news",
+                bg: "#F1ECFD",
+              },
+            ].map((t) => (
+              <div
+                key={t.title}
+                style={{
+                  background: t.bg,
+                  borderRadius: 14,
+                  padding: "12px 6px 10px",
+                  textAlign: "center",
+                }}
+              >
+                <div style={{ display: "grid", placeItems: "center", height: 30 }}>
+                  {t.icon}
+                </div>
+                <div
+                  style={{
+                    marginTop: 6,
+                    fontFamily: SORA,
+                    fontSize: 12,
+                    fontWeight: 900,
+                    color: NAVY,
+                  }}
+                >
+                  {t.title}
+                </div>
+                <div style={{ marginTop: 2, fontSize: 10.5, lineHeight: 1.3, color: GREY }}>
+                  {t.sub}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ============ 1 — DIA MEMBERSHIP ============ */}
         <section
           style={{
             position: "relative",
-            padding: "calc(env(safe-area-inset-top, 0px) + 64px) 16px 24px",
+            padding: "8px 16px 24px",
             overflow: "hidden",
           }}
         >
+
           <img
             src={instructorHeroAsset.url}
             alt="Driving instructor in a car"
