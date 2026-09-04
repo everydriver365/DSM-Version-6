@@ -1045,7 +1045,6 @@ function PlanCard({
   accent: string;
   badge?: string;
   name: string;
-  annual: boolean;
   price: string;
   period: string;
   note: string;
