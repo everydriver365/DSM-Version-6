@@ -184,7 +184,7 @@ function ExplainerButton({
       >
         <IconPlayerPlayFilled size={11} color="#fff" />
       </span>
-      {video.title || "Watch explainer"}
+      {"Learn More"}
     </button>
   );
 }
