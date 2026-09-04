@@ -1231,7 +1231,6 @@ function PlanCard({
           fontFamily: "inherit",
           borderRadius: 12,
           padding: "13px 0",
-          marginTop: 14,
           background: accent,
           color: "#fff",
           fontSize: 14,
