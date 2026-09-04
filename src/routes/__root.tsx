@@ -572,7 +572,7 @@ function GlobalMenu() {
         </div>
 
         {/* Bottom actions */}
-        <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column", paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}>
           <button
             type="button"
             onClick={() => go("/subscription")}
@@ -656,6 +656,30 @@ function GlobalMenu() {
             </div>
             <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
           </button>
+          {(!subscriptionTier || subscriptionTier === 'free') && (
+            <button
+              type="button"
+              onClick={() => go('/subscribe')}
+              style={{
+                width: '100%',
+                background: '#2C97DE',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 12,
+                padding: '12px 16px',
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: 'pointer',
+                marginTop: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+              }}
+            >
+              ⭐ Upgrade to PRO
+            </button>
+          )}
           <button
             type="button"
             onClick={() => go("/settings")}
@@ -720,41 +744,6 @@ function GlobalMenu() {
             </span>
             <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Help & support</span>
           </button>
-          {(!subscriptionTier || subscriptionTier === "free") && (
-            <button
-              type="button"
-              onClick={() => go("/subscribe")}
-              style={{
-                width: "100%",
-                textAlign: "left",
-                padding: "14px 16px",
-                background: "none",
-                border: "none",
-                borderTop: "1px solid #E4E8EF",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                cursor: "pointer",
-              }}
-            >
-              <span
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 8,
-                  background: "#FFF4E5",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <IconStar size={18} stroke={1.8} color="#F59E0B" />
-              </span>
-              <span style={{ flex: 1, fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Upgrade to PRO</span>
-              <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
-            </button>
-          )}
           <button
             type="button"
             onClick={signOut}
