@@ -748,24 +748,6 @@ export function ProTeaserPage({
               </div>
             </div>
 
-            {/* Perkbox discount strip */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16, marginBottom: 8 }}>
-              <img
-                src={perkboxLogoAsset.url}
-                alt="Perkbox"
-                style={{ height: 18, width: "auto", display: "block" }}
-              />
-              <div
-                style={{
-                  fontSize: 12,
-                  fontWeight: 800,
-                  color: NAVY,
-                  letterSpacing: ".5px",
-                }}
-              >
-                THOUSANDS OF DISCOUNTS WITH PERKBOX - Exclusive to EveryDriver Pro
-              </div>
-            </div>
             <div
               style={{
                 display: "flex",
@@ -773,6 +755,7 @@ export function ProTeaserPage({
                 gap: 18,
                 overflowX: "auto",
                 padding: "4px 0",
+                marginTop: 12,
                 WebkitOverflowScrolling: "touch",
               }}
             >
