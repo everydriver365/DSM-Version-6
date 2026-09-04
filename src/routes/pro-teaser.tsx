@@ -778,7 +778,7 @@ export function ProTeaserPage({
             <SectionTitle
               strong="PRO"
               rest="MEDIA HUB"
-              subtitle="Industry news, advice and entertainment — made for driving instructors."
+              subtitle="Industry news, advice and entertainment — made for driving instructors and by driving instructors. "
             />
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
