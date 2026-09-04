@@ -153,6 +153,7 @@ import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as ApiSquareCreateSubscriptionRouteImport } from './routes/api/square-create-subscription'
 import { Route as ApiEdAiRouteImport } from './routes/api/ed-ai'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
+import { Route as AdminProVideosRouteImport } from './routes/admin.pro-videos'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminNewsRouteImport } from './routes/admin.news'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
@@ -907,6 +908,11 @@ const AdminTermsRoute = AdminTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProVideosRoute = AdminProVideosRouteImport.update({
+  id: '/pro-videos',
+  path: '/pro-videos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPodcastsRoute = AdminPodcastsRouteImport.update({
   id: '/podcasts',
   path: '/podcasts',
@@ -1195,6 +1201,7 @@ export interface FileRoutesByFullPath {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
+  '/admin/pro-videos': typeof AdminProVideosRoute
   '/admin/terms': typeof AdminTermsRoute
   '/api/ed-ai': typeof ApiEdAiRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
@@ -1370,6 +1377,7 @@ export interface FileRoutesByTo {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
+  '/admin/pro-videos': typeof AdminProVideosRoute
   '/admin/terms': typeof AdminTermsRoute
   '/api/ed-ai': typeof ApiEdAiRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
@@ -1549,6 +1557,7 @@ export interface FileRoutesById {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
+  '/admin/pro-videos': typeof AdminProVideosRoute
   '/admin/terms': typeof AdminTermsRoute
   '/api/ed-ai': typeof ApiEdAiRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
@@ -1729,6 +1738,7 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/news'
     | '/admin/podcasts'
+    | '/admin/pro-videos'
     | '/admin/terms'
     | '/api/ed-ai'
     | '/api/square-create-subscription'
@@ -1904,6 +1914,7 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/news'
     | '/admin/podcasts'
+    | '/admin/pro-videos'
     | '/admin/terms'
     | '/api/ed-ai'
     | '/api/square-create-subscription'
@@ -2082,6 +2093,7 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/news'
     | '/admin/podcasts'
+    | '/admin/pro-videos'
     | '/admin/terms'
     | '/api/ed-ai'
     | '/api/square-create-subscription'
@@ -3309,6 +3321,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTermsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/pro-videos': {
+      id: '/admin/pro-videos'
+      path: '/pro-videos'
+      fullPath: '/admin/pro-videos'
+      preLoaderRoute: typeof AdminProVideosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/podcasts': {
       id: '/admin/podcasts'
       path: '/podcasts'
@@ -3549,6 +3568,7 @@ interface AdminRouteChildren {
   AdminListingsRoute: typeof AdminListingsRoute
   AdminNewsRoute: typeof AdminNewsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
+  AdminProVideosRoute: typeof AdminProVideosRoute
   AdminTermsRoute: typeof AdminTermsRoute
 }
 
@@ -3565,6 +3585,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminListingsRoute: AdminListingsRoute,
   AdminNewsRoute: AdminNewsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,
+  AdminProVideosRoute: AdminProVideosRoute,
   AdminTermsRoute: AdminTermsRoute,
 }
 
