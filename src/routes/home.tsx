@@ -6335,7 +6335,7 @@ function HomePage() {
                     }}
                   >
                     <IconNavigation stroke={1.5} size={15} color="#1877D6" />
-                    View route
+                    View 
                   </button>
 
                   {driveData?.durationMinutes != null && (
