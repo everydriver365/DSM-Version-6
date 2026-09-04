@@ -442,6 +442,7 @@ export function ProTeaserPage({
 
         {/* ============ 1 — DIA MEMBERSHIP ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["dia"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, position: "relative", overflow: "hidden", padding: 0 }}>
             {/* Instructor photo — upper right only */}
             <div
