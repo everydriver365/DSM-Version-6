@@ -752,64 +752,282 @@ export function ProTeaserPage({
             <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, minmax(0,1fr))",
-              gap: 12,
-              padding: "10px 16px 4px",
-            }}
-          >
-            <PlanCard
-              accent={ORANGE}
-              badge="MOST POPULAR"
-              name="PRO"
-              price="£24.99"
-              period="/month"
-              note="12-month commitment"
-              saving={null}
-              wasNow={null}
-              features={PRO_FEATURES}
-              cta="JOIN PRO"
-              footnote="£24.99 per month for 12 months"
-              onCta={() => go("/subscription")}
-            />
+          <div style={{ display: "grid", gap: 18, padding: "18px 16px 4px" }}>
+            {/* FREE */}
+            <div style={{ ...CARD, padding: 16, display: "flex", gap: 14, alignItems: "center" }}>
+              <div style={{ flex: "1 1 0", minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
+                  EVERYDRIVER
+                </div>
+                <div style={{ fontFamily: SORA, fontSize: 34, fontWeight: 900, color: BLUE, lineHeight: 1.05 }}>
+                  FREE
+                </div>
+                <div style={{ fontSize: 12.5, color: NAVY, marginTop: 4 }}>
+                  Get started with essential tools.
+                </div>
+              </div>
+              <div
+                style={{
+                  flex: "1 1 0",
+                  minWidth: 0,
+                  borderLeft: "1px solid #E3E9F2",
+                  paddingLeft: 12,
+                  display: "grid",
+                  gap: 6,
+                }}
+              >
+                {["Basic profile", "List your lessons", "Receive enquiries", "Access to some content"].map((f) => (
+                  <Tick key={f} color={BLUE}>
+                    {f}
+                  </Tick>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => go("/subscription")}
+                style={{
+                  flexShrink: 0,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  borderRadius: 12,
+                  background: "#E7F1FD",
+                  color: BLUE,
+                  fontSize: 13,
+                  fontWeight: 900,
+                  padding: "14px 12px",
+                  width: 84,
+                  lineHeight: 1.2,
+                }}
+              >
+                Get Started
+              </button>
+            </div>
 
-            <PlanCard
-              accent="#E8A020"
-              badge="BEST VALUE"
-              name="PRO ANNUAL"
-              price="£199.99"
-              period="/year"
-              note="Everything in PRO, paid yearly"
-              saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
-              wasNow={{ was: "£299.88", now: "£199.99 per year" }}
-              features={[]}
-              cta="JOIN PRO ANNUAL"
-              footnote="£199.99 per year"
-              onCta={() => go("/subscription")}
-            />
+            {/* PRO */}
+            <div style={{ ...CARD, padding: 16, borderColor: `${ORANGE}66`, position: "relative" }}>
+              <span
+                style={{
+                  position: "absolute",
+                  top: -11,
+                  left: 16,
+                  background: ORANGE,
+                  color: "#fff",
+                  fontSize: 10.5,
+                  fontWeight: 800,
+                  letterSpacing: ".6px",
+                  borderRadius: 999,
+                  padding: "4px 12px",
+                }}
+              >
+                MOST POPULAR
+              </span>
 
-            <div style={{ gridColumn: "span 2 / span 2" }}>
-              <PlanCard
-                accent="#7C3AED"
-                badge="BEST VALUE"
-                name="PRO+"
-                price="£39.99"
-                period="/month"
-                note="12-month commitment"
-                saving={null}
-                wasNow={null}
-                intro="Everything in PRO, plus:"
-                heartLine="Benenden Health"
-                features={BENENDEN_FEATURES}
-                cta="JOIN PRO+"
-                footnote="£39.99 per month for 12 months"
-                onCta={() => go("/subscription")}
-              />
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginTop: 4 }}>
+                <div style={{ flex: "1 1 0", minWidth: 0 }}>
+                  <Wordmark name="PRO" accent={ORANGE} />
+                  <div style={{ fontSize: 12.5, color: NAVY, marginTop: 6 }}>
+                    Everything you need to grow your business, all in one membership.
+                  </div>
+                </div>
+
+                <div style={{ flex: "0 0 auto", minWidth: 0 }}>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      background: "#F1F4F8",
+                      borderRadius: 999,
+                      padding: 3,
+                    }}
+                  >
+                    {(["monthly", "annual"] as const).map((b) => (
+                      <button
+                        key={b}
+                        type="button"
+                        onClick={() => setBilling(b)}
+                        style={{
+                          border: "none",
+                          cursor: "pointer",
+                          fontFamily: "inherit",
+                          borderRadius: 999,
+                          padding: "6px 14px",
+                          fontSize: 12.5,
+                          fontWeight: 800,
+                          background: billing === b ? BLUE : "transparent",
+                          color: billing === b ? "#fff" : NAVY,
+                        }}
+                      >
+                        {b === "monthly" ? "Monthly" : "Annual"}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginTop: 10 }}>
+                    <div style={{ textAlign: "right", opacity: billing === "monthly" ? 1 : 0.45 }}>
+                      <div style={{ fontFamily: SORA, fontSize: 20, fontWeight: 900, color: NAVY, lineHeight: 1 }}>
+                        £24.99
+                      </div>
+                      <div style={{ fontSize: 11.5, color: GREY }}>/month</div>
+                    </div>
+                    <div style={{ width: 1, alignSelf: "stretch", background: "#E3E9F2" }} />
+                    <div style={{ textAlign: "right", opacity: billing === "annual" ? 1 : 0.45 }}>
+                      <div style={{ fontFamily: SORA, fontSize: 20, fontWeight: 900, color: NAVY, lineHeight: 1 }}>
+                        £199.99
+                      </div>
+                      <div style={{ fontSize: 11.5, color: GREY }}>/year</div>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 10,
+                      background: "#FFF6ED",
+                      borderRadius: 12,
+                      padding: "9px 12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <IconGift size={22} color={ORANGE} />
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>Save £99.89</div>
+                      <div style={{ fontSize: 11.5, color: "#B4651F" }}>That's only £16.67/month</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  marginTop: 14,
+                  background: "#F7F9FC",
+                  borderRadius: 14,
+                  padding: 12,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, minmax(0,1fr))",
+                  gap: "8px 12px",
+                }}
+              >
+                {PRO_FEATURES.map((f) => (
+                  <Tick key={f} color={ORANGE}>
+                    {f}
+                  </Tick>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => go("/subscription")}
+                style={{
+                  marginTop: 14,
+                  width: "100%",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  borderRadius: 12,
+                  padding: "15px 0",
+                  background: ORANGE,
+                  color: "#fff",
+                  fontSize: 15,
+                  fontWeight: 900,
+                  letterSpacing: ".5px",
+                }}
+              >
+                {billing === "monthly" ? "JOIN PRO" : "JOIN PRO ANNUAL"}
+              </button>
+              <div style={{ textAlign: "center", marginTop: 8, fontSize: 11.5, color: GREY }}>
+                Switch between monthly or annual to see pricing
+              </div>
+            </div>
+
+            {/* PRO+ */}
+            <div style={{ ...CARD, padding: 16, borderColor: "#7C3AED55", position: "relative" }}>
+              <span
+                style={{
+                  position: "absolute",
+                  top: -11,
+                  left: 16,
+                  background: "#7C3AED",
+                  color: "#fff",
+                  fontSize: 10.5,
+                  fontWeight: 800,
+                  letterSpacing: ".6px",
+                  borderRadius: 999,
+                  padding: "4px 12px",
+                }}
+              >
+                PREMIUM
+              </span>
+
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginTop: 4 }}>
+                <div style={{ flex: "1 1 0", minWidth: 0 }}>
+                  <Wordmark name="PRO+" accent="#7C3AED" />
+                  <div style={{ fontSize: 13, fontWeight: 800, color: NAVY, marginTop: 10 }}>
+                    Everything in PRO, plus:
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                    <IconHeart size={20} color="#F0399B" fill="#F0399B" />
+                    <span style={{ fontSize: 13.5, fontWeight: 700, color: NAVY }}>Benenden Health</span>
+                  </div>
+                </div>
+
+                <div style={{ flex: "0 0 auto", textAlign: "right" }}>
+                  <div style={{ fontFamily: SORA, fontSize: 22, fontWeight: 900, color: NAVY, lineHeight: 1 }}>
+                    £39.99
+                  </div>
+                  <div style={{ fontSize: 11.5, color: GREY }}>/month</div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  marginTop: 12,
+                  background: "#F5F1FE",
+                  borderRadius: 14,
+                  padding: 12,
+                  display: "grid",
+                  gap: 8,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <IconHeart size={18} color="#7C3AED" />
+                  <span style={{ fontSize: 14, fontWeight: 800, color: "#7C3AED" }}>Benenden Health</span>
+                </div>
+                {BENENDEN_FEATURES.map((f) => (
+                  <Tick key={f} color="#7C3AED">
+                    {f}
+                  </Tick>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => go("/subscription")}
+                style={{
+                  marginTop: 14,
+                  width: "100%",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  borderRadius: 12,
+                  padding: "15px 0",
+                  background: "#7C3AED",
+                  color: "#fff",
+                  fontSize: 15,
+                  fontWeight: 900,
+                  letterSpacing: ".5px",
+                }}
+              >
+                JOIN PRO+
+              </button>
+              <div style={{ textAlign: "center", marginTop: 8, fontSize: 11.5, color: GREY }}>
+                £39.99 per month for 12 months
+              </div>
             </div>
           </div>
         </section>
+
 
 
         {/* ============ 7 — TRUST + ADD-ONS ============ */}
