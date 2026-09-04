@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import {
   IconCheck,
   IconChevronRight,
+  IconDeviceLaptop,
   IconDeviceTv,
+  IconPlayerPlayFilled,
+
   IconGift,
   IconHeart,
   IconMicrophone,
