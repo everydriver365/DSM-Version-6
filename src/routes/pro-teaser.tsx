@@ -757,6 +757,7 @@ export function ProTeaserPage({
               display: "flex",
               gap: 12,
               overflowX: "auto",
+              alignItems: "stretch",
               padding: "10px 16px 4px",
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
@@ -1073,7 +1074,17 @@ function PlanCard({
   onCta: () => void;
 }) {
   return (
-    <div style={{ ...CARD, padding: 14, borderColor: `${accent}55`, position: "relative" }}>
+    <div
+      style={{
+        ...CARD,
+        padding: 14,
+        borderColor: `${accent}55`,
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {badge && (
         <span
           style={{
@@ -1106,8 +1117,45 @@ function PlanCard({
           <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
             EVERYDRIVER
           </div>
-          <div style={{ fontFamily: SORA, fontSize: 28, fontWeight: 900, color: accent, lineHeight: 1 }}>
-            {name}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: SORA,
+              fontSize: 28,
+              fontWeight: 900,
+              color: accent,
+              lineHeight: 1,
+            }}
+          >
+            <span style={{ display: "inline-flex", alignItems: "center" }}>
+              {name.split(" ")[0].replace("+", "")}
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 20,
+                  height: 20,
+                  marginLeft: 2,
+                  borderRadius: 999,
+                  background: accent,
+                  color: "#fff",
+                  fontSize: 12,
+                  lineHeight: 1,
+                }}
+              >
+                ★
+              </span>
+              {name.split(" ")[0].includes("+") ? "+" : null}
+            </span>
+            {name.split(" ").slice(1).map((w) => (
+              <span key={w} style={{ color: NAVY }}>
+                {w}
+              </span>
+            ))}
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
@@ -1141,10 +1189,16 @@ function PlanCard({
             border: "1px solid #FBD9BC",
             borderRadius: 12,
             padding: "9px 12px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>{saving.headline}</div>
-          <div style={{ fontSize: 11.5, color: "#B4651F" }}>{saving.detail}</div>
+          <IconGift size={22} color={ORANGE} />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>{saving.headline}</div>
+            <div style={{ fontSize: 11.5, color: "#B4651F" }}>{saving.detail}</div>
+          </div>
         </div>
       )}
 
@@ -1177,7 +1231,7 @@ function PlanCard({
         type="button"
         onClick={onCta}
         style={{
-          marginTop: 14,
+          marginTop: "auto",
           width: "100%",
           border: "none",
           cursor: "pointer",
