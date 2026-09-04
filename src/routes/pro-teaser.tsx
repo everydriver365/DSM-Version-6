@@ -969,6 +969,8 @@ function MediaCard({
   colour,
   icon,
   items,
+  wave,
+  waveActive,
   onClick,
 }: {
   title: string;
@@ -976,8 +978,11 @@ function MediaCard({
   colour: string;
   icon: React.ReactNode;
   items?: string[];
+  wave?: boolean;
+  waveActive?: boolean;
   onClick: () => void;
 }) {
+
   return (
     <button
       type="button"
