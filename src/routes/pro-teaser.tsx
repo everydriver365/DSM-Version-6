@@ -461,7 +461,7 @@ export function ProTeaserPage({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  objectPosition: "130% 25%",
+                  objectPosition: "78% 25%",
                 }}
               />
               <div
