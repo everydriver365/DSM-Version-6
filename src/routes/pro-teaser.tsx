@@ -494,71 +494,133 @@ export function ProTeaserPage({
               ))}
             </div>
 
-            <div
+            <button
+              type="button"
+              onClick={() => go("/subscription")}
               style={{
                 marginTop: 14,
-                background: "#F2F7FD",
-                border: `1px solid #D9E8F8`,
-                borderRadius: 12,
-                padding: "10px 12px",
+                width: "100%",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                borderRadius: 10,
+                padding: "13px 16px",
+                background: "#0E7A46",
+                color: "#fff",
+                fontSize: 13.5,
+                fontWeight: 900,
+                letterSpacing: ".6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
               }}
             >
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: BLUE, letterSpacing: ".5px", marginBottom: 6 }}>
-                PRO GIVES YOU
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                <Tick>Up to 20 pages</Tick>
-                <Tick>Your own custom domain</Tick>
-              </div>
-            </div>
+              <span style={{ flex: 1, textAlign: "center" }}>GET YOUR FREE WEBSITE</span>
+              <IconChevronRight size={18} color="#fff" style={{ flexShrink: 0 }} />
+            </button>
           </div>
         </section>
 
         {/* ============ 3 — PRO PERKS ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
-            {PERK_CARDS.map((p) => (
+        <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
+          </div>
+          <div style={{ padding: "0 16px" }}>
+            <div style={{ ...CARD, padding: 12, display: "flex", gap: 12, alignItems: "stretch" }}>
               <button
-                key={p.title}
                 type="button"
-                onClick={() => go(p.to)}
+                onClick={() => go("/perks")}
                 style={{
-                  ...CARD,
-                  padding: 12,
+                  flex: "0 0 96px",
+                  border: "none",
+                  background: "transparent",
                   textAlign: "left",
                   cursor: "pointer",
                   fontFamily: "inherit",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
+                  padding: 0,
                 }}
               >
+                <IconGift size={30} color="#7C3AED" />
                 <div
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: `${p.colour}18`,
-                    display: "grid",
-                    placeItems: "center",
+                    fontFamily: SORA,
+                    fontSize: 13,
+                    fontWeight: 900,
+                    color: NAVY,
+                    letterSpacing: ".3px",
+                    marginTop: 6,
                   }}
                 >
-                  {p.icon}
+                  PERKBOX
                 </div>
-                <div>
-                  <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
-                    {p.title}
-                  </div>
-                  {p.sub && (
-                    <div style={{ fontSize: 11.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
-                      {p.sub}
-                    </div>
-                  )}
+                <div style={{ fontSize: 11, color: GREY, lineHeight: 1.3, marginTop: 4 }}>
+                  Thousands of discounts
                 </div>
-                <div style={{ fontSize: 12, color: GREY, lineHeight: 1.35 }}>{p.body}</div>
               </button>
-            ))}
+
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  gap: 8,
+                  overflowX: "auto",
+                  paddingBottom: 2,
+                  WebkitOverflowScrolling: "touch",
+                }}
+              >
+                {BRANDS.map((b) => (
+                  <div
+                    key={b.name}
+                    style={{
+                      flex: "0 0 84px",
+                      border: `1px solid ${LINE}`,
+                      borderRadius: 10,
+                      padding: "10px 6px",
+                      textAlign: "center",
+                      background: "#FBFCFE",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: SORA,
+                        fontSize: 12,
+                        fontWeight: 900,
+                        color: b.colour,
+                        fontStyle: b.italic ? "italic" : "normal",
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      {b.name}
+                    </div>
+                    <div style={{ fontSize: 9, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
+                      {b.offer}
+                    </div>
+                  </div>
+                ))}
+                <div
+                  style={{
+                    flex: "0 0 84px",
+                    border: `1px solid ${LINE}`,
+                    borderRadius: 10,
+                    display: "grid",
+                    placeItems: "center",
+                    background: "#fff",
+                  }}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY }}>
+                      +9000
+                    </div>
+                    <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
+                      MORE OFFERS
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -570,79 +632,16 @@ export function ProTeaserPage({
             subtitle="Industry news, advice and entertainment — made for driving instructors."
           />
 
-          {/* PRO RADIO — hero media card */}
-          <button
-            type="button"
-            onClick={() => go("/radio")}
-            style={{
-              width: "100%",
-              textAlign: "left",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              borderRadius: 16,
-              padding: 16,
-              marginBottom: 10,
-              color: "#fff",
-              background: `linear-gradient(135deg, ${NAVY}, #123A69)`,
-              boxShadow: "0 8px 20px rgba(11,35,65,0.25)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-              <IconRadio size={22} color="#fff" />
-              <span style={{ fontFamily: SORA, fontSize: 17, fontWeight: 900, letterSpacing: ".3px" }}>
-                PRO RADIO
-              </span>
-            </div>
-            <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.4, maxWidth: 250 }}>
-              Your instructor station, anywhere you are.
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: 3,
-                height: 26,
-                marginTop: 12,
-              }}
-            >
-              {Array.from({ length: 34 }).map((_, i) => (
-                <span
-                  key={i}
-                  style={{
-                    flex: 1,
-                    borderRadius: 2,
-                    background: radio.isPlaying ? "#4FA9F5" : "rgba(79,169,245,0.55)",
-                    height: `${Math.round(20 + Math.abs(Math.sin(i * 1.7)) * 80)}%`,
-                  }}
-                />
-              ))}
-            </div>
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                radio.toggle();
-              }}
-              role="button"
-              tabIndex={-1}
-              style={{
-                position: "absolute",
-                right: 16,
-                top: 16,
-                background: "rgba(255,255,255,0.16)",
-                borderRadius: 999,
-                padding: "6px 12px",
-                fontSize: 11.5,
-                fontWeight: 700,
-              }}
-            >
-              {radio.isPlaying ? "Pause" : "Listen"}
-            </div>
-          </button>
-
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
+            <MediaCard
+              title="PRO RADIO"
+              body="Your instructor station, anywhere you are."
+              colour={NAVY}
+              icon={<IconRadio size={20} color="#fff" />}
+              wave
+              waveActive={radio.isPlaying}
+              onClick={() => go("/radio")}
+            />
             <MediaCard
               title="PRO TV"
               body="Practical videos, guides and shows for instructors."
@@ -656,6 +655,7 @@ export function ProTeaserPage({
               body="Expert advice and real conversations on the go."
               colour="#7C3AED"
               icon={<IconMicrophone size={20} color="#fff" />}
+              wave
               onClick={() => onNavigateToMedia?.()}
             />
             <MediaCard
@@ -666,99 +666,104 @@ export function ProTeaserPage({
               items={news.map((n) => n.title ?? "").filter(Boolean).slice(0, 2)}
               onClick={() => onNavigateToMedia?.()}
             />
-            <MediaCard
-              title="PRO SHOP"
-              body="Exclusive products and offers for instructors."
-              colour={ORANGE}
-              icon={<IconShoppingBag size={20} color="#fff" />}
-              onClick={() => go("/marketplace")}
-            />
           </div>
+
+          <button
+            type="button"
+            onClick={() => go("/marketplace")}
+            style={{
+              ...CARD,
+              marginTop: 10,
+              width: "100%",
+              padding: "12px 14px",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              textAlign: "left",
+            }}
+          >
+            <IconShoppingBag size={20} color={ORANGE} style={{ flexShrink: 0 }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
+                PRO SHOP
+              </div>
+              <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3 }}>
+                Exclusive products and offers for instructors.
+              </div>
+            </div>
+            <IconChevronRight size={18} color={GREY} style={{ flexShrink: 0 }} />
+          </button>
         </section>
 
         {/* ============ 5 — PERKBOX DISCOUNTS ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <div style={{ ...CARD, padding: 14 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+        <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
               <img
                 src={perkboxLogoAsset.url}
                 alt="Perkbox"
                 style={{ height: 18, width: "auto", display: "block" }}
               />
-            </div>
-            <div
-              style={{
-                fontSize: 12.5,
-                fontWeight: 800,
-                color: NAVY,
-                letterSpacing: ".5px",
-                marginTop: 6,
-              }}
-            >
-              THOUSANDS OF DISCOUNTS WITH PERKBOX
-            </div>
-            <div style={{ fontSize: 12.5, color: GREY, marginTop: 3, marginBottom: 10 }}>
-              Save on the brands you love, every day.
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, minmax(0,1fr))",
-                gap: 8,
-              }}
-            >
-              {BRANDS.map((b) => (
-                <div
-                  key={b.name}
-                  style={{
-                    border: `1px solid ${LINE}`,
-                    borderRadius: 12,
-                    padding: "10px 6px",
-                    textAlign: "center",
-                    background: "#FBFCFE",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: SORA,
-                      fontSize: 12.5,
-                      fontWeight: 900,
-                      color: b.colour,
-                      fontStyle: b.italic ? "italic" : "normal",
-                      lineHeight: 1.1,
-                    }}
-                  >
-                    {b.name}
-                  </div>
-                  <div style={{ fontSize: 9.5, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
-                    {b.offer}
-                  </div>
-                </div>
-              ))}
               <div
                 style={{
-                  border: `1px solid ${LINE}`,
-                  borderRadius: 12,
-                  padding: "10px 6px",
-                  textAlign: "center",
-                  background: "#fff",
-                  display: "grid",
-                  placeItems: "center",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  color: NAVY,
+                  letterSpacing: ".5px",
                 }}
               >
-                <div>
-                  <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY }}>
-                    +9000
-                  </div>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
-                    MORE OFFERS
-                  </div>
-                </div>
+                THOUSANDS OF DISCOUNTS WITH PERKBOX
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 18,
+              overflowX: "auto",
+              padding: "4px 16px",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {BRANDS.map((b) => (
+              <div
+                key={b.name}
+                style={{
+                  flex: "0 0 auto",
+                  fontFamily: SORA,
+                  fontSize: 15,
+                  fontWeight: 900,
+                  color: b.colour,
+                  fontStyle: b.italic ? "italic" : "normal",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {b.name}
+              </div>
+            ))}
+            <div
+              style={{
+                flex: "0 0 auto",
+                border: `1px solid ${LINE}`,
+                borderRadius: 10,
+                padding: "6px 12px",
+                textAlign: "center",
+                background: "#fff",
+              }}
+            >
+              <div style={{ fontFamily: SORA, fontSize: 14, fontWeight: 900, color: NAVY }}>
+                +9000
+              </div>
+              <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
+                MORE OFFERS
               </div>
             </div>
           </div>
         </section>
+
 
         {/* ============ 6 — PRICING ============ */}
         <section style={{ padding: "0 0 24px" }}>
