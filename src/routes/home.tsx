@@ -6318,12 +6318,9 @@ function HomePage() {
               <div style={{
                 padding: '11px 16px',
                 borderTop: '1px solid #E4E8EF',
-                display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
               }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 8, minWidth: 0,
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); openMaps(); }}
@@ -6337,7 +6334,12 @@ function HomePage() {
                     <IconNavigation stroke={1.5} size={15} color="#1877D6" />
                     View 
                   </button>
+                </div>
 
+                <div style={{
+                  flex: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minWidth: 0,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
                   {etaLabel && (
                     <>
                       <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
@@ -6412,22 +6414,23 @@ function HomePage() {
                       </>
                     );
                   })()}
-
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setHeroExpandedWithEvent((v) => !v)}
-                  style={{
-                    flexShrink: 0,
-                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  More {heroExpanded ? <IconChevronUp stroke={1.5} size={16} /> : <IconChevronDown stroke={1.5} size={16} />}
-                </button>
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                  <button
+                    type="button"
+                    onClick={() => setHeroExpandedWithEvent((v) => !v)}
+                    style={{
+                      flexShrink: 0,
+                      background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: 4,
+                      fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    More {heroExpanded ? <IconChevronUp stroke={1.5} size={16} /> : <IconChevronDown stroke={1.5} size={16} />}
+                  </button>
+                </div>
               </div>
 
             </>
