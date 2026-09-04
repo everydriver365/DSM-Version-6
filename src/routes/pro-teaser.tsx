@@ -1073,7 +1073,17 @@ function PlanCard({
   onCta: () => void;
 }) {
   return (
-    <div style={{ ...CARD, padding: 14, borderColor: `${accent}55`, position: "relative" }}>
+    <div
+      style={{
+        ...CARD,
+        padding: 14,
+        borderColor: `${accent}55`,
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {badge && (
         <span
           style={{
@@ -1119,7 +1129,7 @@ function PlanCard({
             }}
           >
             <span style={{ display: "inline-flex", alignItems: "center" }}>
-              {name.split(" ")[0]}
+              {name.split(" ")[0].replace("+", "")}
               <span
                 aria-hidden
                 style={{
@@ -1138,6 +1148,7 @@ function PlanCard({
               >
                 ★
               </span>
+              {name.split(" ")[0].includes("+") ? "+" : null}
             </span>
             {name.split(" ").slice(1).map((w) => (
               <span key={w} style={{ color: NAVY }}>
@@ -1213,13 +1224,14 @@ function PlanCard({
         type="button"
         onClick={onCta}
         style={{
-          marginTop: 14,
+          marginTop: "auto",
           width: "100%",
           border: "none",
           cursor: "pointer",
           fontFamily: "inherit",
           borderRadius: 12,
           padding: "13px 0",
+          marginTop: 14,
           background: accent,
           color: "#fff",
           fontSize: 14,
