@@ -1195,6 +1195,11 @@ function AdminHub() {
               label="Benefits & perks"
               onClick={() => navigate({ to: "/admin/benefits" as never })}
             />
+            <AdminSectionTile
+              icon={<IconVideo size={18} color="#000" />}
+              label="PRO page videos"
+              onClick={() => navigate({ to: "/admin/pro-videos" as never })}
+            />
 
           </AdminGroupCard>
 

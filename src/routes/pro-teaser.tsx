@@ -18,6 +18,7 @@ import {
   IconSparkles,
   IconUsers,
   IconWorld,
+  IconX,
 } from "@tabler/icons-react";
 
 import instructorHeroAsset from "@/assets/dia-instructor.png.asset.json";
@@ -118,6 +119,159 @@ function SectionTitle({
       {subtitle && (
         <div style={{ fontSize: 13, color: GREY, marginTop: 4, lineHeight: 1.4 }}>{subtitle}</div>
       )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+// Explainer videos
+/* ------------------------------------------------------------------ */
+
+interface SectionVideo {
+  section: string;
+  title: string | null;
+  video_url: string;
+}
+
+function toEmbedUrl(url: string): string | null {
+  const yt = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/,
+  );
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}?autoplay=1&rel=0`;
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1`;
+  if (url.includes("/embed/") || url.includes("player.vimeo")) return url;
+  return null;
+}
+
+function ExplainerButton({
+  video,
+  onOpen,
+}: {
+  video?: SectionVideo;
+  onOpen: (v: SectionVideo) => void;
+}) {
+  if (!video?.video_url) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(video)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        marginBottom: 10,
+        border: `1px solid ${LINE}`,
+        background: "#F4F8FD",
+        color: NAVY,
+        borderRadius: 999,
+        padding: "7px 14px 7px 8px",
+        fontSize: 12.5,
+        fontWeight: 700,
+        fontFamily: "inherit",
+        cursor: "pointer",
+      }}
+    >
+      <span
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 999,
+          background: BLUE,
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <IconPlayerPlayFilled size={11} color="#fff" />
+      </span>
+      {video.title || "Watch explainer"}
+    </button>
+  );
+}
+
+function VideoModal({ video, onClose }: { video: SectionVideo; onClose: () => void }) {
+  const embed = toEmbedUrl(video.video_url);
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={video.title || "Explainer video"}
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 5000,
+        background: "rgba(6,16,30,0.82)",
+        display: "grid",
+        placeItems: "center",
+        padding: 16,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{ width: "100%", maxWidth: 520, position: "relative" }}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close video"
+          style={{
+            position: "absolute",
+            top: -44,
+            right: 0,
+            width: 36,
+            height: 36,
+            borderRadius: 999,
+            border: "none",
+            background: "rgba(255,255,255,0.16)",
+            color: "#fff",
+            display: "grid",
+            placeItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconX size={20} />
+        </button>
+        <div
+          style={{
+            borderRadius: 16,
+            overflow: "hidden",
+            background: "#000",
+            aspectRatio: "16 / 9",
+          }}
+        >
+          {embed ? (
+            <iframe
+              src={embed}
+              title={video.title || "Explainer video"}
+              allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              style={{ width: "100%", height: "100%", border: "none" }}
+            />
+          ) : (
+            <video
+              src={video.video_url}
+              controls
+              autoPlay
+              playsInline
+              style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
+            />
+          )}
+        </div>
+        {video.title && (
+          <div
+            style={{
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 600,
+              marginTop: 10,
+              textAlign: "center",
+            }}
+          >
+            {video.title}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -228,11 +382,13 @@ export function ProTeaserPage({
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
+  const [sectionVideos, setSectionVideos] = useState<Record<string, SectionVideo>>({});
+  const [openVideo, setOpenVideo] = useState<SectionVideo | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [tvRes, newsRes] = await Promise.allSettled([
+      const [tvRes, newsRes, explainerRes] = await Promise.allSettled([
         supabase
           .from("howto_videos")
           .select("id, title, thumbnail_url, sort_order")
@@ -245,8 +401,22 @@ export function ProTeaserPage({
           .eq("is_hidden", false)
           .order("published_at", { ascending: false })
           .limit(3),
+        supabase.from("pro_section_videos").select("section, title, video_url"),
       ]);
       if (cancelled) return;
+      if (explainerRes.status === "fulfilled" && Array.isArray(explainerRes.value.data)) {
+        const map: Record<string, SectionVideo> = {};
+        for (const r of explainerRes.value.data as any[]) {
+          if (r?.section && r?.video_url) {
+            map[String(r.section)] = {
+              section: String(r.section),
+              title: r.title ?? null,
+              video_url: String(r.video_url),
+            };
+          }
+        }
+        setSectionVideos(map);
+      }
       if (tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)) {
         setVideos(
           (tvRes.value.data as any[]).map((r) => ({
@@ -442,6 +612,7 @@ export function ProTeaserPage({
 
         {/* ============ 1 — DIA MEMBERSHIP ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["dia"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, position: "relative", overflow: "hidden", padding: 0 }}>
             {/* Instructor photo — upper right only */}
             <div
@@ -551,6 +722,7 @@ export function ProTeaserPage({
 
         {/* ============ 2 — WEBSITE ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["website"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
               <div
@@ -641,6 +813,7 @@ export function ProTeaserPage({
 
         {/* ============ 3 — PRO PERKS ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["perks"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
             <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
 
@@ -774,6 +947,7 @@ export function ProTeaserPage({
 
         {/* ============ 4 — PRO MEDIA HUB ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["media"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
             <SectionTitle
               strong="PRO"
@@ -852,6 +1026,9 @@ export function ProTeaserPage({
 
         {/* ============ 6 — PRICING ============ */}
         <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <ExplainerButton video={sectionVideos["pricing"]} onOpen={setOpenVideo} />
+          </div>
           <div style={{ padding: "0 16px" }}>
             <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
           </div>
@@ -1137,6 +1314,7 @@ export function ProTeaserPage({
 
         {/* ============ 7 — TRUST + ADD-ONS ============ */}
         <section style={{ padding: "0 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["addons"]} onOpen={setOpenVideo} />
           <div
             style={{
               display: "grid",
@@ -1253,6 +1431,8 @@ export function ProTeaserPage({
           </button>
         </section>
       </div>
+
+      {openVideo && <VideoModal video={openVideo} onClose={() => setOpenVideo(null)} />}
     </div>
   );
 }
