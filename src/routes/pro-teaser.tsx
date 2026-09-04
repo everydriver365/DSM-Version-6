@@ -1431,6 +1431,8 @@ export function ProTeaserPage({
           </button>
         </section>
       </div>
+
+      {openVideo && <VideoModal video={openVideo} onClose={() => setOpenVideo(null)} />}
     </div>
   );
 }
