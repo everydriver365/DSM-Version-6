@@ -7,8 +7,9 @@ import { supabase } from "@/lib/supabaseClient";
 // GoCardless dashboard: Developers -> Webhooks -> Add endpoint
 // URL: https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/gc-webhook
 
-const SUPABASE_URL = supabase.supabaseUrl;
-const SUPABASE_ANON_KEY = supabase.supabaseKey;
+const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
 export const Route = createFileRoute("/subscribe/complete")({
   head: () => ({
