@@ -747,6 +747,70 @@ export function ProTeaserPage({
                 </div>
               </div>
             </div>
+
+            {/* Perkbox discount strip */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16, marginBottom: 8 }}>
+              <img
+                src={perkboxLogoAsset.url}
+                alt="Perkbox"
+                style={{ height: 18, width: "auto", display: "block" }}
+              />
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 800,
+                  color: NAVY,
+                  letterSpacing: ".5px",
+                }}
+              >
+                THOUSANDS OF DISCOUNTS WITH PERKBOX - Exclusive to EveryDriver Pro
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 18,
+                overflowX: "auto",
+                padding: "4px 0",
+                WebkitOverflowScrolling: "touch",
+              }}
+            >
+              {BRANDS.map((b) => (
+                <div
+                  key={b.name}
+                  style={{
+                    flex: "0 0 auto",
+                    fontFamily: SORA,
+                    fontSize: 15,
+                    fontWeight: 900,
+                    color: b.colour,
+                    fontStyle: b.italic ? "italic" : "normal",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {b.name}
+                </div>
+              ))}
+              <div
+                style={{
+                  flex: "0 0 auto",
+                  border: `1px solid ${LINE}`,
+                  borderRadius: 10,
+                  padding: "6px 12px",
+                  textAlign: "center",
+                  background: "#fff",
+                }}
+              >
+                <div style={{ fontFamily: SORA, fontSize: 14, fontWeight: 900, color: NAVY }}>
+                  +9000
+                </div>
+                <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
+                  MORE OFFERS
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -824,73 +888,6 @@ export function ProTeaserPage({
               </div>
               <IconChevronRight size={18} color={GREY} style={{ flexShrink: 0 }} />
             </button>
-          </div>
-        </section>
-
-        {/* ============ 5 — PERKBOX DISCOUNTS ============ */}
-        <section style={{ padding: "0 0 24px" }}>
-          <div style={{ padding: "0 16px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-              <img
-                src={perkboxLogoAsset.url}
-                alt="Perkbox"
-                style={{ height: 18, width: "auto", display: "block" }}
-              />
-              <div
-                style={{
-                  fontSize: 12,
-                  fontWeight: 800,
-                  color: NAVY,
-                  letterSpacing: ".5px",
-                }}
-              >
-                THOUSANDS OF DISCOUNTS WITH PERKBOX - Exclusive to EveryDriver Pro
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 18,
-              overflowX: "auto",
-              padding: "4px 16px",
-              WebkitOverflowScrolling: "touch",
-            }}
-          >
-            {BRANDS.map((b) => (
-              <div
-                key={b.name}
-                style={{
-                  flex: "0 0 auto",
-                  fontFamily: SORA,
-                  fontSize: 15,
-                  fontWeight: 900,
-                  color: b.colour,
-                  fontStyle: b.italic ? "italic" : "normal",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {b.name}
-              </div>
-            ))}
-            <div
-              style={{
-                flex: "0 0 auto",
-                border: `1px solid ${LINE}`,
-                borderRadius: 10,
-                padding: "6px 12px",
-                textAlign: "center",
-                background: "#fff",
-              }}
-            >
-              <div style={{ fontFamily: SORA, fontSize: 14, fontWeight: 900, color: NAVY }}>
-                +9000
-              </div>
-              <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
-                MORE OFFERS
-              </div>
-            </div>
           </div>
         </section>
 
