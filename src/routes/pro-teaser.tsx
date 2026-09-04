@@ -27,6 +27,7 @@ import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
+import costaPerkAsset from "@/assets/costa-perk.png.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
@@ -141,7 +142,7 @@ const WEBSITE_FREE = [
 
 const BRANDS: { name: string; colour: string; italic?: boolean; offer: string; image?: string }[] = [
   { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards", image: tescoPerkAsset.url },
-  { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink" },
+  { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink", image: costaPerkAsset.url },
   { name: "Sainsbury's", colour: "#F06C00", offer: "Up to 10% off Gift Cards" },
   { name: "ASDA", colour: "#00A94F", offer: "Up to 10% off Gift Cards" },
   { name: "JUST EAT", colour: "#FF8000", italic: true, offer: "Up to 20% off" },
