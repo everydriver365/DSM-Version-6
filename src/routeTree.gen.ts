@@ -125,6 +125,7 @@ import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
+import { Route as SubscribeCompleteRouteImport } from './routes/subscribe.complete'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
 import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as QuoteTokenRouteImport } from './routes/quote.$token'
@@ -768,6 +769,11 @@ const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
   path: '/test-day/$pupilId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscribeCompleteRoute = SubscribeCompleteRouteImport.update({
+  id: '/subscribe/complete',
+  path: '/subscribe/complete',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReflectiveLogPupilIdRoute = ReflectiveLogPupilIdRouteImport.update({
   id: '/reflective-log/$pupilId',
   path: '/reflective-log/$pupilId',
@@ -1237,6 +1243,7 @@ export interface FileRoutesByFullPath {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
+  '/subscribe/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
@@ -1414,6 +1421,7 @@ export interface FileRoutesByTo {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
+  '/subscribe/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses': typeof CoursesIndexRoute
   '/dsm-live': typeof DsmLiveIndexRoute
@@ -1595,6 +1603,7 @@ export interface FileRoutesById {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
+  '/subscribe/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
@@ -1777,6 +1786,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
+    | '/subscribe/complete'
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
@@ -1954,6 +1964,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
+    | '/subscribe/complete'
     | '/test-day/$pupilId'
     | '/courses'
     | '/dsm-live'
@@ -2134,6 +2145,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
+    | '/subscribe/complete'
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
@@ -2298,6 +2310,7 @@ export interface RootRouteChildren {
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
   ReflectiveLogPupilIdRoute: typeof ReflectiveLogPupilIdRoute
+  SubscribeCompleteRoute: typeof SubscribeCompleteRoute
   TestDayPupilIdRoute: typeof TestDayPupilIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
@@ -3138,6 +3151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestDayPupilIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subscribe/complete': {
+      id: '/subscribe/complete'
+      path: '/subscribe/complete'
+      fullPath: '/subscribe/complete'
+      preLoaderRoute: typeof SubscribeCompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reflective-log/$pupilId': {
       id: '/reflective-log/$pupilId'
       path: '/reflective-log/$pupilId'
@@ -3788,6 +3808,7 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
   ReflectiveLogPupilIdRoute: ReflectiveLogPupilIdRoute,
+  SubscribeCompleteRoute: SubscribeCompleteRoute,
   TestDayPupilIdRoute: TestDayPupilIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
