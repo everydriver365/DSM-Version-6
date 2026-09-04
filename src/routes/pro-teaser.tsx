@@ -695,7 +695,7 @@ export function ProTeaserPage({
                   letterSpacing: ".5px",
                 }}
               >
-                THOUSANDS OF DISCOUNTS WITH PERKBOX
+                THOUSANDS OF DISCOUNTS WITH PERKBOX - Exclusive to EveryDriver Pro
               </div>
             </div>
           </div>
