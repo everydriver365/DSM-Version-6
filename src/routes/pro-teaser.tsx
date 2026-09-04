@@ -381,11 +381,13 @@ export function ProTeaserPage({
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
+  const [sectionVideos, setSectionVideos] = useState<Record<string, SectionVideo>>({});
+  const [openVideo, setOpenVideo] = useState<SectionVideo | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [tvRes, newsRes] = await Promise.allSettled([
+      const [tvRes, newsRes, explainerRes] = await Promise.allSettled([
         supabase
           .from("howto_videos")
           .select("id, title, thumbnail_url, sort_order")
@@ -398,8 +400,22 @@ export function ProTeaserPage({
           .eq("is_hidden", false)
           .order("published_at", { ascending: false })
           .limit(3),
+        supabase.from("pro_section_videos").select("section, title, video_url"),
       ]);
       if (cancelled) return;
+      if (explainerRes.status === "fulfilled" && Array.isArray(explainerRes.value.data)) {
+        const map: Record<string, SectionVideo> = {};
+        for (const r of explainerRes.value.data as any[]) {
+          if (r?.section && r?.video_url) {
+            map[String(r.section)] = {
+              section: String(r.section),
+              title: r.title ?? null,
+              video_url: String(r.video_url),
+            };
+          }
+        }
+        setSectionVideos(map);
+      }
       if (tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)) {
         setVideos(
           (tvRes.value.data as any[]).map((r) => ({
