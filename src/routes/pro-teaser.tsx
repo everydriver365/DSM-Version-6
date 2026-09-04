@@ -133,48 +133,6 @@ const WEBSITE_FREE = [
   "Showcase your lessons and areas covered",
 ];
 
-const PERK_CARDS: {
-  title: string;
-  sub: string;
-  body: string;
-  colour: string;
-  icon: React.ReactNode;
-  to: string;
-}[] = [
-  {
-    title: "PERKBOX",
-    sub: "",
-    body: "Thousands of discounts on shopping, dining, travel and more.",
-    colour: "#EC4899",
-    icon: <IconSparkles size={20} color="#EC4899" />,
-    to: "/perks",
-  },
-  {
-    title: "HMCA BENEFITS",
-    sub: "",
-    body: "Access included at no extra cost.",
-    colour: GREEN,
-    icon: <IconShieldCheck size={20} color={GREEN} />,
-    to: "/perks",
-  },
-  {
-    title: "20-PAGE WEBSITE",
-    sub: "& CUSTOM DOMAIN",
-    body: "Professional website with your own domain.",
-    colour: BLUE,
-    icon: <IconWorld size={20} color={BLUE} />,
-    to: "/subscription",
-  },
-  {
-    title: "PRO SHOP",
-    sub: "",
-    body: "Exclusive products and offers for driving instructors.",
-    colour: ORANGE,
-    icon: <IconShoppingBag size={20} color={ORANGE} />,
-    to: "/marketplace",
-  },
-];
-
 const BRANDS: { name: string; colour: string; italic?: boolean; offer: string }[] = [
   { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards" },
   { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink" },
@@ -260,7 +218,6 @@ export function ProTeaserPage({
 
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
-  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
 
   useEffect(() => {
     let cancelled = false;
@@ -303,8 +260,6 @@ export function ProTeaserPage({
       cancelled = true;
     };
   }, [supabase]);
-
-  const annual = billing === "annual";
 
   return (
     <div
