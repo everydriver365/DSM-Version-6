@@ -3981,9 +3981,15 @@ function HomePage() {
       setInstructorLocation(null);
       return;
     }
-    const destination = [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
-      .filter(Boolean)
-      .join(", ");
+    // On test days the destination is the test centre itself — mixing it with
+    // the pupil's home address produces an unroutable query and kills the ETA.
+    const isTestUpcoming = isTestLesson(upcoming);
+    const testCentreDest = isTestUpcoming ? testCentreOf(upcoming) : null;
+    const destination = isTestUpcoming && testCentreDest
+      ? (/test centre/i.test(testCentreDest) ? testCentreDest : `${testCentreDest} Driving Test Centre, UK`)
+      : [upcoming.pickup_location, upcoming.pupils?.address, upcoming.pupils?.postcode]
+          .filter(Boolean)
+          .join(", ");
     const postcode = upcoming.pupils?.postcode ?? null;
     if (!destination && !postcode) {
       console.warn("[home] no destination or postcode on upcoming lesson — skipping weather/drive fetch");
