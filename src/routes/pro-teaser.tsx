@@ -867,7 +867,7 @@ export function ProTeaserPage({
                   FREE
                 </div>
                 <div style={{ fontSize: 12.5, color: NAVY, marginTop: 4 }}>
-                  Get started with essential tools.
+                  FREE forever for ADI's & PDI's.
                 </div>
                 <button
                   type="button"
