@@ -1028,6 +1028,30 @@ function MediaCard({
           ))}
         </div>
       )}
+      {wave && (
+        <div
+          style={{
+            marginTop: "auto",
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 2,
+            height: 22,
+          }}
+        >
+          {Array.from({ length: 26 }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                flex: 1,
+                borderRadius: 1.5,
+                background: waveActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.5)",
+                height: `${Math.round(20 + Math.abs(Math.sin(i * 1.7)) * 80)}%`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
     </button>
   );
 }
