@@ -6318,7 +6318,7 @@ function HomePage() {
               <div style={{
                 padding: '11px 16px',
                 borderTop: '1px solid #E4E8EF',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', gap: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 10,
               }}>
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: 8, minWidth: 0,
