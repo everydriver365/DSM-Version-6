@@ -313,6 +313,7 @@ export function ProTeaserPage({
           <h1
             style={{
               margin: 0,
+              marginTop: 20,
               maxWidth: 250,
               fontFamily: SORA,
               fontSize: 32,
