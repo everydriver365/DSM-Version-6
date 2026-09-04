@@ -27,6 +27,7 @@ import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
+import costaPerkAsset from "@/assets/costa-perk.png.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
