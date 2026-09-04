@@ -869,6 +869,26 @@ export function ProTeaserPage({
                 <div style={{ fontSize: 12.5, color: NAVY, marginTop: 4 }}>
                   Get started with essential tools.
                 </div>
+                <button
+                  type="button"
+                  onClick={() => go("/subscription")}
+                  style={{
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    borderRadius: 12,
+                    background: "#E7F1FD",
+                    color: BLUE,
+                    fontSize: 13,
+                    fontWeight: 900,
+                    padding: "10px 12px",
+                    width: "100%",
+                    marginTop: 12,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Get Started
+                </button>
               </div>
               <div
                 style={{
@@ -887,26 +907,6 @@ export function ProTeaserPage({
                   </Tick>
                 ))}
               </div>
-              <button
-                type="button"
-                onClick={() => go("/subscription")}
-                style={{
-                  flexShrink: 0,
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  borderRadius: 12,
-                  background: "#E7F1FD",
-                  color: BLUE,
-                  fontSize: 13,
-                  fontWeight: 900,
-                  padding: "14px 12px",
-                  width: 84,
-                  lineHeight: 1.2,
-                }}
-              >
-                Get Started
-              </button>
             </div>
 
             {/* PRO */}
