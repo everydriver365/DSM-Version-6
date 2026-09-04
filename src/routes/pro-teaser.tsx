@@ -312,7 +312,7 @@ export function ProTeaserPage({
             />
           </div>
 
-          <h1
+          <h2
             style={{
               margin: 0,
               marginTop: 20,
@@ -331,7 +331,7 @@ export function ProTeaserPage({
               alt="PRO"
               style={{ height: 32, width: "auto", display: "inline-block", verticalAlign: "middle" }}
             />
-          </h1>
+          </h2>
           <p
             style={{
               margin: "6px 0 0",
