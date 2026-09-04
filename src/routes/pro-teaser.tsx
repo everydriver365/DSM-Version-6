@@ -274,8 +274,6 @@ export function ProTeaserPage({
       }}
     >
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
-        {/* ============ 1 — DIA MEMBERSHIP ============ */}
-        <section
         {/* ============ 0 — PRO INTRO ============ */}
         <section
           style={{
