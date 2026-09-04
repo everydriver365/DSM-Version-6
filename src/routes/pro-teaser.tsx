@@ -1,29 +1,23 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  IconBookmark,
-  IconBriefcase,
-  IconBulb,
-  IconPlus,
-
-  IconCamera,
-  IconClock,
-  IconDotsVertical,
-  IconGift,
+  IconCheck,
+  IconChevronRight,
+  IconDeviceTv,
   IconHeart,
-  IconMessageCircle,
   IconMicrophone,
-  IconPlayerPause,
-  IconPlayerPlay,
+  IconNews,
   IconRadio,
+  IconShieldCheck,
   IconShoppingBag,
-  IconStar,
-  IconUsers,
-  IconX,
-
+  IconSparkles,
+  IconWorld,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
-import proLogoAsset from "@/assets/pro-logo.png.asset.json";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import instructorHeroAsset from "@/assets/richard-with-car.jpg.asset.json";
+import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
+import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
+import hmcaLogoAsset from "@/assets/hmca-logo.png.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
@@ -31,44 +25,16 @@ import { useProRadioContext } from "@/hooks/useProRadio";
 // Types
 /* ------------------------------------------------------------------ */
 
-interface PerkCategory {
-  name: string;
-  count: number;
-}
-
-interface ShopListing {
-  id: string;
-  title: string | null;
-  price_display: string | null;
-  thumbnail_url: string | null;
-  category: string | null;
-}
-
 interface TvVideo {
   id: string;
   title: string | null;
-  category: string | null;
   thumbnail_url: string | null;
-  video_embed_url: string | null;
-  video_url: string | null;
 }
 
 interface NewsArticle {
   id: string;
   title: string | null;
-  category: string | null;
-  image_url: string | null;
-  published_at: string | null;
   source: string | null;
-  description?: string | null;
-  read_time_mins?: number | null;
-}
-
-interface CommunityPost {
-  id: string;
-  body: string | null;
-  created_at: string | null;
-  authorName: string | null;
 }
 
 export interface ProTeaserProps {
@@ -79,282 +45,189 @@ export interface ProTeaserProps {
 }
 
 /* ------------------------------------------------------------------ */
-// Helpers
+// Tokens
 /* ------------------------------------------------------------------ */
 
 const NAVY = "#0B2341";
-const PRO_BLUE = "#1877D6";
-const PRO_TEAL = "#00BFA5";
-const BLUE = "#2C97DE";
-const TEAL = "#18A999";
-const AMBER = "#F59E0B";
-const RED = "#E53935";
+const BLUE = "#1877D6";
+const ORANGE = "#F26522";
+const GREEN = "#0E8A4F";
+const GREY = "#5C6B7E";
+const LINE = "#E7EBF1";
+const SORA = "Sora, Poppins, system-ui, sans-serif";
 
-const MINI_STATIONS: { name: string; stream: string; color: string }[] = [
-  { name: "PRO 80s", stream: "https://0n-80s.radionetz.de/0n-80s.mp3", color: "#8B5CF6" },
-  { name: "PRO 90s", stream: "https://0n-90s.radionetz.de/0n-90s.mp3", color: "#EC4899" },
-  { name: "PRO 00s", stream: "https://stream.laut.fm/00er", color: "#06B6D4" },
-  { name: "PRO Chill", stream: "https://0n-chillout.radionetz.de/0n-chillout.mp3", color: "#10B981" },
-  { name: "PRO Drive", stream: "https://0n-rock.radionetz.de/0n-rock.mp3", color: "#F97316" },
-];
-
-const STATION_DESCRIPTIONS: Record<string, string> = {
-  "PRO 80s": "The best of the 80s",
-  "PRO 90s": "All the 90s hits",
-  "PRO 00s": "00s favourites",
-  "PRO Chill": "Relax and unwind",
-  "PRO Drive": "Every mile better",
+const CARD: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 16,
+  border: `1px solid ${LINE}`,
+  boxShadow: "0 2px 10px rgba(11,35,65,0.05)",
 };
 
-interface PerkExplainer {
-  id: string;
-  name: string;
-  description: string;
-  videoUrl: string | null;
-  thumbnailUrl: string | null;
-  color: string;
-  iconColor: string;
+/* ------------------------------------------------------------------ */
+// Small building blocks
+/* ------------------------------------------------------------------ */
+
+function Tick({ children, color = BLUE }: { children: React.ReactNode; color?: string }) {
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+      <IconCheck size={15} color={color} stroke={3} style={{ flexShrink: 0, marginTop: 2 }} />
+      <span style={{ fontSize: 13.5, color: NAVY, lineHeight: 1.35, fontWeight: 500 }}>
+        {children}
+      </span>
+    </div>
+  );
 }
 
-const PERK_EXPLAINERS: PerkExplainer[] = [
-  {
-    id: "bennenden",
-    name: "Bennenden Health",
-    description: "Private healthcare, better value",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#FEE2E2",
-    iconColor: "#CC2229",
-  },
-  {
-    id: "dia",
-    name: "DIA Membership",
-    description: "DIA Membership",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#E6F1FB",
-    iconColor: "#1877D6",
-  },
-  {
-    id: "hmca",
-    name: "HMCA Health Insurance",
-    description: "Health insurance for you and yours",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#DCFCE7",
-    iconColor: "#15803D",
-  },
-  {
-    id: "pirkx",
-    name: "pirkx Wellbeing",
-    description: "The benefits and wellbeing package that's available to everyone!",
-    videoUrl: null,
-    thumbnailUrl: null,
-    color: "#E0F7FA",
-    iconColor: "#18A999",
-  },
-];
-
-const COMMUNITY_COUNTS: { likes: number; comments: number }[] = [
-  { likes: 12, comments: 3 },
-  { likes: 8, comments: 1 },
-];
-
-function getVideoThumbnail(
-  videoUrl: string | null,
-  thumbnailUrl: string | null,
-): string | null {
-  if (thumbnailUrl) return thumbnailUrl;
-  if (!videoUrl) return null;
-
-  const ytPatterns = [
-    /youtube\.com\/watch\?v=([^&\s?]+)/,
-    /youtu\.be\/([^?\s&]+)/,
-    /youtube\.com\/embed\/([^?\s&]+)/,
-  ];
-  for (const pattern of ytPatterns) {
-    const match = videoUrl.match(pattern);
-    if (match?.[1]) {
-      return `https://img.youtube.com` + `/vi/${match[1]}/mqdefault.jpg`;
-    }
-  }
-
-  return null;
-}
-
-
-function getPerkEmbedUrl(url: string): string {
-  if (
-    url.includes("youtube.com/embed") ||
-    url.includes("player.vimeo.com")
-  ) {
-    return url;
-  }
-
-  const ytPatterns = [
-    /youtube\.com\/watch\?v=([^&\s?]+)/,
-    /youtu\.be\/([^?\s&]+)/,
-  ];
-  for (const pattern of ytPatterns) {
-    const match = url.match(pattern);
-    if (match?.[1]) {
-      return `https://www.youtube.com` + `/embed/${match[1]}`;
-    }
-  }
-
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) {
-    return `https://player.vimeo.com` + `/video/${vimeoMatch[1]}`;
-  }
-
-  return url;
-}
-
-
-function timeAgo(value: string | null | undefined): string {
-  if (!value) return "";
-  const then = new Date(value).getTime();
-  if (Number.isNaN(then)) return "";
-  const mins = Math.max(0, Math.round((Date.now() - then) / 60000));
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.round(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.round(hrs / 24);
-  if (days < 7) return `${days}d ago`;
-  return `${Math.round(days / 7)}w ago`;
-}
-
-function categoryIcon(name: string) {
-  const n = name.toLowerCase();
-  if (n.includes("health")) return <IconHeart size={22} color={TEAL} />;
-  if (n.includes("shop") || n.includes("retail"))
-    return <IconShoppingBag size={22} color={TEAL} />;
-  if (n.includes("professional") || n.includes("business"))
-    return <IconBriefcase size={22} color={TEAL} />;
-  return <IconGift size={22} color={TEAL} />;
-}
-
-function categoryBlurb(name: string) {
-  const n = name.toLowerCase();
-  if (n.includes("health")) return "GP · Mental health";
-  if (n.includes("shop") || n.includes("retail")) return "Retail · Cinema";
-  if (n.includes("professional") || n.includes("business")) return "DIA · CPD";
-  return "Member benefits";
-}
-
-function newsCategoryColor(category: string | null) {
-  const c = (category ?? "").toLowerCase();
-  if (c.includes("road") || c.includes("safety")) return RED;
-  if (c.includes("motor")) return BLUE;
-  return "rgba(255,255,255,0.7)";
-}
-
-function SectionHeaderRow({
-  label,
-  color,
-  action,
-  onAction,
-  badge,
-  description,
+function SectionTitle({
+  strong,
+  rest,
+  subtitle,
+  color = ORANGE,
 }: {
-  label: string;
-  color: string;
-  action: string;
-  onAction: () => void;
-  badge?: string;
-  description?: string;
+  strong: string;
+  rest?: string;
+  subtitle?: string;
+  color?: string;
 }) {
   return (
-    <div style={{ padding: "14px 16px 10px" }}>
+    <div style={{ marginBottom: 12 }}>
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 4,
+          fontFamily: SORA,
+          fontSize: 19,
+          fontWeight: 900,
+          letterSpacing: "-0.01em",
+          color: NAVY,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: ".6px",
-              color,
-            }}
-          >
-            {label}
-          </span>
-          {badge && (
-            <span
-              style={{
-                background: RED,
-                color: "#fff",
-                fontSize: 9,
-                fontWeight: 700,
-                borderRadius: 8,
-                padding: "1px 6px",
-              }}
-            >
-              {badge}
-            </span>
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={onAction}
-          style={{
-            fontSize: 11,
-            color: BLUE,
-            fontWeight: 600,
-            cursor: "pointer",
-            background: "transparent",
-            border: "none",
-            padding: 0,
-          }}
-        >
-          {action}
-        </button>
+        <span style={{ color }}>{strong}</span>
+        {rest ? ` ${rest}` : ""}
       </div>
-      {description && (
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#0B2341",
-            lineHeight: 1.4,
-          }}
-        >
-          {description}
-        </div>
+      {subtitle && (
+        <div style={{ fontSize: 13, color: GREY, marginTop: 4, lineHeight: 1.4 }}>{subtitle}</div>
       )}
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-// Page
+// Static content
+/* ------------------------------------------------------------------ */
+
+const DIA_BENEFITS = [
+  "Professional representation",
+  "24/7 legal & professional cover",
+  "Advice & support",
+  "Industry updates",
+  "Exclusive member benefits",
+];
+
+const WEBSITE_FREE = [
+  "5-page professional website",
+  "Your EveryDriver web address",
+  "Mobile friendly",
+  "Contact & enquiry tools",
+  "Showcase your lessons and areas covered",
+];
+
+const PERK_CARDS: {
+  title: string;
+  sub: string;
+  body: string;
+  colour: string;
+  icon: React.ReactNode;
+  to: string;
+}[] = [
+  {
+    title: "PERKBOX",
+    sub: "",
+    body: "Thousands of discounts on shopping, dining, travel and more.",
+    colour: "#EC4899",
+    icon: <IconSparkles size={20} color="#EC4899" />,
+    to: "/perks",
+  },
+  {
+    title: "HMCA BENEFITS",
+    sub: "",
+    body: "Access included at no extra cost.",
+    colour: GREEN,
+    icon: <IconShieldCheck size={20} color={GREEN} />,
+    to: "/perks",
+  },
+  {
+    title: "20-PAGE WEBSITE",
+    sub: "& CUSTOM DOMAIN",
+    body: "Professional website with your own domain.",
+    colour: BLUE,
+    icon: <IconWorld size={20} color={BLUE} />,
+    to: "/subscription",
+  },
+  {
+    title: "PRO SHOP",
+    sub: "",
+    body: "Exclusive products and offers for driving instructors.",
+    colour: ORANGE,
+    icon: <IconShoppingBag size={20} color={ORANGE} />,
+    to: "/marketplace",
+  },
+];
+
+const BRANDS: { name: string; colour: string; italic?: boolean; offer: string }[] = [
+  { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards" },
+  { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink" },
+  { name: "Sainsbury's", colour: "#F06C00", offer: "Up to 10% off Gift Cards" },
+  { name: "ASDA", colour: "#00A94F", offer: "Up to 10% off Gift Cards" },
+  { name: "JUST EAT", colour: "#FF8000", italic: true, offer: "Up to 20% off" },
+  { name: "Uber Eats", colour: "#06C167", offer: "Up to 20% off" },
+];
+
+const PRO_FEATURES = [
+  "DIA membership (worth £125/year)",
+  "20-page website",
+  "Custom domain",
+  "PRO Radio",
+  "PRO TV",
+  "PRO Podcasts",
+  "PRO News",
+  "Perkbox benefits",
+  "HMCA benefits",
+  "PRO Shop",
+  "Exclusive PRO content",
+];
+
+const BENENDEN_FEATURES = [
+  "24/7 GP helpline",
+  "Mental health support",
+  "Physiotherapy and diagnostics",
+  "Treatment when NHS waits are long",
+];
+
+const ADDONS = [
+  { title: "MULTI CAR", body: "Manage more than one car on your account.", price: "£2.99/month" },
+  { title: "WHITE LABEL", body: "Run EveryDriver under your own brand.", price: "£19.99/month" },
+];
+
+/* ------------------------------------------------------------------ */
+// Route
 /* ------------------------------------------------------------------ */
 
 export const Route = createFileRoute("/pro-teaser")({
   head: () => ({
     meta: [
-      { title: "PRO Overview — Every Driver Pro" },
+      { title: "Join EveryDriver PRO — DIA membership, website & perks" },
       {
         name: "description",
         content:
-          "A snapshot of your Every Driver PRO ecosystem: perks, PRO Shop, radio, PRO TV, news and community.",
+          "EveryDriver PRO includes DIA membership worth £125/year, a professional website, Perkbox savings and PRO Radio, TV, Podcasts and News. From £24.99/month.",
       },
-      { property: "og:title", content: "PRO Overview — Every Driver Pro" },
+      { property: "og:title", content: "Join EveryDriver PRO" },
       {
         property: "og:description",
         content:
-          "A snapshot of your Every Driver PRO ecosystem: perks, PRO Shop, radio, PRO TV, news and community.",
+          "DIA membership, a professional website, everyday savings and PRO media — all in one membership for driving instructors.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: () => <ProTeaserRoute />,
@@ -370,2053 +243,912 @@ function ProTeaserRoute() {
   );
 }
 
+/* ------------------------------------------------------------------ */
+// Page
+/* ------------------------------------------------------------------ */
+
 export function ProTeaserPage({
   onNavigate,
   onNavigateToMedia,
   supabase = defaultSupabase,
 }: ProTeaserProps = {}) {
   const radio = useProRadioContext();
+  const go = (to: string) => onNavigate?.(to);
 
-  const [loading, setLoading] = useState(true);
-  const [perkCategories, setPerkCategories] = useState<PerkCategory[]>([]);
-  const [perkTotal, setPerkTotal] = useState(0);
-  const [perkVideos, setPerkVideos] = useState<Array<{
-    id: string;
-    name: string;
-    video_url: string | null;
-    video_embed_url: string | null;
-    icon_color: string | null;
-  }>>([]);
-  const [listings, setListings] = useState<ShopListing[]>([]);
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
-  const [posts, setPosts] = useState<CommunityPost[]>([]);
-  const [perkVideo, setPerkVideo] = useState<string | null>(null);
-  const [communityPage, setCommunityPage] = useState(0);
-
-  const communityScrollRef = useRef<HTMLDivElement>(null);
+  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
 
   useEffect(() => {
     let cancelled = false;
-    const timeout = window.setTimeout(() => {
-      if (!cancelled) setLoading(false);
-    }, 3000);
-
     (async () => {
-      const [catRes, shopRes, tvRes, bitesizeRes, perkVideosRes, newsRes, postRes] =
-        await Promise.allSettled([
-          supabase.from("benefit_perks").select("category").eq("active", true),
-          supabase
-            .from("marketplace_listings")
-            .select("id, title, price_display, image_urls, marketplace_categories(name)")
-            .eq("is_active", true)
-            .is("deleted_at", null)
-            .order("created_at", { ascending: false })
-            .limit(4),
-          supabase
-            .from("howto_videos")
-            .select(
-              "id, title, category, thumbnail_url, video_embed_url, video_url, sort_order",
-            )
-            .eq("is_published", true)
-            .order("sort_order", { ascending: true })
-            .limit(4),
-          supabase
-            .from("bitesize_videos")
-            .select("id, title, category, thumbnail_url, video_url, created_at")
-            .eq("is_published", true)
-            .is("deleted_at", null)
-            .order("created_at", { ascending: false })
-            .limit(4),
-          supabase
-            .from("benefit_partners")
-            .select("id, name, video_url, video_embed_url, icon_color")
-            .eq("active", true)
-            .limit(8),
-          supabase
-            .from("news_articles")
-            .select(
-              "id, title, category, image_url, published_at, source, description, read_time_mins",
-            )
-            .eq("is_hidden", false)
-            .order("published_at", { ascending: false })
-            .limit(2),
-          supabase
-            .from("local_chat_messages")
-            .select("id, message, created_at, instructors(name)")
-            .is("deleted_at", null)
-            .order("created_at", { ascending: false })
-            .limit(8),
-        ]);
-
-
+      const [tvRes, newsRes] = await Promise.allSettled([
+        supabase
+          .from("howto_videos")
+          .select("id, title, thumbnail_url, sort_order")
+          .eq("is_published", true)
+          .order("sort_order", { ascending: true })
+          .limit(3),
+        supabase
+          .from("news_articles")
+          .select("id, title, source, published_at")
+          .eq("is_hidden", false)
+          .order("published_at", { ascending: false })
+          .limit(3),
+      ]);
       if (cancelled) return;
-
-      if (catRes.status === "fulfilled" && Array.isArray(catRes.value.data)) {
-        const rows = catRes.value.data as { category: string | null }[];
-        setPerkTotal(rows.length);
-        const counts = new Map<string, number>();
-        for (const r of rows) {
-          const key = (r.category ?? "").trim();
-          if (!key) continue;
-          counts.set(key, (counts.get(key) ?? 0) + 1);
-        }
-        setPerkCategories(
-          [...counts.entries()]
-            .map(([name, count]) => ({ name, count }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 3),
-        );
-      }
-
-      if (shopRes.status === "fulfilled" && Array.isArray(shopRes.value.data)) {
-        setListings(
-          (shopRes.value.data as any[]).map((r) => ({
+      if (tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)) {
+        setVideos(
+          (tvRes.value.data as any[]).map((r) => ({
             id: String(r.id),
             title: r.title ?? null,
-            price_display: r.price_display ?? null,
-            thumbnail_url: Array.isArray(r.image_urls) ? (r.image_urls[0] ?? null) : null,
-            category: r.marketplace_categories?.name ?? null,
+            thumbnail_url: r.thumbnail_url ?? null,
           })),
         );
       }
-
-      const howtoVideos: TvVideo[] =
-        tvRes.status === "fulfilled" && Array.isArray(tvRes.value.data)
-          ? (tvRes.value.data as any[]).map((r) => ({
-              id: String(r.id),
-              title: r.title ?? null,
-              category: r.category ?? null,
-              thumbnail_url: r.thumbnail_url ?? null,
-              video_embed_url: r.video_embed_url ?? null,
-              video_url: r.video_url ?? null,
-            }))
-          : [];
-
-      const bitesizeVideos: TvVideo[] =
-        bitesizeRes.status === "fulfilled" &&
-        Array.isArray(bitesizeRes.value.data)
-          ? (bitesizeRes.value.data as any[]).map((r) => ({
-              id: String(r.id),
-              title: r.title ?? null,
-              category: r.category ?? null,
-              thumbnail_url: r.thumbnail_url ?? null,
-              video_embed_url: null,
-              video_url: r.video_url ?? null,
-            }))
-          : [];
-
-      setVideos([...howtoVideos, ...bitesizeVideos].slice(0, 4));
-
-      if (
-        perkVideosRes.status === "fulfilled" &&
-        Array.isArray(perkVideosRes.value.data)
-      ) {
-        const partnersWithVideo = (perkVideosRes.value.data as any[]).filter(
-          (p) => p.video_url || p.video_embed_url,
-        );
-        setPerkVideos(
-          partnersWithVideo.map((r) => ({
-            id: String(r.id),
-            name: r.name ?? "",
-            video_url: r.video_url ?? null,
-            video_embed_url: r.video_embed_url ?? null,
-            icon_color: r.icon_color ?? null,
-          })),
-        );
-      }
-
-
-
       if (newsRes.status === "fulfilled" && Array.isArray(newsRes.value.data)) {
-        setNews(newsRes.value.data as NewsArticle[]);
-      }
-
-      if (postRes.status === "fulfilled" && Array.isArray(postRes.value.data)) {
-        setPosts(
-          (postRes.value.data as any[]).map((r) => ({
+        setNews(
+          (newsRes.value.data as any[]).map((r) => ({
             id: String(r.id),
-            body: r.message ?? null,
-            created_at: r.created_at ?? null,
-            authorName: r.instructors?.name ?? null,
+            title: r.title ?? null,
+            source: r.source ?? null,
           })),
         );
       }
-
-      setLoading(false);
     })();
-
     return () => {
       cancelled = true;
-      window.clearTimeout(timeout);
     };
   }, [supabase]);
 
-  const go = (to: string) => onNavigate?.(to);
-
-  const postPairs = useMemo(() => {
-    const pairs: CommunityPost[][] = [];
-    for (let i = 0; i < posts.length; i += 2) {
-      pairs.push(posts.slice(i, i + 2));
-    }
-    return pairs;
-  }, [posts]);
-
-  const perkExplainers = useMemo<PerkExplainer[]>(() => {
-    const fromPartners = perkVideos.map((p) => {
-      const fallback = PERK_EXPLAINERS.find(
-        (e) =>
-          e.id === p.id ||
-          e.name.toLowerCase() === (p.name ?? "").toLowerCase(),
-      );
-      return {
-        id: p.id,
-        name: p.name,
-        description: fallback?.description ?? p.name,
-        videoUrl: p.video_embed_url ?? p.video_url,
-        thumbnailUrl: null,
-        color: p.icon_color
-          ? `${p.icon_color}22`
-          : (fallback?.color ?? "#E8F8F4"),
-        iconColor: p.icon_color ?? fallback?.iconColor ?? "#18A999",
-      };
-    });
-
-    const partnerIds = new Set(fromPartners.map((p) => p.id));
-    const fillers = PERK_EXPLAINERS.filter(
-      (p) => !partnerIds.has(p.id),
-    ).slice(0, Math.max(0, 4 - fromPartners.length));
-
-    return [...fromPartners, ...fillers].slice(0, 4);
-  }, [perkVideos]);
-
-
-  const onCommunityScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    const page = Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
-    setCommunityPage(page);
-  };
+  const annual = billing === "annual";
 
   return (
     <div
       style={{
         background: "#fff",
         minHeight: "100dvh",
-        paddingBottom: 100,
+        paddingBottom: 120,
         fontFamily: "Poppins, system-ui, sans-serif",
       }}
     >
-      {/* ============ SECTION 1 — PRO HEADER ============ */}
-      <div
-        style={{
-          padding: "calc(env(safe-area-inset-top, 0px) + 64px) 16px 24px",
-          borderBottom: "1px solid #F0F0F0",
-        }}
-      >
-        <div
+      <div style={{ maxWidth: 520, margin: "0 auto" }}>
+        {/* ============ 1 — DIA MEMBERSHIP ============ */}
+        <section
           style={{
-            fontFamily: "Sora, Poppins, system-ui, sans-serif",
-            fontSize: 32,
-            fontWeight: 900,
-            color: NAVY,
-            lineHeight: 1.05,
-            letterSpacing: "-0.02em",
-            marginBottom: 10,
+            position: "relative",
+            padding: "calc(env(safe-area-inset-top, 0px) + 64px) 16px 24px",
+            overflow: "hidden",
           }}
         >
-          Your PRO Driver Hub
-        </div>
-        <div
-          style={{
-            fontSize: 15,
-            fontWeight: 500,
-            color: "#536579",
-            lineHeight: 1.35,
-            maxWidth: 360,
-            marginBottom: 16,
-          }}
-        >
-          Everything you need to save money, stay informed and get more from your professional driving career.
-        </div>
-        <div
-          style={{
-            width: 32,
-            height: 4,
-            borderRadius: 2,
-            background: PRO_BLUE,
-            marginBottom: 20,
-          }}
-        />
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {["PRO Perks", "PRO Shop", "Radio", "PRO TV", "News", "Community"].map(
-            (tag, idx) => {
-              const selected = idx === 0;
-              return (
-                <span
-                  key={tag}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: selected ? "#fff" : "#536579",
-                    background: selected ? NAVY : "#F4F6F8",
-                    borderRadius: 999,
-                    padding: "5px 10px",
-                    boxShadow: selected
-                      ? "0 2px 6px rgba(11,35,65,0.18)"
-                      : undefined,
-                  }}
-                >
-                  {selected && <IconStar size={11} color="#fff" fill="#fff" />}
-                  {tag}
-                </span>
-              );
-            },
-          )}
-        </div>
-      </div>
+          <img
+            src={instructorHeroAsset.url}
+            alt="Driving instructor in a car"
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: "58%",
+              height: 300,
+              objectFit: "cover",
+              objectPosition: "center 20%",
+              borderBottomLeftRadius: 120,
+              opacity: 0.95,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: "58%",
+              height: 300,
+              background: "linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.6) 30%, rgba(255,255,255,0) 70%)",
+            }}
+          />
 
-      {/* ============ SECTION 2 — PRO PERKS ============ */}
-      <div style={{ borderBottom: "1px solid #F0F0F0", paddingBottom: 16 }}>
-        {/* Header */}
-        <div style={{ padding: "14px 16px 10px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 4,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-              <img
-                src={proLogoAsset.url}
-                alt="PRO"
-                style={{ height: 26, width: "auto", display: "block", flexShrink: 0 }}
-              />
-              <span
-                style={{
-                  fontSize: 15,
-                  fontWeight: 800,
-                  color: NAVY,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                PRO PERKS
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => go("/pro?tab=perks")}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                fontSize: 12,
-                fontWeight: 600,
-                color: PRO_BLUE,
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
-            >
-              See all →
-            </button>
-          </div>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#0B2341",
-              lineHeight: 1.4,
-            }}
-          >
-            Save money every day with 58 exclusive benefits for EDP members
-          </div>
-        </div>
-
-        {/* Hero */}
-        <div
-          style={{
-            margin: "0 16px 14px",
-            background: "#F0F7FC",
-            borderRadius: 18,
-            padding: 14,
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            border: "1px solid rgba(24,119,214,0.08)",
-          }}
-        >
-          <div
-            style={{
-              width: 84,
-              height: 84,
-              borderRadius: 18,
-              background: "linear-gradient(135deg, #E1EEF7 0%, #EAF5FD 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
+          <div style={{ position: "relative", maxWidth: 300 }}>
             <img
-              src={proLogoAsset.url}
-              alt="PRO"
-              style={{ width: 62, height: "auto", display: "block" }}
+              src={diaLogoAsset.url}
+              alt="DIA"
+              style={{ height: 78, width: "auto", display: "block", marginBottom: 12 }}
             />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
+            <span
               style={{
-                fontSize: 10,
+                display: "inline-block",
+                background: BLUE,
+                color: "#fff",
+                fontSize: 10.5,
                 fontWeight: 800,
-                color: PRO_TEAL,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
+                letterSpacing: ".8px",
+                borderRadius: 999,
+                padding: "4px 12px",
+                marginBottom: 8,
               }}
             >
-              PRO PERKS
-            </div>
-            <div
+              INCLUDED
+            </span>
+            <h1
               style={{
-                fontSize: 22,
-                fontWeight: 800,
+                fontFamily: SORA,
+                fontSize: 27,
+                fontWeight: 900,
                 color: NAVY,
                 lineHeight: 1.05,
-                marginTop: 5,
                 letterSpacing: "-0.02em",
+                margin: 0,
               }}
             >
-              Save £1,000s every year
+              DIA MEMBERSHIP
+            </h1>
+            <div
+              style={{
+                fontFamily: SORA,
+                fontSize: 17,
+                fontWeight: 800,
+                color: BLUE,
+                marginTop: 4,
+                marginBottom: 8,
+              }}
+            >
+              WORTH £125/YEAR
             </div>
-            <div style={{ fontSize: 12.5, color: "#536579", marginTop: 5 }}>
-              {perkTotal > 0 ? perkTotal : "Exclusive"} exclusive benefits for EDP members
+            <p style={{ fontSize: 13.5, color: GREY, lineHeight: 1.45, margin: "0 0 14px" }}>
+              Professional representation, advice, support and industry updates.{" "}
+              <strong style={{ color: NAVY }}>Included</strong> with EveryDriver PRO.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {DIA_BENEFITS.map((b) => (
+                <Tick key={b}>{b}</Tick>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Category cards */}
-        {perkCategories.length > 0 && (
+          {/* Worth badge */}
+          <div
+            style={{
+              position: "absolute",
+              right: 16,
+              top: "calc(env(safe-area-inset-top, 0px) + 120px)",
+              width: 104,
+              padding: "14px 8px 22px",
+              background: `linear-gradient(160deg, ${BLUE}, #0F5FB0)`,
+              color: "#fff",
+              textAlign: "center",
+              borderRadius: "12px 12px 52px 52px",
+              boxShadow: "0 10px 20px rgba(11,35,65,0.25)",
+            }}
+          >
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".5px" }}>WORTH</div>
+            <div style={{ fontFamily: SORA, fontSize: 26, fontWeight: 900, lineHeight: 1.1 }}>
+              £125
+            </div>
+            <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".5px", opacity: 0.9 }}>
+              PER YEAR
+            </div>
+          </div>
+        </section>
+
+        {/* ============ 2 — WEBSITE ============ */}
+        <section style={{ padding: "8px 16px 24px" }}>
+          <div style={{ ...CARD, padding: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 999,
+                  background: "#E6F5EC",
+                  display: "grid",
+                  placeItems: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconWorld size={22} color={GREEN} />
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 800,
+                    letterSpacing: ".7px",
+                    color: GREEN,
+                  }}
+                >
+                  YOUR WEBSITE
+                </div>
+                <div
+                  style={{
+                    fontFamily: SORA,
+                    fontSize: 24,
+                    fontWeight: 900,
+                    color: GREEN,
+                    lineHeight: 1,
+                  }}
+                >
+                  FREE
+                </div>
+              </div>
+            </div>
+
+            <img
+              src={websiteMockAsset.url}
+              alt="Example driving school website on desktop and mobile"
+              style={{
+                width: "100%",
+                borderRadius: 12,
+                display: "block",
+                marginBottom: 14,
+                border: `1px solid ${LINE}`,
+              }}
+            />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {WEBSITE_FREE.map((w) => (
+                <Tick key={w} color={GREEN}>
+                  {w}
+                </Tick>
+              ))}
+            </div>
+
+            <div
+              style={{
+                marginTop: 14,
+                background: "#F2F7FD",
+                border: `1px solid #D9E8F8`,
+                borderRadius: 12,
+                padding: "10px 12px",
+              }}
+            >
+              <div style={{ fontSize: 11.5, fontWeight: 800, color: BLUE, letterSpacing: ".5px", marginBottom: 6 }}>
+                PRO GIVES YOU
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                <Tick>Up to 20 pages</Tick>
+                <Tick>Your own custom domain</Tick>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ 3 — PRO PERKS ============ */}
+        <section style={{ padding: "0 16px 24px" }}>
+          <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
+            {PERK_CARDS.map((p) => (
+              <button
+                key={p.title}
+                type="button"
+                onClick={() => go(p.to)}
+                style={{
+                  ...CARD,
+                  padding: 12,
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: `${p.colour}18`,
+                    display: "grid",
+                    placeItems: "center",
+                  }}
+                >
+                  {p.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
+                    {p.title}
+                  </div>
+                  {p.sub && (
+                    <div style={{ fontSize: 11.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
+                      {p.sub}
+                    </div>
+                  )}
+                </div>
+                <div style={{ fontSize: 12, color: GREY, lineHeight: 1.35 }}>{p.body}</div>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ============ 4 — PRO MEDIA HUB ============ */}
+        <section style={{ padding: "0 16px 24px" }}>
+          <SectionTitle
+            strong="PRO"
+            rest="MEDIA HUB"
+            subtitle="Industry news, advice and entertainment — made for driving instructors."
+          />
+
+          {/* PRO RADIO — hero media card */}
+          <button
+            type="button"
+            onClick={() => go("/radio")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              borderRadius: 16,
+              padding: 16,
+              marginBottom: 10,
+              color: "#fff",
+              background: `linear-gradient(135deg, ${NAVY}, #123A69)`,
+              boxShadow: "0 8px 20px rgba(11,35,65,0.25)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <IconRadio size={22} color="#fff" />
+              <span style={{ fontFamily: SORA, fontSize: 17, fontWeight: 900, letterSpacing: ".3px" }}>
+                PRO RADIO
+              </span>
+            </div>
+            <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.4, maxWidth: 250 }}>
+              Your instructor station, anywhere you are.
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                gap: 3,
+                height: 26,
+                marginTop: 12,
+              }}
+            >
+              {Array.from({ length: 34 }).map((_, i) => (
+                <span
+                  key={i}
+                  style={{
+                    flex: 1,
+                    borderRadius: 2,
+                    background: radio.isPlaying ? "#4FA9F5" : "rgba(79,169,245,0.55)",
+                    height: `${20 + Math.abs(Math.sin(i * 1.7)) * 80}%`,
+                  }}
+                />
+              ))}
+            </div>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                radio.toggle();
+              }}
+              role="button"
+              tabIndex={-1}
+              style={{
+                position: "absolute",
+                right: 16,
+                top: 16,
+                background: "rgba(255,255,255,0.16)",
+                borderRadius: 999,
+                padding: "6px 12px",
+                fontSize: 11.5,
+                fontWeight: 700,
+              }}
+            >
+              {radio.isPlaying ? "Pause" : "Listen"}
+            </div>
+          </button>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
+            <MediaCard
+              title="PRO TV"
+              body="Practical videos, guides and shows for instructors."
+              colour="#CC2229"
+              icon={<IconDeviceTv size={20} color="#fff" />}
+              items={videos.map((v) => v.title ?? "").filter(Boolean).slice(0, 2)}
+              onClick={() => go("/learn")}
+            />
+            <MediaCard
+              title="PRO PODCASTS"
+              body="Expert advice and real conversations on the go."
+              colour="#7C3AED"
+              icon={<IconMicrophone size={20} color="#fff" />}
+              onClick={() => onNavigateToMedia?.()}
+            />
+            <MediaCard
+              title="PRO NEWS"
+              body="Industry updates that matter, when they matter."
+              colour="#0F766E"
+              icon={<IconNews size={20} color="#fff" />}
+              items={news.map((n) => n.title ?? "").filter(Boolean).slice(0, 2)}
+              onClick={() => onNavigateToMedia?.()}
+            />
+            <MediaCard
+              title="PRO SHOP"
+              body="Exclusive products and offers for instructors."
+              colour={ORANGE}
+              icon={<IconShoppingBag size={20} color="#fff" />}
+              onClick={() => go("/marketplace")}
+            />
+          </div>
+        </section>
+
+        {/* ============ 5 — PERKBOX DISCOUNTS ============ */}
+        <section style={{ padding: "0 16px 24px" }}>
+          <div style={{ ...CARD, padding: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+              <img
+                src={perkboxLogoAsset.url}
+                alt="Perkbox"
+                style={{ height: 18, width: "auto", display: "block" }}
+              />
+            </div>
+            <div
+              style={{
+                fontSize: 12.5,
+                fontWeight: 800,
+                color: NAVY,
+                letterSpacing: ".5px",
+                marginTop: 6,
+              }}
+            >
+              THOUSANDS OF DISCOUNTS WITH PERKBOX
+            </div>
+            <div style={{ fontSize: 12.5, color: GREY, marginTop: 3, marginBottom: 10 }}>
+              Save on the brands you love, every day.
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0,1fr))",
+                gap: 8,
+              }}
+            >
+              {BRANDS.map((b) => (
+                <div
+                  key={b.name}
+                  style={{
+                    border: `1px solid ${LINE}`,
+                    borderRadius: 12,
+                    padding: "10px 6px",
+                    textAlign: "center",
+                    background: "#FBFCFE",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: SORA,
+                      fontSize: 12.5,
+                      fontWeight: 900,
+                      color: b.colour,
+                      fontStyle: b.italic ? "italic" : "normal",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {b.name}
+                  </div>
+                  <div style={{ fontSize: 9.5, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
+                    {b.offer}
+                  </div>
+                </div>
+              ))}
+              <div
+                style={{
+                  border: `1px solid ${LINE}`,
+                  borderRadius: 12,
+                  padding: "10px 6px",
+                  textAlign: "center",
+                  background: "#fff",
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <div>
+                  <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY }}>
+                    +9000
+                  </div>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
+                    MORE OFFERS
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ 6 — PRICING ============ */}
+        <section style={{ padding: "0 16px 24px" }}>
+          <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
+
+          {/* Billing toggle */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: `repeat(${Math.min(perkCategories.length, 3)}, 1fr)`,
-              gap: 10,
-              margin: "0 16px 14px",
-            }}
-          >
-            {perkCategories.slice(0, 3).map((cat) => {
-              const n = cat.name.toLowerCase();
-              const isPro = /professional|dia|cpd|training|business|insurance|legal|finance/.test(n);
-              const isShop = /shop|retail|cinema|leisure|lifestyle|entertainment|food|dining/.test(n);
-              const color = isPro ? PRO_TEAL : PRO_BLUE;
-              const tint = isPro ? "#EAF9F7" : "#EAF5FD";
-              const Icon = isPro ? IconBriefcase : isShop ? IconShoppingBag : IconHeart;
-              return (
-                <div
-                  key={cat.name}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => go("/pro?tab=perks")}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") go("/pro?tab=perks");
-                  }}
-                  style={{
-                    background: tint,
-                    border: "1px solid rgba(11,35,65,0.05)",
-                    borderRadius: 16,
-                    padding: "12px 10px",
-                    position: "relative",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    minWidth: 0,
-                  }}
-                >
-                  <span
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0 1px 3px rgba(11,35,65,0.08)",
-                      fontSize: 11,
-                      fontWeight: 800,
-                      color,
-                    }}
-                  >
-                    ›
-                  </span>
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 10,
-                      background: "rgba(255,255,255,0.85)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <Icon size={18} color={color} stroke={1.8} />
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: NAVY,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {cat.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 22,
-                      fontWeight: 800,
-                      color,
-                      marginTop: 1,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {cat.count}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      color: "#8A94A3",
-                      marginTop: "auto",
-                      paddingTop: 8,
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {categoryBlurb(cat.name)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Perk explainers */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "12px 16px 8px",
-          }}
-        >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: ".6px",
-              color: "#1877D6",
-            }}
-          >
-            PERK EXPLAINERS
-          </span>
-          <button
-            type="button"
-            onClick={() => go("/perks")}
-            style={{
-              fontSize: 11,
-              color: "#2C97DE",
-              fontWeight: 600,
-              cursor: "pointer",
-              background: "transparent",
-              border: "none",
-              padding: 0,
-            }}
-          >
-            See all →
-          </button>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-            gap: 10,
-            padding: "0 16px 16px",
-          }}
-        >
-          {perkExplainers.slice(0, 4).map((tile) => {
-            const thumb = getVideoThumbnail(tile.videoUrl, tile.thumbnailUrl);
-            const hasThumb = Boolean(thumb);
-            const accent = tile.iconColor;
-            return (
-              <div
-                key={tile.id}
-                onClick={() => {
-                  if (tile.videoUrl) {
-                    setPerkVideo(getPerkEmbedUrl(tile.videoUrl));
-                  } else {
-                    toast.info(`${tile.name} coming soon`);
-                  }
-                }}
-                style={{
-                  background: "#fff",
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  border: "1px solid #EEF2F7",
-                  boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    aspectRatio: "16 / 10",
-                    background: hasThumb ? "#0B1F3A" : tile.color,
-                    overflow: "hidden",
-                  }}
-                >
-                  {hasThumb && (
-                    <>
-                      <img
-                        src={thumb!}
-                        alt={tile.name}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          background:
-                            "linear-gradient(135deg, rgba(0,0,0,0.28), transparent 55%)",
-                        }}
-                      />
-                    </>
-                  )}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 10,
-                      left: 10,
-                      width: 32,
-                      height: 32,
-                      borderRadius: "50%",
-                      background: accent,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-                    }}
-                  >
-                    <IconPlayerPlay size={14} color="#fff" fill="#fff" />
-                  </div>
-                </div>
-                <div
-                  style={{
-                    height: 3,
-                    background: accent,
-                    flexShrink: 0,
-                  }}
-                />
-                <div
-                  style={{
-                    padding: "12px 12px 14px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    flex: 1,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0B1F3A",
-                      lineHeight: 1.25,
-                    }}
-                  >
-                    {tile.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: "#6B7686",
-                      lineHeight: 1.35,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {tile.description}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: accent,
-                      marginTop: "auto",
-                      paddingTop: 6,
-                      opacity: tile.videoUrl ? 1 : 0.5,
-                    }}
-                  >
-                    Watch →
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-      </div>
-
-
-      {/* ============ SECTION 3 — PRO SHOP ============ */}
-      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
-        <SectionHeaderRow
-          label="PRO Shop"
-          color={AMBER}
-          action="Browse all →"
-          onAction={() => go("/marketplace")}
-          description="Premium products and exclusive deals for professional instructors"
-        />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 10,
-            padding: "0 16px 12px",
-          }}
-        >
-          {(listings.length > 0 ? listings : []).slice(0, 4).map((l) => {
-            const priceIsBad = !l.price_display || !/\d/.test(l.price_display);
-            return (
-              <div
-                key={l.id}
-                onClick={() => go("/marketplace")}
-                style={{
-                  background: "#fff",
-                  borderRadius: 8,
-                  border: "1px solid #E4E8EF",
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                  padding: 10,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                  cursor: "pointer",
-                }}
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    height: 90,
-                    borderRadius: 8,
-                    background: l.thumbnail_url
-                      ? `#EEF2F7 url(${l.thumbnail_url}) center/cover no-repeat`
-                      : "#EEF2F7",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {!l.thumbnail_url && <IconCamera size={26} color="#aaa" />}
-                </div>
-                <div style={{ minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: NAVY,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      marginBottom: 3,
-                    }}
-                  >
-                    {l.title ?? "Listing"}
-                  </div>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      background: "#EFF6FF",
-                      color: BLUE,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      borderRadius: 8,
-                      padding: "2px 6px",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {l.category || "PRO Shop"}
-                  </span>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                    }}
-                  >
-                    {priceIsBad ? (
-                      <span style={{ fontSize: 11, color: "#888" }}>
-                        No price set
-                      </span>
-                    ) : (
-                      <span
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 700,
-                          color: NAVY,
-                        }}
-                      >
-                        {l.price_display}
-                      </span>
-                    )}
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        color: BLUE,
-                      }}
-                    >
-                      View ›
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-          {listings.length === 0 && (
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                padding: 16,
-                fontSize: 12,
-                color: "#888",
-                background: "#fff",
-                borderRadius: 8,
-                border: "1px solid #E4E8EF",
-              }}
-            >
-              {loading ? "Loading listings…" : "No listings yet."}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ============ SECTION 4 — PRO RADIO ============ */}
-      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
-        {/* Header */}
-        <div style={{ padding: "22px 16px 18px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 4,
+              background: "#F1F4F8",
+              borderRadius: 999,
+              padding: 4,
               marginBottom: 14,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <IconRadio size={18} color={PRO_TEAL} stroke={2} />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 800,
-                  letterSpacing: 1.2,
-                  color: PRO_TEAL,
-                  textTransform: "uppercase",
-                }}
-              >
-                PRO Radio
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => go("/radio")}
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: PRO_BLUE,
-                cursor: "pointer",
-                background: "transparent",
-                border: "none",
-                padding: 0,
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              All stations
-              <span style={{ fontSize: 15, lineHeight: 1 }}>→</span>
-            </button>
-          </div>
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: "Sora, sans-serif",
-              fontSize: 24,
-              fontWeight: 700,
-              color: NAVY,
-              lineHeight: 1.2,
-              letterSpacing: -0.5,
-            }}
-          >
-            Music and talk radio to keep you going between lessons.
-          </h2>
-          <p
-            style={{
-              margin: "8px 0 0",
-              fontSize: 14,
-              color: "#6B7686",
-              lineHeight: 1.45,
-            }}
-          >
-            All ad free. All the time.
-          </p>
-        </div>
-
-        {/* PRO Live hero */}
-        <div style={{ padding: "0 16px 16px" }}>
-          <div
-            onClick={() => go("/radio")}
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              borderRadius: 22,
-              cursor: "pointer",
-              background: `linear-gradient(135deg, ${PRO_BLUE} 0%, #0B93D2 50%, ${PRO_TEAL} 100%)`,
-              boxShadow: "0 12px 32px rgba(24,119,214,0.28)",
-              padding: 20,
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-              minHeight: 210,
-            }}
-          >
-            {/* Background waveform */}
-            <style>{`
-              @keyframes proWave {
-                0%, 100% { transform: scaleY(0.35); }
-                50% { transform: scaleY(1); }
-              }
-            `}</style>
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                right: 14,
-                bottom: 18,
-                display: "flex",
-                alignItems: "flex-end",
-                gap: 4,
-                opacity: 0.45,
-              }}
-            >
-              {[18, 32, 24, 42, 30, 48, 26, 38, 22, 44, 28, 52, 34, 46, 20].map(
-                (h, i) => (
-                  <span
-                    key={i}
-                    className="pro-wave-bar"
-                    style={{
-                      width: 5,
-                      height: h,
-                      borderRadius: 3,
-                      background: "#fff",
-                      display: "block",
-                      transformOrigin: "bottom",
-                      animation: `proWave ${1.2 + (i % 3) * 0.2}s ease-in-out infinite`,
-                      animationDelay: `${i * 0.08}s`,
-                    }}
-                  />
-                )
-              )}
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: 10, position: "relative", zIndex: 1 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
-                  background: "rgba(255,255,255,0.95)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-                }}
-              >
-                <IconRadio size={22} color={PRO_BLUE} stroke={1.8} />
-              </div>
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 5,
-                  background: "#E53935",
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 800,
-                  letterSpacing: 0.8,
-                  padding: "5px 10px",
-                  borderRadius: 999,
-                  boxShadow: "0 2px 8px rgba(229,57,53,0.3)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: "#fff",
-                    display: "inline-block",
-                  }}
-                />
-                LIVE
-              </span>
-            </div>
-
-            <div style={{ position: "relative", zIndex: 1, flex: 1 }}>
-              <div
-                style={{
-                  fontSize: 26,
-                  fontWeight: 800,
-                  color: "#fff",
-                  letterSpacing: -0.6,
-                  lineHeight: 1.1,
-                }}
-              >
-                PRO Live
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "rgba(255,255,255,0.92)",
-                  marginTop: 5,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  maxWidth: "68%",
-                }}
-              >
-                {radio.nowPlaying?.artist ?? "PRO Live"}
-                {" · "}
-                {radio.nowPlaying?.title ?? "Feel good driving"}
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.95)",
-                  lineHeight: 1.35,
-                  maxWidth: "55%",
-                }}
-              >
-                Feel good driving,
-                <br />
-                all day long
-              </div>
+            {(["monthly", "annual"] as const).map((mode) => (
               <button
+                key={mode}
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  radio.toggle();
-                }}
+                onClick={() => setBilling(mode)}
                 style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "50%",
-                  background: "#fff",
                   border: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   cursor: "pointer",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.22)",
-                  flexShrink: 0,
+                  borderRadius: 999,
+                  padding: "9px 0",
+                  fontFamily: "inherit",
+                  fontSize: 13,
+                  fontWeight: 800,
+                  color: billing === mode ? "#fff" : GREY,
+                  background: billing === mode ? NAVY : "transparent",
+                  boxShadow: billing === mode ? "0 2px 8px rgba(11,35,65,0.2)" : undefined,
                 }}
-                aria-label={radio.isPlaying ? "Pause radio" : "Play radio"}
               >
-                {radio.isPlaying ? (
-                  <IconPlayerPause size={28} color={PRO_BLUE} />
-                ) : (
-                  <IconPlayerPlay size={28} color={PRO_BLUE} fill={PRO_BLUE} style={{ marginLeft: 3 }} />
+                {mode === "monthly" ? "Monthly" : "Annual"}
+                {mode === "annual" && (
+                  <span style={{ fontSize: 10.5, marginLeft: 6, opacity: 0.9 }}>save more</span>
                 )}
               </button>
-            </div>
+            ))}
           </div>
-        </div>
 
-        {/* PRO Talk */}
-        <div style={{ padding: "0 16px 16px" }}>
-          <div
-            onClick={() => go("/radio")}
-            style={{
-              borderRadius: 22,
-              cursor: "pointer",
-              background: "#F5FBFA",
-              border: "1px solid #E3F0ED",
-              padding: 20,
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-              minHeight: 180,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
-                  background: "#DFF3F0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <IconMicrophone size={22} color={PRO_TEAL} stroke={1.8} />
-              </div>
-              <span
-                style={{
-                  background: "#DFF3F0",
-                  color: "#0E8C7C",
-                  fontSize: 10,
-                  fontWeight: 800,
-                  letterSpacing: 0.8,
-                  padding: "5px 10px",
-                  borderRadius: 999,
-                }}
-              >
-                COMING SOON
-              </span>
-            </div>
+          {/* PRO */}
+          <PlanCard
+            accent={ORANGE}
+            badge={annual ? "BEST VALUE" : "MOST POPULAR"}
+            name="PRO"
+            annual={annual}
+            price={annual ? "£199.99" : "£24.99"}
+            period={annual ? "/year" : "/month"}
+            note={annual ? "Everything in PRO, paid yearly" : "12-month commitment"}
+            saving={annual ? { headline: "Save £99.89", detail: "That's only £16.67/month" } : null}
+            wasNow={annual ? { was: "£299.88", now: "£199.99 per year" } : null}
+            features={PRO_FEATURES}
+            cta={annual ? "JOIN PRO ANNUAL" : "JOIN PRO"}
+            footnote={annual ? "£199.99 per year" : "£24.99 per month for 12 months"}
+            onCta={() => go("/subscription")}
+          />
 
-            <div>
-              <div
-                style={{
-                  fontSize: 24,
-                  fontWeight: 800,
-                  color: NAVY,
-                  letterSpacing: -0.5,
-                  lineHeight: 1.1,
-                }}
-              >
-                PRO Talk
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "#6B7686",
-                  marginTop: 5,
-                  lineHeight: 1.45,
-                }}
-              >
-                Instructor talk radio, launching soon.
-              </div>
-            </div>
+          <div style={{ height: 12 }} />
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: "auto",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#5A6A7A",
-                }}
-              >
-                <IconUsers size={18} color={PRO_TEAL} stroke={1.8} />
-                Real talk for real instructors
-              </div>
-              <div
-                aria-hidden
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: "50%",
-                  background: "#fff",
-                  border: "1.5px solid #C9E9E4",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
-                }}
-              >
-                <IconPlayerPlay size={20} color="#9FD8D0" fill="#9FD8D0" style={{ marginLeft: 2 }} />
-              </div>
-            </div>
-          </div>
-        </div>
+          {/* PRO+ */}
+          <PlanCard
+            accent="#7C3AED"
+            badge={annual ? "BEST VALUE" : undefined}
+            name="PRO+"
+            annual={annual}
+            price={annual ? "£299.99" : "£39.99"}
+            period={annual ? "/year" : "/month"}
+            note={annual ? "Everything in PRO+, paid yearly" : "12-month commitment"}
+            saving={annual ? { headline: "Save £179.89", detail: "That's only £24.99/month" } : null}
+            wasNow={annual ? { was: "£479.88", now: "£299.99 per year" } : null}
+            intro="Everything in PRO, plus:"
+            heartLine="Benenden Health"
+            features={BENENDEN_FEATURES}
+            cta={annual ? "JOIN PRO+ ANNUAL" : "JOIN PRO+"}
+            footnote={annual ? "£299.99 per year" : "£39.99 per month for 12 months"}
+            onCta={() => go("/subscription")}
+          />
+        </section>
 
-        {/* More stations */}
-        <div style={{ padding: "8px 0 24px" }}>
+        {/* ============ 7 — ADD-ONS ============ */}
+        <section style={{ padding: "0 16px 24px" }}>
           <div
             style={{
-              fontSize: 18,
-              fontWeight: 700,
-              color: NAVY,
-              padding: "0 16px 12px",
-              fontFamily: "Sora, sans-serif",
-            }}
-          >
-            More stations
-          </div>
-          <div
-            style={{
-              display: "flex",
-              gap: 10,
-              overflowX: "auto",
-              scrollSnapType: "x mandatory",
-              padding: "0 16px",
-              WebkitOverflowScrolling: "touch",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          >
-            {MINI_STATIONS.map((station) => {
-              const isSelected = radio.selectedStation === station.name;
-              const isPlaying = isSelected && radio.isPlaying;
-              return (
-                <button
-                  key={station.name}
-                  type="button"
-                  onClick={() => radio.playStream(station.stream, station.name)}
-                  style={{
-                    flex: "0 0 auto",
-                    scrollSnapAlign: "start",
-                    width: 132,
-                    borderRadius: 18,
-                    padding: "16px 12px",
-                    background: "#fff",
-                    border: `1px solid ${isSelected ? station.color : "#EBEEF2"}`,
-                    boxShadow: "0 2px 8px rgba(11,35,65,0.05)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 10,
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 54,
-                      height: 54,
-                      borderRadius: "50%",
-                      background: `${station.color}15`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {isPlaying ? (
-                      <IconPlayerPause size={24} color={station.color} />
-                    ) : (
-                      <IconRadio size={24} color={station.color} stroke={1.8} />
-                    )}
-                  </div>
-                  <div style={{ textAlign: "center" }}>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: NAVY,
-                        display: "block",
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {station.name}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 10,
-                        color: "#8A96A3",
-                        display: "block",
-                        marginTop: 3,
-                      }}
-                    >
-                      {STATION_DESCRIPTIONS[station.name] ?? ""}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: "50%",
-                      border: `1.5px solid ${station.color}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginTop: "auto",
-                    }}
-                  >
-                    <IconPlayerPlay size={16} color={station.color} fill={station.color} style={{ marginLeft: 1 }} />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-
-      {/* ============ SECTION 5 — PRO TV ============ */}
-      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
-        <SectionHeaderRow
-          label="PRO TV"
-          color={BLUE}
-          action="See all →"
-          onAction={() => onNavigateToMedia?.()}
-          description="Helpful videos to make you a better instructor and grow your business"
-        />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 8,
-            padding: "0 16px 16px",
-            borderTop: "1px solid #F0F0F0",
-          }}
-        >
-          {videos.slice(0, 4).map((v, i) => (
-            <div
-              key={v.id}
-              onClick={() => onNavigateToMedia?.()}
-              style={{
-                cursor: "pointer",
-              }}
-            >
-              <div
-                style={{
-                  height: 80,
-                  background: "#E8EDF2",
-                  position: "relative",
-                  overflow: "hidden",
-                  borderRadius: 8,
-                }}
-              >
-                {v.thumbnail_url && (
-                  <img
-                    src={v.thumbnail_url}
-                    alt={v.title ?? "Video"}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                )}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 15,
-                      background: "rgba(11,35,65,0.12)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconPlayerPlay
-                      size={13}
-                      color={NAVY}
-                      style={{ marginLeft: 1 }}
-                    />
-                  </div>
-                </div>
-                {i === 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 6,
-                      left: 6,
-                      background: BLUE,
-                      color: "#fff",
-                      fontSize: 8,
-                      fontWeight: 700,
-                      borderRadius: 3,
-                      padding: "1px 5px",
-                    }}
-                  >
-                    NEW
-                  </div>
-                )}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 6,
-                    right: 6,
-                    background: "rgba(0,0,0,0.4)",
-                    color: "#fff",
-                    fontSize: 9,
-                    borderRadius: 3,
-                    padding: "1px 5px",
-                  }}
-                >
-                  Watch
-                </div>
-              </div>
-              <div style={{ padding: "10px 0 0" }}>
-                <div style={{ fontSize: 9, color: "#536579", marginBottom: 3 }}>
-                  {v.category ?? "PRO TV"}
-                </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: NAVY,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {v.title ?? "Untitled"}
-                </div>
-              </div>
-            </div>
-          ))}
-          {videos.length === 0 && (
-            <div style={{ gridColumn: "1 / -1", padding: 16, fontSize: 12, color: "#888" }}>
-              {loading ? "Loading videos…" : "No videos yet."}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ============ SECTION 6 — NEWS ============ */}
-      <div style={{ borderBottom: "1px solid #F0F0F0" }}>
-        <SectionHeaderRow
-          label="News"
-          color={RED}
-          action="See all →"
-          onAction={() => onNavigateToMedia?.()}
-          description="Latest driving industry news, road safety updates and motoring stories"
-        />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: 12,
-            padding: "4px 16px 18px",
-            alignItems: "stretch",
-          }}
-        >
-          {news.slice(0, 2).map((a) => (
-            <article
-              key={a.id}
-              onClick={() => onNavigateToMedia?.()}
-              style={{
-                cursor: "pointer",
-                background: "#fff",
-                border: "1px solid #ECECEC",
-                borderRadius: 10,
-                boxShadow: "0 1px 3px rgba(16,24,40,0.06)",
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "column",
-                minWidth: 0,
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  aspectRatio: "16 / 9",
-                  background: "#22303F",
-                  overflow: "hidden",
-                }}
-              >
-                {a.image_url && (
-                  <img
-                    src={a.image_url}
-                    alt={a.title ?? "Article"}
-                    loading="lazy"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background:
-                      "linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, transparent 38%, rgba(0,0,0,0.55) 100%)",
-                  }}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 8,
-                    left: 8,
-                    background: RED,
-                    color: "#fff",
-                    fontSize: 9,
-                    fontWeight: 800,
-                    letterSpacing: ".6px",
-                    textTransform: "uppercase",
-                    padding: "3px 6px",
-                    borderRadius: 3,
-                    maxWidth: "80%",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {a.category ?? a.source ?? "News"}
-                </span>
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 8,
-                    left: 8,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: "50%",
-                      background: "rgba(0,0,0,0.6)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconPlayerPlay size={11} color="#fff" fill="#fff" />
-                  </span>
-                  <span
-                    style={{
-                      color: "#fff",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      textShadow: "0 1px 2px rgba(0,0,0,0.5)",
-                    }}
-                  >
-                    {a.read_time_mins ? `${a.read_time_mins}:00` : "2:48"}
-                  </span>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  padding: "10px 12px 12px",
-                  flex: 1,
-                  minWidth: 0,
-                }}
-              >
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: 15,
-                    fontWeight: 800,
-                    lineHeight: 1.22,
-                    letterSpacing: "-0.2px",
-                    color: "#111827",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {a.title ?? "Untitled"}
-                </h3>
-                {a.description && (
-                  <p
-                    style={{
-                      margin: "5px 0 0",
-                      fontSize: 11.5,
-                      lineHeight: 1.4,
-                      color: "#6B7280",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {a.description}
-                  </p>
-                )}
-              </div>
-
-              <div
-                style={{
-                  borderTop: "1px solid #F2F2F2",
-                  padding: "8px 12px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 8,
-                }}
-              >
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 5,
-                    minWidth: 0,
-                    fontSize: 10.5,
-                    color: "#8A8F98",
-                    fontWeight: 500,
-                  }}
-                >
-                  <IconClock size={13} color="#8A8F98" />
-                  <span
-                    style={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {timeAgo(a.published_at)}
-                  </span>
-                </span>
-                <IconDotsVertical size={14} color="#B0B4BA" />
-              </div>
-            </article>
-          ))}
-          {news.length === 0 && (
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                padding: "18px 4px",
-                fontSize: 12,
-                color: "#888",
-              }}
-            >
-              {loading ? "Loading news…" : "No articles yet."}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ============ SECTION 7 — COMMUNITY ============ */}
-      <div style={{ padding: "24px 0 20px" }}>
-        {/* Inline header */}
-        <div style={{ padding: "0 16px 14px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              fontSize: 11.5,
+              fontWeight: 800,
+              letterSpacing: ".8px",
+              color: GREY,
               marginBottom: 8,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <IconUsers size={18} color={TEAL} stroke={1.8} />
-              <span
-                style={{
-                  fontFamily: "Sora, sans-serif",
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: 1,
-                  color: TEAL,
-                  textTransform: "uppercase",
-                }}
-              >
-                Community
-              </span>
-              <span
-                style={{
-                  background: RED,
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 800,
-                  borderRadius: 999,
-                  padding: "2px 8px",
-                }}
-              >
-                2 new
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => go("/community")}
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: BLUE,
-                cursor: "pointer",
-                background: "transparent",
-                border: "none",
-                padding: 0,
-              }}
-            >
-              See all →
-            </button>
+            ADD-ONS
           </div>
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: "Sora, sans-serif",
-              fontSize: 20,
-              fontWeight: 800,
-              color: NAVY,
-              lineHeight: 1.25,
-              letterSpacing: -0.4,
-            }}
-          >
-            Connect with other instructors, share tips and find cover in your
-            area
-          </h2>
-          <p style={{ margin: "6px 0 0", fontSize: 14, color: "#6B7686" }}>
-            Learn. Share. Support each other.
-          </p>
-        </div>
-
-        <div
-          ref={communityScrollRef}
-          onScroll={onCommunityScroll}
-          style={{
-            display: "flex",
-            overflowX: "auto",
-            scrollSnapType: "x mandatory",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-            WebkitOverflowScrolling: "touch",
-            paddingTop: 6,
-          }}
-        >
-          {postPairs.length === 0 ? (
-            <div style={{ padding: "0 16px", fontSize: 12, color: "#888" }}>
-              {loading ? "Loading community…" : "No posts yet."}
-            </div>
-          ) : (
-            postPairs.map((pair, pageIndex) => (
+          <div style={{ border: `1px solid ${LINE}`, borderRadius: 12, overflow: "hidden" }}>
+            {ADDONS.map((a, i) => (
               <div
-                key={pageIndex}
+                key={a.title}
                 style={{
-                  flex: "0 0 100%",
-                  scrollSnapAlign: "start",
                   display: "flex",
-                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                   gap: 12,
-                  padding: "0 16px",
-                  boxSizing: "border-box",
+                  padding: "11px 12px",
+                  borderTop: i === 0 ? undefined : `1px solid ${LINE}`,
+                  background: "#FBFCFE",
                 }}
               >
-                {pair.map((p, cardIndex) => {
-                  const globalIndex = pageIndex * 2 + cardIndex;
-                  const { likes, comments } =
-                    COMMUNITY_COUNTS[globalIndex] ?? {
-                      likes: 0,
-                      comments: 0,
-                    };
-                  const bodyText = (p.body ?? "").trim();
-                  const [firstLine, ...rest] = bodyText.split("\n");
-                  const excerpt = rest.join(" ").trim();
-                  const isCover = /cover|space available|swap/i.test(bodyText);
-                  return (
-                    <div
-                      key={p.id}
-                      onClick={() => go("/community")}
-                      style={{
-                        background: "#fff",
-                        borderRadius: 18,
-                        border: "1px solid #F0F1F4",
-                        boxShadow: "0 3px 12px rgba(11,35,65,0.04)",
-                        padding: 16,
-                        display: "flex",
-                        flexDirection: "column",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 10,
-                          marginBottom: 12,
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 42,
-                            height: 42,
-                            borderRadius: "50%",
-                            background: "#E6F6F3",
-                            color: TEAL,
-                            fontSize: 16,
-                            fontWeight: 800,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {(p.authorName ?? "E").charAt(0).toUpperCase()}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontSize: 15,
-                              fontWeight: 700,
-                              color: NAVY,
-                              lineHeight: 1.3,
-                            }}
-                          >
-                            {p.authorName ?? "EDP member"}
-                          </div>
-                          <div style={{ fontSize: 12, color: "#8A96A3" }}>
-                            {timeAgo(p.created_at)}
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                          style={{
-                            background: "transparent",
-                            border: "none",
-                            padding: 4,
-                            cursor: "pointer",
-                            color: "#8A96A3",
-                            flexShrink: 0,
-                          }}
-                        >
-                          <IconDotsVertical size={18} />
-                        </button>
-                      </div>
-
-                      <span
-                        style={{
-                          alignSelf: "flex-start",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 6,
-                          background: isCover ? "#F1ECFE" : "#E6F6F3",
-                          color: isCover ? "#7C4DFF" : TEAL,
-                          fontSize: 11,
-                          fontWeight: 800,
-                          letterSpacing: 0.6,
-                          padding: "6px 10px",
-                          borderRadius: 999,
-                          marginBottom: 10,
-                        }}
-                      >
-                        {isCover ? (
-                          <IconUsers size={14} stroke={2} />
-                        ) : (
-                          <IconBulb size={14} stroke={2} />
-                        )}
-                        {isCover ? "COVER AVAILABLE" : "TIP"}
-                      </span>
-
-                      <div
-                        style={{
-                          fontSize: 17,
-                          fontWeight: 800,
-                          color: NAVY,
-                          lineHeight: 1.3,
-                          letterSpacing: -0.2,
-                        }}
-                      >
-                        {firstLine || "Community post"}
-                      </div>
-                      {excerpt && (
-                        <div
-                          style={{
-                            fontSize: 14,
-                            color: "#6B7686",
-                            lineHeight: 1.5,
-                            marginTop: 6,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {excerpt}
-                        </div>
-                      )}
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 18,
-                          marginTop: 14,
-                          paddingTop: 12,
-                          borderTop: "1px solid #F1F3F6",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 6,
-                            fontSize: 13,
-                            fontWeight: 700,
-                            color: NAVY,
-                          }}
-                        >
-                          <IconHeart size={20} color={RED} fill={RED} />
-                          {likes}
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 6,
-                            fontSize: 13,
-                            fontWeight: 700,
-                            color: NAVY,
-                          }}
-                        >
-                          <IconMessageCircle
-                            size={20}
-                            color="#6B7686"
-                            fill="none"
-                          />
-                          {comments}
-                        </div>
-                        <div style={{ flex: 1 }} />
-                        <button
-                          type="button"
-                          onClick={(e) => e.stopPropagation()}
-                          style={{
-                            background: "transparent",
-                            border: "none",
-                            padding: 4,
-                            cursor: "pointer",
-                            color: "#6B7686",
-                          }}
-                        >
-                          <IconBookmark size={20} color="#6B7686" fill="none" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 700, color: NAVY }}>{a.title}</div>
+                  <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3 }}>{a.body}</div>
+                </div>
+                <div style={{ fontSize: 12.5, fontWeight: 700, color: NAVY, flexShrink: 0 }}>
+                  {a.price}
+                </div>
               </div>
-            ))
-          )}
-        </div>
-        {postPairs.length > 1 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 5,
-              marginTop: 14,
-            }}
-          >
-            {postPairs.map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  width: i === communityPage ? 16 : 7,
-                  height: 7,
-                  borderRadius: 4,
-                  background: i === communityPage ? NAVY : "#D9DEE5",
-                  transition: "all 0.2s ease",
-                }}
-              />
             ))}
           </div>
-        )}
-      </div>
+        </section>
 
-
-      {/* Perk explainer video modal */}
-      {perkVideo && (
-        <div
-          onClick={() => setPerkVideo(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.92)",
-            zIndex: 200,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        {/* ============ 8 — FINAL CTA ============ */}
+        <section style={{ padding: "0 16px 32px" }}>
           <button
             type="button"
-            onClick={() => setPerkVideo(null)}
+            onClick={() => go("/subscription")}
             style={{
-              position: "absolute",
-              top: 20,
-              right: 20,
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.3)",
+              width: "100%",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              borderRadius: 16,
+              padding: "16px 18px",
+              background: `linear-gradient(135deg, ${ORANGE}, #FF8A3D)`,
+              color: "#fff",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: 201,
+              justifyContent: "space-between",
+              gap: 12,
+              boxShadow: "0 10px 22px rgba(242,101,34,0.35)",
             }}
           >
-            <IconX size={24} color="#fff" />
+            <IconSparkles size={22} color="#fff" style={{ flexShrink: 0 }} />
+            <div style={{ textAlign: "center", flex: 1 }}>
+              <div style={{ fontFamily: SORA, fontSize: 16, fontWeight: 900, letterSpacing: ".2px" }}>
+                JOIN EVERYDRIVER PRO
+              </div>
+              <div style={{ fontSize: 12.5, opacity: 0.95 }}>From £24.99/month</div>
+            </div>
+            <IconChevronRight size={22} color="#fff" style={{ flexShrink: 0 }} />
           </button>
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-          >
-            <iframe
-              src={perkVideo}
-              title="Perk explainer video"
-              style={{ width: "100%", maxWidth: 390, height: 220, border: "none" }}
-              allowFullScreen
-              allow="autoplay; fullscreen"
-            />
-          </div>
-        </div>
-      )}
+        </section>
+      </div>
     </div>
   );
 }
 
-export default ProTeaserPage;
+/* ------------------------------------------------------------------ */
+// Media card
+/* ------------------------------------------------------------------ */
+
+function MediaCard({
+  title,
+  body,
+  colour,
+  icon,
+  items,
+  onClick,
+}: {
+  title: string;
+  body: string;
+  colour: string;
+  icon: React.ReactNode;
+  items?: string[];
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        textAlign: "left",
+        border: "none",
+        cursor: "pointer",
+        fontFamily: "inherit",
+        borderRadius: 14,
+        padding: 12,
+        color: "#fff",
+        background: `linear-gradient(140deg, ${colour}, ${colour}CC)`,
+        minHeight: 118,
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+        {icon}
+        <span style={{ fontFamily: SORA, fontSize: 13, fontWeight: 900, letterSpacing: ".3px" }}>
+          {title}
+        </span>
+      </div>
+      <div style={{ fontSize: 11.5, lineHeight: 1.35, opacity: 0.92 }}>{body}</div>
+      {items && items.length > 0 && (
+        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 3 }}>
+          {items.map((t) => (
+            <div
+              key={t}
+              style={{
+                fontSize: 10.5,
+                fontWeight: 600,
+                opacity: 0.95,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              • {t}
+            </div>
+          ))}
+        </div>
+      )}
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+// Plan card
+/* ------------------------------------------------------------------ */
+
+function PlanCard({
+  accent,
+  badge,
+  name,
+  price,
+  period,
+  note,
+  saving,
+  wasNow,
+  intro,
+  heartLine,
+  features,
+  cta,
+  footnote,
+  onCta,
+}: {
+  accent: string;
+  badge?: string;
+  name: string;
+  annual: boolean;
+  price: string;
+  period: string;
+  note: string;
+  saving: { headline: string; detail: string } | null;
+  wasNow: { was: string; now: string } | null;
+  intro?: string;
+  heartLine?: string;
+  features: string[];
+  cta: string;
+  footnote: string;
+  onCta: () => void;
+}) {
+  return (
+    <div style={{ ...CARD, padding: 14, borderColor: `${accent}55`, position: "relative" }}>
+      {badge && (
+        <span
+          style={{
+            position: "absolute",
+            top: -9,
+            left: 14,
+            background: accent,
+            color: "#fff",
+            fontSize: 9.5,
+            fontWeight: 800,
+            letterSpacing: ".6px",
+            borderRadius: 999,
+            padding: "3px 10px",
+          }}
+        >
+          {badge}
+        </span>
+      )}
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 10,
+          marginTop: 4,
+        }}
+      >
+        <div>
+          <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
+            EVERYDRIVER
+          </div>
+          <div style={{ fontFamily: SORA, fontSize: 28, fontWeight: 900, color: accent, lineHeight: 1 }}>
+            {name}
+          </div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontFamily: SORA, fontSize: 22, fontWeight: 900, color: NAVY, lineHeight: 1 }}>
+            {price}
+          </div>
+          <div style={{ fontSize: 11.5, color: GREY }}>{period}</div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "inline-block",
+          marginTop: 8,
+          background: "#F1F4F8",
+          color: NAVY,
+          fontSize: 10.5,
+          fontWeight: 700,
+          borderRadius: 999,
+          padding: "3px 10px",
+        }}
+      >
+        {note}
+      </div>
+
+      {saving && (
+        <div
+          style={{
+            marginTop: 10,
+            background: "#FFF6ED",
+            border: "1px solid #FBD9BC",
+            borderRadius: 12,
+            padding: "9px 12px",
+          }}
+        >
+          <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>{saving.headline}</div>
+          <div style={{ fontSize: 11.5, color: "#B4651F" }}>{saving.detail}</div>
+        </div>
+      )}
+
+      {intro && (
+        <div style={{ fontSize: 12.5, color: GREY, marginTop: 10 }}>{intro}</div>
+      )}
+      {heartLine && (
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+          <IconHeart size={16} color="#7C3AED" fill="#7C3AED" />
+          <span style={{ fontSize: 13.5, fontWeight: 800, color: NAVY }}>{heartLine}</span>
+        </div>
+      )}
+
+      <div
+        style={{
+          marginTop: 10,
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0,1fr))",
+          gap: 6,
+        }}
+      >
+        {features.map((f) => (
+          <Tick key={f} color={accent}>
+            {f}
+          </Tick>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={onCta}
+        style={{
+          marginTop: 14,
+          width: "100%",
+          border: "none",
+          cursor: "pointer",
+          fontFamily: "inherit",
+          borderRadius: 12,
+          padding: "13px 0",
+          background: accent,
+          color: "#fff",
+          fontSize: 14,
+          fontWeight: 900,
+          letterSpacing: ".5px",
+        }}
+      >
+        {cta}
+      </button>
+
+      <div style={{ textAlign: "center", marginTop: 8, fontSize: 11.5, color: GREY }}>
+        {wasNow ? (
+          <>
+            <span style={{ textDecoration: "line-through", marginRight: 6 }}>{wasNow.was}</span>
+            <strong style={{ color: NAVY }}>{wasNow.now}</strong>
+          </>
+        ) : (
+          footnote
+        )}
+      </div>
+    </div>
+  );
+}
