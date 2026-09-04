@@ -257,6 +257,12 @@ function NextLessonMap({
         keyboardShortcuts: false,
         clickableIcons: false,
         styles: [
+          { featureType: "all", elementType: "all", stylers: [{ saturation: -30 }, { lightness: -50 }] },
+          { featureType: "water", elementType: "all", stylers: [{ color: "#0B1F3A" }] },
+          { featureType: "landscape", elementType: "all", stylers: [{ color: "#132A4A" }] },
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#1E3A5F" }] },
+          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#8BA4C7" }] },
+          { featureType: "administrative", elementType: "labels.text.fill", stylers: [{ color: "#8BA4C7" }] },
           { featureType: "poi", stylers: [{ visibility: "off" }] },
           { featureType: "transit", stylers: [{ visibility: "off" }] },
         ],
@@ -336,7 +342,7 @@ function NextLessonMap({
       style={{
         position: 'relative',
         height,
-        background: '#E8EEF3',
+        background: '#132A4A',
         overflow: 'hidden',
         cursor: 'pointer',
         boxShadow: isLate ? 'inset 0 0 0 3px #C23B3B' : undefined,
