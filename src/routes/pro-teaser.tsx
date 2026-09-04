@@ -724,45 +724,47 @@ export function ProTeaserPage({
 
         {/* ============ 2 — WEBSITE ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
-          <ExplainerButton video={sectionVideos["website"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 999,
-                  background: "#E6F5EC",
-                  display: "grid",
-                  placeItems: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <IconWorld size={22} color={GREEN} />
-              </div>
-              <div style={{ minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: 800,
-                    letterSpacing: ".7px",
-                    color: GREEN,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "#E6F5EC",
+                    display: "grid",
+                    placeItems: "center",
+                    flexShrink: 0,
                   }}
                 >
-                  YOUR WEBSITE
+                  <IconWorld size={22} color={GREEN} />
                 </div>
-                <div
-                  style={{
-                    fontFamily: SORA,
-                    fontSize: 24,
-                    fontWeight: 900,
-                    color: GREEN,
-                    lineHeight: 1,
-                  }}
-                >
-                  FREE
+                <div style={{ minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 800,
+                      letterSpacing: ".7px",
+                      color: GREEN,
+                    }}
+                  >
+                    YOUR WEBSITE
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: SORA,
+                      fontSize: 24,
+                      fontWeight: 900,
+                      color: GREEN,
+                      lineHeight: 1,
+                    }}
+                  >
+                    FREE
+                  </div>
                 </div>
               </div>
+              <ExplainerButton video={sectionVideos["website"]} onOpen={setOpenVideo} />
             </div>
 
             <img
