@@ -6356,7 +6356,7 @@ function HomePage() {
                         color: isLate ? '#CC2229' : '#0B1F3A',
                         whiteSpace: 'nowrap',
                       }}>
-                        Arrive {etaLabel}
+                        ETA {etaLabel}
                       </span>
                     </>
                   )}
