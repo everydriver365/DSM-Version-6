@@ -329,8 +329,8 @@ const BENENDEN_FEATURES = [
 ];
 
 const ADDONS = [
-  { title: "MULTI CAR", body: "Manage more than one car on your account.", price: "£2.99/month" },
-  { title: "WHITE LABEL", body: "Run EveryDriver under your own brand.", price: "£19.99/month" },
+  { title: "MULTI CAR", body: "Manage more than one car on your account.", price: "£Call/month" },
+  { title: "WHITE LABEL", body: "Run EveryDriver under your own brand.", price: "£Call/month" },
 ];
 
 /* ------------------------------------------------------------------ */
