@@ -431,128 +431,150 @@ export function ProTeaserPage({
         </section>
 
         {/* ============ 1 — DIA MEMBERSHIP ============ */}
-        <section
-          style={{
-            position: "relative",
-            padding: "8px 16px 24px",
-            overflow: "hidden",
-          }}
-        >
-
-          <img
-            src={instructorHeroAsset.url}
-            alt="Driving instructor in a car"
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "58%",
-              height: 300,
-              objectFit: "cover",
-              objectPosition: "center 20%",
-              borderBottomLeftRadius: 120,
-              opacity: 0.95,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "58%",
-              height: 300,
-              background: "linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.6) 30%, rgba(255,255,255,0) 70%)",
-            }}
-          />
-
-          <div style={{ position: "relative", maxWidth: 300 }}>
-            <img
-              src={diaLogoAsset.url}
-              alt="DIA"
-              style={{
-                width: 96,
-                height: 96,
-                marginBottom: 12,
-                objectFit: "contain",
-                borderRadius: 12,
-              }}
-            />
-
-            <span
-              style={{
-                display: "inline-block",
-                background: BLUE,
-                color: "#fff",
-                fontSize: 10.5,
-                fontWeight: 800,
-                letterSpacing: ".8px",
-                borderRadius: 999,
-                padding: "4px 12px",
-                marginBottom: 8,
-              }}
-            >
-              INCLUDED
-            </span>
-            <h1
-              style={{
-                fontFamily: SORA,
-                fontSize: 27,
-                fontWeight: 900,
-                color: NAVY,
-                lineHeight: 1.05,
-                letterSpacing: "-0.02em",
-                margin: 0,
-              }}
-            >
-              DIA MEMBERSHIP
-            </h1>
+        <section style={{ padding: "8px 16px 24px" }}>
+          <div style={{ ...CARD, position: "relative", overflow: "hidden", padding: 0 }}>
+            {/* Instructor photo — upper right only */}
             <div
               style={{
-                fontFamily: SORA,
-                fontSize: 17,
-                fontWeight: 800,
-                color: BLUE,
-                marginTop: 4,
-                marginBottom: 8,
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: "46%",
+                height: 190,
+                overflow: "hidden",
               }}
             >
-              WORTH £125/YEAR
+              <img
+                src={instructorHeroAsset.url}
+                alt="Professional driving instructor sitting in a car"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center 25%",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.85) 22%, rgba(255,255,255,0) 62%)",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: 70,
+                  background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 88%)",
+                }}
+              />
             </div>
-            <p style={{ fontSize: 13.5, color: GREY, lineHeight: 1.45, margin: "0 0 14px" }}>
-              Professional representation, advice, support and industry updates.{" "}
-              <strong style={{ color: NAVY }}>Included</strong> with EveryDriver PRO.
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {DIA_BENEFITS.map((b) => (
-                <Tick key={b}>{b}</Tick>
-              ))}
-            </div>
-          </div>
 
-          {/* Worth badge */}
-          <div
-            style={{
-              position: "absolute",
-              right: 16,
-              top: "calc(env(safe-area-inset-top, 0px) + 120px)",
-              width: 104,
-              padding: "14px 8px 22px",
-              background: `linear-gradient(160deg, ${BLUE}, #0F5FB0)`,
-              color: "#fff",
-              textAlign: "center",
-              borderRadius: "12px 12px 52px 52px",
-              boxShadow: "0 10px 20px rgba(11,35,65,0.25)",
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".5px" }}>WORTH</div>
-            <div style={{ fontFamily: SORA, fontSize: 26, fontWeight: 900, lineHeight: 1.1 }}>
-              £125
+            {/* WORTH £125 PER YEAR badge */}
+            <div
+              style={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                width: 84,
+                padding: "10px 6px 12px",
+                background: `linear-gradient(160deg, ${BLUE}, #0F5FB0)`,
+                color: "#fff",
+                textAlign: "center",
+                borderRadius: 16,
+                boxShadow: "0 8px 18px rgba(11,35,65,0.25)",
+              }}
+            >
+              <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".6px" }}>WORTH</div>
+              <div style={{ fontFamily: SORA, fontSize: 22, fontWeight: 900, lineHeight: 1.1 }}>
+                £125
+              </div>
+              <div style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: ".6px", opacity: 0.9 }}>
+                PER YEAR
+              </div>
             </div>
-            <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".5px", opacity: 0.9 }}>
-              PER YEAR
+
+            {/* Content */}
+            <div style={{ position: "relative", padding: 18 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <img
+                  src={diaLogoAsset.url}
+                  alt="DIA"
+                  style={{ width: 54, height: 54, objectFit: "contain" }}
+                />
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: BLUE,
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 800,
+                    letterSpacing: ".8px",
+                    borderRadius: 999,
+                    padding: "5px 12px",
+                  }}
+                >
+                  INCLUDED
+                </span>
+              </div>
+
+              <h1
+                style={{
+                  fontFamily: SORA,
+                  fontSize: 25,
+                  fontWeight: 900,
+                  color: NAVY,
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.02em",
+                  margin: 0,
+                  maxWidth: "62%",
+                }}
+              >
+                DIA MEMBERSHIP
+              </h1>
+              <div
+                style={{
+                  fontFamily: SORA,
+                  fontSize: 15.5,
+                  fontWeight: 800,
+                  color: BLUE,
+                  marginTop: 4,
+                  marginBottom: 8,
+                }}
+              >
+                WORTH £125/YEAR
+              </div>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: GREY,
+                  lineHeight: 1.45,
+                  margin: "0 0 14px",
+                  maxWidth: "72%",
+                }}
+              >
+                Professional representation, advice, support and industry updates.{" "}
+                <strong style={{ color: NAVY }}>Included</strong> with EveryDriver PRO.
+              </p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+                  gap: "8px 12px",
+                }}
+              >
+                {DIA_BENEFITS.map((b) => (
+                  <Tick key={b}>{b}</Tick>
+                ))}
+              </div>
             </div>
           </div>
         </section>
+
 
         {/* ============ 2 — WEBSITE ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
