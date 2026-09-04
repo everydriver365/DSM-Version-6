@@ -474,29 +474,6 @@ export function ProTeaserPage({
               />
             </div>
 
-            {/* WORTH £125 PER YEAR badge */}
-            <div
-              style={{
-                position: "absolute",
-                top: 12,
-                right: 12,
-                width: 84,
-                padding: "10px 6px 12px",
-                background: `linear-gradient(160deg, ${BLUE}, #0F5FB0)`,
-                color: "#fff",
-                textAlign: "center",
-                borderRadius: 16,
-                boxShadow: "0 8px 18px rgba(11,35,65,0.25)",
-              }}
-            >
-              <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: ".6px" }}>WORTH</div>
-              <div style={{ fontFamily: SORA, fontSize: 22, fontWeight: 900, lineHeight: 1.1 }}>
-                £125
-              </div>
-              <div style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: ".6px", opacity: 0.9 }}>
-                PER YEAR
-              </div>
-            </div>
 
             {/* Content */}
             <div style={{ position: "relative", padding: 18 }}>
