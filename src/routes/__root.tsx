@@ -656,6 +656,30 @@ function GlobalMenu() {
             </div>
             <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
           </button>
+          {(!subscriptionTier || subscriptionTier === 'free') && (
+            <button
+              type="button"
+              onClick={() => go('/subscribe')}
+              style={{
+                width: '100%',
+                background: '#2C97DE',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 12,
+                padding: '12px 16px',
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: 'pointer',
+                marginTop: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+              }}
+            >
+              ⭐ Upgrade to PRO
+            </button>
+          )}
           <button
             type="button"
             onClick={() => go("/settings")}
