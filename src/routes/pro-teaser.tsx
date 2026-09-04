@@ -18,6 +18,7 @@ import {
   IconSparkles,
   IconUsers,
   IconWorld,
+  IconX,
 } from "@tabler/icons-react";
 
 import instructorHeroAsset from "@/assets/dia-instructor.png.asset.json";
