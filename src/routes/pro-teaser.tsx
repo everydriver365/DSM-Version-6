@@ -551,6 +551,7 @@ export function ProTeaserPage({
 
         {/* ============ 2 — WEBSITE ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["website"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
               <div
