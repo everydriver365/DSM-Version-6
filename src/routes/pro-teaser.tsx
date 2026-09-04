@@ -791,22 +791,31 @@ export function ProTeaserPage({
                 WebkitOverflowScrolling: "touch",
               }}
             >
-              {BRANDS.map((b) => (
-                <div
-                  key={b.name}
-                  style={{
-                    flex: "0 0 auto",
-                    fontFamily: SORA,
-                    fontSize: 15,
-                    fontWeight: 900,
-                    color: b.colour,
-                    fontStyle: b.italic ? "italic" : "normal",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {b.name}
-                </div>
-              ))}
+              {BRANDS.map((b) =>
+                b.image ? (
+                  <img
+                    key={b.name}
+                    src={b.image}
+                    alt={b.name}
+                    style={{ flex: "0 0 auto", height: 28, width: "auto", borderRadius: 4 }}
+                  />
+                ) : (
+                  <div
+                    key={b.name}
+                    style={{
+                      flex: "0 0 auto",
+                      fontFamily: SORA,
+                      fontSize: 15,
+                      fontWeight: 900,
+                      color: b.colour,
+                      fontStyle: b.italic ? "italic" : "normal",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {b.name}
+                  </div>
+                ),
+              )}
               <div
                 style={{
                   flex: "0 0 auto",
