@@ -754,50 +754,43 @@ export function ProTeaserPage({
 
           <div
             style={{
-              display: "flex",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0,1fr))",
               gap: 12,
-              overflowX: "auto",
-              alignItems: "stretch",
               padding: "10px 16px 4px",
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch",
             }}
           >
-            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
-              <PlanCard
-                accent={ORANGE}
-                badge="MOST POPULAR"
-                name="PRO"
-                price="£24.99"
-                period="/month"
-                note="12-month commitment"
-                saving={null}
-                wasNow={null}
-                features={PRO_FEATURES}
-                cta="JOIN PRO"
-                footnote="£24.99 per month for 12 months"
-                onCta={() => go("/subscription")}
-              />
-            </div>
+            <PlanCard
+              accent={ORANGE}
+              badge="MOST POPULAR"
+              name="PRO"
+              price="£24.99"
+              period="/month"
+              note="12-month commitment"
+              saving={null}
+              wasNow={null}
+              features={PRO_FEATURES}
+              cta="JOIN PRO"
+              footnote="£24.99 per month for 12 months"
+              onCta={() => go("/subscription")}
+            />
 
-            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
-              <PlanCard
-                accent="#E8A020"
-                badge="BEST VALUE"
-                name="PRO ANNUAL"
-                price="£199.99"
-                period="/year"
-                note="Everything in PRO, paid yearly"
-                saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
-                wasNow={{ was: "£299.88", now: "£199.99 per year" }}
-                features={[]}
-                cta="JOIN PRO ANNUAL"
-                footnote="£199.99 per year"
-                onCta={() => go("/subscription")}
-              />
-            </div>
+            <PlanCard
+              accent="#E8A020"
+              badge="BEST VALUE"
+              name="PRO ANNUAL"
+              price="£199.99"
+              period="/year"
+              note="Everything in PRO, paid yearly"
+              saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
+              wasNow={{ was: "£299.88", now: "£199.99 per year" }}
+              features={[]}
+              cta="JOIN PRO ANNUAL"
+              footnote="£199.99 per year"
+              onCta={() => go("/subscription")}
+            />
 
-            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+            <div style={{ gridColumn: "span 2 / span 2" }}>
               <PlanCard
                 accent="#7C3AED"
                 badge="BEST VALUE"
@@ -1113,23 +1106,24 @@ function PlanCard({
           marginTop: 4,
         }}
       >
-        <div>
+        <div style={{ minWidth: 0 }}>
           <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
             EVERYDRIVER
           </div>
           <div
             style={{
               display: "flex",
+              flexWrap: "wrap",
               alignItems: "center",
-              gap: 6,
+              gap: "0 6px",
               fontFamily: SORA,
-              fontSize: 28,
+              fontSize: "clamp(20px, 6vw, 28px)",
               fontWeight: 900,
               color: accent,
-              lineHeight: 1,
+              lineHeight: 1.05,
             }}
           >
-            <span style={{ display: "inline-flex", alignItems: "center" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
               {name.split(" ")[0].replace("+", "")}
               <span
                 aria-hidden
@@ -1137,13 +1131,13 @@ function PlanCard({
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 20,
-                  height: 20,
+                  width: "clamp(16px, 4.2vw, 20px)",
+                  height: "clamp(16px, 4.2vw, 20px)",
                   marginLeft: 2,
                   borderRadius: 999,
                   background: accent,
                   color: "#fff",
-                  fontSize: 12,
+                  fontSize: "clamp(10px, 2.8vw, 12px)",
                   lineHeight: 1,
                 }}
               >
@@ -1152,14 +1146,14 @@ function PlanCard({
               {name.split(" ")[0].includes("+") ? "+" : null}
             </span>
             {name.split(" ").slice(1).map((w) => (
-              <span key={w} style={{ color: NAVY }}>
+              <span key={w} style={{ color: NAVY, whiteSpace: "nowrap" }}>
                 {w}
               </span>
             ))}
           </div>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontFamily: SORA, fontSize: 22, fontWeight: 900, color: NAVY, lineHeight: 1 }}>
+        <div style={{ textAlign: "right", flexShrink: 0 }}>
+          <div style={{ fontFamily: SORA, fontSize: "clamp(17px, 5vw, 22px)", fontWeight: 900, color: NAVY, lineHeight: 1 }}>
             {price}
           </div>
           <div style={{ fontSize: 11.5, color: GREY }}>{period}</div>
