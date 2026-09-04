@@ -6046,7 +6046,7 @@ function HomePage() {
                         }}>
                           <IconCar stroke={1.5} size={13} color="#1877D6" />
                           <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                            {driveData.durationMinutes} min
+                             Travelling Time {driveData.durationMinutes} min
                           </span>
                           {driveData.distanceText && (
                             <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
