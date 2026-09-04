@@ -116,6 +116,7 @@ import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SubscribeIndexRouteImport } from './routes/subscribe.index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
 import { Route as NotesIndexRouteImport } from './routes/notes.index'
@@ -722,6 +723,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscribeIndexRoute = SubscribeIndexRouteImport.update({
+  id: '/subscribe/',
+  path: '/subscribe/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuotesIndexRoute = QuotesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -1239,6 +1245,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/subscribe/': typeof SubscribeIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1415,6 +1422,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/subscribe': typeof SubscribeIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1595,6 +1603,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/subscribe/': typeof SubscribeIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1776,6 +1785,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/subscribe/'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -1952,6 +1962,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/subscribe'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -2131,6 +2142,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/subscribe/'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -2291,6 +2303,7 @@ export interface RootRouteChildren {
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  SubscribeIndexRoute: typeof SubscribeIndexRoute
   ApiPublicNewsIngestRoute: typeof ApiPublicNewsIngestRoute
   ApiPublicSendLessonRemindersRoute: typeof ApiPublicSendLessonRemindersRoute
   ApiPublicSquareWebhookRoute: typeof ApiPublicSquareWebhookRoute
@@ -3062,6 +3075,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subscribe/': {
+      id: '/subscribe/'
+      path: '/subscribe'
+      fullPath: '/subscribe/'
+      preLoaderRoute: typeof SubscribeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quotes/': {
       id: '/quotes/'
       path: '/'
@@ -3773,6 +3793,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  SubscribeIndexRoute: SubscribeIndexRoute,
   ApiPublicNewsIngestRoute: ApiPublicNewsIngestRoute,
   ApiPublicSendLessonRemindersRoute: ApiPublicSendLessonRemindersRoute,
   ApiPublicSquareWebhookRoute: ApiPublicSquareWebhookRoute,
