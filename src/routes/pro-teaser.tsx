@@ -611,7 +611,7 @@ export function ProTeaserPage({
                     flex: 1,
                     borderRadius: 2,
                     background: radio.isPlaying ? "#4FA9F5" : "rgba(79,169,245,0.55)",
-                    height: `${20 + Math.abs(Math.sin(i * 1.7)) * 80}%`,
+                    height: `${Math.round(20 + Math.abs(Math.sin(i * 1.7)) * 80)}%`,
                   }}
                 />
               ))}
