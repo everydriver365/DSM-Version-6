@@ -761,85 +761,76 @@ export function ProTeaserPage({
         </section>
 
         {/* ============ 6 — PRICING ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
-
-          {/* Billing toggle */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 4,
-              background: "#F1F4F8",
-              borderRadius: 999,
-              padding: 4,
-              marginBottom: 14,
-            }}
-          >
-            {(["monthly", "annual"] as const).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setBilling(mode)}
-                style={{
-                  border: "none",
-                  cursor: "pointer",
-                  borderRadius: 999,
-                  padding: "9px 0",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  color: billing === mode ? "#fff" : GREY,
-                  background: billing === mode ? NAVY : "transparent",
-                  boxShadow: billing === mode ? "0 2px 8px rgba(11,35,65,0.2)" : undefined,
-                }}
-              >
-                {mode === "monthly" ? "Monthly" : "Annual"}
-                {mode === "annual" && (
-                  <span style={{ fontSize: 10.5, marginLeft: 6, opacity: 0.9 }}>save more</span>
-                )}
-              </button>
-            ))}
+        <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
           </div>
 
-          {/* PRO */}
-          <PlanCard
-            accent={ORANGE}
-            badge={annual ? "BEST VALUE" : "MOST POPULAR"}
-            name="PRO"
-            annual={annual}
-            price={annual ? "£199.99" : "£24.99"}
-            period={annual ? "/year" : "/month"}
-            note={annual ? "Everything in PRO, paid yearly" : "12-month commitment"}
-            saving={annual ? { headline: "Save £99.89", detail: "That's only £16.67/month" } : null}
-            wasNow={annual ? { was: "£299.88", now: "£199.99 per year" } : null}
-            features={PRO_FEATURES}
-            cta={annual ? "JOIN PRO ANNUAL" : "JOIN PRO"}
-            footnote={annual ? "£199.99 per year" : "£24.99 per month for 12 months"}
-            onCta={() => go("/subscription")}
-          />
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              overflowX: "auto",
+              padding: "10px 16px 4px",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+              <PlanCard
+                accent={ORANGE}
+                badge="MOST POPULAR"
+                name="PRO"
+                price="£24.99"
+                period="/month"
+                note="12-month commitment"
+                saving={null}
+                wasNow={null}
+                features={PRO_FEATURES}
+                cta="JOIN PRO"
+                footnote="£24.99 per month for 12 months"
+                onCta={() => go("/subscription")}
+              />
+            </div>
 
-          <div style={{ height: 12 }} />
+            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+              <PlanCard
+                accent="#E8A020"
+                badge="BEST VALUE"
+                name="PRO ANNUAL"
+                price="£199.99"
+                period="/year"
+                note="Everything in PRO, paid yearly"
+                saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
+                wasNow={{ was: "£299.88", now: "£199.99 per year" }}
+                features={[]}
+                cta="JOIN PRO ANNUAL"
+                footnote="£199.99 per year"
+                onCta={() => go("/subscription")}
+              />
+            </div>
 
-          {/* PRO+ */}
-          <PlanCard
-            accent="#7C3AED"
-            badge={annual ? "BEST VALUE" : undefined}
-            name="PRO+"
-            annual={annual}
-            price={annual ? "£299.99" : "£39.99"}
-            period={annual ? "/year" : "/month"}
-            note={annual ? "Everything in PRO+, paid yearly" : "12-month commitment"}
-            saving={annual ? { headline: "Save £179.89", detail: "That's only £24.99/month" } : null}
-            wasNow={annual ? { was: "£479.88", now: "£299.99 per year" } : null}
-            intro="Everything in PRO, plus:"
-            heartLine="Benenden Health"
-            features={BENENDEN_FEATURES}
-            cta={annual ? "JOIN PRO+ ANNUAL" : "JOIN PRO+"}
-            footnote={annual ? "£299.99 per year" : "£39.99 per month for 12 months"}
-            onCta={() => go("/subscription")}
-          />
+            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+              <PlanCard
+                accent="#7C3AED"
+                badge="BEST VALUE"
+                name="PRO+"
+                price="£39.99"
+                period="/month"
+                note="12-month commitment"
+                saving={null}
+                wasNow={null}
+                intro="Everything in PRO, plus:"
+                heartLine="Benenden Health"
+                features={BENENDEN_FEATURES}
+                cta="JOIN PRO+"
+                footnote="£39.99 per month for 12 months"
+                onCta={() => go("/subscription")}
+              />
+            </div>
+          </div>
         </section>
+
 
         {/* ============ 7 — TRUST + ADD-ONS ============ */}
         <section style={{ padding: "0 16px 24px" }}>
