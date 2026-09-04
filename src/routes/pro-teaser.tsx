@@ -4,16 +4,19 @@ import {
   IconCheck,
   IconChevronRight,
   IconDeviceTv,
+  IconGift,
   IconHeart,
   IconMicrophone,
   IconNews,
+  IconPigMoney,
   IconRadio,
   IconShieldCheck,
   IconShoppingBag,
   IconSparkles,
+  IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
-import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+
 import instructorHeroAsset from "@/assets/richard-with-car.jpg.asset.json";
 import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
@@ -129,48 +132,6 @@ const WEBSITE_FREE = [
   "Showcase your lessons and areas covered",
 ];
 
-const PERK_CARDS: {
-  title: string;
-  sub: string;
-  body: string;
-  colour: string;
-  icon: React.ReactNode;
-  to: string;
-}[] = [
-  {
-    title: "PERKBOX",
-    sub: "",
-    body: "Thousands of discounts on shopping, dining, travel and more.",
-    colour: "#EC4899",
-    icon: <IconSparkles size={20} color="#EC4899" />,
-    to: "/perks",
-  },
-  {
-    title: "HMCA BENEFITS",
-    sub: "",
-    body: "Access included at no extra cost.",
-    colour: GREEN,
-    icon: <IconShieldCheck size={20} color={GREEN} />,
-    to: "/perks",
-  },
-  {
-    title: "20-PAGE WEBSITE",
-    sub: "& CUSTOM DOMAIN",
-    body: "Professional website with your own domain.",
-    colour: BLUE,
-    icon: <IconWorld size={20} color={BLUE} />,
-    to: "/subscription",
-  },
-  {
-    title: "PRO SHOP",
-    sub: "",
-    body: "Exclusive products and offers for driving instructors.",
-    colour: ORANGE,
-    icon: <IconShoppingBag size={20} color={ORANGE} />,
-    to: "/marketplace",
-  },
-];
-
 const BRANDS: { name: string; colour: string; italic?: boolean; offer: string }[] = [
   { name: "TESCO", colour: "#EE1C2E", offer: "Up to 10% off Gift Cards" },
   { name: "COSTA", colour: "#6D1B32", offer: "Free regular hot drink" },
@@ -256,7 +217,6 @@ export function ProTeaserPage({
 
   const [videos, setVideos] = useState<TvVideo[]>([]);
   const [news, setNews] = useState<NewsArticle[]>([]);
-  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
 
   useEffect(() => {
     let cancelled = false;
@@ -299,8 +259,6 @@ export function ProTeaserPage({
       cancelled = true;
     };
   }, [supabase]);
-
-  const annual = billing === "annual";
 
   return (
     <div
@@ -347,11 +305,38 @@ export function ProTeaserPage({
           />
 
           <div style={{ position: "relative", maxWidth: 300 }}>
-            <img
-              src={diaLogoAsset.url}
-              alt="DIA"
-              style={{ height: 78, width: "auto", display: "block", marginBottom: 12 }}
-            />
+            <div
+              aria-label="DIA"
+              role="img"
+              style={{
+                width: 96,
+                height: 112,
+                marginBottom: 12,
+                display: "grid",
+                placeItems: "center",
+                background: `linear-gradient(160deg, #2C93F0, ${BLUE} 55%, #0F5FB0)`,
+                clipPath:
+                  "path('M48 0 L96 18 L96 62 C96 92 74 106 48 112 C22 106 0 92 0 62 L0 18 Z')",
+                boxShadow: "0 14px 26px rgba(24,119,214,0.28)",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: SORA,
+                  fontSize: 28,
+                  fontWeight: 900,
+                  color: "#fff",
+                  letterSpacing: "0.5px",
+                  border: "3px solid rgba(255,255,255,0.9)",
+                  borderRadius: 8,
+                  padding: "2px 8px",
+                  lineHeight: 1.1,
+                }}
+              >
+                DIA
+              </span>
+            </div>
+
             <span
               style={{
                 display: "inline-block",
@@ -490,71 +475,133 @@ export function ProTeaserPage({
               ))}
             </div>
 
-            <div
+            <button
+              type="button"
+              onClick={() => go("/subscription")}
               style={{
                 marginTop: 14,
-                background: "#F2F7FD",
-                border: `1px solid #D9E8F8`,
-                borderRadius: 12,
-                padding: "10px 12px",
+                width: "100%",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                borderRadius: 10,
+                padding: "13px 16px",
+                background: "#0E7A46",
+                color: "#fff",
+                fontSize: 13.5,
+                fontWeight: 900,
+                letterSpacing: ".6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
               }}
             >
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: BLUE, letterSpacing: ".5px", marginBottom: 6 }}>
-                PRO GIVES YOU
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                <Tick>Up to 20 pages</Tick>
-                <Tick>Your own custom domain</Tick>
-              </div>
-            </div>
+              <span style={{ flex: 1, textAlign: "center" }}>GET YOUR FREE WEBSITE</span>
+              <IconChevronRight size={18} color="#fff" style={{ flexShrink: 0 }} />
+            </button>
           </div>
         </section>
 
         {/* ============ 3 — PRO PERKS ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
-            {PERK_CARDS.map((p) => (
+        <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
+          </div>
+          <div style={{ padding: "0 16px" }}>
+            <div style={{ ...CARD, padding: 12, display: "flex", gap: 12, alignItems: "stretch" }}>
               <button
-                key={p.title}
                 type="button"
-                onClick={() => go(p.to)}
+                onClick={() => go("/perks")}
                 style={{
-                  ...CARD,
-                  padding: 12,
+                  flex: "0 0 96px",
+                  border: "none",
+                  background: "transparent",
                   textAlign: "left",
                   cursor: "pointer",
                   fontFamily: "inherit",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
+                  padding: 0,
                 }}
               >
+                <IconGift size={30} color="#7C3AED" />
                 <div
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: `${p.colour}18`,
-                    display: "grid",
-                    placeItems: "center",
+                    fontFamily: SORA,
+                    fontSize: 13,
+                    fontWeight: 900,
+                    color: NAVY,
+                    letterSpacing: ".3px",
+                    marginTop: 6,
                   }}
                 >
-                  {p.icon}
+                  PERKBOX
                 </div>
-                <div>
-                  <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
-                    {p.title}
-                  </div>
-                  {p.sub && (
-                    <div style={{ fontSize: 11.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
-                      {p.sub}
-                    </div>
-                  )}
+                <div style={{ fontSize: 11, color: GREY, lineHeight: 1.3, marginTop: 4 }}>
+                  Thousands of discounts
                 </div>
-                <div style={{ fontSize: 12, color: GREY, lineHeight: 1.35 }}>{p.body}</div>
               </button>
-            ))}
+
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  gap: 8,
+                  overflowX: "auto",
+                  paddingBottom: 2,
+                  WebkitOverflowScrolling: "touch",
+                }}
+              >
+                {BRANDS.map((b) => (
+                  <div
+                    key={b.name}
+                    style={{
+                      flex: "0 0 84px",
+                      border: `1px solid ${LINE}`,
+                      borderRadius: 10,
+                      padding: "10px 6px",
+                      textAlign: "center",
+                      background: "#FBFCFE",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: SORA,
+                        fontSize: 12,
+                        fontWeight: 900,
+                        color: b.colour,
+                        fontStyle: b.italic ? "italic" : "normal",
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      {b.name}
+                    </div>
+                    <div style={{ fontSize: 9, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
+                      {b.offer}
+                    </div>
+                  </div>
+                ))}
+                <div
+                  style={{
+                    flex: "0 0 84px",
+                    border: `1px solid ${LINE}`,
+                    borderRadius: 10,
+                    display: "grid",
+                    placeItems: "center",
+                    background: "#fff",
+                  }}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY }}>
+                      +9000
+                    </div>
+                    <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
+                      MORE OFFERS
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -566,79 +613,16 @@ export function ProTeaserPage({
             subtitle="Industry news, advice and entertainment — made for driving instructors."
           />
 
-          {/* PRO RADIO — hero media card */}
-          <button
-            type="button"
-            onClick={() => go("/radio")}
-            style={{
-              width: "100%",
-              textAlign: "left",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              borderRadius: 16,
-              padding: 16,
-              marginBottom: 10,
-              color: "#fff",
-              background: `linear-gradient(135deg, ${NAVY}, #123A69)`,
-              boxShadow: "0 8px 20px rgba(11,35,65,0.25)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-              <IconRadio size={22} color="#fff" />
-              <span style={{ fontFamily: SORA, fontSize: 17, fontWeight: 900, letterSpacing: ".3px" }}>
-                PRO RADIO
-              </span>
-            </div>
-            <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.4, maxWidth: 250 }}>
-              Your instructor station, anywhere you are.
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: 3,
-                height: 26,
-                marginTop: 12,
-              }}
-            >
-              {Array.from({ length: 34 }).map((_, i) => (
-                <span
-                  key={i}
-                  style={{
-                    flex: 1,
-                    borderRadius: 2,
-                    background: radio.isPlaying ? "#4FA9F5" : "rgba(79,169,245,0.55)",
-                    height: `${Math.round(20 + Math.abs(Math.sin(i * 1.7)) * 80)}%`,
-                  }}
-                />
-              ))}
-            </div>
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                radio.toggle();
-              }}
-              role="button"
-              tabIndex={-1}
-              style={{
-                position: "absolute",
-                right: 16,
-                top: 16,
-                background: "rgba(255,255,255,0.16)",
-                borderRadius: 999,
-                padding: "6px 12px",
-                fontSize: 11.5,
-                fontWeight: 700,
-              }}
-            >
-              {radio.isPlaying ? "Pause" : "Listen"}
-            </div>
-          </button>
-
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
+            <MediaCard
+              title="PRO RADIO"
+              body="Your instructor station, anywhere you are."
+              colour={NAVY}
+              icon={<IconRadio size={20} color="#fff" />}
+              wave
+              waveActive={radio.isPlaying}
+              onClick={() => go("/radio")}
+            />
             <MediaCard
               title="PRO TV"
               body="Practical videos, guides and shows for instructors."
@@ -652,6 +636,7 @@ export function ProTeaserPage({
               body="Expert advice and real conversations on the go."
               colour="#7C3AED"
               icon={<IconMicrophone size={20} color="#fff" />}
+              wave
               onClick={() => onNavigateToMedia?.()}
             />
             <MediaCard
@@ -662,183 +647,225 @@ export function ProTeaserPage({
               items={news.map((n) => n.title ?? "").filter(Boolean).slice(0, 2)}
               onClick={() => onNavigateToMedia?.()}
             />
-            <MediaCard
-              title="PRO SHOP"
-              body="Exclusive products and offers for instructors."
-              colour={ORANGE}
-              icon={<IconShoppingBag size={20} color="#fff" />}
-              onClick={() => go("/marketplace")}
-            />
           </div>
+
+          <button
+            type="button"
+            onClick={() => go("/marketplace")}
+            style={{
+              ...CARD,
+              marginTop: 10,
+              width: "100%",
+              padding: "12px 14px",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              textAlign: "left",
+            }}
+          >
+            <IconShoppingBag size={20} color={ORANGE} style={{ flexShrink: 0 }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
+                PRO SHOP
+              </div>
+              <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3 }}>
+                Exclusive products and offers for instructors.
+              </div>
+            </div>
+            <IconChevronRight size={18} color={GREY} style={{ flexShrink: 0 }} />
+          </button>
         </section>
 
         {/* ============ 5 — PERKBOX DISCOUNTS ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <div style={{ ...CARD, padding: 14 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+        <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
               <img
                 src={perkboxLogoAsset.url}
                 alt="Perkbox"
                 style={{ height: 18, width: "auto", display: "block" }}
               />
-            </div>
-            <div
-              style={{
-                fontSize: 12.5,
-                fontWeight: 800,
-                color: NAVY,
-                letterSpacing: ".5px",
-                marginTop: 6,
-              }}
-            >
-              THOUSANDS OF DISCOUNTS WITH PERKBOX
-            </div>
-            <div style={{ fontSize: 12.5, color: GREY, marginTop: 3, marginBottom: 10 }}>
-              Save on the brands you love, every day.
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, minmax(0,1fr))",
-                gap: 8,
-              }}
-            >
-              {BRANDS.map((b) => (
-                <div
-                  key={b.name}
-                  style={{
-                    border: `1px solid ${LINE}`,
-                    borderRadius: 12,
-                    padding: "10px 6px",
-                    textAlign: "center",
-                    background: "#FBFCFE",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: SORA,
-                      fontSize: 12.5,
-                      fontWeight: 900,
-                      color: b.colour,
-                      fontStyle: b.italic ? "italic" : "normal",
-                      lineHeight: 1.1,
-                    }}
-                  >
-                    {b.name}
-                  </div>
-                  <div style={{ fontSize: 9.5, color: GREY, marginTop: 5, lineHeight: 1.25 }}>
-                    {b.offer}
-                  </div>
-                </div>
-              ))}
               <div
                 style={{
-                  border: `1px solid ${LINE}`,
-                  borderRadius: 12,
-                  padding: "10px 6px",
-                  textAlign: "center",
-                  background: "#fff",
-                  display: "grid",
-                  placeItems: "center",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  color: NAVY,
+                  letterSpacing: ".5px",
                 }}
               >
-                <div>
-                  <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY }}>
-                    +9000
-                  </div>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
-                    MORE OFFERS
-                  </div>
-                </div>
+                THOUSANDS OF DISCOUNTS WITH PERKBOX
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 18,
+              overflowX: "auto",
+              padding: "4px 16px",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {BRANDS.map((b) => (
+              <div
+                key={b.name}
+                style={{
+                  flex: "0 0 auto",
+                  fontFamily: SORA,
+                  fontSize: 15,
+                  fontWeight: 900,
+                  color: b.colour,
+                  fontStyle: b.italic ? "italic" : "normal",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {b.name}
+              </div>
+            ))}
+            <div
+              style={{
+                flex: "0 0 auto",
+                border: `1px solid ${LINE}`,
+                borderRadius: 10,
+                padding: "6px 12px",
+                textAlign: "center",
+                background: "#fff",
+              }}
+            >
+              <div style={{ fontFamily: SORA, fontSize: 14, fontWeight: 900, color: NAVY }}>
+                +9000
+              </div>
+              <div style={{ fontSize: 8.5, fontWeight: 700, color: GREY, letterSpacing: ".4px" }}>
+                MORE OFFERS
               </div>
             </div>
           </div>
         </section>
 
-        {/* ============ 6 — PRICING ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
 
-          {/* Billing toggle */}
+        {/* ============ 6 — PRICING ============ */}
+        <section style={{ padding: "0 0 24px" }}>
+          <div style={{ padding: "0 16px" }}>
+            <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              overflowX: "auto",
+              padding: "10px 16px 4px",
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+              <PlanCard
+                accent={ORANGE}
+                badge="MOST POPULAR"
+                name="PRO"
+                price="£24.99"
+                period="/month"
+                note="12-month commitment"
+                saving={null}
+                wasNow={null}
+                features={PRO_FEATURES}
+                cta="JOIN PRO"
+                footnote="£24.99 per month for 12 months"
+                onCta={() => go("/subscription")}
+              />
+            </div>
+
+            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+              <PlanCard
+                accent="#E8A020"
+                badge="BEST VALUE"
+                name="PRO ANNUAL"
+                price="£199.99"
+                period="/year"
+                note="Everything in PRO, paid yearly"
+                saving={{ headline: "Save £99.89", detail: "That's only £16.67/month" }}
+                wasNow={{ was: "£299.88", now: "£199.99 per year" }}
+                features={[]}
+                cta="JOIN PRO ANNUAL"
+                footnote="£199.99 per year"
+                onCta={() => go("/subscription")}
+              />
+            </div>
+
+            <div style={{ flex: "0 0 284px", scrollSnapAlign: "start" }}>
+              <PlanCard
+                accent="#7C3AED"
+                badge="BEST VALUE"
+                name="PRO+"
+                price="£39.99"
+                period="/month"
+                note="12-month commitment"
+                saving={null}
+                wasNow={null}
+                intro="Everything in PRO, plus:"
+                heartLine="Benenden Health"
+                features={BENENDEN_FEATURES}
+                cta="JOIN PRO+"
+                footnote="£39.99 per month for 12 months"
+                onCta={() => go("/subscription")}
+              />
+            </div>
+          </div>
+        </section>
+
+
+        {/* ============ 7 — TRUST + ADD-ONS ============ */}
+        <section style={{ padding: "0 16px 24px" }}>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 4,
-              background: "#F1F4F8",
-              borderRadius: 999,
-              padding: 4,
-              marginBottom: 14,
+              gridTemplateColumns: "repeat(3, minmax(0,1fr))",
+              gap: 10,
+              marginBottom: 16,
             }}
           >
-            {(["monthly", "annual"] as const).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setBilling(mode)}
-                style={{
-                  border: "none",
-                  cursor: "pointer",
-                  borderRadius: 999,
-                  padding: "9px 0",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  color: billing === mode ? "#fff" : GREY,
-                  background: billing === mode ? NAVY : "transparent",
-                  boxShadow: billing === mode ? "0 2px 8px rgba(11,35,65,0.2)" : undefined,
-                }}
-              >
-                {mode === "monthly" ? "Monthly" : "Annual"}
-                {mode === "annual" && (
-                  <span style={{ fontSize: 10.5, marginLeft: 6, opacity: 0.9 }}>save more</span>
-                )}
-              </button>
+            {[
+              {
+                title: "SAVE MORE",
+                body: "Exclusive discounts that put money back in your pocket.",
+                colour: ORANGE,
+                icon: <IconPigMoney size={22} color={ORANGE} />,
+              },
+              {
+                title: "PROTECTED",
+                body: "Professional membership plus optional health cover in PRO+.",
+                colour: BLUE,
+                icon: <IconShieldCheck size={22} color={BLUE} />,
+              },
+              {
+                title: "STAY CONNECTED",
+                body: "Trusted news, advice and entertainment for driving instructors.",
+                colour: GREEN,
+                icon: <IconUsers size={22} color={GREEN} />,
+              },
+            ].map((t) => (
+              <div key={t.title} style={{ ...CARD, padding: 10 }}>
+                <div style={{ marginBottom: 6 }}>{t.icon}</div>
+                <div
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 900,
+                    letterSpacing: ".5px",
+                    color: t.colour,
+                    marginBottom: 3,
+                  }}
+                >
+                  {t.title}
+                </div>
+                <div style={{ fontSize: 10.5, color: GREY, lineHeight: 1.3 }}>{t.body}</div>
+              </div>
             ))}
           </div>
 
-          {/* PRO */}
-          <PlanCard
-            accent={ORANGE}
-            badge={annual ? "BEST VALUE" : "MOST POPULAR"}
-            name="PRO"
-            annual={annual}
-            price={annual ? "£199.99" : "£24.99"}
-            period={annual ? "/year" : "/month"}
-            note={annual ? "Everything in PRO, paid yearly" : "12-month commitment"}
-            saving={annual ? { headline: "Save £99.89", detail: "That's only £16.67/month" } : null}
-            wasNow={annual ? { was: "£299.88", now: "£199.99 per year" } : null}
-            features={PRO_FEATURES}
-            cta={annual ? "JOIN PRO ANNUAL" : "JOIN PRO"}
-            footnote={annual ? "£199.99 per year" : "£24.99 per month for 12 months"}
-            onCta={() => go("/subscription")}
-          />
-
-          <div style={{ height: 12 }} />
-
-          {/* PRO+ */}
-          <PlanCard
-            accent="#7C3AED"
-            badge={annual ? "BEST VALUE" : undefined}
-            name="PRO+"
-            annual={annual}
-            price={annual ? "£299.99" : "£39.99"}
-            period={annual ? "/year" : "/month"}
-            note={annual ? "Everything in PRO+, paid yearly" : "12-month commitment"}
-            saving={annual ? { headline: "Save £179.89", detail: "That's only £24.99/month" } : null}
-            wasNow={annual ? { was: "£479.88", now: "£299.99 per year" } : null}
-            intro="Everything in PRO, plus:"
-            heartLine="Benenden Health"
-            features={BENENDEN_FEATURES}
-            cta={annual ? "JOIN PRO+ ANNUAL" : "JOIN PRO+"}
-            footnote={annual ? "£299.99 per year" : "£39.99 per month for 12 months"}
-            onCta={() => go("/subscription")}
-          />
-        </section>
-
-        {/* ============ 7 — ADD-ONS ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
           <div
             style={{
               fontSize: 11.5,
@@ -875,6 +902,7 @@ export function ProTeaserPage({
             ))}
           </div>
         </section>
+
 
         {/* ============ 8 — FINAL CTA ============ */}
         <section style={{ padding: "0 16px 32px" }}>
@@ -922,6 +950,8 @@ function MediaCard({
   colour,
   icon,
   items,
+  wave,
+  waveActive,
   onClick,
 }: {
   title: string;
@@ -929,8 +959,11 @@ function MediaCard({
   colour: string;
   icon: React.ReactNode;
   items?: string[];
+  wave?: boolean;
+  waveActive?: boolean;
   onClick: () => void;
 }) {
+
   return (
     <button
       type="button"
@@ -976,6 +1009,30 @@ function MediaCard({
           ))}
         </div>
       )}
+      {wave && (
+        <div
+          style={{
+            marginTop: "auto",
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 2,
+            height: 22,
+          }}
+        >
+          {Array.from({ length: 26 }).map((_, i) => (
+            <span
+              key={i}
+              style={{
+                flex: 1,
+                borderRadius: 1.5,
+                background: waveActive ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.5)",
+                height: `${Math.round(20 + Math.abs(Math.sin(i * 1.7)) * 80)}%`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
     </button>
   );
 }
@@ -1003,7 +1060,6 @@ function PlanCard({
   accent: string;
   badge?: string;
   name: string;
-  annual: boolean;
   price: string;
   period: string;
   note: string;
