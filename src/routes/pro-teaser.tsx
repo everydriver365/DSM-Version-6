@@ -612,7 +612,6 @@ export function ProTeaserPage({
 
         {/* ============ 1 — DIA MEMBERSHIP ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
-          <ExplainerButton video={sectionVideos["dia"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, position: "relative", overflow: "hidden", padding: 0 }}>
             {/* Instructor photo — upper right only */}
             <div
@@ -715,6 +714,9 @@ export function ProTeaserPage({
                   <Tick key={b}>{b}</Tick>
                 ))}
               </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", padding: "0 14px 12px" }}>
+              <ExplainerButton video={sectionVideos["dia"]} onOpen={setOpenVideo} />
             </div>
           </div>
         </section>
