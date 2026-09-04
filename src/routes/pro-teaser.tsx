@@ -1321,9 +1321,6 @@ export function ProTeaserPage({
                         fontSize: 11,
                         fontWeight: 700,
                         color: NAVY,
-                        background: "#E8F1FA",
-                        borderRadius: 999,
-                        padding: "3px 8px",
                       }}
                     >
                       <img
