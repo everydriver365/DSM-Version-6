@@ -573,6 +573,41 @@ function GlobalMenu() {
 
         {/* Bottom actions */}
         <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column" }}>
+          {(!subscriptionTier || subscriptionTier === "free") && (
+            <button
+              type="button"
+              onClick={() => go("/subscribe")}
+              style={{
+                width: "100%",
+                textAlign: "left",
+                padding: "14px 16px",
+                background: "none",
+                border: "none",
+                borderTop: "1px solid #E4E8EF",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                cursor: "pointer",
+              }}
+            >
+              <span
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: "#FFF4E5",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconStar size={18} stroke={1.8} color="#F59E0B" />
+              </span>
+              <span style={{ flex: 1, fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Upgrade to PRO</span>
+              <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
+            </button>
+          )}
           <button
             type="button"
             onClick={() => go("/subscription")}
