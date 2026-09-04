@@ -1106,8 +1106,44 @@ function PlanCard({
           <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
             EVERYDRIVER
           </div>
-          <div style={{ fontFamily: SORA, fontSize: 28, fontWeight: 900, color: accent, lineHeight: 1 }}>
-            {name}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: SORA,
+              fontSize: 28,
+              fontWeight: 900,
+              color: accent,
+              lineHeight: 1,
+            }}
+          >
+            <span style={{ display: "inline-flex", alignItems: "center" }}>
+              {name.split(" ")[0]}
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 20,
+                  height: 20,
+                  marginLeft: 2,
+                  borderRadius: 999,
+                  background: accent,
+                  color: "#fff",
+                  fontSize: 12,
+                  lineHeight: 1,
+                }}
+              >
+                ★
+              </span>
+            </span>
+            {name.split(" ").slice(1).map((w) => (
+              <span key={w} style={{ color: NAVY }}>
+                {w}
+              </span>
+            ))}
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
