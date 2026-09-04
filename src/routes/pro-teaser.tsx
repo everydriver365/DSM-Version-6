@@ -4,15 +4,19 @@ import {
   IconCheck,
   IconChevronRight,
   IconDeviceTv,
+  IconGift,
   IconHeart,
   IconMicrophone,
   IconNews,
+  IconPigMoney,
   IconRadio,
   IconShieldCheck,
   IconShoppingBag,
   IconSparkles,
+  IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
+
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import instructorHeroAsset from "@/assets/richard-with-car.jpg.asset.json";
 import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
