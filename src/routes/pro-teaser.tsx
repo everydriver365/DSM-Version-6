@@ -123,6 +123,159 @@ function SectionTitle({
 }
 
 /* ------------------------------------------------------------------ */
+// Explainer videos
+/* ------------------------------------------------------------------ */
+
+interface SectionVideo {
+  section: string;
+  title: string | null;
+  video_url: string;
+}
+
+function toEmbedUrl(url: string): string | null {
+  const yt = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/,
+  );
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}?autoplay=1&rel=0`;
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1`;
+  if (url.includes("/embed/") || url.includes("player.vimeo")) return url;
+  return null;
+}
+
+function ExplainerButton({
+  video,
+  onOpen,
+}: {
+  video?: SectionVideo;
+  onOpen: (v: SectionVideo) => void;
+}) {
+  if (!video?.video_url) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(video)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        marginBottom: 10,
+        border: `1px solid ${LINE}`,
+        background: "#F4F8FD",
+        color: NAVY,
+        borderRadius: 999,
+        padding: "7px 14px 7px 8px",
+        fontSize: 12.5,
+        fontWeight: 700,
+        fontFamily: "inherit",
+        cursor: "pointer",
+      }}
+    >
+      <span
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 999,
+          background: BLUE,
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <IconPlayerPlayFilled size={11} color="#fff" />
+      </span>
+      {video.title || "Watch explainer"}
+    </button>
+  );
+}
+
+function VideoModal({ video, onClose }: { video: SectionVideo; onClose: () => void }) {
+  const embed = toEmbedUrl(video.video_url);
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={video.title || "Explainer video"}
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 5000,
+        background: "rgba(6,16,30,0.82)",
+        display: "grid",
+        placeItems: "center",
+        padding: 16,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{ width: "100%", maxWidth: 520, position: "relative" }}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close video"
+          style={{
+            position: "absolute",
+            top: -44,
+            right: 0,
+            width: 36,
+            height: 36,
+            borderRadius: 999,
+            border: "none",
+            background: "rgba(255,255,255,0.16)",
+            color: "#fff",
+            display: "grid",
+            placeItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconX size={20} />
+        </button>
+        <div
+          style={{
+            borderRadius: 16,
+            overflow: "hidden",
+            background: "#000",
+            aspectRatio: "16 / 9",
+          }}
+        >
+          {embed ? (
+            <iframe
+              src={embed}
+              title={video.title || "Explainer video"}
+              allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              style={{ width: "100%", height: "100%", border: "none" }}
+            />
+          ) : (
+            <video
+              src={video.video_url}
+              controls
+              autoPlay
+              playsInline
+              style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
+            />
+          )}
+        </div>
+        {video.title && (
+          <div
+            style={{
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 600,
+              marginTop: 10,
+              textAlign: "center",
+            }}
+          >
+            {video.title}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 // Static content
 /* ------------------------------------------------------------------ */
 
