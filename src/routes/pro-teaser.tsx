@@ -1048,13 +1048,14 @@ export function ProTeaserPage({
                 alt="EveryDriver PRO polo shirt, cap and travel cup"
                 style={{
                   position: "absolute",
-                  right: 34,
+                  right: 0,
                   bottom: 0,
                   height: "100%",
                   width: "auto",
                   objectFit: "contain",
                   objectPosition: "bottom right",
                   pointerEvents: "none",
+                  zIndex: 0,
                 }}
               />
               <div
@@ -1067,6 +1068,7 @@ export function ProTeaserPage({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "relative",
                   zIndex: 1,
                 }}
               >
