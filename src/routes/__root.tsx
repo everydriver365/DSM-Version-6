@@ -572,7 +572,7 @@ function GlobalMenu() {
         </div>
 
         {/* Bottom actions */}
-        <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column", paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}>
           <button
             type="button"
             onClick={() => go("/subscription")}
