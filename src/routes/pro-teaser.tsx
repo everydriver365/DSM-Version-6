@@ -853,6 +853,9 @@ export function ProTeaserPage({
         {/* ============ 6 — PRICING ============ */}
         <section style={{ padding: "0 0 24px" }}>
           <div style={{ padding: "0 16px" }}>
+            <ExplainerButton video={sectionVideos["pricing"]} onOpen={setOpenVideo} />
+          </div>
+          <div style={{ padding: "0 16px" }}>
             <SectionTitle strong="MEMBERSHIP" rest="PRICING" color={NAVY} />
           </div>
 
