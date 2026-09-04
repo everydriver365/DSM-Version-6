@@ -61,7 +61,7 @@ const PLANS: Record<Tier, {
   },
 };
 
-export const Route = createFileRoute("/subscribe/")({
+export const Route = createFileRoute("/subscribe")({
   head: () => ({
     meta: [
       { title: "Upgrade to EDP PRO — EveryDriver" },
