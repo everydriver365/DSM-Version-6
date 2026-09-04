@@ -24,6 +24,7 @@ import instructorHeroAsset from "@/assets/richard-with-car.jpg.asset.json";
 import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
@@ -324,7 +325,12 @@ export function ProTeaserPage({
               letterSpacing: "-0.5px",
             }}
           >
-            EVERYDRIVER <span style={{ color: ORANGE }}>PRO</span>
+            EVERYDRIVER{" "}
+            <img
+              src={proLogoAsset.url}
+              alt="PRO"
+              style={{ height: 32, width: "auto", display: "inline-block", verticalAlign: "middle" }}
+            />
           </h1>
           <p
             style={{
