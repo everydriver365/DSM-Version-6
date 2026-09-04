@@ -1312,6 +1312,27 @@ export function ProTeaserPage({
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
                     <IconHeart size={20} color="#F0399B" fill="#F0399B" />
                     <span style={{ fontSize: 13.5, fontWeight: 700, color: NAVY }}>Benenden Health</span>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                        marginLeft: "auto",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: NAVY,
+                        background: "#E8F1FA",
+                        borderRadius: 999,
+                        padding: "3px 8px",
+                      }}
+                    >
+                      <img
+                        src={diaLogoAsset.url}
+                        alt="DIA"
+                        style={{ width: 14, height: 14, borderRadius: 2, display: "block" }}
+                      />
+                      DIA Included
+                    </span>
                   </div>
                 </div>
 
