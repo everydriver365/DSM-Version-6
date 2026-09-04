@@ -325,7 +325,12 @@ export function ProTeaserPage({
               letterSpacing: "-0.5px",
             }}
           >
-            EVERYDRIVER <span style={{ color: ORANGE }}>PRO</span>
+            EVERYDRIVER{" "}
+            <img
+              src={proLogoAsset.url}
+              alt="PRO"
+              style={{ height: 32, width: "auto", display: "inline-block", verticalAlign: "middle" }}
+            />
           </h1>
           <p
             style={{
