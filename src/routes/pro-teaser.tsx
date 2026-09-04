@@ -710,6 +710,19 @@ export function ProTeaserPage({
                       background: "#FBFCFE",
                     }}
                   >
+                    {b.logo && (
+                      <img
+                        src={b.logo}
+                        alt={`${b.name} logo`}
+                        style={{
+                          width: 34,
+                          height: 34,
+                          objectFit: "contain",
+                          margin: "0 auto 5px",
+                          display: "block",
+                        }}
+                      />
+                    )}
                     <div
                       style={{
                         fontFamily: SORA,
