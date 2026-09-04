@@ -650,12 +650,11 @@ export function ProTeaserPage({
         </section>
 
         {/* ============ 3 — PRO PERKS ============ */}
-        <section style={{ padding: "0 0 24px" }}>
-          <div style={{ padding: "0 16px" }}>
+        <section style={{ padding: "8px 16px 24px" }}>
+          <div style={{ ...CARD, padding: 16 }}>
             <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
-          </div>
-          <div style={{ padding: "0 16px" }}>
-            <div style={{ ...CARD, padding: 12, display: "flex", gap: 12, alignItems: "stretch" }}>
+
+            <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
               <button
                 type="button"
                 onClick={() => go("/perks")}
