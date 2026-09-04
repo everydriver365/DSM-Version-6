@@ -1032,226 +1032,47 @@ function MediaCard({
 }
 
 /* ------------------------------------------------------------------ */
-// Plan card
+// Wordmark (EVERYDRIVER + plan name with star)
 /* ------------------------------------------------------------------ */
 
-function PlanCard({
-  accent,
-  badge,
-  name,
-  price,
-  period,
-  note,
-  saving,
-  wasNow,
-  intro,
-  heartLine,
-  features,
-  cta,
-  footnote,
-  onCta,
-}: {
-  accent: string;
-  badge?: string;
-  name: string;
-  price: string;
-  period: string;
-  note: string;
-  saving: { headline: string; detail: string } | null;
-  wasNow: { was: string; now: string } | null;
-  intro?: string;
-  heartLine?: string;
-  features: string[];
-  cta: string;
-  footnote: string;
-  onCta: () => void;
-}) {
+function Wordmark({ name, accent, size = 34 }: { name: string; accent: string; size?: number }) {
   return (
-    <div
-      style={{
-        ...CARD,
-        padding: 14,
-        borderColor: `${accent}55`,
-        position: "relative",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {badge && (
-        <span
-          style={{
-            position: "absolute",
-            top: -9,
-            left: 14,
-            background: accent,
-            color: "#fff",
-            fontSize: 9.5,
-            fontWeight: 800,
-            letterSpacing: ".6px",
-            borderRadius: 999,
-            padding: "3px 10px",
-          }}
-        >
-          {badge}
-        </span>
-      )}
-
+    <div style={{ minWidth: 0 }}>
+      <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
+        EVERYDRIVER
+      </div>
       <div
         style={{
           display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 10,
-          marginTop: 4,
+          alignItems: "center",
+          gap: 4,
+          fontFamily: SORA,
+          fontSize: size,
+          fontWeight: 900,
+          color: accent,
+          lineHeight: 1.05,
         }}
       >
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
-            EVERYDRIVER
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "0 6px",
-              fontFamily: SORA,
-              fontSize: "clamp(20px, 6vw, 28px)",
-              fontWeight: 900,
-              color: accent,
-              lineHeight: 1.05,
-            }}
-          >
-            <span style={{ display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
-              {name.split(" ")[0].replace("+", "")}
-              <span
-                aria-hidden
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "clamp(16px, 4.2vw, 20px)",
-                  height: "clamp(16px, 4.2vw, 20px)",
-                  marginLeft: 2,
-                  borderRadius: 999,
-                  background: accent,
-                  color: "#fff",
-                  fontSize: "clamp(10px, 2.8vw, 12px)",
-                  lineHeight: 1,
-                }}
-              >
-                ★
-              </span>
-              {name.split(" ")[0].includes("+") ? "+" : null}
-            </span>
-            {name.split(" ").slice(1).map((w) => (
-              <span key={w} style={{ color: NAVY, whiteSpace: "nowrap" }}>
-                {w}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <div style={{ fontFamily: SORA, fontSize: "clamp(17px, 5vw, 22px)", fontWeight: 900, color: NAVY, lineHeight: 1 }}>
-            {price}
-          </div>
-          <div style={{ fontSize: 11.5, color: GREY }}>{period}</div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "inline-block",
-          marginTop: 8,
-          background: "#F1F4F8",
-          color: NAVY,
-          fontSize: 10.5,
-          fontWeight: 700,
-          borderRadius: 999,
-          padding: "3px 10px",
-        }}
-      >
-        {note}
-      </div>
-
-      {saving && (
-        <div
+        <span>{name}</span>
+        <span
+          aria-hidden
           style={{
-            marginTop: 10,
-            background: "#FFF6ED",
-            border: "1px solid #FBD9BC",
-            borderRadius: 12,
-            padding: "9px 12px",
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            gap: 10,
+            justifyContent: "center",
+            width: Math.round(size * 0.72),
+            height: Math.round(size * 0.72),
+            borderRadius: 999,
+            background: accent,
+            color: "#fff",
+            fontSize: Math.round(size * 0.44),
+            lineHeight: 1,
           }}
         >
-          <IconGift size={22} color={ORANGE} />
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>{saving.headline}</div>
-            <div style={{ fontSize: 11.5, color: "#B4651F" }}>{saving.detail}</div>
-          </div>
-        </div>
-      )}
-
-      {intro && (
-        <div style={{ fontSize: 12.5, color: GREY, marginTop: 10 }}>{intro}</div>
-      )}
-      {heartLine && (
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-          <IconHeart size={16} color="#7C3AED" fill="#7C3AED" />
-          <span style={{ fontSize: 13.5, fontWeight: 800, color: NAVY }}>{heartLine}</span>
-        </div>
-      )}
-
-      <div
-        style={{
-          marginTop: 10,
-          display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0,1fr))",
-          gap: 6,
-        }}
-      >
-        {features.map((f) => (
-          <Tick key={f} color={accent}>
-            {f}
-          </Tick>
-        ))}
-      </div>
-
-      <button
-        type="button"
-        onClick={onCta}
-        style={{
-          marginTop: "auto",
-          width: "100%",
-          border: "none",
-          cursor: "pointer",
-          fontFamily: "inherit",
-          borderRadius: 12,
-          padding: "13px 0",
-          background: accent,
-          color: "#fff",
-          fontSize: 14,
-          fontWeight: 900,
-          letterSpacing: ".5px",
-        }}
-      >
-        {cta}
-      </button>
-
-      <div style={{ textAlign: "center", marginTop: 8, fontSize: 11.5, color: GREY }}>
-        {wasNow ? (
-          <>
-            <span style={{ textDecoration: "line-through", marginRight: 6 }}>{wasNow.was}</span>
-            <strong style={{ color: NAVY }}>{wasNow.now}</strong>
-          </>
-        ) : (
-          footnote
-        )}
+          ★
+        </span>
       </div>
     </div>
   );
 }
+
