@@ -491,7 +491,7 @@ export function ProTeaserPage({
                 <img
                   src={diaLogoAsset.url}
                   alt="DIA"
-                  style={{ width: 54, height: 54, objectFit: "contain" }}
+                  style={{ width: 54, height: 54, objectFit: "contain", borderRadius: 8 }}
                 />
                 <span
                   style={{
