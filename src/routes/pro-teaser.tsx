@@ -650,12 +650,11 @@ export function ProTeaserPage({
         </section>
 
         {/* ============ 3 — PRO PERKS ============ */}
-        <section style={{ padding: "0 0 24px" }}>
-          <div style={{ padding: "0 16px" }}>
+        <section style={{ padding: "8px 16px 24px" }}>
+          <div style={{ ...CARD, padding: 16 }}>
             <SectionTitle strong="PRO" rest="PERKS" subtitle="Real savings on things you already buy." />
-          </div>
-          <div style={{ padding: "0 16px" }}>
-            <div style={{ ...CARD, padding: 12, display: "flex", gap: 12, alignItems: "stretch" }}>
+
+            <div style={{ display: "flex", gap: 12, alignItems: "stretch" }}>
               <button
                 type="button"
                 onClick={() => go("/perks")}
@@ -752,76 +751,80 @@ export function ProTeaserPage({
         </section>
 
         {/* ============ 4 — PRO MEDIA HUB ============ */}
-        <section style={{ padding: "0 16px 24px" }}>
-          <SectionTitle
-            strong="PRO"
-            rest="MEDIA HUB"
-            subtitle="Industry news, advice and entertainment — made for driving instructors."
-          />
+        <section style={{ padding: "8px 16px 24px" }}>
+          <div style={{ ...CARD, padding: 16 }}>
+            <SectionTitle
+              strong="PRO"
+              rest="MEDIA HUB"
+              subtitle="Industry news, advice and entertainment — made for driving instructors."
+            />
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
-            <MediaCard
-              title="PRO RADIO"
-              body="Your instructor station, anywhere you are."
-              colour={NAVY}
-              icon={<IconRadio size={20} color="#fff" />}
-              wave
-              waveActive={radio.isPlaying}
-              onClick={() => go("/radio")}
-            />
-            <MediaCard
-              title="PRO TV"
-              body="Practical videos, guides and shows for instructors."
-              colour="#CC2229"
-              icon={<IconDeviceTv size={20} color="#fff" />}
-              items={videos.map((v) => v.title ?? "").filter(Boolean).slice(0, 2)}
-              onClick={() => go("/learn")}
-            />
-            <MediaCard
-              title="PRO PODCASTS"
-              body="Expert advice and real conversations on the go."
-              colour="#7C3AED"
-              icon={<IconMicrophone size={20} color="#fff" />}
-              wave
-              onClick={() => onNavigateToMedia?.()}
-            />
-            <MediaCard
-              title="PRO NEWS"
-              body="Industry updates that matter, when they matter."
-              colour="#0F766E"
-              icon={<IconNews size={20} color="#fff" />}
-              items={news.map((n) => n.title ?? "").filter(Boolean).slice(0, 2)}
-              onClick={() => onNavigateToMedia?.()}
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => go("/marketplace")}
-            style={{
-              ...CARD,
-              marginTop: 10,
-              width: "100%",
-              padding: "12px 14px",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              textAlign: "left",
-            }}
-          >
-            <IconShoppingBag size={20} color={ORANGE} style={{ flexShrink: 0 }} />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
-                PRO SHOP
-              </div>
-              <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3 }}>
-                Exclusive products and offers for instructors.
-              </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 10 }}>
+              <MediaCard
+                title="PRO RADIO"
+                body="Your instructor station, anywhere you are."
+                colour={NAVY}
+                icon={<IconRadio size={20} color="#fff" />}
+                wave
+                waveActive={radio.isPlaying}
+                onClick={() => go("/radio")}
+              />
+              <MediaCard
+                title="PRO TV"
+                body="Practical videos, guides and shows for instructors."
+                colour="#CC2229"
+                icon={<IconDeviceTv size={20} color="#fff" />}
+                items={videos.map((v) => v.title ?? "").filter(Boolean).slice(0, 2)}
+                onClick={() => go("/learn")}
+              />
+              <MediaCard
+                title="PRO PODCASTS"
+                body="Expert advice and real conversations on the go."
+                colour="#7C3AED"
+                icon={<IconMicrophone size={20} color="#fff" />}
+                wave
+                onClick={() => onNavigateToMedia?.()}
+              />
+              <MediaCard
+                title="PRO NEWS"
+                body="Industry updates that matter, when they matter."
+                colour="#0F766E"
+                icon={<IconNews size={20} color="#fff" />}
+                items={news.map((n) => n.title ?? "").filter(Boolean).slice(0, 2)}
+                onClick={() => onNavigateToMedia?.()}
+              />
             </div>
-            <IconChevronRight size={18} color={GREY} style={{ flexShrink: 0 }} />
-          </button>
+
+            <button
+              type="button"
+              onClick={() => go("/marketplace")}
+              style={{
+                marginTop: 10,
+                width: "100%",
+                padding: "12px 14px",
+                border: `1px solid ${LINE}`,
+                borderRadius: 12,
+                background: "#fff",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                textAlign: "left",
+              }}
+            >
+              <IconShoppingBag size={20} color={ORANGE} style={{ flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
+                  PRO SHOP
+                </div>
+                <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3 }}>
+                  Exclusive products and offers for instructors.
+                </div>
+              </div>
+              <IconChevronRight size={18} color={GREY} style={{ flexShrink: 0 }} />
+            </button>
+          </div>
         </section>
 
         {/* ============ 5 — PERKBOX DISCOUNTS ============ */}
