@@ -136,7 +136,7 @@ function SubscribePage() {
       >
         <button
           type="button"
-          onClick={() => goBack()}
+          onClick={() => goBack("/home")}
           aria-label="Back"
           style={{ background: "none", border: "none", padding: 0, display: "inline-flex", cursor: "pointer" }}
         >
