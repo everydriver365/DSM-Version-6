@@ -6344,11 +6344,32 @@ function HomePage() {
                       <span style={{
                         fontSize: tokens.fontSize.base,
                         fontWeight: tokens.fontWeight.semibold,
-                        color: isLate ? '#CC2229' : '#0B1F3A',
+                        color: isLate ? '#CC2229' : '#1E8E3E',
                         whiteSpace: 'nowrap',
                       }}>
                         ETA {etaLabel}
                       </span>
+                      {isLate && (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
+                          style={{
+                            marginLeft: 4,
+                            padding: '2px 8px',
+                            borderRadius: 999,
+                            border: 'none',
+                            background: '#CC2229',
+                            color: '#FFFFFF',
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
+                            fontFamily: 'Poppins, sans-serif',
+                            cursor: 'pointer',
+                            lineHeight: 1,
+                          }}
+                        >
+                          Message
+                        </button>
+                      )}
                     </>
                   )}
 
