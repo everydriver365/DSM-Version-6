@@ -24,6 +24,7 @@ import {
 import instructorHeroAsset from "@/assets/dia-instructor.png.asset.json";
 import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
+import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo-latest.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
@@ -1003,12 +1004,15 @@ export function ProTeaserPage({
               type="button"
               onClick={() => go("/marketplace")}
               style={{
-                marginTop: 10,
+                marginTop: 12,
+                position: "relative",
+                overflow: "hidden",
                 width: "100%",
-                padding: "12px 14px",
+                padding: "12px 12px 12px 12px",
                 border: `1px solid ${LINE}`,
-                borderRadius: 12,
+                borderRadius: 16,
                 background: "#fff",
+                boxShadow: "0 6px 18px rgba(11,31,58,.07)",
                 cursor: "pointer",
                 fontFamily: "inherit",
                 display: "flex",
@@ -1017,17 +1021,59 @@ export function ProTeaserPage({
                 textAlign: "left",
               }}
             >
-              <IconShoppingBag size={20} color={ORANGE} style={{ flexShrink: 0 }} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12.5, fontWeight: 800, color: NAVY, letterSpacing: ".3px" }}>
+              <div
+                style={{
+                  flexShrink: 0,
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: "#FFF1E8",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconShoppingBag size={24} color={ORANGE} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
+                <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY, letterSpacing: ".2px" }}>
                   PRO SHOP
                 </div>
-                <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3 }}>
+                <div style={{ fontSize: 11.5, color: GREY, lineHeight: 1.3, maxWidth: 150 }}>
                   Exclusive products and offers for instructors.
                 </div>
               </div>
-              <IconChevronRight size={18} color={GREY} style={{ flexShrink: 0 }} />
+              <img
+                src={proShopMerchAsset.url}
+                alt="EveryDriver PRO polo shirt, cap and travel cup"
+                style={{
+                  position: "absolute",
+                  right: 34,
+                  bottom: 0,
+                  height: "100%",
+                  width: "auto",
+                  objectFit: "contain",
+                  objectPosition: "bottom right",
+                  pointerEvents: "none",
+                }}
+              />
+              <div
+                style={{
+                  flexShrink: 0,
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: "#F2F7FE",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 1,
+                }}
+              >
+                <IconChevronRight size={18} color={BLUE} />
+              </div>
             </button>
+
           </div>
         </section>
 
