@@ -1025,8 +1025,8 @@ export function ProTeaserPage({
               <div
                 style={{
                   flexShrink: 0,
-                  width: 44,
-                  height: 44,
+                  width: 55,
+                  height: 55,
                   borderRadius: 12,
                   background: "#FFF1E8",
                   display: "flex",
@@ -1037,7 +1037,7 @@ export function ProTeaserPage({
                 <img
                   src={proShopLogoAsset.url}
                   alt="PRO"
-                  style={{ width: 28, height: 28, objectFit: "contain" }}
+                  style={{ width: 35, height: 35, objectFit: "contain" }}
                 />
               </div>
               <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
