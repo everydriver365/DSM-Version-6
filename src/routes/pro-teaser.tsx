@@ -774,6 +774,7 @@ export function ProTeaserPage({
 
         {/* ============ 4 — PRO MEDIA HUB ============ */}
         <section style={{ padding: "8px 16px 24px" }}>
+          <ExplainerButton video={sectionVideos["media"]} onOpen={setOpenVideo} />
           <div style={{ ...CARD, padding: 16 }}>
             <SectionTitle
               strong="PRO"
