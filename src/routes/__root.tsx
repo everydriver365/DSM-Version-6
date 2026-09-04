@@ -330,6 +330,9 @@ function GlobalMenu() {
         try { localStorage.setItem("dsm-instructor-name", resolvedName); } catch { /* ignore */ }
         window.dispatchEvent(new CustomEvent("dsm-instructor-name", { detail: resolvedName }));
       }
+      // Separate (tolerant) read: the column may not exist on every environment.
+      const { data: subRow } = await supabase.from("instructors").select("subscription_tier").eq("id", user.id).limit(1).maybeSingle();
+      if (mounted) setSubscriptionTier((subRow as { subscription_tier?: string | null } | null)?.subscription_tier ?? null);
     })();
     return () => { mounted = false; };
   }, [open]);
