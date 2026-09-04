@@ -1188,10 +1188,16 @@ function PlanCard({
             border: "1px solid #FBD9BC",
             borderRadius: 12,
             padding: "9px 12px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>{saving.headline}</div>
-          <div style={{ fontSize: 11.5, color: "#B4651F" }}>{saving.detail}</div>
+          <IconGift size={22} color={ORANGE} />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: ORANGE }}>{saving.headline}</div>
+            <div style={{ fontSize: 11.5, color: "#B4651F" }}>{saving.detail}</div>
+          </div>
         </div>
       )}
 
