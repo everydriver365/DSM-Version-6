@@ -1610,17 +1610,17 @@ export function ProTeaserPage({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      gap: 8,
+                      gap: 4,
                       marginTop: 8,
                       width: "100%",
-                      flexWrap: "wrap",
+                      flexWrap: "nowrap",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                      <IconHeart size={20} color="#F0399B" fill="#F0399B" />
+                    <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0, flexShrink: 1 }}>
+                      <IconHeart size={16} color="#F0399B" fill="#F0399B" />
                       <span
                         style={{
-                          fontSize: 13.5,
+                          fontSize: 12,
                           fontWeight: 700,
                           color: NAVY,
                           whiteSpace: "nowrap",
@@ -1631,22 +1631,23 @@ export function ProTeaserPage({
                         Benenden Health
                       </span>
                     </div>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
                       <span
                         style={{
                           display: "inline-flex",
                           alignItems: "center",
-                          gap: 4,
-                          fontSize: 11,
+                          gap: 3,
+                          fontSize: 10,
                           fontWeight: 700,
                           color: NAVY,
                           whiteSpace: "nowrap",
+                          flexShrink: 0,
                         }}
                       >
                         <img
                           src={diaLogoAsset.url}
                           alt="DIA"
-                          style={{ width: 14, height: 14, borderRadius: 2, display: "block" }}
+                          style={{ width: 12, height: 12, borderRadius: 2, display: "block" }}
                         />
                         DIA Included
                       </span>
@@ -1654,17 +1655,18 @@ export function ProTeaserPage({
                         style={{
                           display: "inline-flex",
                           alignItems: "center",
-                          gap: 4,
-                          fontSize: 11,
+                          gap: 3,
+                          fontSize: 10,
                           fontWeight: 700,
                           color: NAVY,
                           whiteSpace: "nowrap",
+                          flexShrink: 0,
                         }}
                       >
                         <img
                           src={perkboxIncludedLogoAsset.url}
                           alt="Perkbox"
-                          style={{ width: 14, height: 14, borderRadius: 2, display: "block" }}
+                          style={{ width: 12, height: 12, borderRadius: 2, display: "block" }}
                         />
                         Perkbox Included
                       </span>
