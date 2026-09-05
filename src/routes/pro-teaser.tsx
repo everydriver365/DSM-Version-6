@@ -1510,16 +1510,20 @@ export function ProTeaserPage({
               >
                 {PRO_FEATURES.map((f) => (
                   <Tick key={f} color={ORANGE}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      {f}
-                      {f === "PRO Shop" && (
+                    {f === "PRO Shop" ? (
+                      <span style={{ display: "flex", flexDirection: "column" }}>
+                        <span>{f}</span>
                         <img
                           src={diaLogoAsset.url}
                           alt="DIA"
-                          style={{ width: 18, height: 18, objectFit: "contain", display: "inline-block" }}
+                          style={{ width: 28, height: 28, objectFit: "contain", display: "block", marginTop: 10 }}
                         />
-                      )}
-                    </span>
+                      </span>
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        {f}
+                      </span>
+                    )}
                   </Tick>
                 ))}
               </div>
