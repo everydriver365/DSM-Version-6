@@ -18,7 +18,7 @@ import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
 import proLogo from "@/assets/pro-logo.png.asset.json";
 import proLogoBanner from "@/assets/pro-logo-banner.png.asset.json";
-import proBannerBg from "@/assets/pro-banner-bg.jpg.asset.json";
+import exploreProBg from "@/assets/explore-pro-bg.jpg.asset.json";
 import edp3dHero from "@/assets/edp-3d-hero.png.asset.json";
 
 
@@ -1520,7 +1520,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           cursor: "pointer",
           marginBottom: 12,
           minHeight: 132,
-          backgroundImage: `linear-gradient(90deg, rgba(226,238,250,0.94) 0%, rgba(226,238,250,0.78) 48%, rgba(226,238,250,0.05) 82%), url(${proBannerBg.url})`,
+          backgroundImage: `linear-gradient(90deg, rgba(226,238,250,0.96) 0%, rgba(226,238,250,0.82) 45%, rgba(226,238,250,0.12) 80%), url(${exploreProBg.url})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
