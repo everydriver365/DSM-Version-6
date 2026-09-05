@@ -7208,7 +7208,7 @@ function HomePage() {
 
                   {/* Timeline container */}
                   <div style={{ position: 'relative', padding: '4px 0 4px' }}>
-                    {rows.map((r, idx) => {
+                    {rows.filter((r) => r.kind === 'lesson').slice(0, 3).map((r, idx) => {
                     const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
                     const rowDay = ymd(rowStart);
                     const showDayDivider = rowDay !== lastDividerDate;
@@ -7509,327 +7509,69 @@ function HomePage() {
 
 
 
+                    const rowColour = isCancelled ? '#E24B4A' : isTestDayRow ? '#EF9F27' : isPaid ? '#639922' : '#2C97DE';
+                    const badge = isCancelled
+                      ? { label: 'Cancelled', background: '#FEF2F2', color: '#991B1B' }
+                      : isTestDayRow
+                        ? { label: testTimeOf(l) ? `Test ${testTimeOf(l)}` : 'Test', background: '#EAF5FC', color: '#185FA5' }
+                        : isPaid
+                          ? { label: isPrepaidPupil ? 'Prepaid' : 'Paid', background: '#EAF3DE', color: '#3B6D11' }
+                          : { label: `£${amt.toFixed(0)} due`, background: '#FEE2E2', color: '#991B1B' };
+                    const locationDuration = [pickupLabel || 'No pickup set', durLabel].filter(Boolean).join(' · ');
+
                     return (
-                      <React.Fragment key={l.id}>
-                        {isTestDayRow ? (
-                          <TestDetailTrigger
-                            detail={{
-                              pupilName: name,
-                              testCentre: testCentreOf(l),
-                              startTime: timeLabel,
-                              endTime: endTimeLabel,
-                              testTime: testTimeOf(l),
-                              durationLabel: durLabel,
-                              dateLabel: start.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
-                              testResult: (() => {
-                                const direct = String((l as any).test_result ?? '').toLowerCase();
-                                if (direct === 'pass' || direct === 'fail') return direct;
-                                const ps = String((l.pupils as any)?.test_status ?? '').toLowerCase();
-                                if (ps.startsWith('pass')) return 'pass';
-                                if (ps.startsWith('fail')) return 'fail';
-                                return null;
-                              })(),
-                              onOpenLesson: () => setDetailsSheetForLesson(l),
-                              onEdit: () => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }),
-                            }}
-                          >
-                          {(openPanel) => (
-                          <div
-                            onClick={openPanel}
-                            onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
-                            role="button"
-                            tabIndex={0}
-                            style={{
-                              background: '#EAF3FB',
-                              borderRadius: tokens.radiusCard,
-                              marginBottom: 8,
-                              padding: '10px 12px',
-                              cursor: 'pointer',
-                              boxShadow: '0 2px 0 #D4E4F3',
-                              position: 'relative',
-                              overflow: 'visible',
-                            }}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
-                              <div
-                                style={{
-                                  width: 52,
-                                  flexShrink: 0,
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'flex-start',
-                                  paddingTop: 2,
-                                }}
-                              >
-                                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, fontFamily: PF }}>
-                                  {timeLabel}
-                                </div>
-                                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7686', marginTop: 3, fontVariantNumeric: 'tabular-nums', fontFamily: PF }}>
-                                  {durLabel}
-                                </div>
-                              </div>
-                              <div
-                                aria-hidden
-                                style={{
-                                  width: 3,
-                                  borderRadius: 12,
-                                  background: '#1877D6',
-                                  flexShrink: 0,
-                                  alignSelf: 'stretch',
-                                }}
-                              />
-                              <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                                  <span style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    background: '#1877D6',
-                                    color: '#fff',
-                                    fontSize: tokens.fontSize.xs,
-                                    fontWeight: tokens.fontWeight.extrabold,
-                                    borderRadius: 999,
-                                    padding: '2px 8px',
-                                    letterSpacing: '0.08em',
-                                    fontFamily: PF,
-                                  }}>
-                                    🚗 TEST DAY
-                                  </span>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                                    {testTimeOf(l) ? (
-                                      <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#1877D6', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
-                                        Test at {testTimeOf(l)}
-                                      </span>
-                                    ) : null}
-                                    <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-                                      <LessonActionsMenu
-                                        open={actionsOpenForLesson?.id === l.id}
-                                        onOpenChange={(open) => setActionsOpenForLesson(open ? l : null)}
-                                        top={40}
-                                        right={12}
-                                        items={[
-                                          { label: 'View test details', onClick: () => openPanel() },
-                                          { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
-                                          { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
-                                          { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
-                                          { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
-                                        ]}
-                                      >
-                                        <span
-                                          data-home-lesson-actions-trigger
-                                          role="button"
-                                          aria-label="Lesson options"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                                          }}
-                                          style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
-                                        >
-                                          <IconDots size={14} stroke={1.5} color="#0B1F3A" />
-                                        </span>
-                                      </LessonActionsMenu>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                                  <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
-                                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: '#0B1F3A', letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
-                                    {name}
-                                  </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 2 }}>
-                                  <IconMapPin size={11} color="#6B7686" stroke={1.5} />
-                                  <span style={{
-                                    fontSize: tokens.fontSize.sm,
-                                    color: pickupLabel ? '#0B1F3A' : '#9CA3AF',
-                                    fontStyle: pickupLabel ? 'normal' : 'italic',
-                                    fontFamily: PF,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                  }}>
-                                    {pickupLabel || 'Test centre not set'}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          )}
-                          </TestDetailTrigger>
-                        ) : (
-                        <div style={{ position: 'relative', background: isLive ? '#F0FDF4' : '#FFFFFF', border: isLive ? '1px solid #BBF7D0' : '1px solid #E4E8EF', borderRadius: 8, marginBottom: 8 }}>
-                        <div
-                          onClick={() => setDetailsSheetForLesson(l)}
-                          onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
-                          role="button"
-                          tabIndex={0}
-                          style={{
-                            padding: '12px 14px',
-                            display: 'flex',
-                            alignItems: 'stretch',
-                            gap: 12,
-                            cursor: 'pointer',
-                            boxSizing: 'border-box',
-                            opacity: isCancelled ? 0.55 : 1,
-                          }}
-                        >
-                          <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
-                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: isLive ? '#15803D' : '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
-                              {timeLabel}
-                            </div>
-                            <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
-                              {durLabel}
-                            </div>
-                          </div>
-                          <div
-                            aria-hidden
-                            style={{
-                              width: 3,
-                              borderRadius: 12,
-                              background: '#1877D6',
-                              flexShrink: 0,
-                              alignSelf: 'stretch',
-                            }}
-                          />
-                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                                <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
-                                <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', fontFamily: PF }}>
-                                  {name}
-                                </span>
-                                {isCancelled ? (
-                                  <span style={{
-                                    flexShrink: 0,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    fontSize: tokens.fontSize.xs,
-                                    fontWeight: tokens.fontWeight.bold,
-                                    letterSpacing: 0.4,
-                                    textTransform: 'uppercase',
-                                    color: '#CC2229',
-                                    background: '#FEE2E2',
-                                    padding: '2px 8px',
-                                    borderRadius: 999,
-                                    lineHeight: 1.4,
-                                  }}>
-                                    Cancelled
-                                  </span>
-                                ) : (
-                                  <LessonPaymentBadge
-                                    status={l.payment_status}
-                                    amountDue={l.amount_due}
-                                    paidAmount={(l as any).paid_amount}
-                                    prepaidHours={(l.pupils as any)?.prepaid_hours}
-                                    onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
-                                  />
-                                )}
-
-                              </div>
-                              {pickupLabel && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
-                                  {(() => {
-                                    const custom = isTestDayRow || isCustomPickup((l.pupils as any), l.pickup_location);
-                                    return (
-                                      <div style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: 4,
-                                        background: custom ? '#FEF3C7' : 'transparent',
-                                        borderRadius: custom ? 8 : 0,
-                                        padding: custom ? '2px 6px' : '0',
-                                        minWidth: 0,
-                                      }}>
-                                        <IconMapPin size={12} stroke={1.9} color={custom ? '#B45309' : '#6B7686'} style={{ flexShrink: 0 }} />
-                                        <span style={{ fontSize: 12, color: custom ? '#B45309' : '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: custom ? 600 : 400 }}>
-                                          {pickupLabel}
-                                        </span>
-                                        {custom && (
-                                          <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: '#D68A1B', flexShrink: 0 }}>
-                                            {isTestDayRow ? 'TEST CENTRE' : 'CUSTOM'}
-                                          </span>
-                                        )}
-                                      </div>
-                                    );
-                                  })()}
-                                </div>
-                              )}
-                            </div>
-
-                            <LessonActionsMenu
-                              open={actionsOpenForLesson?.id === l.id}
-                              onOpenChange={(open) => setActionsOpenForLesson(open ? l : null)}
-                              top={40}
-                              right={12}
-                              items={[
-                                { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
-                                { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
-                                { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
-                                { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
-                                { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
-                              ]}
-                            >
-                              <span
-                                data-home-lesson-actions-trigger
-                                role="button"
-                                aria-label="Lesson options"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
-                                }}
-                                style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
-                              >
-                                <IconDots size={14} stroke={1.5} color="#D1D5DB" />
-                              </span>
-                            </LessonActionsMenu>
-                         </div>
-                         {(() => {
-                           const st = (l.status ?? '').toLowerCase();
-                           const eolDue =
-                             (l as any).eol_completed !== true &&
-                             (st === 'confirmed' || st === 'completed') &&
-                             end.getTime() <= nowT.getTime() &&
-                             l.lesson_date <= todayISO;
-                           if (!eolDue) return null;
-                           return (
-                             <div
-                               style={{
-                                 background: '#FEF3C7',
-                                 border: '1px solid #FDE68A',
-                                 borderRadius: tokens.radiusCard,
-                                 padding: '6px 10px',
-                                 margin: '0 14px 8px',
-                                 display: 'flex',
-                                 alignItems: 'center',
-                                 gap: 6,
-                               }}
-                             >
-                               <IconClockExclamation size={13} stroke={1.9} color="#B45309" style={{ flexShrink: 0 }} />
-                               <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#D68A1B', fontFamily: PF }}>
-                                 End of lesson not completed
-                               </span>
-                               <button
-                                 type="button"
-                                 onClick={(ev) => { ev.stopPropagation(); setEolLesson(l); }}
-                                 style={{
-                                   marginLeft: 'auto',
-                                   background: 'none',
-                                   border: 'none',
-                                   padding: 0,
-                                   cursor: 'pointer',
-                                   fontSize: tokens.fontSize.sm,
-                                   fontWeight: tokens.fontWeight.medium,
-                                   color: '#1877D6',
-                                   fontFamily: PF,
-                                   whiteSpace: 'nowrap',
-                                 }}
-                               >
-                                 Complete now →
-                               </button>
-                             </div>
-                           );
-                         })()}
+                      <div
+                        key={l.id}
+                        onClick={() => setDetailsSheetForLesson(l)}
+                        onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'stretch',
+                          gap: 10,
+                          padding: '8px 14px',
+                          borderBottom: '0.5px solid #F4F6F8',
+                          background: '#FFFFFF',
+                          cursor: 'pointer',
+                          opacity: isCancelled ? 0.7 : 1,
+                          minHeight: 54,
+                          boxSizing: 'border-box',
+                        }}
+                      >
+                        <div style={{ width: 36, flexShrink: 0, fontSize: 11, color: '#536579', fontVariantNumeric: 'tabular-nums', paddingTop: 2 }}>
+                          {timeLabel}
                         </div>
-                      )}
-                      </React.Fragment>
+                        <div aria-hidden style={{ width: 2, borderRadius: 1, background: rowColour, minHeight: 36, flexShrink: 0 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: '#0B2341', lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                            {name}
+                          </div>
+                          <div style={{ fontSize: 11, color: '#536579', marginTop: 2, lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {locationDuration}
+                          </div>
+                          <span style={{ display: 'inline-flex', marginTop: 3, borderRadius: 4, padding: '1px 6px', background: badge.background, color: badge.color, fontSize: 10, fontWeight: 600, lineHeight: 1.4 }}>
+                            {badge.label}
+                          </span>
+                        </div>
+                        <LessonActionsMenu
+                          open={actionsOpenForLesson?.id === l.id}
+                          onOpenChange={(open) => setActionsOpenForLesson(open ? l : null)}
+                          top={34}
+                          right={8}
+                          items={[
+                            { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
+                            { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                            { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
+                            { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
+                            { label: 'Full profile', onClick: () => { if (l.pupil_id) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } }), 0); } },
+                          ]}
+                        >
+                          <span role="button" aria-label="Lesson options" onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => cur?.id === l.id ? null : l); }} style={{ display: 'flex', alignItems: 'center', alignSelf: 'center', padding: 4, cursor: 'pointer', flexShrink: 0 }}>
+                            <IconDots size={14} stroke={1.5} color="#9CA3AF" />
+                          </span>
+                        </LessonActionsMenu>
+                      </div>
                     );
                     })();
                     return (
@@ -7840,6 +7582,13 @@ function HomePage() {
                     );
                   })}
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/schedule' as never })}
+                    style={{ width: '100%', textAlign: 'center', fontSize: 12, color: '#2C97DE', padding: 10, border: 'none', borderTop: '0.5px solid #F4F6F8', background: '#FFFFFF', cursor: 'pointer', fontFamily: PF, fontWeight: 600 }}
+                  >
+                    View full schedule →
+                  </button>
                 </div>
               );
             })()}
