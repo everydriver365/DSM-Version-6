@@ -7208,8 +7208,8 @@ function HomePage() {
 
                   {/* Timeline container */}
                   <div style={{ position: 'relative', padding: '4px 0 4px' }}>
-                    {rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'lesson' }> => r.kind === 'lesson').slice(0, 3).map((r, idx) => {
-                    const rowStart = lessonDateTime(r.l);
+                    {rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'lesson' } | { kind: 'calendar' }> => r.kind === 'lesson' || r.kind === 'calendar').slice(0, 4).map((r, idx) => {
+                    const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
                     const rowDay = ymd(rowStart);
                     const showDayDivider = rowDay !== lastDividerDate;
                     const isFirstDivider = lastDividerDate === '';
@@ -7220,7 +7220,42 @@ function HomePage() {
                       </div>
                     ) : null;
                     const rowContent = (() => {
+                    if (r.kind === 'calendar') {
+                      const cStart = r.start;
+                      const cEnd = r.end;
+                      const cColour = r.colour || '#8B5CF6';
+                      const fmtT = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                      return (
+                        <div
+                          key={`cal-${idx}`}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'stretch',
+                            gap: 10,
+                            padding: '8px 14px',
+                            borderBottom: '0.5px solid #F4F6F8',
+                            background: '#FFFFFF',
+                            minHeight: 48,
+                            boxSizing: 'border-box',
+                          }}
+                        >
+                          <div style={{ width: 36, flexShrink: 0, fontSize: 11, color: '#536579', fontVariantNumeric: 'tabular-nums', paddingTop: 2 }}>
+                            {fmtT(cStart)}
+                          </div>
+                          <div aria-hidden style={{ width: 2, borderRadius: 1, background: cColour, minHeight: 32, flexShrink: 0 }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: '#0B2341', lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {r.title || 'Busy'}
+                            </div>
+                            <div style={{ fontSize: 11, color: '#536579', marginTop: 2, lineHeight: 1.25 }}>
+                              {fmtT(cStart)}–{fmtT(cEnd)} · Calendar
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
                     const row = { kind: 'lesson' as const, l: r.l };
+
 
                     const l = row.l;
                     const start = lessonDateTime(l);

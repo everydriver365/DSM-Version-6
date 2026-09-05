@@ -1965,7 +1965,11 @@ function SchedulePage() {
                     </button>
                   ))}
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", marginTop: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 10 }}>
+                  <button type="button" aria-label="Previous week" onClick={() => selectDay(addDays(selected, -7))} style={{ width: 26, height: 26, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", border: 0, background: "transparent", cursor: "pointer", padding: 0 }}>
+                    <IconChevronLeft size={16} stroke={2} color="#536579" />
+                  </button>
+                  <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
                   {stripDays.map((date) => {
                     const key = ymdLocal(date);
                     const selectedDay = key === selectedDate;
@@ -1977,7 +1981,12 @@ function SchedulePage() {
                       </button>
                     );
                   })}
+                  </div>
+                  <button type="button" aria-label="Next week" onClick={() => selectDay(addDays(selected, 7))} style={{ width: 26, height: 26, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", border: 0, background: "transparent", cursor: "pointer", padding: 0 }}>
+                    <IconChevronRight size={16} stroke={2} color="#536579" />
+                  </button>
                 </div>
+
                 {syncMessage ? <div style={{ marginTop: 6, fontSize: 10, color: syncMessage.type === "success" ? "#3B6D11" : "#991B1B" }}>{syncMessage.text}</div> : null}
               </div>
 
