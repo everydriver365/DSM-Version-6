@@ -4385,18 +4385,19 @@ function HomePage() {
         const isAllDay =
           (localStartTime === '00:00' && (localEndTime === '00:00' || localEndTime === '23:59')) ||
           (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
-        if (isAllDay) return null;
         return {
           localDate: localDateStr,
-          start: timeToMins(localStartTime),
-          end: timeToMins(localEndTime),
+          start: isAllDay ? 0 : timeToMins(localStartTime),
+          end: isAllDay ? 24 * 60 : timeToMins(localEndTime),
           title: b.title ?? 'Busy',
           colour: (b as { colour?: string | null }).colour ?? null,
+          allDay: isAllDay,
         };
       })
-      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null } => b !== null && b.localDate === dateStr)
-      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour }))
+      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null; allDay: boolean } => b !== null && b.localDate === dateStr)
+      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour, allDay: b.allDay }))
       .sort((a, b) => a.start - b.start);
+
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
 
@@ -6678,7 +6679,7 @@ function HomePage() {
         type Row =
           | { kind: 'lesson'; l: LessonRow }
           | { kind: 'gap'; start: Date; mins: number }
-          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null };
+          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null; allDay?: boolean };
         const rows: Row[] = [];
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
@@ -6771,7 +6772,7 @@ function HomePage() {
             const e = new Date(baseDate);
             e.setHours(0, 0, 0, 0);
             e.setMinutes(b.end);
-            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null });
+            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null, allDay: (b as { allDay?: boolean }).allDay === true });
           }
         }
 
@@ -7032,7 +7033,7 @@ function HomePage() {
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
-              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null } => r.kind === 'calendar');
+              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null; allDay?: boolean } => r.kind === 'calendar');
               
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
@@ -7240,7 +7241,7 @@ function HomePage() {
                           }}
                         >
                           <div style={{ width: 36, flexShrink: 0, fontSize: 11, color: '#536579', fontVariantNumeric: 'tabular-nums', paddingTop: 2 }}>
-                            {fmtT(cStart)}
+                            {r.allDay ? 'All day' : fmtT(cStart)}
                           </div>
                           <div aria-hidden style={{ width: 2, borderRadius: 1, background: cColour, minHeight: 32, flexShrink: 0 }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
@@ -7248,9 +7249,10 @@ function HomePage() {
                               {r.title || 'Busy'}
                             </div>
                             <div style={{ fontSize: 11, color: '#536579', marginTop: 2, lineHeight: 1.25 }}>
-                              {fmtT(cStart)}–{fmtT(cEnd)} · Calendar
+                              {r.allDay ? 'All day' : `${fmtT(cStart)}–${fmtT(cEnd)}`} · Calendar
                             </div>
                           </div>
+
                         </div>
                       );
                     }
