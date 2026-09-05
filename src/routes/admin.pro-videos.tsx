@@ -36,6 +36,7 @@ export const PRO_VIDEO_SECTIONS: { key: string; label: string }[] = [
   { key: "perks", label: "PRO Perks" },
   { key: "media", label: "PRO Media Hub" },
   { key: "pricing", label: "Membership pricing" },
+  { key: "tracking", label: "EDP Tracking" },
   { key: "addons", label: "Add-ons" },
 ];
 

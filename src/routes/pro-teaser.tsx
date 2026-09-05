@@ -6,7 +6,9 @@ import {
   IconDeviceLaptop,
   IconDeviceTv,
   IconPlayerPlayFilled,
-
+  IconCar,
+  IconChartBar,
+  IconMapPin,
   IconGift,
   IconHeart,
   IconMicrophone,
@@ -33,6 +35,9 @@ import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
 import costaPerkAsset from "@/assets/costa-perk.png.asset.json";
 import sainsburysPerkAsset from "@/assets/sainsburys-perk.png.asset.json";
 import asdaPerkAsset from "@/assets/asda-perk.png.asset.json";
+import trackingLogoAsset from "@/assets/edp-tracking-logo.png.asset.json";
+import trackerDeviceAsset from "@/assets/tracker-device.png.asset.json";
+
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
@@ -279,6 +284,208 @@ function VideoModal({ video, onClose }: { video: SectionVideo; onClose: () => vo
 }
 
 /* ------------------------------------------------------------------ */
+// Tracking advert card
+/* ------------------------------------------------------------------ */
+
+function TrackingFeature({ icon, l1, l2 }: { icon: React.ReactNode; l1: string; l2: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+      <span style={{ flexShrink: 0, display: "grid", placeItems: "center" }}>{icon}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, color: NAVY, lineHeight: 1.2 }}>
+        {l1}
+        <br />
+        {l2}
+      </span>
+    </div>
+  );
+}
+
+function TrackingPrice({ big, small }: { big: string; small: string }) {
+  return (
+    <div style={{ textAlign: "center", minWidth: 0 }}>
+      <div style={{ fontFamily: SORA, fontSize: 19, fontWeight: 900, color: NAVY, lineHeight: 1.1 }}>
+        {big}
+      </div>
+      <div style={{ fontSize: 10.5, color: GREY, fontWeight: 600 }}>{small}</div>
+    </div>
+  );
+}
+
+function TrackingCard({
+  video,
+  onOpenVideo,
+  onOpen,
+}: {
+  video?: SectionVideo;
+  onOpenVideo: (v: SectionVideo) => void;
+  onOpen: () => void;
+}) {
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onOpen();
+      }}
+      style={{
+        marginTop: 12,
+        position: "relative",
+        overflow: "hidden",
+        width: "100%",
+        border: `1.5px solid ${BLUE}`,
+        borderRadius: 18,
+        background: "#fff",
+        boxShadow: "0 6px 18px rgba(11,31,58,.07)",
+        cursor: "pointer",
+        padding: 12,
+        textAlign: "left",
+      }}
+    >
+      {/* soft blue wash behind the device */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          right: -50,
+          top: -30,
+          width: 220,
+          height: 220,
+          borderRadius: "50%",
+          background: "#E9F1FD",
+          zIndex: 0,
+        }}
+      />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {/* title row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div
+            style={{
+              flexShrink: 0,
+              width: 64,
+              height: 64,
+              borderRadius: 14,
+              background: "#EAF2FD",
+              display: "grid",
+              placeItems: "center",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              src={trackingLogoAsset.url}
+              alt="EDP Tracking"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: SORA,
+                fontSize: 26,
+                fontWeight: 900,
+                color: NAVY,
+                letterSpacing: "-0.5px",
+                lineHeight: 1.05,
+              }}
+            >
+              TRACKING
+            </div>
+            <div style={{ fontSize: 11.5, color: GREY, fontWeight: 600, lineHeight: 1.3 }}>
+              Professional vehicle tracking for driving instructors.
+            </div>
+          </div>
+          <div
+            style={{
+              flexShrink: 0,
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              background: "#fff",
+              boxShadow: "0 2px 8px rgba(11,31,58,.12)",
+              display: "grid",
+              placeItems: "center",
+            }}
+          >
+            <IconChevronRight size={18} color={BLUE} />
+          </div>
+        </div>
+
+        {/* features */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px 12px",
+            marginTop: 12,
+            alignItems: "center",
+          }}
+        >
+          <TrackingFeature icon={<IconMapPin size={18} color={BLUE} />} l1="Live" l2="location" />
+          <span style={{ width: 1, height: 22, background: LINE }} />
+          <TrackingFeature
+            icon={<IconChartBar size={18} color="#12A67A" />}
+            l1="Driving style"
+            l2="reports"
+          />
+          <span style={{ width: 1, height: 22, background: LINE }} />
+          <TrackingFeature icon={<IconCar size={18} color={BLUE} />} l1="Vehicle" l2="health checks" />
+        </div>
+
+        {/* price row + device */}
+        <div
+          style={{
+            marginTop: 12,
+            borderTop: `1px solid ${LINE}`,
+            paddingTop: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <img
+            src={trackerDeviceAsset.url}
+            alt="NexTech vehicle tracker device"
+            style={{
+              width: 92,
+              height: "auto",
+              objectFit: "contain",
+              flexShrink: 0,
+              borderRadius: 10,
+            }}
+          />
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-around",
+              gap: 6,
+            }}
+          >
+            <TrackingPrice big="£9.99" small="/month" />
+            <span style={{ width: 1, height: 26, background: LINE }} />
+            <TrackingPrice big="£25" small="setup fee" />
+            <span style={{ width: 1, height: 26, background: LINE }} />
+            <TrackingPrice big="24 mths" small="commitment" />
+          </div>
+        </div>
+
+        {video?.video_url && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ marginTop: 10, marginBottom: -4 }}
+          >
+            <ExplainerButton video={video} onOpen={onOpenVideo} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+/* ------------------------------------------------------------------ */
 // Static content
 /* ------------------------------------------------------------------ */
 
@@ -386,11 +593,12 @@ export function ProTeaserPage({
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [sectionVideos, setSectionVideos] = useState<Record<string, SectionVideo>>({});
   const [openVideo, setOpenVideo] = useState<SectionVideo | null>(null);
+  const [trackingListingId, setTrackingListingId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [tvRes, newsRes, explainerRes] = await Promise.allSettled([
+      const [tvRes, newsRes, explainerRes, trackingRes] = await Promise.allSettled([
         supabase
           .from("howto_videos")
           .select("id, title, thumbnail_url, sort_order")
@@ -404,7 +612,19 @@ export function ProTeaserPage({
           .order("published_at", { ascending: false })
           .limit(3),
         supabase.from("pro_section_videos").select("section, title, video_url"),
+        supabase
+          .from("marketplace_listings")
+          .select("id, title")
+          .eq("is_active", true)
+          .is("deleted_at", null)
+          .ilike("title", "%track%")
+          .limit(1),
       ]);
+      if (!cancelled && trackingRes.status === "fulfilled") {
+        const row = (trackingRes.value.data as any[] | null)?.[0];
+        if (row?.id) setTrackingListingId(String(row.id));
+      }
+
       if (cancelled) return;
       if (explainerRes.status === "fulfilled" && Array.isArray(explainerRes.value.data)) {
         const map: Record<string, SectionVideo> = {};
@@ -1080,6 +1300,16 @@ export function ProTeaserPage({
                 <IconChevronRight size={18} color={BLUE} />
               </div>
             </button>
+
+            <TrackingCard
+              video={sectionVideos["tracking"]}
+              onOpenVideo={setOpenVideo}
+              onOpen={() =>
+                go(trackingListingId ? `/marketplace/${trackingListingId}` : "/marketplace")
+              }
+            />
+
+
 
           </div>
         </section>
