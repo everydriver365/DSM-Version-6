@@ -1396,11 +1396,23 @@ export function ProTeaserPage({
                 }}
               >
 
-                {["5 page mini website", "Online Booling", "Receive enquiries", "Every Driver address school.everydriver.co.uk"].map((f) => (
+                {[
+                  "5 page mini website",
+                  "Online Booling",
+                  "Receive enquiries",
+                  "Every Driver address school.everydriver.co.uk",
+                ].map((f) => (
                   <Tick key={f} color={BLUE}>
                     {f}
                   </Tick>
                 ))}
+                <Tick key="benenden-free" color={BLUE}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <IconHeart size={13} color="#F0399B" fill="#F0399B" />
+                    Benenden Health
+                  </span>
+                </Tick>
+
               </div>
             </div>
 
@@ -1609,28 +1621,13 @@ export function ProTeaserPage({
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      justifyContent: "flex-end",
                       gap: 4,
                       marginTop: 8,
                       width: "100%",
                       flexWrap: "nowrap",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, minWidth: 0, flexShrink: 1 }}>
-                      <IconHeart size={16} color="#F0399B" fill="#F0399B" />
-                      <span
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 700,
-                          color: NAVY,
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        Benenden Health
-                      </span>
-                    </div>
                     <div style={{ display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
                       <span
                         style={{
@@ -1672,6 +1669,7 @@ export function ProTeaserPage({
                       </span>
                     </div>
                   </div>
+
                 </div>
 
                 <div style={{ flex: "0 0 auto", textAlign: "right" }}>
