@@ -6679,7 +6679,7 @@ function HomePage() {
         type Row =
           | { kind: 'lesson'; l: LessonRow }
           | { kind: 'gap'; start: Date; mins: number }
-          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null };
+          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null; allDay?: boolean };
         const rows: Row[] = [];
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
