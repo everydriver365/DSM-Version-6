@@ -552,8 +552,8 @@ const PRO_FEATURES = [
   "PRO News",
   "Perkbox benefits",
   "HMCA benefits",
-  "PRO Shop",
   "PRO content",
+  "PRO Shop",
 ];
 
 const BENENDEN_FEATURES = [
