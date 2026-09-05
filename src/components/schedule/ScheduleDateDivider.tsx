@@ -53,6 +53,7 @@ export function ScheduleDateDivider({ date, label, showLabel = true }: ScheduleD
             textTransform: "uppercase",
             fontFamily: typography.family,
             paddingTop: 8,
+            paddingLeft: 5,
           }}
         >
           {dateLabel}
