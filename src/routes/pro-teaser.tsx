@@ -1246,6 +1246,14 @@ export function ProTeaserPage({
               />
             </div>
 
+            <TrackingCard
+              video={sectionVideos["tracking"]}
+              onOpenVideo={setOpenVideo}
+              onOpen={() =>
+                go(trackingListingId ? `/marketplace/${trackingListingId}` : "/marketplace")
+              }
+            />
+
             <button
               type="button"
               onClick={() => go("/marketplace")}
@@ -1325,14 +1333,6 @@ export function ProTeaserPage({
                 <IconChevronRight size={18} color={BLUE} />
               </div>
             </button>
-
-            <TrackingCard
-              video={sectionVideos["tracking"]}
-              onOpenVideo={setOpenVideo}
-              onOpen={() =>
-                go(trackingListingId ? `/marketplace/${trackingListingId}` : "/marketplace")
-              }
-            />
 
 
 
