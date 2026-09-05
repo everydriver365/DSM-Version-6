@@ -1354,6 +1354,7 @@ export function ProTeaserPage({
           <div style={{ display: "grid", gap: 18, padding: "18px 16px 4px" }}>
             {/* FREE */}
             <div
+              className="free-tile-card"
               style={{
                 ...CARD,
                 padding: 18,
@@ -1363,8 +1364,37 @@ export function ProTeaserPage({
                 overflow: "hidden",
               }}
             >
+              <style>{`
+                .free-tile-card { flex-direction: column; }
+                .free-tile-left { width: 100%; padding-right: 0 !important; }
+                .free-tile-middle {
+                  border-left: none !important;
+                  border-right: none !important;
+                  border-top: 1px solid #E3E9F2;
+                  border-bottom: 1px solid #E3E9F2;
+                  padding: 16px 0 !important;
+                  margin: 0;
+                  width: 100%;
+                }
+                .free-tile-right { width: 100%; padding-left: 0 !important; }
+                @media (min-width: 640px) {
+                  .free-tile-card { flex-direction: row; }
+                  .free-tile-left { width: auto; padding-right: 16px !important; }
+                  .free-tile-middle {
+                    border-left: 1px solid #E3E9F2 !important;
+                    border-right: 1px solid #E3E9F2 !important;
+                    border-top: none !important;
+                    border-bottom: none !important;
+                    padding: 0 16px !important;
+                    width: auto;
+                  }
+                  .free-tile-right { width: auto; padding-left: 0 !important; }
+                }
+              `}</style>
+
               {/* LEFT — headline + CTA */}
               <div
+                className="free-tile-left"
                 style={{
                   flex: "1 1 180px",
                   minWidth: 0,
@@ -1427,6 +1457,7 @@ export function ProTeaserPage({
 
               {/* MIDDLE — benefits */}
               <div
+                className="free-tile-middle"
                 style={{
                   flex: "1.4 1 220px",
                   minWidth: 0,
@@ -1455,6 +1486,7 @@ export function ProTeaserPage({
 
               {/* RIGHT — Perkbox promo */}
               <div
+                className="free-tile-right"
                 style={{
                   flex: "0.9 1 150px",
                   minWidth: 0,
