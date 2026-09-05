@@ -552,7 +552,6 @@ const PRO_FEATURES = [
   "PRO News",
   "Perkbox benefits",
   "HMCA benefits",
-  "PRO content",
   "PRO Shop",
 ];
 
@@ -1538,27 +1537,9 @@ export function ProTeaserPage({
               >
                 {PRO_FEATURES.map((f) => (
                   <Tick key={f} color={ORANGE}>
-                    {f === "PRO content" ? (
-                      <span style={{ display: "flex", flexDirection: "column" }}>
-                        <span>{f}</span>
-                        <span style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
-                          <img
-                            src={diaLogoAsset.url}
-                            alt="DIA"
-                            style={{ width: 33, height: 33, objectFit: "contain", display: "block", borderRadius: 8 }}
-                          />
-                          <img
-                            src={perkboxPurpleLogoAsset.url}
-                            alt="Perkbox"
-                            style={{ width: 33, height: 33, objectFit: "contain", display: "block", borderRadius: 8 }}
-                          />
-                        </span>
-                      </span>
-                    ) : (
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        {f}
-                      </span>
-                    )}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      {f}
+                    </span>
                   </Tick>
                 ))}
               </div>
