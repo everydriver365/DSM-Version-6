@@ -805,6 +805,8 @@ function SchedulePage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
+  const [calendarView, setCalendarView] = useState<"day" | "week">("day");
+  const [clockNow, setClockNow] = useState(() => new Date());
   const [instructor, setInstructor] = useState<{ name: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
@@ -835,6 +837,12 @@ function SchedulePage() {
 
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
+
+  useEffect(() => {
+    const tick = () => setClockNow(new Date());
+    const id = window.setInterval(tick, 60000);
+    return () => window.clearInterval(id);
+  }, []);
 
   // Auto-dismiss inline sync messages after 5 seconds
   useEffect(() => {
@@ -1781,945 +1789,226 @@ function SchedulePage() {
           flex: 1,
           minHeight: 0,
           marginTop: -18,
-          background: "#DCE4F0",
+          background: "#F4F6F8",
           borderRadius: "16px 16px 0 0",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
         }}
       >
-      <MonthStrip
-        viewMonth={viewMonth}
-        selectedDate={selectedDate}
-        todayKey={ymdLocal(today)}
-        dotsByDay={dotsByDay}
-        onPrevMonth={() => {
-          const d = new Date(viewMonth);
-          d.setMonth(d.getMonth() - 1);
-          setViewMonth(d);
-        }}
-        onNextMonth={() => {
-          const d = new Date(viewMonth);
-          d.setMonth(d.getMonth() + 1);
-          setViewMonth(d);
-        }}
-        onSelectDate={(key) => {
-          setSelectedDate(key);
-          const [y, m, d] = key.split("-").map(Number);
-          setViewMonth(new Date(y, m - 1, d));
-          scrollToDate(key);
-        }}
-        onToday={() => {
-          const d = new Date(today);
-          d.setDate(1);
-          setViewMonth(d);
-          scrollToDate(ymdLocal(today));
-        }}
-        showSync
-        onSync={handleSync}
-        syncing={syncing}
-        syncMessage={syncMessage}
-        lastSynced={lastSynced}
-        formatRelativeSync={formatRelativeSync}
-      />
+        {(() => {
+          const GRID_START = 8 * 60;
+          const GRID_END = 20 * 60;
+          const HOUR_HEIGHT = 56;
+          const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * HOUR_HEIGHT;
+          const selected = new Date(`${selectedDate}T12:00:00`);
+          const stripStart = addDays(selected, -selected.getDay());
+          const stripDays = Array.from({ length: 7 }, (_, i) => addDays(stripStart, i));
+          const weekStart = mondayOf(selected);
+          const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+          const viewDays = calendarView === "day" ? [selected] : weekDays;
+          const monthLabel = selected.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+          const hours = Array.from({ length: 13 }, (_, i) => 8 + i);
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 12, background: '#1877D6' }} />
-          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>EDP lesson</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 12, background: '#9CA3AF' }} />
-          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 12, background: '#B45309' }} />
-          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
-        </div>
-      </div>
+          const selectDay = (date: Date) => {
+            const key = ymdLocal(date);
+            setSelectedDate(key);
+            setViewMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+          };
 
-
-      <div
-        ref={scrollRef}
-        onScroll={onScroll}
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          overflowX: "hidden",
-          padding: "0 16px calc(80px + env(safe-area-inset-bottom))",
-        }}
-      >
-
-
-        <div style={{ padding: "8px 0 0" }}>
-
-        {lessons === null ? (
-          <div style={{ padding: 24, color: "#B0BAC9", fontSize: 14 }}>Loading…</div>
-        ) : rows.length === 0 ? (
-          <div style={{ padding: 24, color: "#B0BAC9", fontSize: 14 }}>Nothing scheduled.</div>
-        ) : (
-          rows.map((row, rowIdx) => {
-            if (row.type === "week") {
-              const isFirstWeek = rowIdx === 0;
-              return (
-                <div
-                  key={row.key}
-                  style={{ marginTop: isFirstWeek ? 4 : 24 }}
-                >
-                  <ScheduleDateDivider label={row.label.toUpperCase()} />
-                </div>
-              );
+          const entriesFor = (date: Date) => entriesByDay.get(ymdLocal(date)) ?? [];
+          const paletteFor = (entry: AgendaEntry) => {
+            if (entry.kind !== "lesson") {
+              const border = entry.kind === "personal"
+                ? (entry.colour || "#18A999")
+                : entry.kind === "block" || entry.kind === "external"
+                  ? resolveEventColour(entry.colour)
+                  : "#536579";
+              return { background: "#F4F6F8", border, color: "#0B2341" };
             }
-            const isToday = row.key === todayKey;
-            const isPast = row.key < todayKey;
+            const lesson = entry.lesson;
+            const cancelled = String(lesson.status).toLowerCase() === "cancelled";
+            const test = isTest(lesson);
+            const paid = ["paid", "prepaid"].includes(String(lesson.payment_status ?? "").toLowerCase()) || Number(lesson.pupil?.prepaid_hours ?? 0) > 0 || Number(lesson.amount_due ?? 0) <= 0;
+            if (cancelled) return { background: "#FEF2F2", border: "#E24B4A", color: "#991B1B" };
+            if (test) return { background: "#FDF5E6", border: "#EF9F27", color: "#633806" };
+            if (paid) return { background: "#EAF3DE", border: "#639922", color: "#27500A" };
+            return { background: "#EAF5FC", border: "#2C97DE", color: "#0C447C" };
+          };
+
+          const openEntry = (entry: AgendaEntry) => {
+            if (entry.kind === "lesson") {
+              if (isEvent(entry.lesson)) {
+                toast.info(`Event: ${entry.lesson.event_title || "No title"}`, { duration: 3000 });
+              } else {
+                tapLight();
+                setActionsLesson(entry.lesson);
+              }
+              return;
+            }
+            if (entry.kind === "personal" && entry.event) {
+              setEditingPersonal(entry.event);
+              setPersonalSheetOpen(true);
+              return;
+            }
+            if (entry.kind === "block") {
+              toast.info("This is a Google Calendar event. Manage it in Google Calendar.", { duration: 4000 });
+            }
+          };
+
+          const renderBlock = (entry: AgendaEntry, compact: boolean) => {
+            if (entry.allDay) return null;
+            const startMinutes = entry.start.getHours() * 60 + entry.start.getMinutes();
+            const duration = Math.max(1, Math.round((entry.end.getTime() - entry.start.getTime()) / 60000));
+            if (startMinutes >= GRID_END || startMinutes + duration <= GRID_START) return null;
+            const clippedStart = Math.max(startMinutes, GRID_START);
+            const clippedEnd = Math.min(startMinutes + duration, GRID_END);
+            const top = ((clippedStart - GRID_START) / 60) * HOUR_HEIGHT;
+            const height = Math.max(40, ((clippedEnd - clippedStart) / 60) * HOUR_HEIGHT);
+            const palette = paletteFor(entry);
+            const lesson = entry.kind === "lesson" ? entry.lesson : null;
+            const name = lesson ? pupilDisplayName(lesson.pupil) : entry.title;
+            const firstName = name.split(/\s+/)[0] || name;
+            const paid = lesson && (["paid", "prepaid"].includes(String(lesson.payment_status ?? "").toLowerCase()) || Number(lesson.pupil?.prepaid_hours ?? 0) > 0 || Number(lesson.amount_due ?? 0) <= 0);
+            const statusText = !lesson
+              ? entry.kind === "personal" ? "Private" : "Calendar"
+              : String(lesson.status).toLowerCase() === "cancelled"
+                ? "Cancelled"
+                : isTest(lesson)
+                  ? (testTimeOf(lesson) ? `Test ${testTimeOf(lesson)}` : "Test")
+                  : paid
+                    ? "Paid"
+                    : `£${Number(lesson.amount_due ?? 0).toFixed(0)} due`;
+            const location = lesson
+              ? (isTest(lesson) ? testCentreOf(lesson) : lesson.pickup_location || [lesson.pupil?.address, lesson.pupil?.postcode].filter(Boolean).join(", "))
+              : "";
             return (
-              <div
-                key={row.key}
-                id={`day-${row.key}`}
-                ref={(el) => {
-                  if (el) {
-                    dayRefs.current.set(row.key, el);
-                  } else {
-                    dayRefs.current.delete(row.key);
-                  }
-                }}
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() => openEntry(entry)}
                 style={{
-                  marginBottom: 18,
+                  position: "absolute",
+                  top,
+                  height,
+                  left: compact ? 2 : 4,
+                  right: compact ? 2 : 4,
+                  zIndex: 2,
+                  overflow: "hidden",
+                  border: 0,
+                  borderLeft: `3px solid ${palette.border}`,
+                  borderRadius: 6,
+                  background: palette.background,
+                  color: palette.color,
+                  padding: compact ? "3px 3px" : "4px 8px",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  opacity: lesson && String(lesson.status).toLowerCase() === "cancelled" ? 0.7 : 1,
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
-                {/* Day heading */}
-                <ScheduleDateDivider date={row.date} />
-
-
-                {row.entries.length === 0 && isToday ? (
-                  <div
-                    style={{
-                      background: tokens.canvas,
-                      border: "1.5px dashed #D0D5DD",
-                      borderRadius: tokens.radiusCard,
-                      padding: "12px 16px",
-                      textAlign: "center",
-                      fontSize: 12,
-                      color: "#B0BAC9",
-                      ...POPPINS,
-                    }}
-                  >
-                    Today — no lessons
-                  </div>
+                {compact ? (
+                  <>
+                    <div style={{ fontSize: 8, fontWeight: 700, lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{firstName}</div>
+                    <div style={{ fontSize: 7, marginTop: 1, opacity: 0.78 }}>{fmtTime(entry.start)}</div>
+                  </>
                 ) : (
-                  (() => {
-                    type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number; potential: number };
-                    const dayLessons = (lessons ?? []).filter((l) => l.lesson_date.substring(0, 10) === row.key);
-                    const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
-                      new Date(row.key + "T12:00:00").getDay()
-                    ];
-                    const dayConfig = perDayHours?.[dayName];
-                    const dayStart = dayConfig?.start || workStart || "09:00";
-                    const dayEnd = dayConfig?.end || workEnd || "18:00";
-                    const isDayActive = dayConfig
-                      ? dayConfig.active === true
-                      : workingDaysList.includes(dayName);
-                    const gaps = isDayActive
-                      ? detectGaps(
-                          dayLessons.map((l) => ({
-                            status: l.status,
-                            lesson_time: l.lesson_time,
-                            duration_minutes: l.duration_minutes,
-                            pupils: null,
-                          })),
-                          dayStart,
-                          dayEnd,
-                          bufferAfter,
-                          busyBlocksForGaps,
-                          recurringBlocks,
-                          timeOff,
-                          row.key,
-                          hourlyRate,
-                          minGapMinutes,
-                        )
-                      : [];
-                    const gapRows: GapRow[] = gaps.map((g, i) => ({
-                      kind: 'gap-row',
-                      id: `gap-${row.key}-${i}`,
-                      startMins: g.startMins,
-                      startTime: g.startTime,
-                      endTime: g.endTime,
-                      mins: g.gapMins,
-                      potential: g.potential,
-                    }));
+                  <>
+                    <div style={{ fontSize: 9, color: "#536579", lineHeight: 1.2 }}>{fmtTime(entry.start)}–{fmtTime(entry.end)}</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
+                    {height >= 54 && location ? <div style={{ fontSize: 9, color: "#536579", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{location}</div> : null}
+                    {height >= 68 ? <div style={{ fontSize: 9, color: "#536579", lineHeight: 1.2 }}>{statusText}</div> : null}
+                  </>
+                )}
+              </button>
+            );
+          };
 
-                    // Available slot rows only when a lesson is being moved
-                    type SlotRow = { kind: 'slot-row'; id: string; startMins: number; time: string; dateKey: string };
-                    let slotRows: SlotRow[] = [];
-                    if (moveMode && movingLesson && isDayActive) {
-                      const dur = Number(movingLesson.duration_minutes) || 60;
-                      const wsMin = timeToMins(dayStart);
-                      const weMin = timeToMins(dayEnd);
-                      const nowMins = new Date().getHours() * 60 + new Date().getMinutes();
-                      const isTodayKey = row.key === ymdLocal(today);
-                      const minStart = isTodayKey ? Math.max(wsMin, nowMins + 30) : wsMin;
-
-                      const busy: Array<{ start: number; end: number }> = [];
-                      for (const l of dayLessons) {
-                        if (l.id === movingLesson.id) continue;
-                        if (String(l.status || '') === 'cancelled') continue;
-                        const s = timeToMins(l.lesson_time);
-                        busy.push({ start: s, end: s + (l.duration_minutes || 60) });
-                      }
-                      const dayBlocks = (visibleCalendarBlocks || []).filter((b) => (b.start_datetime || '').substring(0, 10) === row.key);
-                      for (const b of dayBlocks) {
-                        busy.push({
-                          start: timeToMins((b.start_datetime || '').substring(11, 16) || '00:00'),
-                          end: timeToMins((b.end_datetime || '').substring(11, 16) || '23:59'),
-                        });
-                      }
-                      const dayNameForBlocks = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
-                        new Date(row.key + "T12:00:00").getDay()
-                      ];
-                      for (const b of (recurringBlocks || []).filter((rb) => rb.day_of_week === dayNameForBlocks && rb.is_active !== false)) {
-                        busy.push({ start: timeToMins(b.start_time), end: timeToMins(b.end_time) });
-                      }
-
-                      const off = (timeOff || []).filter((t) => t.start_date <= row.key && t.end_date >= row.key);
-                      const allDayOff = off.some((t) => t.all_day);
-                      if (!allDayOff) {
-                        for (let m = Math.ceil(minStart / 30) * 30; m + dur <= weMin; m += 30) {
-                          const slotEnd = m + dur;
-                          const conflict = busy.some((b) => m < b.end && slotEnd > b.start);
-                          if (conflict) continue;
-                          const hh = String(Math.floor(m / 60)).padStart(2, '0');
-                          const mm = String(m % 60).padStart(2, '0');
-                          slotRows.push({
-                            kind: 'slot-row',
-                            id: `slot-${row.key}-${m}`,
-                            startMins: m,
-                            time: `${hh}:${mm}`,
-                            dateKey: row.key,
-                          });
-                        }
-                      }
-                    }
-
-                    const entryWithMins = row.entries.map((e) => ({
-                      entry: e,
-                      mins: e.start.getHours() * 60 + e.start.getMinutes(),
-                    }));
-                    const combined: Array<
-                      | { kind: 'entry'; startMins: number; entry: AgendaEntry }
-                      | { kind: 'gap'; startMins: number; gap: GapRow }
-                      | { kind: 'slot'; startMins: number; slot: SlotRow }
-                    > = [
-                      ...entryWithMins.map((x) => ({ kind: 'entry' as const, startMins: x.mins, entry: x.entry })),
-                      ...(moveMode ? [] : gapRows.map((g) => ({ kind: 'gap' as const, startMins: g.startMins, gap: g }))),
-                      ...slotRows.map((s) => ({ kind: 'slot' as const, startMins: s.startMins, slot: s })),
-                    ].sort((a, b) => a.startMins - b.startMins);
-                    const items: Array<AgendaEntry | GapRow | SlotRow> = combined.map((c) =>
-                      c.kind === 'entry' ? c.entry : c.kind === 'gap' ? c.gap : c.slot,
-                    );
-
-
-                    return (
-                      <div>
-                        {items.map((e) => {
-                          if (e.kind === 'gap-row') {
-                            const preview = previewMatchForGap({ date: row.key, dayName, startMin: e.startMins, durationMin: e.mins, allPupils, allAvailability });
-                            return (
-                              <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                                <div
-                                  style={{
-                                    position: "absolute",
-                                    top: -16,
-                                    left: 12,
-                                    zIndex: 1,
-                                    background: "#DCFCE7",
-                                    color: "#000000",
-                                    fontSize: tokens.fontSize.xs,
-                                    fontWeight: tokens.fontWeight.extrabold,
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.5px",
-                                    padding: "4px 10px",
-                                    borderRadius: "8px 8px 8px 0",
-                                    fontFamily: "Poppins, sans-serif",
-                                    lineHeight: 1.2,
-                                  }}
-                                >
-                                  FILL THIS GAP
-                                </div>
-                                <div
-                                  className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
-                                  style={{
-                                    background: "#EAF5FC",
-                                    borderRadius: tokens.radiusCard,
-                                    border: "2px dashed #D4A853",
-                                    padding: "12px 16px",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    gap: 12,
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: 2 }}>
-                                    <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
-                                      {e.startTime}
-                                    </div>
-                                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
-                                      {formatMins(e.mins)}
-                                    </div>
-                                  </div>
-                                  <div
-                                    aria-hidden
-                                    style={{
-                                      width: 4,
-                                      borderRadius: "8px 0 0 8px",
-                                      background: "#D4A853",
-                                      flexShrink: 0,
-                                      alignSelf: "stretch",
-                                    }}
-                                  />
-                                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", paddingTop: 2 }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, flexWrap: "wrap" }}>
-                                      {preview.count > 0 ? (
-                                        <>
-                                          <div style={{ display: "flex", alignItems: "center" }}>
-                                            {preview.topPupils.map((p, idx) => {
-                                              const initials = (p.name ?? p.first_name ?? "P")
-                                                .split(/\s+/)
-                                                .map((s) => s.charAt(0))
-                                                .join("")
-                                                .slice(0, 2)
-                                                .toUpperCase();
-                                              return (
-                                                  <div
-                                                    key={idx}
-                                                    style={{
-                                                      width: 34,
-                                                      height: 34,
-                                                      borderRadius: "50%",
-                                                      background: tokens.navy,
-                                                      border: "2px solid #EAF5FC",
-                                                      marginLeft: idx === 0 ? 0 : -10,
-                                                      display: "flex",
-                                                      alignItems: "center",
-                                                      justifyContent: "center",
-                                                      color: tokens.white,
-                                                      fontSize: tokens.fontSize.sm,
-                                                      fontWeight: tokens.fontWeight.bold,
-                                                      fontFamily: "Poppins, sans-serif",
-                                                    }}
-                                                  >
-                                                  {initials}
-                                                </div>
-                                              );
-                                            })}
-                                          </div>
-                                          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>
-                                            {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit · £{e.potential} potential
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>
-                                          £{e.potential} potential
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => navigate({ to: '/gaps' as never })}
-                                      className="shrink-0 self-center rounded-lg bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
-                                    >
-                                      Fill
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }
-
-                          if (e.kind === 'slot-row') {
-                            const dur = Number(movingLesson?.duration_minutes) || 60;
-                            return (
-                              <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                                <div
-                                  onClick={() => setConfirmMove({ date: e.dateKey, time: e.time })}
-                                  role="button"
-                                  tabIndex={0}
-                                  style={{
-                                    background: '#E0FFF4',
-                                    border: '0.5px solid #86EFAC',
-                                    borderRadius: tokens.radiusCard,
-                                    padding: '10px 14px',
-                                    margin: '2px 0',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 10,
-                                    cursor: 'pointer',
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  <IconClock stroke={1.5} size={14} color="#1E8E3E" />
-                                  <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
-                                    {e.time}
-                                  </span>
-                                  <span style={{ fontSize: tokens.fontSize.sm, color: '#1E8E3E' }}>
-                                    {dur} min slot available
-                                  </span>
-                                  <span style={{ fontSize: tokens.fontSize.sm, color: '#1E8E3E', fontWeight: tokens.fontWeight.semibold, marginLeft: 'auto' }}>
-                                    Move here →
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          }
-
-
-                          // Resolve entry marker/tag color
-                          let markerColor = "#8A93A3";
-                          let title = "";
-                          let timeText = `${fmtTime(e.start)} – ${fmtTime(e.end)}`;
-                          if (e.kind === "lesson") {
-                            const eventLesson = isEvent(e.lesson);
-                            const name = eventLesson
-                              ? (e.lesson.event_title || "Event")
-                              : pupilDisplayName(e.lesson.pupil);
-                            markerColor = eventLesson
-                              ? "#1877D6"
-                              : pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
-                            title = name;
-                            // Subtitle shows the lesson type instead of a duplicated time range.
-                            if (isTest(e.lesson)) {
-                              const centre = testCentreOf(e.lesson);
-                              timeText = centre ? `Test day · ${centre}` : "Test day · Test centre not set";
-                            } else if (eventLesson) {
-                              timeText = "";
-                            } else {
-                              const typeRaw = (e.lesson.lesson_type ?? "").trim();
-                              const typeLabel = typeRaw
-                                ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
-                                : "Standard";
-                              timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
-                            }
-                          } else if (e.kind === "block") {
-                            markerColor = resolveEventColour(e.colour, getBlockColour(e.title).border);
-                            title = e.title;
-                          } else if (e.kind === "external") {
-                            markerColor = resolveEventColour(e.colour);
-                            title = e.title;
-                            if (e.allDay) timeText = "All day";
-                          } else if (e.kind === "personal") {
-                            markerColor = e.colour || "#E8B84B";
-                            title = e.title;
-                            if (e.allDay) timeText = "All day";
-                            const loc = e.event?.location?.trim();
-                            if (loc) timeText = `${timeText} · ${loc}`;
-                          } else if (e.kind === "task") {
-                            markerColor = "#6B6BD6";
-                            title = e.title;
-                            timeText = "";
-                          } else if (e.kind === "holiday") {
-                            markerColor = "#3D9E7A";
-                            title = e.title;
-                            timeText = "All day";
-                          }
-                          const cancelled = e.kind === "lesson" && e.lesson.status === "cancelled";
-                          const isLessonRow = e.kind === "lesson";
-                          const now = new Date();
-                          const isLive = isLessonRow && now >= e.start && now < e.end;
-                          const payStatus = isLessonRow ? (e.lesson.payment_status ?? "").toLowerCase() : "";
-                          const amt = isLessonRow ? Number(e.lesson.amount_due ?? 0) : 0;
-                          const isPrepaidPupil = isLessonRow && Number(e.lesson.pupil?.prepaid_hours ?? 0) > 0;
-                          const isPaid = payStatus === "paid" || payStatus === "prepaid" || isPrepaidPupil;
-                          const dueUnpaid = isLessonRow && amt > 0 && !isPaid;
-                          const isBlockRow = e.kind === "block";
-                          const isPersonalRow = e.kind === "personal";
-                          const clickable = isLessonRow || isBlockRow || isPersonalRow;
-                          const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
-                          const isTestDay = isLessonRow && isTest((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
-                          const isEventRow = isLessonRow && isEvent((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
-
-                          const isDimmed = moveMode && !isMovingThis;
-                          const onCardClick = isLessonRow
-                            ? () => {
-                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                if (isEvent(lesson)) {
-                                  toast.info(`Event: ${lesson.event_title || 'No title'}`, { duration: 3000 });
-                                  return;
-                                }
-                                tapLight();
-                                setActionsLesson(lesson);
-                              }
-                            : isBlockRow
-                              ? () => {
-                                  const blockEntry = e as Extract<AgendaEntry, { kind: 'block' }>;
-                                  const startD = blockEntry.start;
-                                  const endD = blockEntry.end;
-                                  const pad = (n: number) => String(n).padStart(2, '0');
-                                  const blockDate = `${startD.getFullYear()}-${pad(startD.getMonth() + 1)}-${pad(startD.getDate())}`;
-                                  const blockTime = `${pad(startD.getHours())}:${pad(startD.getMinutes())}`;
-                                  const blockDurationMins = Math.max(1, Math.round((endD.getTime() - startD.getTime()) / 60000));
-                                  toast.info(
-                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a EDP lesson with payment tracking, tap "Add as lesson".',
-                                    {
-                                      duration: 5000,
-                                      action: {
-                                        label: 'Add as lesson →',
-                                        onClick: () => {
-                                          setAddLessonPupilId(undefined);
-                                          setAddLessonDate(blockDate);
-                                          setAddLessonOpen(true);
-                                        },
-                                      },
-                                    },
-                                  );
-                                }
-                              : isPersonalRow
-                                ? () => {
-                                    const ev = (e as Extract<AgendaEntry, { kind: 'personal' }>).event;
-                                    if (!ev) return;
-                                    setEditingPersonal(ev);
-                                    setPersonalSheetOpen(true);
-                                  }
-                                : undefined;
-
-
-                          return (
-                            <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                              {isLessonRow && isEventRow ? (
-                                <div
-                                  onClick={onCardClick}
-                                  role="button"
-                                  tabIndex={0}
-                                  style={{
-                                    background: '#fff',
-                                    borderRadius: tokens.radiusCard,
-                                    border: '2px solid #1877D6',
-                                    padding: '14px 16px',
-                                    marginBottom: 8,
-                                    cursor: 'pointer',
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: tokens.fontWeight.extrabold, borderRadius: tokens.radiusCard, padding: '3px 10px' }}>
-                                      📅 EVENT
-                                    </span>
-                                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
-                                  </div>
-                                  <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', marginTop: 8 }}>
-                                    {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.event_title}
-                                  </div>
-                                  {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location && (
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, fontSize: 12, color: '#6B7686' }}>
-                                      <IconMapPin size={12} color="#9CA3AF" stroke={1.5} />
-                                      {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location}
-                                    </div>
-                                  )}
-                                </div>
-                              ) : isLessonRow && isTestDay ? (
-                                <TestLessonCard
-                                  lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
-                                  onClick={onCardClick || (() => {})}
-                                  onCancel={() => setCancelSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)}
-                                  onDelete={() => setDeleteSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)}
-                                />
-                              ) : isPersonalRow ? (
-                                <div
-                                  onClick={onCardClick}
-                                  role="button"
-                                  tabIndex={0}
-                                  style={{
-                                    background: '#fff',
-                                    borderRadius: tokens.radiusCard,
-                                    boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
-                                    padding: "12px 16px",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    gap: 12,
-                                    cursor: "pointer",
-                                    opacity: isDimmed ? 0.4 : 1,
-                                    border: '0.5px solid #E4E8EF',
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                    <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                      {e.allDay ? "All day" : fmtTime(e.start)}
-                                    </div>
-                                    {!e.allDay && (
-                                      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                        {(() => {
-                                          const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
-                                          const h = Math.floor(durMin / 60);
-                                          const m = durMin % 60;
-                                          return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
-                                        })()}
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div
-                                    aria-hidden
-                                    style={{
-                                      width: 3,
-                                      borderRadius: 12,
-                                      background: '#1877D6',
-                                      flexShrink: 0,
-                                      alignSelf: 'stretch',
-                                    }}
-                                  />
-                                  <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                                    {(() => {
-                                      const pe = e.event as (PersonalEvent & { description?: string | null }) | undefined;
-                                      const descriptionText = pe?.description || pe?.notes;
-                                      return (
-                                        <>
-                                          <div
-                                            style={{
-                                              fontSize: tokens.fontSize.md,
-                                              fontWeight: tokens.fontWeight.semibold,
-                                              color: '#0B1F3A',
-                                              whiteSpace: 'nowrap',
-                                              overflow: 'hidden',
-                                              textOverflow: 'ellipsis',
-                                              lineHeight: 1.3,
-                                            }}
-                                            title={title}
-                                          >
-                                            {title}
-                                          </div>
-                                          {descriptionText && (
-                                            <div
-                                              style={{
-                                                fontSize: 12,
-                                                color: '#6B7280',
-                                                marginTop: 2,
-                                                lineHeight: 1.3,
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                              }}
-                                              title={descriptionText}
-                                            >
-                                              {descriptionText}
-                                            </div>
-                                          )}
-                                        </>
-                                      );
-                                    })()}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                                      <IconLock size={12} color="#6B7280" stroke={1.5} />
-                                      <span style={{ fontSize: 12, color: '#6B7280' }}>Private</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div style={{ position: "relative", overflow: "hidden", borderRadius: 8}}>
-                                  <div
-                                    onClick={onCardClick}
-
-                                  role={clickable ? "button" : undefined}
-                                  tabIndex={clickable ? 0 : undefined}
-                                  style={{
-                                    background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: tokens.radiusCard,
-                                    boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
-                                    padding: "12px 16px",
-                                    display: "flex",
-                                    alignItems: (isBlockRow || isLessonRow) ? "stretch" : "center",
-                                    gap: (isBlockRow || isLessonRow) ? 12 : 10,
-                                    cursor: clickable ? "pointer" : "default",
-                                    opacity: cancelled ? 0.55 : isDimmed ? 0.4 : 1,
-                                    position: "relative",
-                                    zIndex: 1,
-                                    border: isTestDay
-                                      ? '2px solid #FF8C00'
-                                      : isMovingThis
-                                        ? '2px solid #1877D6'
-                                        : '0.5px solid #E4E8EF',
-                                    animation: isMovingThis ? 'movePulse 1.5s ease-in-out infinite' : undefined,
-                                    ...POPPINS,
-                                  }}
-                                >
-
-                                  {isBlockRow ? (
-                                    <>
-                                    <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                        {e.allDay ? "All day" : fmtTime(e.start)}
-                                      </div>
-                                      {!e.allDay && (
-                                        <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                          {(() => {
-                                            const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
-                                            const h = Math.floor(durMin / 60);
-                                            const m = durMin % 60;
-                                            return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
-                                          })()}
-                                        </div>
-                                      )}
-                                    </div>
-                                      <div
-                                        aria-hidden
-                                        style={{
-                                          width: 3,
-                                          borderRadius: 12,
-                                          background: Date.now() >= e.end.getTime() ? '#34A853' : '#1877D6',
-                                          flexShrink: 0,
-                                          alignSelf: 'stretch',
-                                        }}
-                                      />
-                                      <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                                        <div
-                                          style={{
-                                            fontSize: tokens.fontSize.md,
-                                            fontWeight: tokens.fontWeight.semibold,
-                                            color: '#0B1F3A',
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            lineHeight: 1.3,
-                                          }}
-                                          title={title}
-                                        >
-                                          {title}
-                                        </div>
-                                        <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-                                          Google Calendar
-                                        </div>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <>
-                                      {isLessonRow ? (
-                                        <>
-                                          <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                              {fmtTime(e.start)}
-                                            </div>
-                                            <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                              {(() => {
-                                                const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
-                                                const h = Math.floor(durMin / 60);
-                                                const m = durMin % 60;
-                                                return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
-                                              })()}
-                                            </div>
-                                          </div>
-                                           <div
-                                             aria-hidden
-                                             style={{
-                                               width: 4,
-                                               borderRadius: '8px 0 0 8px',
-                                               background: markerColor,
-                                               flexShrink: 0,
-                                               alignSelf: 'stretch',
-                                             }}
-                                           />
-                                         </>
-                                      ) : (
-                                         <div
-                                           aria-hidden
-                                           style={{
-                                             width: 4,
-                                             borderRadius: '8px 0 0 8px',
-                                             background: markerColor,
-                                             flexShrink: 0,
-                                             alignSelf: 'stretch',
-                                           }}
-                                         />
-                                      )}
-                                        <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
-                                          {isLessonRow ? (
-
-                                           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
-                                             <div style={{ flex: 1, minWidth: 0 }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                                                  {isLive && (
-                                                    <span
-                                                      aria-label="Live"
-                                                      style={{
-                                                        width: 8,
-                                                        height: 8,
-                                                        borderRadius: 999,
-                                                        backgroundColor: '#B91C1C',
-                                                        boxShadow: '0 0 0 2px #FFFFFF',
-                                                        flexShrink: 0,
-                                                      }}
-                                                    />
-                                                  )}
-                                                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
-                                                    {title}
-                                                  </span>
-                                                    {cancelled ? (
-                                                      <DSMPill variant={lessonStatusVariant('cancelled')}>
-                                                        {statusLabel('cancelled')}
-                                                      </DSMPill>
-
-                                                      ) : (
-                                                        <LessonPaymentBadge
-                                                          status={e.lesson.payment_status}
-                                                          amountDue={e.lesson.amount_due}
-                                                          paidAmount={(e.lesson as any).paid_amount}
-                                                          prepaidHours={e.lesson.pupil?.prepaid_hours}
-                                                          isLive={isLive}
-                                                          onClick={(ev) => {
-                                                            ev.stopPropagation();
-                                                            setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
-                                                          }}
-                                                        />
-                                                      )}
-
-                                                   {(() => {
-                                                     const lsn = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                     const lst = (lsn.status ?? '').toLowerCase();
-                                                     const eolRelevant =
-                                                       (lst === 'confirmed' || lst === 'completed') &&
-                                                       lsn.lesson_date <= ymdLocal(new Date());
-                                                     if (!eolRelevant) return null;
-                                                     const eolDone = lsn.eol_completed === true;
-                                                     const eolPill: React.CSSProperties = pillStyle(eolDone ? 'success' : 'danger');
-                                                     if (eolDone) {
-                                                       return (
-                                                         <span style={eolPill}>
-                                                           <IconCheck size={11} stroke={2.4} />
-                                                           EOL
-                                                         </span>
-                                                       );
-                                                     }
-                                                     return (
-                                                       <button
-                                                         type="button"
-                                                         aria-label="Complete end of lesson"
-                                                         onClick={(ev) => { ev.stopPropagation(); setEolLesson(lsn); }}
-                                                         style={{ ...eolPill, cursor: 'pointer' }}
-                                                       >
-                                                         EOL
-                                                       </button>
-                                                     );
-                                                   })()}
-                                                </div>
-
-                                                {timeText ? (
-                                                  <div style={{ fontSize: tokens.fontSize.sm, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                                    {timeText}
-                                                  </div>
-                                                ) : null}
-                                                {cancelled && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason ? (
-                                                  <div style={{ fontSize: tokens.fontSize.sm, color: tokens.red, marginTop: 2 }}>
-                                                    {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason}
-                                                  </div>
-                                                ) : null}
-                                              </div>
-
-                                            </div>
-                                         ) : (
-                                           <>
-                                             <div
-                                               style={{
-                                                 fontSize: tokens.fontSize.md,
-                                                 fontWeight: tokens.fontWeight.medium,
-                                                 color: tokens.navy,
-                                                 overflow: "hidden",
-                                                 textOverflow: "ellipsis",
-                                                 whiteSpace: "nowrap",
-                                                 textDecoration: cancelled ? "line-through" : "none",
-                                               }}
-                                             >
-                                               {title}
-                                             </div>
-                                             {timeText ? (
-                                               <div style={{ fontSize: tokens.fontSize.sm, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
-                                                 {timeText}
-                                               </div>
-                                             ) : null}
-                                           </>
-                                         )}
-                                        </div>
-                                              {isLessonRow && (() => {
-                                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                return (
-                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                                                  <button
-                                                    type="button"
-                                                    onClick={(ev) => {
-                                                      ev.stopPropagation();
-                                                      if (lesson.pupil?.phone) {
-                                                        window.open(`tel:${lesson.pupil.phone}`, '_blank');
-                                                      } else {
-                                                        toast.error('No phone number on record');
-                                                      }
-                                                    }}
-                                                    aria-label="Call pupil"
-                                                    style={{
-                                                      width: 32,
-                                                      height: 32,
-                                                      borderRadius: '50%',
-                                                      background: 'rgba(255,255,255,0.15)',
-                                                      border: 'none',
-                                                      cursor: 'pointer',
-                                                      display: 'flex',
-                                                      alignItems: 'center',
-                                                      justifyContent: 'center',
-                                                      alignSelf: 'flex-start',
-                                                      marginTop: 2,
-                                                      padding: 0,
-                                                    }}
-                                                  >
-                                                    <IconPhone size={14} color="#fff" stroke={1.5} />
-                                                  </button>
-                                                  <button
-                                                    type="button"
-                                                    data-lesson-actions-trigger
-                                                    onClick={(ev) => {
-                                                      ev.stopPropagation();
-                                                      setActionsLesson(lesson);
-                                                    }}
-                                                    aria-label="More lesson options"
-                                                    style={{
-                                                      width: 28,
-                                                      height: 28,
-                                                      borderRadius: '50%',
-                                                      background: '#F8F9FB',
-                                                      border: '0.5px solid #E5E7EB',
-                                                      display: 'flex',
-                                                      alignItems: 'center',
-                                                      justifyContent: 'center',
-                                                      cursor: 'pointer',
-                                                      padding: 0,
-                                                    }}
-                                                  >
-                                                    <IconDots stroke={1.5} size={14} color="#D1D5DB" />
-                                                  </button>
-                                                </div>
-                                                );
-                                              })()}
-
-                                      </>
-                                   )}
-                                  </div>
-
-
-                                </div>
-                              )}
-
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
-                  })()
-
+          const gridColumn = (date: Date, compact: boolean) => {
+            const key = ymdLocal(date);
+            const isToday = key === todayKey;
+            const currentMinutes = clockNow.getHours() * 60 + clockNow.getMinutes();
+            const showNow = isToday && currentMinutes >= GRID_START && currentMinutes <= GRID_END;
+            return (
+              <div key={key} style={{ position: "relative", height: GRID_HEIGHT, minWidth: 0, borderLeft: compact ? "0.5px solid #F0F0F0" : undefined }}>
+                {hours.map((hour, index) => (
+                  <div key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT, left: 0, right: 0, borderTop: "0.5px solid #F0F0F0" }} />
+                ))}
+                {entriesFor(date).map((entry) => renderBlock(entry, compact))}
+                {showNow && (
+                  <div style={{ position: "absolute", top: ((currentMinutes - GRID_START) / 60) * HOUR_HEIGHT, left: 0, right: 0, height: 1, background: "#E24B4A", zIndex: 5, pointerEvents: "none" }}>
+                    <span style={{ position: "absolute", left: -3, top: -3, width: 7, height: 7, borderRadius: "50%", background: "#E24B4A" }} />
+                  </div>
                 )}
               </div>
-
             );
-          })
-        )}
-        </div>
+          };
 
-      </div>
+          return (
+            <>
+              <div style={{ background: "#FFFFFF", borderBottom: "0.5px solid #E4E8EF", padding: "14px 16px 10px", flexShrink: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B2341" }}>{monthLabel}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <button type="button" onClick={() => selectDay(today)} style={{ display: "inline-flex", alignItems: "center", gap: 5, border: 0, background: "transparent", color: "#2C97DE", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                      Today <IconCalendar size={15} stroke={1.8} />
+                    </button>
+                    <button type="button" onClick={handleSync} disabled={syncing} aria-label="Sync calendar" style={{ width: 28, height: 28, display: "inline-flex", alignItems: "center", justifyContent: "center", border: 0, background: "transparent", cursor: "pointer", padding: 0 }}>
+                      <IconRefresh size={15} color="#2C97DE" className={syncing ? "animate-spin" : ""} />
+                    </button>
+                  </div>
+                </div>
+                <div role="tablist" aria-label="Calendar view" style={{ display: "flex", width: 132, background: "#F4F6F8", padding: 3, borderRadius: 999, marginTop: 10 }}>
+                  {(["day", "week"] as const).map((mode) => (
+                    <button key={mode} type="button" role="tab" aria-selected={calendarView === mode} onClick={() => setCalendarView(mode)} style={{ flex: 1, border: 0, borderRadius: 999, padding: "5px 8px", background: calendarView === mode ? "#0B2341" : "transparent", color: calendarView === mode ? "#FFFFFF" : "#536579", fontSize: 10, fontWeight: 700, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit" }}>
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", marginTop: 10 }}>
+                  {stripDays.map((date) => {
+                    const key = ymdLocal(date);
+                    const selectedDay = key === selectedDate;
+                    const todayDay = key === todayKey;
+                    return (
+                      <button key={key} type="button" onClick={() => selectDay(date)} style={{ border: 0, background: "transparent", padding: "3px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", fontFamily: "inherit" }}>
+                        <span style={{ fontSize: 9, color: "#536579", textTransform: "uppercase" }}>{date.toLocaleDateString("en-GB", { weekday: "short" }).slice(0, 2)}</span>
+                        <span style={{ width: 30, height: 30, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", background: selectedDay ? "#2C97DE" : "transparent", border: todayDay && !selectedDay ? "1.5px solid #2C97DE" : "1.5px solid transparent", color: selectedDay ? "#FFFFFF" : "#0B2341", fontSize: 12, fontWeight: 700 }}>{date.getDate()}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {syncMessage ? <div style={{ marginTop: 6, fontSize: 10, color: syncMessage.type === "success" ? "#3B6D11" : "#991B1B" }}>{syncMessage.text}</div> : null}
+              </div>
+
+              <div ref={scrollRef} style={{ flex: 1, overflow: "auto", background: "#FFFFFF", paddingBottom: "calc(76px + env(safe-area-inset-bottom, 0px))" }}>
+                {loading ? (
+                  <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+                ) : (
+                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px" }}>
+                    <div style={{ position: "relative", height: GRID_HEIGHT }}>
+                      {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
+                    </div>
+                    {calendarView === "week" && weekDays.map((date) => (
+                      <div key={`head-${ymdLocal(date)}`} style={{ gridRow: 1, display: "none" }} />
+                    ))}
+                    {viewDays.map((date) => gridColumn(date, calendarView === "week"))}
+                  </div>
+                )}
+              </div>
+            </>
+          );
+        })()}
       </div>
 
+      <button
+        type="button"
+        aria-label="Add to schedule"
+        onClick={() => { setAddLessonDate(selectedDate); setAddChooserOpen(true); }}
+        style={{ position: "fixed", right: 18, bottom: "calc(80px + env(safe-area-inset-bottom, 0px))", width: 40, height: 40, borderRadius: "50%", border: 0, background: "#2C97DE", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(44,151,222,0.3)", zIndex: 30, cursor: "pointer", padding: 0 }}
+      >
+        <IconPlus size={22} stroke={2.2} />
+      </button>
 
       {eolLesson && (
         <EndLessonWizard
