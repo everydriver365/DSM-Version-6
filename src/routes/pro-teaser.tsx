@@ -1364,7 +1364,7 @@ export function ProTeaserPage({
               }}
             >
 
-              {/* LEFT — headline + CTA */}
+              {/* TOP — headline */}
               <div
                 style={{
                   display: "flex",
@@ -1396,31 +1396,6 @@ export function ProTeaserPage({
                 <div style={{ fontSize: 12, color: "#64748B", marginTop: 4, lineHeight: 1.4 }}>
                   Get online, get enquiries, grow your driving business.
                 </div>
-                <button
-                  type="button"
-                  onClick={() => go("/subscription")}
-                  style={{
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "inherit",
-                    borderRadius: 24,
-                    background: BLUE,
-                    color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 800,
-                    padding: "11px 16px",
-                    width: "100%",
-                    marginTop: 12,
-                    lineHeight: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 6,
-                  }}
-                >
-                  Get Started
-                  <IconChevronRight size={16} stroke={2.5} />
-                </button>
               </div>
 
               {/* MIDDLE — benefits */}
@@ -1449,7 +1424,7 @@ export function ProTeaserPage({
                 ))}
               </div>
 
-              {/* RIGHT — Perkbox promo */}
+              {/* BOTTOM — Perkbox promo + CTA */}
               <div
                 style={{
                   display: "flex",
@@ -1476,6 +1451,31 @@ export function ProTeaserPage({
                 <div style={{ fontSize: 11, color: "#7C3AED", marginTop: 2 }}>
                   To the first 1500 members
                 </div>
+                <button
+                  type="button"
+                  onClick={() => go("/subscription")}
+                  style={{
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    borderRadius: 24,
+                    background: BLUE,
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 800,
+                    padding: "11px 16px",
+                    width: "100%",
+                    marginTop: 12,
+                    lineHeight: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                  }}
+                >
+                  Get Started
+                  <IconChevronRight size={16} stroke={2.5} />
+                </button>
               </div>
             </div>
 
