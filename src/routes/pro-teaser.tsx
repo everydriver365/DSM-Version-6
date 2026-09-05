@@ -1373,19 +1373,6 @@ export function ProTeaserPage({
                 }}
               >
                 <Wordmark name="FREE" accent={BLUE} />
-                <div
-                  style={{
-                    fontFamily: SORA,
-                    fontSize: 56,
-                    fontWeight: 900,
-                    color: BLUE,
-                    lineHeight: 1,
-                    marginTop: 8,
-                    letterSpacing: "-1.5px",
-                  }}
-                >
-                  FREE
-                </div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: NAVY, marginTop: 6 }}>
                   FREE forever for ADI's & PDI's.
                 </div>
