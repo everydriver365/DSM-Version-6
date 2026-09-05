@@ -1366,14 +1366,10 @@ export function ProTeaserPage({
 
               {/* LEFT — headline + CTA */}
               <div
-                className="free-tile-left"
                 style={{
-                  flex: "1 1 180px",
-                  minWidth: 0,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  paddingRight: 16,
                 }}
               >
                 <img
@@ -1429,13 +1425,10 @@ export function ProTeaserPage({
 
               {/* MIDDLE — benefits */}
               <div
-                className="free-tile-middle"
                 style={{
-                  flex: "1.4 1 220px",
-                  minWidth: 0,
-                  borderLeft: "1px solid #E3E9F2",
-                  borderRight: "1px solid #E3E9F2",
-                  padding: "0 16px",
+                  borderTop: "1px solid #E3E9F2",
+                  borderBottom: "1px solid #E3E9F2",
+                  padding: "16px 0",
                   display: "grid",
                   gap: 8,
                   alignContent: "center",
@@ -1458,10 +1451,7 @@ export function ProTeaserPage({
 
               {/* RIGHT — Perkbox promo */}
               <div
-                className="free-tile-right"
                 style={{
-                  flex: "0.9 1 150px",
-                  minWidth: 0,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
