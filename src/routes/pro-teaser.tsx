@@ -472,7 +472,7 @@ function TrackingCard({
             src={trackerDeviceAsset.url}
             alt="NexTech vehicle tracker device"
             style={{
-              width: 92,
+              width: 78,
               height: "auto",
               objectFit: "contain",
               flexShrink: 0,
@@ -484,14 +484,15 @@ function TrackingCard({
               flex: 1,
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-around",
-              gap: 6,
+              justifyContent: "space-between",
+              gap: 4,
+              minWidth: 0,
             }}
           >
             <TrackingPrice big="£9.99" small="/month" />
-            <span style={{ width: 1, height: 26, background: LINE }} />
+            <span style={{ width: 1, height: 22, background: LINE, flexShrink: 0 }} />
             <TrackingPrice big="£25" small="setup fee" />
-            <span style={{ width: 1, height: 26, background: LINE }} />
+            <span style={{ width: 1, height: 22, background: LINE, flexShrink: 0 }} />
             <TrackingPrice big="24 mths" small="commitment" />
           </div>
         </div>
