@@ -1353,16 +1353,50 @@ export function ProTeaserPage({
 
           <div style={{ display: "grid", gap: 18, padding: "18px 16px 4px" }}>
             {/* FREE */}
-            <div style={{ ...CARD, padding: 16, display: "flex", gap: 14, alignItems: "center" }}>
-              <div style={{ flex: "0 0 116px", minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: ".8px", color: NAVY }}>
-                  EVERYDRIVER
-                </div>
-                <div style={{ fontFamily: SORA, fontSize: 34, fontWeight: 900, color: BLUE, lineHeight: 1.05 }}>
+            <div
+              style={{
+                ...CARD,
+                padding: 18,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "16px 0",
+                overflow: "hidden",
+              }}
+            >
+              {/* LEFT — headline + CTA */}
+              <div
+                style={{
+                  flex: "1 1 180px",
+                  minWidth: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  paddingRight: 16,
+                }}
+              >
+                <img
+                  src={proLogoAsset.url}
+                  alt="EveryDriver PRO"
+                  style={{ height: 20, objectFit: "contain", alignSelf: "flex-start" }}
+                />
+                <div
+                  style={{
+                    fontFamily: SORA,
+                    fontSize: 56,
+                    fontWeight: 900,
+                    color: BLUE,
+                    lineHeight: 1,
+                    marginTop: 8,
+                    letterSpacing: "-1.5px",
+                  }}
+                >
                   FREE
                 </div>
-                <div style={{ fontSize: 12.5, color: NAVY, marginTop: 4 }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: NAVY, marginTop: 6 }}>
                   FREE forever for ADI's & PDI's.
+                </div>
+                <div style={{ fontSize: 12, color: "#64748B", marginTop: 4, lineHeight: 1.4 }}>
+                  Get online, get enquiries, grow your driving business.
                 </div>
                 <button
                   type="button"
@@ -1371,36 +1405,81 @@ export function ProTeaserPage({
                     border: "none",
                     cursor: "pointer",
                     fontFamily: "inherit",
-                    borderRadius: 10,
-                    background: "#E7F1FD",
-                    color: BLUE,
-                    fontSize: 10,
-                    fontWeight: 900,
-                    padding: "7px 9px",
+                    borderRadius: 24,
+                    background: BLUE,
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 800,
+                    padding: "11px 16px",
                     width: "100%",
-                    marginTop: 9,
-                    lineHeight: 1.2,
+                    marginTop: 12,
+                    lineHeight: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
                   }}
                 >
                   Get Started
+                  <IconChevronRight size={16} stroke={2.5} />
                 </button>
               </div>
+
+              {/* MIDDLE — benefits */}
               <div
                 style={{
-                  flex: "1 1 0",
+                  flex: "1.4 1 220px",
                   minWidth: 0,
                   borderLeft: "1px solid #E3E9F2",
-                  paddingLeft: 12,
+                  borderRight: "1px solid #E3E9F2",
+                  padding: "0 16px",
                   display: "grid",
-                  gap: 6,
+                  gap: 8,
+                  alignContent: "center",
                 }}
               >
-
-                {["5 page mini website", "Online Booling", "Receive enquiries", "Every Driver address school.everydriver.co.uk"].map((f) => (
-                  <Tick key={f} color={BLUE}>
+                {[
+                  "5 page mini website",
+                  "Online Booking",
+                  "Receive enquiries",
+                  <span key="address">
+                    Every Driver address{" "}
+                    <span style={{ color: "#94A3B8", fontWeight: 400 }}>school.everydriver.co.uk</span>
+                  </span>,
+                ].map((f, i) => (
+                  <Tick key={i} color={BLUE}>
                     {f}
                   </Tick>
                 ))}
+              </div>
+
+              {/* RIGHT — Perkbox promo */}
+              <div
+                style={{
+                  flex: "0.9 1 150px",
+                  minWidth: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  paddingLeft: 0,
+                }}
+              >
+                <img
+                  src={perkboxGiftAsset.url}
+                  alt="Perkbox gift"
+                  loading="lazy"
+                  width={96}
+                  height={96}
+                  style={{ width: 96, height: 96, objectFit: "contain" }}
+                />
+                <div style={{ fontSize: 13, fontWeight: 800, color: NAVY, marginTop: 8 }}>
+                  FREE Perkbox for 12 months
+                </div>
+                <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
+                  To the first 1500 members
+                </div>
               </div>
             </div>
 
