@@ -7208,7 +7208,7 @@ function HomePage() {
 
                   {/* Timeline container */}
                   <div style={{ position: 'relative', padding: '4px 0 4px' }}>
-                    {(rows.filter((r) => r.kind === 'lesson') as typeof rows).slice(0, 3).map((r, idx) => {
+                    {rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'lesson' }> => r.kind === 'lesson').slice(0, 3).map((r, idx) => {
                     const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
                     const rowDay = ymd(rowStart);
                     const showDayDivider = rowDay !== lastDividerDate;
