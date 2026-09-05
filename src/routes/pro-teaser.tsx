@@ -342,6 +342,31 @@ function TrackingCard({
         textAlign: "left",
       }}
     >
+      {/* Featured banner */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: 12,
+          right: -28,
+          width: 110,
+          padding: "4px 0",
+          background: `linear-gradient(90deg, ${BLUE}, #135EAB)`,
+          color: "#fff",
+          fontFamily: SORA,
+          fontSize: 9,
+          fontWeight: 900,
+          letterSpacing: ".6px",
+          textAlign: "center",
+          textTransform: "uppercase",
+          transform: "rotate(45deg)",
+          zIndex: 2,
+          boxShadow: "0 2px 6px rgba(11,31,58,.18)",
+        }}
+      >
+        Featured
+      </div>
+
       {/* soft blue wash behind the device */}
       <div
         aria-hidden
