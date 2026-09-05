@@ -28,7 +28,7 @@ import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
 import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
-import diaLogoAsset from "@/assets/dia-logo-latest.png.asset.json";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
@@ -1513,6 +1513,56 @@ export function ProTeaserPage({
                     {f}
                   </Tick>
                 ))}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 10,
+                    background: "#00A4E4",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    padding: 6,
+                  }}
+                >
+                  <img
+                    src={diaLogoAsset.url}
+                    alt="DIA"
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                  />
+                </div>
+                <div
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 10,
+                    background: "#fff",
+                    border: "1.5px solid #E3E9F2",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    padding: 6,
+                  }}
+                >
+                  <img
+                    src={perkboxLogoAsset.url}
+                    alt="Perkbox"
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                  />
+                </div>
               </div>
 
               <button
