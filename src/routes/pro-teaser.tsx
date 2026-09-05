@@ -1538,7 +1538,7 @@ export function ProTeaserPage({
               >
                 {PRO_FEATURES.map((f) => (
                   <Tick key={f} color={ORANGE}>
-                    {f === "HMCA benefits" ? (
+                    {f === "PRO content" ? (
                       <span style={{ display: "flex", flexDirection: "column" }}>
                         <span>{f}</span>
                         <span style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
