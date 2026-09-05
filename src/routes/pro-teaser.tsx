@@ -1259,7 +1259,7 @@ export function ProTeaserPage({
               type="button"
               onClick={() => go("/marketplace")}
               style={{
-                marginTop: 12,
+                marginTop: 32,
                 position: "relative",
                 overflow: "hidden",
                 width: "100%",
