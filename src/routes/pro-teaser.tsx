@@ -391,11 +391,12 @@ export function ProTeaserPage({
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [sectionVideos, setSectionVideos] = useState<Record<string, SectionVideo>>({});
   const [openVideo, setOpenVideo] = useState<SectionVideo | null>(null);
+  const [trackingListingId, setTrackingListingId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [tvRes, newsRes, explainerRes] = await Promise.allSettled([
+      const [tvRes, newsRes, explainerRes, trackingRes] = await Promise.allSettled([
         supabase
           .from("howto_videos")
           .select("id, title, thumbnail_url, sort_order")
@@ -409,7 +410,19 @@ export function ProTeaserPage({
           .order("published_at", { ascending: false })
           .limit(3),
         supabase.from("pro_section_videos").select("section, title, video_url"),
+        supabase
+          .from("marketplace_listings")
+          .select("id, title")
+          .eq("is_active", true)
+          .is("deleted_at", null)
+          .ilike("title", "%track%")
+          .limit(1),
       ]);
+      if (!cancelled && trackingRes.status === "fulfilled") {
+        const row = (trackingRes.value.data as any[] | null)?.[0];
+        if (row?.id) setTrackingListingId(String(row.id));
+      }
+
       if (cancelled) return;
       if (explainerRes.status === "fulfilled" && Array.isArray(explainerRes.value.data)) {
         const map: Record<string, SectionVideo> = {};
