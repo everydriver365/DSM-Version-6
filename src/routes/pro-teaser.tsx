@@ -446,7 +446,13 @@ function TrackingCard({
           <img
             src={trackerDeviceAsset.url}
             alt="NexTech vehicle tracker device"
-            style={{ width: 92, height: "auto", objectFit: "contain", flexShrink: 0 }}
+            style={{
+              width: 92,
+              height: "auto",
+              objectFit: "contain",
+              flexShrink: 0,
+              borderRadius: 10,
+            }}
           />
           <div
             style={{
