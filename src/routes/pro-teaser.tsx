@@ -28,7 +28,7 @@ import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
 import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
-import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import diaLogoAsset from "@/assets/dia-logo-latest.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
