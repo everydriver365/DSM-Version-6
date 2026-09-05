@@ -1396,11 +1396,23 @@ export function ProTeaserPage({
                 }}
               >
 
-                {["5 page mini website", "Online Booling", "Receive enquiries", "Every Driver address school.everydriver.co.uk"].map((f) => (
+                {[
+                  "5 page mini website",
+                  "Online Booling",
+                  "Receive enquiries",
+                  "Every Driver address school.everydriver.co.uk",
+                ].map((f) => (
                   <Tick key={f} color={BLUE}>
                     {f}
                   </Tick>
                 ))}
+                <Tick key="benenden-free" color={BLUE}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <IconHeart size={13} color="#F0399B" fill="#F0399B" />
+                    Benenden Health
+                  </span>
+                </Tick>
+
               </div>
             </div>
 
