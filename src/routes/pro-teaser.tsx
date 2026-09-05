@@ -1372,11 +1372,7 @@ export function ProTeaserPage({
                   justifyContent: "center",
                 }}
               >
-                <img
-                  src={edpProLogoAsset.url}
-                  alt="EveryDriver PRO"
-                  style={{ height: 22, objectFit: "contain", alignSelf: "flex-start" }}
-                />
+                <Wordmark name="FREE" accent={BLUE} />
                 <div
                   style={{
                     fontFamily: SORA,
