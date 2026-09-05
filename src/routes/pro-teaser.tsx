@@ -1375,9 +1375,9 @@ export function ProTeaserPage({
                 }}
               >
                 <img
-                  src={proLogoAsset.url}
+                  src={edpProLogoAsset.url}
                   alt="EveryDriver PRO"
-                  style={{ height: 20, objectFit: "contain", alignSelf: "flex-start" }}
+                  style={{ height: 22, objectFit: "contain", alignSelf: "flex-start" }}
                 />
                 <div
                   style={{
