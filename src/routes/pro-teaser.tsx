@@ -302,11 +302,11 @@ function TrackingFeature({ icon, l1, l2 }: { icon: React.ReactNode; l1: string; 
 
 function TrackingPrice({ big, small }: { big: string; small: string }) {
   return (
-    <div style={{ textAlign: "center", minWidth: 0 }}>
-      <div style={{ fontFamily: SORA, fontSize: 19, fontWeight: 900, color: NAVY, lineHeight: 1.1 }}>
+    <div style={{ textAlign: "center", minWidth: 0, flex: 1 }}>
+      <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY, lineHeight: 1.1, whiteSpace: "nowrap" }}>
         {big}
       </div>
-      <div style={{ fontSize: 10.5, color: GREY, fontWeight: 600 }}>{small}</div>
+      <div style={{ fontSize: 9, color: GREY, fontWeight: 600, whiteSpace: "nowrap" }}>{small}</div>
     </div>
   );
 }
@@ -472,7 +472,7 @@ function TrackingCard({
             src={trackerDeviceAsset.url}
             alt="NexTech vehicle tracker device"
             style={{
-              width: 92,
+              width: 78,
               height: "auto",
               objectFit: "contain",
               flexShrink: 0,
@@ -484,14 +484,15 @@ function TrackingCard({
               flex: 1,
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-around",
-              gap: 6,
+              justifyContent: "space-between",
+              gap: 4,
+              minWidth: 0,
             }}
           >
             <TrackingPrice big="£9.99" small="/month" />
-            <span style={{ width: 1, height: 26, background: LINE }} />
+            <span style={{ width: 1, height: 22, background: LINE, flexShrink: 0 }} />
             <TrackingPrice big="£25" small="setup fee" />
-            <span style={{ width: 1, height: 26, background: LINE }} />
+            <span style={{ width: 1, height: 22, background: LINE, flexShrink: 0 }} />
             <TrackingPrice big="24 mths" small="commitment" />
           </div>
         </div>
