@@ -1538,10 +1538,10 @@ export function ProTeaserPage({
               >
                 {PRO_FEATURES.map((f) => (
                   <Tick key={f} color={ORANGE}>
-                    {f === "PRO Shop" ? (
+                    {f === "HMCA benefits" ? (
                       <span style={{ display: "flex", flexDirection: "column" }}>
                         <span>{f}</span>
-                        <span style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 20 }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
                           <img
                             src={diaLogoAsset.url}
                             alt="DIA"
