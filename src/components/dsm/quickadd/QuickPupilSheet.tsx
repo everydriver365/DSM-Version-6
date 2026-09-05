@@ -3,10 +3,19 @@ import { toast } from "@/lib/toast";
 import { BottomSheet } from "../BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 import { FONT, NAVY, TextField, SheetFooter } from "./fields";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { IconAddressBook, IconX } from "@tabler/icons-react";
 import { Capacitor } from "@capacitor/core";
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+
+export type QuickPupilDraft = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  postcode: string;
+};
 
 export function QuickPupilSheet({
   open,
@@ -17,8 +26,9 @@ export function QuickPupilSheet({
   open: boolean;
   onClose: () => void;
   onSaved?: (pupilId: string) => void;
-  onOpenFullForm?: () => void;
+  onOpenFullForm?: (draft: QuickPupilDraft) => void;
 }) {
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
