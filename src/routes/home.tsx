@@ -1466,45 +1466,65 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
   };
 
   const proShortcuts = [
-    { label: "PRO TV", route: "/dsm-live", icon: IconDeviceTv, color: "#22C55E" },
-    { label: "PRO Radio", route: "/radio", icon: IconMicrophone, color: "#EF4444" },
-    { label: "PRO Shop", route: "/marketplace", icon: IconShoppingBag, color: "#1877D6" },
-    { label: "PRO Perks", route: "/perks", icon: IconGift, color: "#7C3AED" },
+    { label: "PRO TV", sub: "Watch & learn", route: "/dsm-live", icon: IconDeviceTv, color: "#16A34A", bg: "#E7F6EC" },
+    { label: "PRO Radio", sub: "On the go", route: "/radio", icon: IconMicrophone, color: "#EF4444", bg: "#FCE9EA" },
+    { label: "PRO Shop", sub: "Tools & gear", route: "/marketplace", icon: IconShoppingBag, color: "#1877D6", bg: "#E4EEFB" },
+    { label: "PRO Perks", sub: "Exclusive offers", route: "/perks", icon: IconGift, color: "#7C3AED", bg: "#EFE9FC" },
   ];
 
   return (
     <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      {/* Section header — matches the standard DSM section eyebrow used everywhere else */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-        <span
-          aria-hidden
+      {/* Section header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          marginBottom: 10,
+        }}
+      >
+        <span style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A", letterSpacing: "-0.01em" }}>
+          Discover &amp; Learn
+        </span>
+        <button
+          type="button"
+          onClick={() => go("/pro-teaser")}
           style={{
-            display: "inline-block",
-            width: 3,
-            height: 12,
-            borderRadius: 12,
-            backgroundColor: "#1877D6",
-          }}
-        />
-        <span
-          style={{
-            fontSize: tokens.fontSize.sm,
-            fontWeight: tokens.fontWeight.semibold,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 2,
+            border: "none",
+            background: "transparent",
+            padding: 0,
+            cursor: "pointer",
+            fontSize: 14,
+            fontWeight: 600,
             color: "#1877D6",
-            textTransform: "uppercase",
-            letterSpacing: "0.12em",
+            fontFamily: "inherit",
           }}
         >
-          DISCOVER &amp; LEARN
-        </span>
+          See all
+          <IconChevronRight size={16} stroke={2.2} />
+        </button>
       </div>
 
-      {/* Main explore card */}
+      {/* Explore PRO photo banner */}
       <div
         onClick={() => onExploreSwipe?.()}
-        style={{ ...cardStyle, padding: 16, cursor: "pointer", marginBottom: 12 }}
+        style={{
+          position: "relative",
+          borderRadius: 14,
+          overflow: "hidden",
+          cursor: "pointer",
+          marginBottom: 12,
+          minHeight: 132,
+          backgroundImage: `linear-gradient(90deg, rgba(226,238,250,0.94) 0%, rgba(226,238,250,0.78) 48%, rgba(226,238,250,0.05) 82%), url(${proBannerBg.url})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 14 }}>
           <img
             src={proLogo.url}
             alt="EDP PRO"
@@ -1514,101 +1534,140 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
             style={{ width: 64, height: 64, objectFit: "contain", flexShrink: 0 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <div
+            <div style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.15, whiteSpace: "nowrap" }}>
+              <span style={{ color: "#0B1F3A" }}>Explore </span>
+              <span style={{ color: "#22A6A0" }}>PRO</span>
+            </div>
+            <div style={{ fontSize: 12.5, color: "#3D5169", marginTop: 5, lineHeight: 1.35 }}>
+              Your hub for exclusive TV, Radio,
+              <br />
+              Shop &amp; member perks.
+            </div>
+          </div>
+
+          <div style={{ position: "relative", flexShrink: 0, width: 62 }}>
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                right: 46,
+                top: "50%",
+                transform: "translateY(-50%) rotate(-8deg)",
+                whiteSpace: "nowrap",
+                color: "#FFFFFF",
+                fontSize: 13,
+                lineHeight: 1.1,
+                fontStyle: "italic",
+                fontWeight: 600,
+                fontFamily: "'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
+                textShadow: "0 1px 3px rgba(0,0,0,0.45)",
+                textAlign: "center",
+              }}
+            >
+              More
+              <br />
+              for Instructors
+            </span>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 46,
+                height: 46,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                boxShadow: "0 4px 12px rgba(11,31,58,0.25)",
+                marginLeft: "auto",
+              }}
+            >
+              <IconArrowRight size={22} stroke={2.4} color="#1877D6" />
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* PRO shortcut tiles */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: 8,
+          marginBottom: 12,
+        }}
+      >
+        {proShortcuts.map((s) => {
+          const Icon = s.icon;
+          return (
+            <button
+              key={s.label}
+              type="button"
+              onClick={() => go(s.route)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+                padding: "12px 4px",
+                border: "none",
+                borderRadius: 12,
+                background: s.bg,
+                cursor: "pointer",
+                minWidth: 0,
+                fontFamily: "inherit",
+              }}
+            >
+              <Icon size={26} color={s.color} stroke={1.8} />
+              <span
                 style={{
-                  fontSize: 18,
-                  fontWeight: 600,
-                  lineHeight: 1.15,
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  color: "#0B1F3A",
                   whiteSpace: "nowrap",
                 }}
               >
-                <span style={{ color: "#0B1F3A" }}>Explore </span>
-                <span style={{ color: "#22A6A0" }}>PRO</span>
-              </div>
-              <IconArrowRight size={22} stroke={2} color="#1877D6" />
-            </div>
-            <div style={{ fontSize: 12, color: "#5A6B80", marginTop: 6, lineHeight: 1.4 }}>
-              Your hub for exclusive TV, Radio, Shop &amp; member perks.
-            </div>
-          </div>
-        </div>
-
-        {/* PRO shortcut icons */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-around",
-            marginTop: 16,
-            paddingTop: 16,
-            borderTop: "0.5px solid #E5E5EA",
-          }}
-        >
-          {proShortcuts.map((s, index) => {
-            const Icon = s.icon;
-            return (
-              <React.Fragment key={s.label}>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    go(s.route);
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: 0,
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                    flex: "1 1 0",
-                    minWidth: 0,
-                  }}
-                >
-                  <Icon size={24} color={s.color} stroke={1.8} />
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "#0B1F3A" }}>{s.label}</span>
-                </button>
-                {index < proShortcuts.length - 1 && (
-                  <div
-                    style={{
-                      width: "0.5px",
-                      height: 36,
-                      background: "#E5E5EA",
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onExploreSwipe) onExploreSwipe();
-            else go("/pro-teaser");
-          }}
-          style={{
-            marginTop: 16,
-            background: "#F3EFFD",
-            borderRadius: 8,
-            padding: "12px 14px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-          }}
-        >
-          <span style={{ fontSize: 13, fontWeight: 500, color: "#5B3FD6" }}>
-            Swipe left for more content
-          </span>
-          <IconArrowRight size={18} stroke={2} color="#5B3FD6" />
-        </div>
+                {s.label}
+              </span>
+              <span
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 500,
+                  color: "#5A6B80",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {s.sub}
+              </span>
+            </button>
+          );
+        })}
       </div>
+
+      {/* Swipe hint */}
+      <div
+        onClick={() => {
+          if (onExploreSwipe) onExploreSwipe();
+          else go("/pro-teaser");
+        }}
+        style={{
+          ...cardStyle,
+          background: "#F3EFFD",
+          borderRadius: 8,
+          padding: "12px 14px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          cursor: "pointer",
+        }}
+      >
+        <span style={{ fontSize: 13, fontWeight: 500, color: "#5B3FD6" }}>
+          Swipe left for more content
+        </span>
+        <IconArrowRight size={18} stroke={2} color="#5B3FD6" />
+      </div>
+
     </div>
   );
 }
