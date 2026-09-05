@@ -1867,7 +1867,7 @@ function SchedulePage() {
             const height = Math.max(40, ((clippedEnd - clippedStart) / 60) * HOUR_HEIGHT);
             const palette = paletteFor(entry);
             const lesson = entry.kind === "lesson" ? entry.lesson : null;
-            const name = lesson ? pupilDisplayName(lesson.pupil) : entry.title;
+            const name = lesson ? pupilDisplayName(lesson.pupil) : "title" in entry ? entry.title : "Unavailable";
             const firstName = name.split(/\s+/)[0] || name;
             const paid = lesson && (["paid", "prepaid"].includes(String(lesson.payment_status ?? "").toLowerCase()) || Number(lesson.pupil?.prepaid_hours ?? 0) > 0 || Number(lesson.amount_due ?? 0) <= 0);
             const statusText = !lesson
