@@ -27,6 +27,7 @@ import instructorHeroAsset from "@/assets/dia-instructor.png.asset.json";
 import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import perkboxIncludedLogoAsset from "@/assets/perkbox-included-logo.png.asset.json";
+import perkboxGiftAsset from "@/assets/perkbox-gift.png.asset.json";
 import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
 import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
