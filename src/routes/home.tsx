@@ -7207,7 +7207,7 @@ function HomePage() {
                   )}
 
                   {/* Timeline container */}
-                  <div style={{ position: 'relative', padding: '4px 0 4px' }}>
+                  <div style={{ position: 'relative', padding: '4px 0 4px', background: '#FFFFFF', borderRadius: 8, overflow: 'hidden' }}>
                     {rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'lesson' } | { kind: 'calendar' }> => r.kind === 'lesson' || r.kind === 'calendar').slice(0, 4).map((r, idx) => {
                     const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
                     const rowDay = ymd(rowStart);
