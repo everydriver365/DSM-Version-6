@@ -4385,18 +4385,19 @@ function HomePage() {
         const isAllDay =
           (localStartTime === '00:00' && (localEndTime === '00:00' || localEndTime === '23:59')) ||
           (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
-        if (isAllDay) return null;
         return {
           localDate: localDateStr,
-          start: timeToMins(localStartTime),
-          end: timeToMins(localEndTime),
+          start: isAllDay ? 0 : timeToMins(localStartTime),
+          end: isAllDay ? 24 * 60 : timeToMins(localEndTime),
           title: b.title ?? 'Busy',
           colour: (b as { colour?: string | null }).colour ?? null,
+          allDay: isAllDay,
         };
       })
-      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null } => b !== null && b.localDate === dateStr)
-      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour }))
+      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null; allDay: boolean } => b !== null && b.localDate === dateStr)
+      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour, allDay: b.allDay }))
       .sort((a, b) => a.start - b.start);
+
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
 
