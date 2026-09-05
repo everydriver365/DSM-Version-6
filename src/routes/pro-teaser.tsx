@@ -1513,58 +1513,6 @@ export function ProTeaserPage({
                     {f}
                   </Tick>
                 ))}
-                <div
-                  style={{
-                    gridColumn: "1 / -1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 10,
-                    paddingTop: 6,
-                    borderTop: "1px solid #E3E9F2",
-                    marginTop: 4,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 10,
-                      background: "#00A4E4",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                      padding: 6,
-                    }}
-                  >
-                    <img
-                      src={diaLogoAsset.url}
-                      alt="DIA"
-                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 10,
-                      background: "#fff",
-                      border: "1.5px solid #E3E9F2",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                      padding: 6,
-                    }}
-                  >
-                    <img
-                      src={perkboxLogoAsset.url}
-                      alt="Perkbox"
-                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                    />
-                  </div>
-                </div>
               </div>
 
               <button
