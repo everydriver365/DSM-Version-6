@@ -302,11 +302,11 @@ function TrackingFeature({ icon, l1, l2 }: { icon: React.ReactNode; l1: string; 
 
 function TrackingPrice({ big, small }: { big: string; small: string }) {
   return (
-    <div style={{ textAlign: "center", minWidth: 0 }}>
-      <div style={{ fontFamily: SORA, fontSize: 19, fontWeight: 900, color: NAVY, lineHeight: 1.1 }}>
+    <div style={{ textAlign: "center", minWidth: 0, flex: 1 }}>
+      <div style={{ fontFamily: SORA, fontSize: 15, fontWeight: 900, color: NAVY, lineHeight: 1.1, whiteSpace: "nowrap" }}>
         {big}
       </div>
-      <div style={{ fontSize: 10.5, color: GREY, fontWeight: 600 }}>{small}</div>
+      <div style={{ fontSize: 9, color: GREY, fontWeight: 600, whiteSpace: "nowrap" }}>{small}</div>
     </div>
   );
 }
