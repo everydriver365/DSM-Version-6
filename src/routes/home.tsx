@@ -7241,7 +7241,7 @@ function HomePage() {
                           }}
                         >
                           <div style={{ width: 36, flexShrink: 0, fontSize: 11, color: '#536579', fontVariantNumeric: 'tabular-nums', paddingTop: 2 }}>
-                            {fmtT(cStart)}
+                            {r.allDay ? 'All day' : fmtT(cStart)}
                           </div>
                           <div aria-hidden style={{ width: 2, borderRadius: 1, background: cColour, minHeight: 32, flexShrink: 0 }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
@@ -7249,9 +7249,10 @@ function HomePage() {
                               {r.title || 'Busy'}
                             </div>
                             <div style={{ fontSize: 11, color: '#536579', marginTop: 2, lineHeight: 1.25 }}>
-                              {fmtT(cStart)}–{fmtT(cEnd)} · Calendar
+                              {r.allDay ? 'All day' : `${fmtT(cStart)}–${fmtT(cEnd)}`} · Calendar
                             </div>
                           </div>
+
                         </div>
                       );
                     }
