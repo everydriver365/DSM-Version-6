@@ -10358,9 +10358,17 @@ function HomePage() {
         open={quickPupilSheetOpen}
         onClose={() => setQuickPupilSheetOpen(false)}
         onSaved={() => setReloadKey((k) => k + 1)}
-        onOpenFullForm={() => {
+        onOpenFullForm={(draft) => {
           setQuickPupilSheetOpen(false);
-          navigate({ to: "/pupils/new" as never });
+          navigate({
+            to: "/pupils/new" as never,
+            search: {
+              name: `${draft.firstName} ${draft.lastName}`.trim() || undefined,
+              phone: draft.phone || undefined,
+              address: draft.address || undefined,
+              postcode: draft.postcode || undefined,
+            },
+          } as never);
         }}
       />
 

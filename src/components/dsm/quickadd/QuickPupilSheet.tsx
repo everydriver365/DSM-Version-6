@@ -3,10 +3,19 @@ import { toast } from "@/lib/toast";
 import { BottomSheet } from "../BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 import { FONT, NAVY, TextField, SheetFooter } from "./fields";
+import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { IconAddressBook, IconX } from "@tabler/icons-react";
 import { Capacitor } from "@capacitor/core";
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+
+export type QuickPupilDraft = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  postcode: string;
+};
 
 export function QuickPupilSheet({
   open,
@@ -17,8 +26,9 @@ export function QuickPupilSheet({
   open: boolean;
   onClose: () => void;
   onSaved?: (pupilId: string) => void;
-  onOpenFullForm?: () => void;
+  onOpenFullForm?: (draft: QuickPupilDraft) => void;
 }) {
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -216,15 +226,24 @@ export function QuickPupilSheet({
           <TextField label="First name" value={firstName} onChange={setFirstName} placeholder="First name" />
           <TextField label="Last name" value={lastName} onChange={setLastName} placeholder="Last name" />
           <TextField label="Phone" value={phone} onChange={setPhone} placeholder="07…" inputMode="tel" />
-          <TextField label="Address" value={address} onChange={setAddress} placeholder="Pickup address" />
-          <TextField label="Postcode" value={postcode} onChange={setPostcode} placeholder="e.g. TN1 1AA" />
+          <div style={{ marginBottom: 12 }}>
+            <AddressLookup
+              initialAddress={address}
+              initialPostcode={postcode}
+              onAddressFound={({ address: addr, postcode: pc }) => {
+                if (addr) setAddress(addr);
+                if (pc) setPostcode(pc);
+              }}
+            />
+          </div>
           {onOpenFullForm && (
             <button
               type="button"
               onClick={() => {
-                reset();
-                onOpenFullForm();
+                const draft = { firstName, lastName, phone, address, postcode };
+                onOpenFullForm(draft);
               }}
+
               style={{
                 width: "100%",
                 padding: "12px 0",
