@@ -30,6 +30,7 @@ import perkboxIncludedLogoAsset from "@/assets/perkbox-included-logo.png.asset.j
 import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
 import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import perkboxPurpleLogoAsset from "@/assets/perkbox-purple-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
@@ -1540,11 +1541,18 @@ export function ProTeaserPage({
                     {f === "PRO Shop" ? (
                       <span style={{ display: "flex", flexDirection: "column" }}>
                         <span>{f}</span>
-                        <img
-                          src={diaLogoAsset.url}
-                          alt="DIA"
-                          style={{ width: 33, height: 33, objectFit: "contain", display: "block", marginTop: 20, borderRadius: 8 }}
-                        />
+                        <span style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 20 }}>
+                          <img
+                            src={diaLogoAsset.url}
+                            alt="DIA"
+                            style={{ width: 33, height: 33, objectFit: "contain", display: "block", borderRadius: 8 }}
+                          />
+                          <img
+                            src={perkboxPurpleLogoAsset.url}
+                            alt="Perkbox"
+                            style={{ width: 33, height: 33, objectFit: "contain", display: "block", borderRadius: 8 }}
+                          />
+                        </span>
                       </span>
                     ) : (
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
