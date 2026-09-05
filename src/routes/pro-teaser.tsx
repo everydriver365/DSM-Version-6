@@ -1099,6 +1099,16 @@ export function ProTeaserPage({
               </div>
             </button>
 
+            <TrackingCard
+              video={sectionVideos["tracking"]}
+              onOpenVideo={setOpenVideo}
+              onOpen={() =>
+                go(trackingListingId ? `/marketplace/${trackingListingId}` : "/marketplace")
+              }
+            />
+
+
+
           </div>
         </section>
 
