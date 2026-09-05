@@ -10,7 +10,7 @@ import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
-type NewPupilSearch = { name?: string; phone?: string };
+type NewPupilSearch = { name?: string; phone?: string; address?: string; postcode?: string };
 
 const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 
@@ -21,6 +21,8 @@ export const Route = createFileRoute("/pupils/new")({
   validateSearch: (search: Record<string, unknown>): NewPupilSearch => ({
     name: typeof search.name === "string" ? search.name : undefined,
     phone: typeof search.phone === "string" ? search.phone : undefined,
+    address: typeof search.address === "string" ? search.address : undefined,
+    postcode: typeof search.postcode === "string" ? search.postcode : undefined,
   }),
   component: NewPupilPage,
 });
@@ -41,8 +43,8 @@ function NewPupilPage() {
   const [phone, setPhone] = useState(search.phone ?? "");
   const [dateOfBirth, setDateOfBirth] = useState("");
 
-  const [address, setAddress] = useState("");
-  const [postcode, setPostcode] = useState("");
+  const [address, setAddress] = useState(search.address ?? "");
+  const [postcode, setPostcode] = useState(search.postcode ?? "");
   const [leadSource, setLeadSource] = useState("");
   const [leadSourceDetail, setLeadSourceDetail] = useState("");
   const [blockToggle, setBlockToggle] = useState(false);
