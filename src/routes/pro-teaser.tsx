@@ -1404,6 +1404,32 @@ export function ProTeaserPage({
               </div>
             </div>
 
+            <div
+              style={{
+                ...CARD,
+                padding: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                background: "#F5F1FE",
+                borderColor: "#E0D7FA",
+              }}
+            >
+              <img
+                src={perkboxIncludedLogoAsset.url}
+                alt="Perkbox"
+                style={{ width: 34, height: 34, borderRadius: 8, objectFit: "contain", flexShrink: 0 }}
+              />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: NAVY, lineHeight: 1.35 }}>
+                  FREE Perkbox for 12 months
+                </div>
+                <div style={{ fontSize: 11.5, color: GREY, marginTop: 2 }}>
+                  To the first 1500 members
+                </div>
+              </div>
+            </div>
+
             {/* PRO */}
             <div style={{ ...CARD, padding: 16, borderColor: `${ORANGE}66`, position: "relative" }}>
               <span
