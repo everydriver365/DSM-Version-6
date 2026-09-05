@@ -18,6 +18,7 @@ import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
 import proLogo from "@/assets/pro-logo.png.asset.json";
 import proLogoBanner from "@/assets/pro-logo-banner.png.asset.json";
+import proBannerBg from "@/assets/pro-banner-bg.jpg.asset.json";
 import edp3dHero from "@/assets/edp-3d-hero.png.asset.json";
 
 
