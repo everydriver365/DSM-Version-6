@@ -1790,7 +1790,7 @@ function SchedulePage() {
           minHeight: 0,
           marginTop: -18,
           background: "#F4F6F8",
-          borderRadius: "16px 16px 0 0",
+          borderRadius: "8px 8px 0 0",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
