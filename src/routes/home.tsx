@@ -6772,7 +6772,7 @@ function HomePage() {
             const e = new Date(baseDate);
             e.setHours(0, 0, 0, 0);
             e.setMinutes(b.end);
-            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null });
+            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null, allDay: (b as { allDay?: boolean }).allDay === true });
           }
         }
 
