@@ -6,7 +6,9 @@ import {
   IconDeviceLaptop,
   IconDeviceTv,
   IconPlayerPlayFilled,
-
+  IconCar,
+  IconChartBar,
+  IconMapPin,
   IconGift,
   IconHeart,
   IconMicrophone,
@@ -33,6 +35,9 @@ import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
 import costaPerkAsset from "@/assets/costa-perk.png.asset.json";
 import sainsburysPerkAsset from "@/assets/sainsburys-perk.png.asset.json";
 import asdaPerkAsset from "@/assets/asda-perk.png.asset.json";
+import trackingLogoAsset from "@/assets/edp-tracking-logo.png.asset.json";
+import trackerDeviceAsset from "@/assets/tracker-device.png.asset.json";
+
 import { supabase as defaultSupabase } from "@/lib/supabaseClient";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
