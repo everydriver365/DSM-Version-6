@@ -1463,21 +1463,23 @@ export function ProTeaserPage({
                   alignItems: "center",
                   justifyContent: "center",
                   textAlign: "center",
-                  paddingLeft: 0,
+                  background: "#F3F0FF",
+                  borderRadius: 14,
+                  padding: "14px 10px",
                 }}
               >
                 <img
                   src={perkboxGiftAsset.url}
                   alt="Perkbox gift"
                   loading="lazy"
-                  width={96}
-                  height={96}
-                  style={{ width: 96, height: 96, objectFit: "contain" }}
+                  width={84}
+                  height={84}
+                  style={{ width: 84, height: 84, objectFit: "contain" }}
                 />
                 <div style={{ fontSize: 13, fontWeight: 800, color: NAVY, marginTop: 8 }}>
                   FREE Perkbox for 12 months
                 </div>
-                <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: "#7C3AED", marginTop: 2 }}>
                   To the first 1500 members
                 </div>
               </div>
