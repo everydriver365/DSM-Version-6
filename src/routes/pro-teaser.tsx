@@ -32,7 +32,6 @@ import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
-import perkboxUploadedAsset from "@/assets/perkbox-logo-uploaded.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
 import costaPerkAsset from "@/assets/costa-perk.png.asset.json";
 import sainsburysPerkAsset from "@/assets/sainsburys-perk.png.asset.json";
@@ -911,11 +910,6 @@ export function ProTeaserPage({
                 <img
                   src={diaLogoAsset.url}
                   alt="DIA"
-                  style={{ width: 54, height: 54, objectFit: "contain", borderRadius: 8 }}
-                />
-                <img
-                  src={perkboxUploadedAsset.url}
-                  alt="Perkbox"
                   style={{ width: 54, height: 54, objectFit: "contain", borderRadius: 8 }}
                 />
               </div>
