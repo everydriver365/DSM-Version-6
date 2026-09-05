@@ -552,7 +552,6 @@ const PRO_FEATURES = [
   "PRO News",
   "Perkbox benefits",
   "HMCA benefits",
-  "PRO content",
   "PRO Shop",
 ];
 
