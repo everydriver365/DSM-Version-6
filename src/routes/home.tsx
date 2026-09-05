@@ -7033,7 +7033,7 @@ function HomePage() {
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
-              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null } => r.kind === 'calendar');
+              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null; allDay?: boolean } => r.kind === 'calendar');
               
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
