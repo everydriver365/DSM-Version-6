@@ -28,7 +28,7 @@ import websiteMockAsset from "@/assets/driving-school-website.png.asset.json";
 import perkboxLogoAsset from "@/assets/perkbox-logo.png.asset.json";
 import proShopMerchAsset from "@/assets/pro-shop-merch.png.asset.json";
 import proShopLogoAsset from "@/assets/pro-shop-logo.png.asset.json";
-import diaLogoAsset from "@/assets/dia-logo-latest.png.asset.json";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 import edpProLogoAsset from "@/assets/edp-pro-logo-new.png.asset.json";
 import tescoPerkAsset from "@/assets/tesco-perk.png.asset.json";
@@ -1510,7 +1510,16 @@ export function ProTeaserPage({
               >
                 {PRO_FEATURES.map((f) => (
                   <Tick key={f} color={ORANGE}>
-                    {f}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      {f}
+                      {f === "PRO Shop" && (
+                        <img
+                          src={diaLogoAsset.url}
+                          alt="DIA"
+                          style={{ width: 18, height: 18, objectFit: "contain", display: "inline-block" }}
+                        />
+                      )}
+                    </span>
                   </Tick>
                 ))}
               </div>
