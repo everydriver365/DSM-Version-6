@@ -6775,50 +6775,71 @@ function HomePage() {
             rows.push({ kind: 'gap', start: s, mins: g.gapMins });
           }
         } else {
-          // 'next' tab: use computeDayGaps per day so calendar blocks, recurring blocks and time off are subtracted.
-          const nextByDate = new Map<string, LessonRow[]>();
-          for (const l of sorted) {
-            const list = nextByDate.get(l.lesson_date) ?? [];
-            list.push(l);
-            nextByDate.set(l.lesson_date, list);
-          }
-          for (const [dateStr, lessonsForDate] of nextByDate) {
-            const baseDate = new Date(`${dateStr}T12:00:00`);
-            const { start: dayStart, end: dayEnd } = resolveDayHours(baseDate);
+          // 'next' tab: compute gaps for EVERY day in the next 14 days (from the
+          // day after tomorrow), not just days that happen to contain a lesson.
+          for (const l of sorted) rows.push({ kind: 'lesson', l });
 
-            // Emit lesson rows.
-            for (const l of lessonsForDate) rows.push({ kind: 'lesson', l });
-
-            const computed = computeDayGaps({
-              dayLessons: lessonsForDate.map((l) => ({
-                lesson_time: l.lesson_time || '',
-                duration_minutes: l.duration_minutes ?? 60,
-                status: l.status,
-                bufferAfterMinutes: l.pupil_id ? Number(pupilBufferMap[l.pupil_id]?.after) || null : null,
-              })),
-              calendarBlocks: (visibleCalendarBlocks || [])
-                .filter((b) => localDateStr(b.start_datetime) === dateStr)
-                .map((b) => ({
-                  start_datetime: b.start_datetime,
-                  end_datetime: b.end_datetime,
-                })),
-              recurringBlocks: recurringBlocks || [],
-              dayTimeOff: dayTimeOffForDate(dateStr),
-              dayStart,
-              dayEnd,
-              instructorBufferAfter,
-              dateStr,
-              isToday: false,
-              minGapMinutes,
+          const lessonsByDate: Record<string, Array<{ lesson_time: string; duration_minutes: number | null; status?: string | null; bufferAfterMinutes?: number | null }>> = {};
+          for (const l of nextLessons) {
+            const key = String((l as LessonRow).lesson_date);
+            (lessonsByDate[key] ||= []).push({
+              lesson_time: l.lesson_time || '',
+              duration_minutes: l.duration_minutes ?? 60,
+              status: l.status,
+              bufferAfterMinutes: l.pupil_id ? Number(pupilBufferMap[l.pupil_id]?.after) || null : null,
             });
-            for (const g of computed) {
-              const s = new Date(baseDate);
-              s.setHours(0, 0, 0, 0);
+          }
+
+          const windowStart = new Date(todayStart);
+          windowStart.setDate(windowStart.getDate() + 2);
+          const dates = dateRange(windowStart, 14);
+
+          const dayGaps = computeRangeGaps(dates, {
+            prefs: gapPrefs,
+            lessonsByDate,
+            calendarBlocks: (visibleCalendarBlocks || []).map((b) => ({
+              start_datetime: b.start_datetime,
+              end_datetime: b.end_datetime,
+              title: b.title,
+            })),
+            recurringBlocks: recurringBlocks || [],
+            timeOff: (timeOff || []).map((t) => ({
+              start_date: t.start_date,
+              end_date: t.end_date,
+              start_time: t.start_time ?? null,
+              end_time: t.end_time ?? null,
+              all_day: t.all_day ?? null,
+            })),
+            instructorBufferAfter,
+            minGapMinutes,
+            todayISO,
+          });
+
+          for (const d of dayGaps) {
+            for (const g of d.gaps) {
+              const s = new Date(`${d.date}T00:00:00`);
               s.setMinutes(g.startMins);
               rows.push({ kind: 'gap', start: s, mins: g.gapMins, isSoonOrPast: g.isSoonOrPast ?? false });
             }
           }
+
+          // Show calendar events for those days too, so the list matches reality.
+          for (const b of visibleCalendarBlocks || []) {
+            const bDate = localDateStr(b.start_datetime);
+            if (!dates.includes(bDate)) continue;
+            const s = new Date(b.start_datetime);
+            const e = new Date(b.end_datetime);
+            if (isNaN(s.getTime()) || isNaN(e.getTime())) continue;
+            rows.push({
+              kind: 'calendar',
+              title: b.title || 'Busy',
+              start: s,
+              end: e,
+              colour: (b as { colour?: string | null }).colour ?? null,
+            });
+          }
         }
+
 
 
         // Insert calendar blocks for today/tomorrow (not 'next' — blocksForDate isn't computed for arbitrary future dates).
