@@ -2027,7 +2027,7 @@ function SchedulePage() {
                 {loading ? (
                   <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
                 ) : (
-                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px" }}>
+                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px", transform: swipeShift ? `translateX(${swipeShift}px)` : undefined, transition: swipeShift ? "none" : "transform 180ms ease" }}>
                     <div style={{ position: "relative", height: GRID_HEIGHT }}>
                       {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
                     </div>
