@@ -794,7 +794,6 @@ function SchedulePage() {
   const [gapStartMins, setGapStartMins] = useState<number>(0);
   const [gapDuration, setGapDuration] = useState<number>(60);
   const [gapPupilId, setGapPupilId] = useState<string>("");
-  const [gapSaving, setGapSaving] = useState(false);
   useEffect(() => {
     if (!gapSheet) return;
     const start = timeToMins(gapSheet.gap.startTime);
