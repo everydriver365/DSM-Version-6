@@ -2327,6 +2327,8 @@ function SchedulePage() {
         onClose={() => setAddLessonOpen(false)}
         initialPupilId={addLessonPupilId}
         initialDate={addLessonDate}
+        initialTime={addLessonTime}
+
         onSaved={() => {
           setAddLessonOpen(false);
           setLessonsReloadKey((k) => k + 1);
