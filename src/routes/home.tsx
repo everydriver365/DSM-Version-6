@@ -4486,8 +4486,8 @@ function HomePage() {
       const tomorrowGaps = computeDayGaps({
         dayLessons: mapLessons(tomorrowLessons),
         calendarBlocks: rawBlocks,
-        recurringBlocks: [],
-        dayTimeOff: [],
+        recurringBlocks: recurringBlocks || [],
+        dayTimeOff: dayTimeOffForDate(tomorrowISO),
         dayStart: startTimeStr,
         dayEnd: tomorrowEndTime,
         instructorBufferAfter,
