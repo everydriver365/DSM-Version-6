@@ -6697,21 +6697,9 @@ function HomePage() {
             isToday,
             minGapMinutes,
           });
-          // Safety net: if the canonical detector finds nothing, fall back to a
-          // plain working-hours scan so real free time always surfaces.
-          const gapsForDay = computed.length
-            ? computed
-            : getSimpleGaps(
-                sorted.map((l) => ({
-                  lesson_time: l.lesson_time,
-                  duration_minutes: l.duration_minutes ?? 60,
-                  status: l.status,
-                })),
-                dayStart,
-                dayEnd,
-                minGapMinutes,
-                { isToday },
-              );
+          // computeDayGaps is the single source of truth — it subtracts
+          // calendar blocks, so no gap is ever shown over a calendar event.
+          const gapsForDay = computed;
           for (const g of gapsForDay) {
             const s = new Date(baseDate);
             s.setHours(0, 0, 0, 0);
