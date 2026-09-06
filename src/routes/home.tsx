@@ -4246,6 +4246,8 @@ function HomePage() {
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
+  const [recurringBlocks, setRecurringBlocks] = useState<Array<{ id: string; day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
+  const [timeOff, setTimeOff] = useState<Array<{ id: string; start_date: string; end_date: string; all_day?: boolean | null; start_time?: string | null; end_time?: string | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
@@ -4266,7 +4268,7 @@ function HomePage() {
         .select("id, start_datetime, end_datetime, title, colour")
         .eq("instructor_id", userId)
         .eq("source", "external_calendar")
-        .gte("start_datetime", todayISO)
+        .gte("end_datetime", todayISO)
         .lte("start_datetime", `${in14DaysISO}T23:59:59`);
       if (cancelled) return;
       if (error) {
@@ -4276,7 +4278,29 @@ function HomePage() {
       setCalendarBlocks((data as any[]) ?? []);
     };
 
+    const fetchRecurringAndTimeOff = async () => {
+      const [{ data: recData, error: recErr }, { data: toData, error: toErr }] = await Promise.all([
+        supabase
+          .from("instructor_recurring_blocks")
+          .select("id, day_of_week, start_time, end_time, is_active")
+          .eq("instructor_id", userId)
+          .eq("is_active", true),
+        supabase
+          .from("instructor_time_off")
+          .select("id, start_date, end_date, all_day, start_time, end_time")
+          .eq("instructor_id", userId)
+          .lte("start_date", in14DaysISO)
+          .gte("end_date", todayISO),
+      ]);
+      if (cancelled) return;
+      if (recErr) console.warn("[home] instructor_recurring_blocks fetch failed", recErr);
+      if (toErr) console.warn("[home] instructor_time_off fetch failed", toErr);
+      setRecurringBlocks((recData as any[]) ?? []);
+      setTimeOff((toData as any[]) ?? []);
+    };
+
     fetchCalendarBlocks();
+    fetchRecurringAndTimeOff();
 
     const handleCalendarSynced = () => {
       console.log("[home] calendar-synced event received; refetching calendar_blocks");
@@ -4420,6 +4444,11 @@ function HomePage() {
     return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
   })();
 
+  const dayTimeOffForDate = (dateStr: string) =>
+    (timeOff || [])
+      .filter((t) => t.start_date <= dateStr && t.end_date >= dateStr)
+      .map((t) => ({ start_time: t.start_time ?? null, end_time: t.end_time ?? null, all_day: t.all_day ?? null }));
+
   const nextFreeSlot = (() => {
     const mapLessons = (list: LessonRow[]) =>
       list.map((l) => ({
@@ -4441,8 +4470,8 @@ function HomePage() {
       const todayGaps = computeDayGaps({
         dayLessons: mapLessons(todayLessons),
         calendarBlocks: rawBlocks,
-        recurringBlocks: [],
-        dayTimeOff: [],
+        recurringBlocks: recurringBlocks || [],
+        dayTimeOff: dayTimeOffForDate(todayISO),
         dayStart: startTimeStr,
         dayEnd: todayEndTime,
         instructorBufferAfter,
@@ -4457,8 +4486,8 @@ function HomePage() {
       const tomorrowGaps = computeDayGaps({
         dayLessons: mapLessons(tomorrowLessons),
         calendarBlocks: rawBlocks,
-        recurringBlocks: [],
-        dayTimeOff: [],
+        recurringBlocks: recurringBlocks || [],
+        dayTimeOff: dayTimeOffForDate(tomorrowISO),
         dayStart: startTimeStr,
         dayEnd: tomorrowEndTime,
         instructorBufferAfter,
@@ -4496,8 +4525,8 @@ function HomePage() {
         end_datetime: b.end_datetime,
         title: b.title,
       })),
-      recurringBlocks: [],
-      dayTimeOff: [],
+      recurringBlocks: recurringBlocks || [],
+      dayTimeOff: dayTimeOffForDate(dateStr),
       dayStart: startTimeStr,
       dayEnd: endTimeStr,
       instructorBufferAfter: bufferAfter,
@@ -6732,8 +6761,8 @@ function HomePage() {
               end_datetime: b.end_datetime,
               title: b.title,
             })),
-            recurringBlocks: [],
-            dayTimeOff: [],
+            recurringBlocks: recurringBlocks || [],
+            dayTimeOff: dayTimeOffForDate(dateStr),
             dayStart,
             dayEnd,
             instructorBufferAfter,
