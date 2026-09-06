@@ -38,6 +38,7 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
+import { LessonReminderSheet } from "@/components/schedule/LessonReminderSheet";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
 
 
@@ -840,6 +841,7 @@ function SchedulePage() {
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
+  const [reminderLesson, setReminderLesson] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const closeActions = () => {
     setActionsLesson(null);
