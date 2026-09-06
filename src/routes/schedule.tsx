@@ -786,6 +786,10 @@ function SchedulePage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
+  const [addLessonTime, setAddLessonTime] = useState<string | undefined>();
+  // Tapped free slot in the grid → small "what do you want to do" sheet.
+  const [gapSheet, setGapSheet] = useState<{ date: string; gap: GapInfo } | null>(null);
+
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
   // "add anything to my day" flow.
