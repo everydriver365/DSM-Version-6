@@ -7494,7 +7494,7 @@ function HomePage() {
                           Free gaps
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                          {gapRows.slice(0, 4).map((g, i) => {
+                          {gapRows.map((g, i) => {
                             const gapStart = g.start;
                             const gapEnd = new Date(gapStart.getTime() + g.mins * 60000);
                             const dateStr = ymd(gapStart);
