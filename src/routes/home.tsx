@@ -7603,16 +7603,20 @@ function HomePage() {
                                 {match.count > 0 ? (
                                   <div style={{ display: 'flex', gap: 4, marginTop: 6, alignItems: 'center' }}>
                                     {matches.map((m) => (
-                                      <div
+                                      <button
                                         key={m.id}
-                                        title={m.name || m.first_name || 'Pupil'}
-                                        style={{ width: 28, height: 28, borderRadius: '50%', background: '#0B1F3A', color: '#FFFFFF', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                                        type="button"
+                                        title={`Book ${m.name || m.first_name || 'pupil'}`}
+                                        aria-label={`Book ${m.name || m.first_name || 'pupil'} into this slot`}
+                                        onClick={(e) => { e.stopPropagation(); openGapBooking(m, dateStr, startMins, g.mins); }}
+                                        style={{ width: 28, height: 28, borderRadius: '50%', background: '#0B1F3A', color: '#FFFFFF', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: 0, cursor: 'pointer', fontFamily: PF }}
                                       >
                                         {pupilInitials(m)}
-                                      </div>
+                                      </button>
                                     ))}
                                     <span style={{ fontSize: 11, color: '#536579', marginLeft: 4 }}>
-                                      {match.count} pupil{match.count === 1 ? '' : 's'} available
+                                      Tap to book · {match.count} available
+
                                     </span>
                                   </div>
                                 ) : (
