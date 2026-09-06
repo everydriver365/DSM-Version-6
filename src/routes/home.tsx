@@ -6695,8 +6695,19 @@ function HomePage() {
           const name = dayKeyToName[dayKeys[d.getDay()]];
           const perDay = (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
           const cfg = perDay?.[name];
-          if (cfg?.active === false) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
-          return { start: cfg?.start || whStartStr, end: cfg?.end || whEndStr };
+
+          // No per-day config exists — fall back to the working_days list.
+          if (!cfg) {
+            const workingDaysArr = (workingHours as Record<string, unknown> | null | undefined)?.working_days as string[] | null | undefined ?? ['mon','tue','wed','thu','fri'];
+            const isWorkingDay = workingDaysArr.includes(name);
+            if (!isWorkingDay) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
+            return { start: whStartStr, end: whEndStr };
+          }
+
+          // Per-day config exists — only treat as off if explicitly set to false.
+          if (cfg.active === false) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
+
+          return { start: cfg.start || whStartStr, end: cfg.end || whEndStr };
         };
 
         if (tab === 'today' || tab === 'tomorrow') {
