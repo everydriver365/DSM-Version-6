@@ -2189,10 +2189,10 @@ function SchedulePage() {
                     </button>
                   </div>
                 </div>
-                <div role="tablist" aria-label="Calendar view" style={{ display: "flex", width: 132, background: "#F4F6F8", padding: 3, borderRadius: 999, marginTop: 10 }}>
-                  {(["day", "week"] as const).map((mode) => (
+                <div role="tablist" aria-label="Calendar view" style={{ display: "flex", width: 186, background: "#F4F6F8", padding: 3, borderRadius: 999, marginTop: 10 }}>
+                  {(["day", "week", "list"] as const).map((mode) => (
                     <button key={mode} type="button" role="tab" aria-selected={calendarView === mode} onClick={() => setCalendarView(mode)} style={{ flex: 1, border: 0, borderRadius: 999, padding: "5px 8px", background: calendarView === mode ? "#0B2341" : "transparent", color: calendarView === mode ? "#FFFFFF" : "#536579", fontSize: 10, fontWeight: 700, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit" }}>
-                      {mode}
+                      {mode === "list" ? "All" : mode}
                     </button>
                   ))}
                 </div>
