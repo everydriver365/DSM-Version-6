@@ -1643,6 +1643,46 @@ function SchedulePage() {
     return map;
   }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
+  // Free gaps per day, used to draw tappable empty slots in the grid.
+  const gapsByDay = useMemo(() => {
+    const map = new Map<string, GapInfo[]>();
+    const keys = new Set<string>(workingDayKeysInRange);
+    for (const l of lessons ?? []) keys.add(l.lesson_date.substring(0, 10));
+    for (const key of keys) {
+      const dayLessons = (lessons ?? []).filter(
+        (l) => l.lesson_date.substring(0, 10) === key &&
+          String(l.status || "").toLowerCase() !== "cancelled",
+      );
+      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+        new Date(key + "T12:00:00").getDay()
+      ];
+      const dayConfig = perDayHours?.[dayName];
+      const isDayActive = dayConfig ? dayConfig.active === true : workingDaysList.includes(dayName);
+      if (!isDayActive) continue;
+      const gaps = detectGaps(
+        dayLessons.map((l) => ({
+          status: l.status,
+          lesson_time: l.lesson_time,
+          duration_minutes: l.duration_minutes,
+          pupils: null,
+        })),
+        dayConfig?.start || workStart,
+        dayConfig?.end || workEnd,
+        bufferAfter,
+        busyBlocksForGaps,
+        recurringBlocks,
+        timeOff,
+        key,
+        hourlyRate,
+        minGapMinutes,
+      );
+      if (gaps.length) map.set(key, gaps);
+    }
+    return map;
+  }, [lessons, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+
+
+
   const scrollToDate = useCallback(
     (key: string) => {
       // If that date has no entries, jump to the nearest future day that does.
