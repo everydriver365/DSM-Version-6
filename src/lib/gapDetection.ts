@@ -80,7 +80,8 @@ export type ComputedGap = {
  * Compute free-time gaps for a single day. Ported verbatim from the per-day
  * loop in src/routes/gaps.tsx (working-hours clamping, per-pupil buffer,
  * calendar/recurring/partial-time-off merging as busy blocks, tail-gap to end
- * of day, and the "at least 30 min from now" rule for today).
+ * of day). Gaps starting within 30 minutes of now are flagged as `isSoonOrPast`
+ * so renderers can keep them visible while suppressing the booking/SMS offer.
  */
 export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
   const {
