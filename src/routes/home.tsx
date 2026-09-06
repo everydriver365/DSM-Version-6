@@ -7520,15 +7520,16 @@ function HomePage() {
                             const hrs = Math.floor(g.mins / 60);
                             const rem = g.mins % 60;
                             const durLabel = `${hrs ? `${hrs}h` : ''}${rem ? `${hrs ? ' ' : ''}${rem}m` : ''}` || `${g.mins}m`;
-                            const matches = getMatchingPupils(
-                              {
-                                date: dateStr,
-                                dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
-                                startMins,
-                                durationMins: g.mins,
-                              },
-                              matchablePupils,
-                            );
+                            const match = previewMatchForGap({
+                              date: dateStr,
+                              dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
+                              startMin: startMins,
+                              durationMin: g.mins,
+                              allPupils: matchablePupils,
+                              allAvailability: matchAvailability,
+                            });
+                            const matches = match.topPupils;
+
                             return (
                               <div key={`gap-${i}`} style={{ border: '1px dashed #E0A33C', background: '#FDF7EC', borderRadius: 8, padding: '10px 12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
