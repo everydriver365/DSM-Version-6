@@ -70,6 +70,10 @@ export type ComputedGap = {
   startMins: number;
   endMins: number;
   gapMins: number;
+  /** True when the gap starts within 30 minutes of the current time (or earlier).
+   *  Renderers should keep the gap visible but suppress the "Fill this gap"
+   *  booking/SMS offer and show a "Free time" label instead. */
+  isSoonOrPast?: boolean;
 };
 
 /**
