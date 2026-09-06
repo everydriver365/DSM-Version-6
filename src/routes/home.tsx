@@ -1548,29 +1548,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
 
           <div style={{ position: "relative", flexShrink: 0, width: 50 }}>
             <span
-              aria-hidden
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 44,
-                transform: "rotate(-7deg)",
-                whiteSpace: "nowrap",
-                color: "#FFFFFF",
-                fontSize: 12,
-                lineHeight: 1.15,
-                fontStyle: "italic",
-                fontWeight: 600,
-                fontFamily: "'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
-                textShadow: "0 1px 4px rgba(0,0,0,0.5)",
-                textAlign: "right",
-              }}
-            >
-              More
-              <br />
-              for Instructors
-            </span>
-
-            <span
               style={{
                 display: "flex",
                 alignItems: "center",
