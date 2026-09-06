@@ -7325,6 +7325,7 @@ function HomePage() {
                           items={[
                             { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
                             { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                            { label: 'Move lesson', onClick: () => { setMovingLessonHome(l); setMoveModeHome(true); setConfirmMoveHome(null); } },
                             { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
                             { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
                             { label: 'Full profile', onClick: () => { if (l.pupil_id) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } }), 0); } },
