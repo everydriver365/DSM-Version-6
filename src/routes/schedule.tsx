@@ -2203,6 +2203,14 @@ function SchedulePage() {
             return gaps.map((gap) => {
               const box = bandStyle(gap.startMins, gap.endMins);
               if (!box) return null;
+              const hrs = Math.floor(gap.gapMins / 60);
+              const rem = gap.gapMins % 60;
+              const durLabel = `${hrs ? `${hrs}h` : ""}${rem ? `${hrs ? " " : ""}${rem}m` : ""}` || `${gap.gapMins}m`;
+              // The band is anchored to the grid, so the start time sits at the
+              // top edge and the end time at the bottom edge: the free window is
+              // readable straight off the day/week grid without opening a card.
+              const showEnd = box.height >= 34;
+              const showDuration = box.height >= 50;
               return (
                 <button
                   key={`gap-${key}-${gap.startMins}`}
@@ -2217,23 +2225,29 @@ function SchedulePage() {
                     color: "#8A5A0B",
                     fontFamily: "Poppins, sans-serif",
                     fontSize: compact ? 8 : 10,
-                    fontWeight: 600,
+                    fontWeight: 700,
+                    fontVariantNumeric: "tabular-nums",
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 2,
+                    alignItems: "stretch",
+                    justifyContent: showEnd ? "space-between" : "center",
                     cursor: "pointer",
-                    padding: 0,
+                    padding: compact ? "1px 3px" : "2px 5px",
                     overflow: "hidden",
+                    textAlign: "left",
                   }}
                 >
-                  {!compact && <span>{gap.startTime}–{gap.endTime} free</span>}
-                  {!compact && box.height >= 54 && <span style={{ fontSize: 9, fontWeight: 700 }}>~£{gap.potential} potential</span>}
-                  {compact && <span>Free</span>}
+                  <span style={{ lineHeight: 1.1 }}>{gap.startTime}</span>
+                  {showDuration && (
+                    <span style={{ fontSize: compact ? 8 : 9, fontWeight: 600, opacity: 0.85, textAlign: "center", lineHeight: 1.1 }}>
+                      {durLabel} free{!compact && box.height >= 66 ? ` · ~£${gap.potential}` : ""}
+                    </span>
+                  )}
+                  {showEnd && <span style={{ lineHeight: 1.1, textAlign: "right" }}>{gap.endTime}</span>}
                 </button>
               );
             });
+
           };
 
           const gridColumn = (date: Date, compact: boolean) => {
