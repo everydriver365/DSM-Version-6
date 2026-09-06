@@ -6720,30 +6720,19 @@ function HomePage() {
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
 
-        // Resolve per-day working hours for today/tomorrow from per_day_hours if present.
-        const resolveDayHours = (d: Date): { start: string; end: string } => {
-          const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'] as const;
-          const dayKeyToName: Record<string, string> = {
-            sun: 'Sunday', mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday',
-            thu: 'Thursday', fri: 'Friday', sat: 'Saturday',
-          };
-          const name = dayKeyToName[dayKeys[d.getDay()]];
-          const perDay = (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
-          const cfg = perDay?.[name];
-
-          // No per-day config exists — fall back to the working_days list.
-          if (!cfg) {
-            const workingDaysArr = (workingHours as Record<string, unknown> | null | undefined)?.working_days as string[] | null | undefined ?? ['mon','tue','wed','thu','fri'];
-            const isWorkingDay = workingDaysArr.includes(name);
-            if (!isWorkingDay) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
-            return { start: whStartStr, end: whEndStr };
-          }
-
-          // Per-day config exists — only treat as off if explicitly set to false.
-          if (cfg.active === false) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
-
-          return { start: cfg.start || whStartStr, end: cfg.end || whEndStr };
+        // Shared working-hours rule (see src/lib/gapEngine.ts) — identical on
+        // the schedule and gaps pages.
+        const gapPrefs = {
+          startTime: whStartStr,
+          endTime: whEndStr,
+          workingDays: (workingHours as Record<string, unknown> | null | undefined)?.working_days as string[] | null | undefined,
+          perDayHours: (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined,
         };
+        const resolveDayHours = (d: Date): { start: string; end: string } => {
+          const h = resolveWorkingDayHours(d, gapPrefs);
+          return { start: h.start, end: h.end };
+        };
+
 
         if (tab === 'today' || tab === 'tomorrow') {
           const baseDate = tab === 'today' ? todayStart : tomorrowStart;
