@@ -2043,16 +2043,38 @@ function SchedulePage() {
                 {loading ? (
                   <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
                 ) : (
-                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px", transform: swipeShift ? `translateX(${swipeShift}px)` : undefined, transition: swipeShift ? "none" : "transform 180ms ease" }}>
-                    <div style={{ position: "relative", height: GRID_HEIGHT }}>
-                      {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
+                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, transform: swipeShift ? `translateX(${swipeShift}px)` : undefined, transition: swipeShift ? "none" : "transform 180ms ease" }}>
+                    {viewDays.some((date) => entriesFor(date).some((e) => e.allDay)) && (
+                      <div style={{ display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "12px 12px 0", alignItems: "start" }}>
+                        <div style={{ fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", paddingTop: 3, textAlign: "right", paddingRight: 5 }}>All day</div>
+                        {viewDays.map((date) => (
+                          <div key={`allday-${ymdLocal(date)}`} style={{ display: "flex", flexDirection: "column", gap: 3, padding: "0 3px", minWidth: 0 }}>
+                            {entriesFor(date).filter((e) => e.allDay).map((entry) => {
+                              const palette = paletteFor(entry);
+                              return (
+                                <button
+                                  key={entry.id}
+                                  type="button"
+                                  onClick={() => openEntry(entry)}
+                                  style={{ border: 0, borderLeft: `3px solid ${palette.border}`, borderRadius: 6, background: palette.background, color: palette.color, padding: "3px 6px", fontSize: 9, fontWeight: 700, textAlign: "left", cursor: "pointer", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Poppins, sans-serif" }}
+                                >
+                                  {"title" in entry ? entry.title : "All day"}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div style={{ display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px" }}>
+                      <div style={{ position: "relative", height: GRID_HEIGHT }}>
+                        {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
+                      </div>
+                      {viewDays.map((date) => gridColumn(date, calendarView === "week"))}
                     </div>
-                    {calendarView === "week" && weekDays.map((date) => (
-                      <div key={`head-${ymdLocal(date)}`} style={{ gridRow: 1, display: "none" }} />
-                    ))}
-                    {viewDays.map((date) => gridColumn(date, calendarView === "week"))}
                   </div>
                 )}
+
               </div>
             </>
           );
