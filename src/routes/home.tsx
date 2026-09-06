@@ -10157,7 +10157,7 @@ function HomePage() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              style={{ width: '100%', background: '#FFFFFF', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: '16px 16px calc(16px + env(safe-area-inset-bottom))', fontFamily: PF }}
+              style={{ width: '100%', background: '#FFFFFF', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: '16px 16px calc(16px + env(safe-area-inset-bottom))', fontFamily: 'Poppins, sans-serif' }}
             >
               <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E2E8F0', margin: '0 auto 12px' }} />
               <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A' }}>Book {name}</div>
@@ -10175,7 +10175,7 @@ function HomePage() {
                       setGapBookingDur(d);
                       setGapBookingStart((s) => Math.min(s, gapEndMin - d));
                     }}
-                    style={{ border: `1px solid ${d === gapBookingDur ? '#1877D6' : '#E2E8F0'}`, background: d === gapBookingDur ? '#1877D6' : '#FFFFFF', color: d === gapBookingDur ? '#FFFFFF' : '#0B1F3A', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: PF }}
+                    style={{ border: `1px solid ${d === gapBookingDur ? '#1877D6' : '#E2E8F0'}`, background: d === gapBookingDur ? '#1877D6' : '#FFFFFF', color: d === gapBookingDur ? '#FFFFFF' : '#0B1F3A', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >
                     {d === 60 ? '1h' : d === 90 ? '1h 30' : d === 120 ? '2h' : `${d}m`}
                   </button>
@@ -10191,7 +10191,7 @@ function HomePage() {
                     key={s}
                     type="button"
                     onClick={() => setGapBookingStart(s)}
-                    style={{ border: `1px solid ${s === gapBookingStart ? '#1877D6' : '#E2E8F0'}`, background: s === gapBookingStart ? '#E8F4FD' : '#FFFFFF', color: '#0B1F3A', borderRadius: 8, padding: '7px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}
+                    style={{ border: `1px solid ${s === gapBookingStart ? '#1877D6' : '#E2E8F0'}`, background: s === gapBookingStart ? '#E8F4FD' : '#FFFFFF', color: '#0B1F3A', borderRadius: 8, padding: '7px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontVariantNumeric: 'tabular-nums' }}
                   >
                     {minsToTime(s)}
                   </button>
@@ -10202,7 +10202,7 @@ function HomePage() {
                 <button
                   type="button"
                   onClick={() => setGapBooking(null)}
-                  style={{ flex: 1, border: '1px solid #E2E8F0', background: '#FFFFFF', color: '#536579', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: PF }}
+                  style={{ flex: 1, border: '1px solid #E2E8F0', background: '#FFFFFF', color: '#536579', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                 >
                   Cancel
                 </button>
@@ -10210,7 +10210,7 @@ function HomePage() {
                   type="button"
                   disabled={gapBookingSaving || starts.length === 0}
                   onClick={() => { void confirmGapBooking(); }}
-                  style={{ flex: 2, border: 0, background: gapBookingSaving || starts.length === 0 ? '#9CB3CC' : '#1877D6', color: '#FFFFFF', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: PF }}
+                  style={{ flex: 2, border: 0, background: gapBookingSaving || starts.length === 0 ? '#9CB3CC' : '#1877D6', color: '#FFFFFF', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                 >
                   {gapBookingSaving ? 'Booking…' : `Confirm ${minsToTime(gapBookingStart)}`}
                 </button>
@@ -10223,7 +10223,7 @@ function HomePage() {
                   setGapBooking(null);
                   setAddLessonOpen(true);
                 }}
-                style={{ width: '100%', marginTop: 10, border: 0, background: 'transparent', color: '#2C97DE', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: PF }}
+                style={{ width: '100%', marginTop: 10, border: 0, background: 'transparent', color: '#2C97DE', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
               >
                 More options →
               </button>
