@@ -4396,13 +4396,16 @@ function HomePage() {
 
   // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
   // Parses UTC timestamps into LOCAL date/time so BST/GMT boundaries don't misclassify blocks.
-  const blocksForDate = (dateStr: string) =>
-    (visibleCalendarBlocks || [])
+  const blocksForDate = (dateStr: string) => {
+    const dayStartMs = new Date(`${dateStr}T00:00:00`).getTime();
+    const dayEndMs = dayStartMs + 24 * 60 * 60 * 1000;
+    return (visibleCalendarBlocks || [])
       .map((b) => {
         const sd = new Date(b.start_datetime);
         const ed = new Date(b.end_datetime);
         if (isNaN(sd.getTime()) || isNaN(ed.getTime())) return null;
-        const localDateStr = `${sd.getFullYear()}-${String(sd.getMonth() + 1).padStart(2, '0')}-${String(sd.getDate()).padStart(2, '0')}`;
+        // Overlap test: keep any event that covers part of this day.
+        if (ed.getTime() <= dayStartMs || sd.getTime() >= dayEndMs) return null;
         const localStartTime = `${String(sd.getHours()).padStart(2, '0')}:${String(sd.getMinutes()).padStart(2, '0')}`;
         const localEndTime = `${String(ed.getHours()).padStart(2, '0')}:${String(ed.getMinutes()).padStart(2, '0')}`;
         const durationMins = Math.max(0, Math.round((ed.getTime() - sd.getTime()) / 60000));
@@ -4411,18 +4414,20 @@ function HomePage() {
         const isAllDay =
           (localStartTime === '00:00' && (localEndTime === '00:00' || localEndTime === '23:59')) ||
           (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
+        // Clamp the event to the requested day so multi-day events render correctly.
+        const startMins = isAllDay ? 0 : Math.max(0, Math.round((sd.getTime() - dayStartMs) / 60000));
+        const endMins = isAllDay ? 24 * 60 : Math.min(24 * 60, Math.round((ed.getTime() - dayStartMs) / 60000));
         return {
-          localDate: localDateStr,
-          start: isAllDay ? 0 : timeToMins(localStartTime),
-          end: isAllDay ? 24 * 60 : timeToMins(localEndTime),
+          start: Math.min(startMins, 24 * 60),
+          end: Math.max(endMins, 0),
           title: b.title ?? 'Busy',
           colour: (b as { colour?: string | null }).colour ?? null,
           allDay: isAllDay,
         };
       })
-      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null; allDay: boolean } => b !== null && b.localDate === dateStr)
-      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour, allDay: b.allDay }))
+      .filter((b): b is { start: number; end: number; title: string; colour: string | null; allDay: boolean } => b !== null)
       .sort((a, b) => a.start - b.start);
+  };
 
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
