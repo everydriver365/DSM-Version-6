@@ -36,7 +36,7 @@ import { verifyAddress } from "@/lib/geocode.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
-import { computeDayGaps } from "@/lib/gapDetection";
+import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
 
 
 
