@@ -848,6 +848,53 @@ function SchedulePage() {
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
+  /**
+   * Which pupils' own availability fits a slot? Same shared rules as the home
+   * tile and the gaps page: available days, their time-of-day window, their
+   * preferred lesson length and their minimum notice.
+   */
+  const matchForSlot = useCallback(
+    (dateKey: string, startMins: number, durationMins: number) =>
+      previewMatchForGap({
+        date: dateKey,
+        dayName: new Date(`${dateKey}T12:00:00`).toLocaleDateString("en-GB", { weekday: "long" }),
+        startMin: startMins,
+        durationMin: durationMins,
+        allPupils,
+        allAvailability: (allAvailability || []).map((a: any) => ({
+          pupil_id: a.pupil_id,
+          available_days: a.available_days ?? null,
+          available_from: a.available_from ?? null,
+          available_until: a.available_until ?? null,
+          min_notice_hours: a.min_notice_hours ?? null,
+          short_notice_opt_in: a.short_notice_opt_in ?? null,
+          preferred_duration_minutes: a.preferred_duration_minutes ?? null,
+        })),
+      }),
+    [allPupils, allAvailability],
+  );
+  /**
+   * Pupils who fit a whole free gap at *any* workable lesson length that fits
+   * inside it, so a pupil who only ever does 90-minute lessons still shows on
+   * a two-hour gap.
+   */
+  const matchForGapWindow = useCallback(
+    (dateKey: string, startMins: number, gapMins: number) => {
+      const seen = new Map<string, { id: string; name: string | null; first_name: string | null }>();
+      for (const d of [30, 45, 60, 90, 120]) {
+        if (d > gapMins) continue;
+        for (const p of matchForSlot(dateKey, startMins, d).allMatched) {
+          if (!seen.has(p.id)) seen.set(p.id, p as any);
+        }
+      }
+      const all = Array.from(seen.values());
+      return { count: all.length, topPupils: all.slice(0, 3), allMatched: all };
+    },
+    [matchForSlot],
+  );
+
+
+
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
   const [reminderLesson, setReminderLesson] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -2323,6 +2370,16 @@ function SchedulePage() {
                                       {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free
                                     </span>
                                     <span style={{ display: "block", fontSize: 10 }}>~£{gap.potential} potential</span>
+                                    {(() => {
+                                      const m = matchForGapWindow(key, gap.startMins, gap.gapMins);
+                                      return (
+                                        <span style={{ display: "block", fontSize: 10, marginTop: 2, color: m.count ? "#0C447C" : "#8A6524" }}>
+                                          {m.count
+                                            ? `${m.count} pupil${m.count === 1 ? "" : "s"} available · ${m.topPupils.map((p) => pupilDisplayName(p as any)).join(", ")}${m.count > 3 ? "…" : ""}`
+                                            : "No pupil's availability fits this slot"}
+                                        </span>
+                                      );
+                                    })()}
                                   </span>
                                   <span style={{ flexShrink: 0, background: "#1877D6", color: "#FFFFFF", borderRadius: 999, fontSize: 11, fontWeight: 700, padding: "6px 12px" }}>Book</span>
                                 </button>
@@ -2410,6 +2467,14 @@ function SchedulePage() {
                                   <span style={{ display: "block", fontSize: 10 }}>
                                     {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free · ~£{gap.potential} potential
                                   </span>
+                                  {(() => {
+                                    const m = matchForGapWindow(key, gap.startMins, gap.gapMins);
+                                    return (
+                                      <span style={{ display: "block", fontSize: 10, marginTop: 2, color: m.count ? "#0C447C" : "#8A6524" }}>
+                                        {m.count ? `${m.count} pupil${m.count === 1 ? "" : "s"} available` : "No pupil's availability fits"}
+                                      </span>
+                                    );
+                                  })()}
                                 </span>
                               </button>
                             ),
@@ -2674,19 +2739,25 @@ function SchedulePage() {
                 <>
                   <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4 }}>Length</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {durations.map((d) => (
-                      <button
-                        key={d}
-                        type="button"
-                        onClick={() => {
-                          setGapDuration(d);
-                          if (gapStartMins + d > gapEnd) setGapStartMins(Math.max(gapStart, gapEnd - d));
-                        }}
-                        style={chip(gapDuration === d)}
-                      >
-                        {d >= 60 ? `${d / 60}h${d % 60 ? ' 30m' : ''}` : `${d}m`}
-                      </button>
-                    ))}
+                    {durations.map((d) => {
+                      // How many pupils' own availability fits this length at
+                      // the currently chosen start time.
+                      const fit = matchForSlot(gapSheet.date, gapStartMins, d).count;
+                      return (
+                        <button
+                          key={d}
+                          type="button"
+                          onClick={() => {
+                            setGapDuration(d);
+                            if (gapStartMins + d > gapEnd) setGapStartMins(Math.max(gapStart, gapEnd - d));
+                          }}
+                          style={chip(gapDuration === d)}
+                        >
+                          {d >= 60 ? `${d / 60}h${d % 60 ? ' 30m' : ''}` : `${d}m`}
+                          <span style={{ opacity: 0.7, marginLeft: 4, fontWeight: 500 }}>· {fit}</span>
+                        </button>
+                      );
+                    })}
                   </div>
 
                   <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Start time</div>
@@ -2700,17 +2771,54 @@ function SchedulePage() {
                     ))}
                   </div>
 
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Pupil</div>
-                  <select
-                    value={gapPupilId}
-                    onChange={(e) => setGapPupilId(e.target.value)}
-                    style={{ border: '1px solid #E4E8EF', borderRadius: 12, padding: '12px', fontSize: 15, background: '#FFFFFF', color: '#0B1F3A', fontFamily: 'inherit' }}
-                  >
-                    <option value="">Choose a pupil…</option>
-                    {allPupils.map((p: any) => (
-                      <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
-                    ))}
-                  </select>
+                  {(() => {
+                    // Pupils whose own availability (days, time window,
+                    // preferred lesson length, notice) fits the chosen slot.
+                    const fitting = matchForSlot(gapSheet.date, gapStartMins, gapDuration).allMatched;
+                    const fittingIds = new Set(fitting.map((p: any) => p.id));
+                    const others = allPupils.filter((p: any) => !fittingIds.has(p.id));
+                    return (
+                      <>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>
+                          Pupil {fitting.length ? `· ${fitting.length} available` : ''}
+                        </div>
+                        {fitting.length > 0 ? (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                            {fitting.map((p: any) => (
+                              <button key={p.id} type="button" onClick={() => setGapPupilId(p.id)} style={chip(gapPupilId === p.id)}>
+                                {pupilDisplayName(p)}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: 12, color: '#8A6524' }}>
+                            No pupil's availability fits this time and length — try another start time or length.
+                          </div>
+                        )}
+                        <select
+                          value={gapPupilId}
+                          onChange={(e) => setGapPupilId(e.target.value)}
+                          style={{ border: '1px solid #E4E8EF', borderRadius: 12, padding: '12px', fontSize: 15, background: '#FFFFFF', color: '#0B1F3A', fontFamily: 'inherit' }}
+                        >
+                          <option value="">Choose a pupil…</option>
+                          {fitting.length > 0 && (
+                            <optgroup label="Available for this slot">
+                              {fitting.map((p: any) => (
+                                <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
+                              ))}
+                            </optgroup>
+                          )}
+                          {others.length > 0 && (
+                            <optgroup label="Outside their usual availability">
+                              {others.map((p: any) => (
+                                <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
+                              ))}
+                            </optgroup>
+                          )}
+                        </select>
+                      </>
+                    );
+                  })()}
 
                   <button
                     type="button"

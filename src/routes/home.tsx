@@ -39,7 +39,9 @@ import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
 import { resolveDayHours as resolveWorkingDayHours, computeRangeGaps, dateRange } from "@/lib/gapEngine";
 
-import { getMatchingPupils, pupilInitials } from "@/lib/gapMatching";
+import { pupilInitials } from "@/lib/gapMatching";
+import { previewMatchForGap as sharedPreviewMatchForGap } from "@/lib/pupilMatching";
+
 
 
 
@@ -435,10 +437,15 @@ interface PupilReadySetting {
   pupil_id: string;
   instructor_id: string;
   available_days: string[] | null;
+  /** Earliest time of day the pupil can start, e.g. "16:00". */
+  available_from: string | null;
+  /** Latest time of day the pupil must finish by, e.g. "20:00". */
+  available_until: string | null;
   preferred_duration_minutes: number | null;
   min_notice_hours: number | null;
   short_notice_opt_in: boolean | null;
 }
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -5047,39 +5054,37 @@ function HomePage() {
 
   ] as const;
 
+  /**
+   * Which pupils could take this slot? Delegates to the shared matcher so the
+   * home tile, the schedule page and the gaps page apply identical rules:
+   * available days, the pupil's time-of-day window, their preferred lesson
+   * length and their minimum notice.
+   */
   function previewMatchForGap(gap: {
     date: string;
     dayName: string;
+    startMin: number;
     durationMin: number;
-  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
-    if (!allPupils.length || !allAvailability.length) {
-      return { count: 0, topPupils: [] };
-    }
-    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
-    for (const a of allAvailability) {
-      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
-    }
-    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
-    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
-
-    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
-    for (const p of allPupils) {
-      const s = availByPupil.get(p.id);
-      if (!s) continue;
-      const availDays = s.available_days || [];
-      if (!availDays.includes(gap.dayName)) continue;
-      const minDuration = s.preferred_duration_minutes ?? 60;
-      if (gap.durationMin < minDuration) continue;
-      const minNoticeHours = s.min_notice_hours ?? 24;
-      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
-      matched.push({
-        name: p.name,
-        first_name: p.first_name,
-        calendar_colour: p.calendar_colour,
-      });
-    }
-    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }): { count: number; topPupils: PreviewPupil[] } {
+    const res = sharedPreviewMatchForGap({
+      date: gap.date,
+      dayName: gap.dayName,
+      startMin: gap.startMin,
+      durationMin: gap.durationMin,
+      allPupils,
+      allAvailability: allAvailability.map((a) => ({
+        pupil_id: a.pupil_id,
+        available_days: a.available_days ?? null,
+        available_from: a.available_from ?? null,
+        available_until: a.available_until ?? null,
+        min_notice_hours: a.min_notice_hours ?? null,
+        short_notice_opt_in: a.short_notice_opt_in ?? null,
+        preferred_duration_minutes: a.preferred_duration_minutes ?? null,
+      })),
+    });
+    return { count: res.count, topPupils: res.topPupils };
   }
+
 
   const [naEnquiries, setNaEnquiries] = useState(0);
   useEffect(() => {
@@ -7476,18 +7481,10 @@ function HomePage() {
                     if (gapRows.length === 0) return null;
                     const fmtG = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
                     const moveDur = moveModeHome && movingLessonHome ? Number(movingLessonHome.duration_minutes || 60) : 0;
-                    // Pupils in the shape the shared matcher expects.
-                    const availByPupilId = new Map(allAvailability.filter((a) => a.pupil_id).map((a) => [a.pupil_id, a] as const));
-                    const matchablePupils = allPupils.map((p) => {
-                      const a = availByPupilId.get(p.id);
-                      return {
-                        id: p.id,
-                        first_name: p.first_name,
-                        name: p.name,
-                        preferred_lesson_length: a?.preferred_duration_minutes ?? null,
-                        availability_days: a?.available_days ?? null,
-                      };
-                    });
+                    // Pupil matching (days, time window, preferred length,
+                    // notice) is handled by previewMatchForGap above.
+
+
                     return (
                       <div style={{ marginTop: 10, background: '#FFFFFF', borderRadius: 8, padding: '10px 12px 12px' }}>
                         <div style={{ fontSize: 11, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 }}>
@@ -7506,15 +7503,15 @@ function HomePage() {
                             const hrs = Math.floor(g.mins / 60);
                             const rem = g.mins % 60;
                             const durLabel = `${hrs ? `${hrs}h` : ''}${rem ? `${hrs ? ' ' : ''}${rem}m` : ''}` || `${g.mins}m`;
-                            const matches = getMatchingPupils(
-                              {
-                                date: dateStr,
-                                dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
-                                startMins,
-                                durationMins: g.mins,
-                              },
-                              matchablePupils,
-                            );
+                            const match = previewMatchForGap({
+                              date: dateStr,
+                              dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
+                              startMin: startMins,
+                              durationMin: g.mins,
+                            });
+
+                            const matches = match.topPupils;
+
                             return (
                               <div key={`gap-${i}`} style={{ border: '1px dashed #E0A33C', background: '#FDF7EC', borderRadius: 8, padding: '10px 12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
@@ -7541,22 +7538,27 @@ function HomePage() {
                                     </button>
                                   )}
                                 </div>
-                                {matches.length > 0 && (
+                                {match.count > 0 ? (
                                   <div style={{ display: 'flex', gap: 4, marginTop: 6, alignItems: 'center' }}>
                                     {matches.map((m) => (
                                       <div
-                                        key={m.pupil.id}
-                                        title={m.pupil.name || m.pupil.first_name || 'Pupil'}
+                                        key={m.id}
+                                        title={m.name || m.first_name || 'Pupil'}
                                         style={{ width: 28, height: 28, borderRadius: '50%', background: '#0B1F3A', color: '#FFFFFF', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
                                       >
-                                        {pupilInitials(m.pupil)}
+                                        {pupilInitials(m)}
                                       </div>
                                     ))}
                                     <span style={{ fontSize: 11, color: '#536579', marginLeft: 4 }}>
-                                      {matches.length} pupil{matches.length === 1 ? '' : 's'} available
+                                      {match.count} pupil{match.count === 1 ? '' : 's'} available
                                     </span>
                                   </div>
+                                ) : (
+                                  <div style={{ fontSize: 11, color: '#8A6524', marginTop: 6 }}>
+                                    No pupil's availability fits this slot
+                                  </div>
                                 )}
+
                                 {moveModeHome && movingLessonHome && (
                                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                                     {slots.length === 0 ? (
