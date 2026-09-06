@@ -7525,9 +7525,8 @@ function HomePage() {
                               dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
                               startMin: startMins,
                               durationMin: g.mins,
-                              allPupils: matchablePupils,
-                              allAvailability: matchAvailability,
                             });
+
                             const matches = match.topPupils;
 
                             return (
