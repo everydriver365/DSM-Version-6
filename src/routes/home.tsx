@@ -4266,7 +4266,7 @@ function HomePage() {
         .select("id, start_datetime, end_datetime, title, colour")
         .eq("instructor_id", userId)
         .eq("source", "external_calendar")
-        .gte("start_datetime", todayISO)
+        .gte("end_datetime", todayISO)
         .lte("start_datetime", `${in14DaysISO}T23:59:59`);
       if (cancelled) return;
       if (error) {
