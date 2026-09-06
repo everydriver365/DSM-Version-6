@@ -37,6 +37,8 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
+import { resolveDayHours as resolveWorkingDayHours, computeRangeGaps, dateRange } from "@/lib/gapEngine";
+
 import { getMatchingPupils, pupilInitials } from "@/lib/gapMatching";
 
 
@@ -6720,30 +6722,19 @@ function HomePage() {
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
 
-        // Resolve per-day working hours for today/tomorrow from per_day_hours if present.
-        const resolveDayHours = (d: Date): { start: string; end: string } => {
-          const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'] as const;
-          const dayKeyToName: Record<string, string> = {
-            sun: 'Sunday', mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday',
-            thu: 'Thursday', fri: 'Friday', sat: 'Saturday',
-          };
-          const name = dayKeyToName[dayKeys[d.getDay()]];
-          const perDay = (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
-          const cfg = perDay?.[name];
-
-          // No per-day config exists — fall back to the working_days list.
-          if (!cfg) {
-            const workingDaysArr = (workingHours as Record<string, unknown> | null | undefined)?.working_days as string[] | null | undefined ?? ['mon','tue','wed','thu','fri'];
-            const isWorkingDay = workingDaysArr.includes(name);
-            if (!isWorkingDay) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
-            return { start: whStartStr, end: whEndStr };
-          }
-
-          // Per-day config exists — only treat as off if explicitly set to false.
-          if (cfg.active === false) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
-
-          return { start: cfg.start || whStartStr, end: cfg.end || whEndStr };
+        // Shared working-hours rule (see src/lib/gapEngine.ts) — identical on
+        // the schedule and gaps pages.
+        const gapPrefs = {
+          startTime: whStartStr,
+          endTime: whEndStr,
+          workingDays: (workingHours as Record<string, unknown> | null | undefined)?.working_days as string[] | null | undefined,
+          perDayHours: (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined,
         };
+        const resolveDayHours = (d: Date): { start: string; end: string } => {
+          const h = resolveWorkingDayHours(d, gapPrefs);
+          return { start: h.start, end: h.end };
+        };
+
 
         if (tab === 'today' || tab === 'tomorrow') {
           const baseDate = tab === 'today' ? todayStart : tomorrowStart;
@@ -6786,50 +6777,71 @@ function HomePage() {
             rows.push({ kind: 'gap', start: s, mins: g.gapMins });
           }
         } else {
-          // 'next' tab: use computeDayGaps per day so calendar blocks, recurring blocks and time off are subtracted.
-          const nextByDate = new Map<string, LessonRow[]>();
-          for (const l of sorted) {
-            const list = nextByDate.get(l.lesson_date) ?? [];
-            list.push(l);
-            nextByDate.set(l.lesson_date, list);
-          }
-          for (const [dateStr, lessonsForDate] of nextByDate) {
-            const baseDate = new Date(`${dateStr}T12:00:00`);
-            const { start: dayStart, end: dayEnd } = resolveDayHours(baseDate);
+          // 'next' tab: compute gaps for EVERY day in the next 14 days (from the
+          // day after tomorrow), not just days that happen to contain a lesson.
+          for (const l of sorted) rows.push({ kind: 'lesson', l });
 
-            // Emit lesson rows.
-            for (const l of lessonsForDate) rows.push({ kind: 'lesson', l });
-
-            const computed = computeDayGaps({
-              dayLessons: lessonsForDate.map((l) => ({
-                lesson_time: l.lesson_time || '',
-                duration_minutes: l.duration_minutes ?? 60,
-                status: l.status,
-                bufferAfterMinutes: l.pupil_id ? Number(pupilBufferMap[l.pupil_id]?.after) || null : null,
-              })),
-              calendarBlocks: (visibleCalendarBlocks || [])
-                .filter((b) => localDateStr(b.start_datetime) === dateStr)
-                .map((b) => ({
-                  start_datetime: b.start_datetime,
-                  end_datetime: b.end_datetime,
-                })),
-              recurringBlocks: recurringBlocks || [],
-              dayTimeOff: dayTimeOffForDate(dateStr),
-              dayStart,
-              dayEnd,
-              instructorBufferAfter,
-              dateStr,
-              isToday: false,
-              minGapMinutes,
+          const lessonsByDate: Record<string, Array<{ lesson_time: string; duration_minutes: number | null; status?: string | null; bufferAfterMinutes?: number | null }>> = {};
+          for (const l of nextLessons) {
+            const key = String((l as LessonRow).lesson_date);
+            (lessonsByDate[key] ||= []).push({
+              lesson_time: l.lesson_time || '',
+              duration_minutes: l.duration_minutes ?? 60,
+              status: l.status,
+              bufferAfterMinutes: l.pupil_id ? Number(pupilBufferMap[l.pupil_id]?.after) || null : null,
             });
-            for (const g of computed) {
-              const s = new Date(baseDate);
-              s.setHours(0, 0, 0, 0);
+          }
+
+          const windowStart = new Date(todayStart);
+          windowStart.setDate(windowStart.getDate() + 2);
+          const dates = dateRange(windowStart, 14);
+
+          const dayGaps = computeRangeGaps(dates, {
+            prefs: gapPrefs,
+            lessonsByDate,
+            calendarBlocks: (visibleCalendarBlocks || []).map((b) => ({
+              start_datetime: b.start_datetime,
+              end_datetime: b.end_datetime,
+              title: b.title,
+            })),
+            recurringBlocks: recurringBlocks || [],
+            timeOff: (timeOff || []).map((t) => ({
+              start_date: t.start_date,
+              end_date: t.end_date,
+              start_time: t.start_time ?? null,
+              end_time: t.end_time ?? null,
+              all_day: t.all_day ?? null,
+            })),
+            instructorBufferAfter,
+            minGapMinutes,
+            todayISO,
+          });
+
+          for (const d of dayGaps) {
+            for (const g of d.gaps) {
+              const s = new Date(`${d.date}T00:00:00`);
               s.setMinutes(g.startMins);
               rows.push({ kind: 'gap', start: s, mins: g.gapMins, isSoonOrPast: g.isSoonOrPast ?? false });
             }
           }
+
+          // Show calendar events for those days too, so the list matches reality.
+          for (const b of visibleCalendarBlocks || []) {
+            const bDate = localDateStr(b.start_datetime);
+            if (!dates.includes(bDate)) continue;
+            const s = new Date(b.start_datetime);
+            const e = new Date(b.end_datetime);
+            if (isNaN(s.getTime()) || isNaN(e.getTime())) continue;
+            rows.push({
+              kind: 'calendar',
+              title: b.title || 'Busy',
+              start: s,
+              end: e,
+              colour: (b as { colour?: string | null }).colour ?? null,
+            });
+          }
         }
+
 
 
         // Insert calendar blocks for today/tomorrow (not 'next' — blocksForDate isn't computed for arbitrary future dates).
@@ -7482,7 +7494,7 @@ function HomePage() {
                           Free gaps
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                          {gapRows.slice(0, 4).map((g, i) => {
+                          {gapRows.map((g, i) => {
                             const gapStart = g.start;
                             const gapEnd = new Date(gapStart.getTime() + g.mins * 60000);
                             const dateStr = ymd(gapStart);

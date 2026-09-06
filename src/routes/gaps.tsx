@@ -19,6 +19,8 @@ import {
 } from "../components/dsm/BottomSheetV2";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { resolveDayHours as resolveWorkingDayHours } from "@/lib/gapEngine";
+
 
 import {
   slotFitsPupilWindow,
@@ -719,12 +721,18 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          const dayConfig = perDayHours?.[dayName];
-          const dayStart = dayConfig?.start || workStart || "09:00";
-          const dayEnd = dayConfig?.end || workEnd || "18:00";
-          const isDayActive = dayConfig
-            ? dayConfig.active === true
-            : workDays.includes(dayName);
+          // Shared working-hours rule (src/lib/gapEngine.ts): a configured day
+          // is off only when active === false; otherwise fall back to working_days.
+          const resolved = resolveWorkingDayHours(dt, {
+            startTime: workStart,
+            endTime: workEnd,
+            workingDays: workDays,
+            perDayHours,
+          });
+          const dayStart = resolved.start;
+          const dayEnd = resolved.end;
+          const isDayActive = resolved.active;
+
           const isWorkDay = isDayActive;
           const wsMin = hmToMin(dayStart);
           const weMin = hmToMin(dayEnd);

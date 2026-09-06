@@ -19,6 +19,8 @@ import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEven
 import { toast } from "@/lib/toast";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
+import { resolveDayHours as resolveWorkingDayHours } from "@/lib/gapEngine";
+
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
@@ -1528,11 +1530,13 @@ function SchedulePage() {
     while (cursor.getTime() <= end.getTime()) {
       const key = ymdLocal(cursor);
       if (key >= todayKey) {
-        const dayName = DAY_NAMES[cursor.getDay()];
-        const dayConfig = perDayHours?.[dayName];
-        const isActive = dayConfig
-          ? dayConfig.active !== false
-          : workingDaysList.includes(dayName);
+        const isActive = resolveWorkingDayHours(cursor, {
+          startTime: workStart,
+          endTime: workEnd,
+          workingDays: workingDaysList,
+          perDayHours,
+        }).active;
+
         if (isActive) out.push(key);
       }
       cursor.setDate(cursor.getDate() + 1);
@@ -1631,15 +1635,16 @@ function SchedulePage() {
       const dayBlocks = visibleCalendarBlocks.filter(
         (b) => (b.start_datetime || "").substring(0, 10) === key,
       );
-      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
-        new Date(key + "T12:00:00").getDay()
-      ];
-      const dayConfig = perDayHours?.[dayName];
-      const dayStart = dayConfig?.start || workStart;
-      const dayEnd = dayConfig?.end || workEnd;
-      const isDayActive = dayConfig
-        ? dayConfig.active !== false
-        : workingDaysList.includes(dayName);
+      const resolvedDay = resolveWorkingDayHours(key, {
+        startTime: workStart,
+        endTime: workEnd,
+        workingDays: workingDaysList,
+        perDayHours,
+      });
+      const dayStart = resolvedDay.start;
+      const dayEnd = resolvedDay.end;
+      const isDayActive = resolvedDay.active;
+
       const gaps = isDayActive
         ? detectGaps(
             dayLessons.map((l) => ({
@@ -1678,12 +1683,13 @@ function SchedulePage() {
         (l) => l.lesson_date.substring(0, 10) === key &&
           String(l.status || "").toLowerCase() !== "cancelled",
       );
-      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
-        new Date(key + "T12:00:00").getDay()
-      ];
-      const dayConfig = perDayHours?.[dayName];
-      const isDayActive = dayConfig ? dayConfig.active !== false : workingDaysList.includes(dayName);
-      if (!isDayActive) continue;
+      const resolvedGapDay = resolveWorkingDayHours(key, {
+        startTime: workStart,
+        endTime: workEnd,
+        workingDays: workingDaysList,
+        perDayHours,
+      });
+      if (!resolvedGapDay.active) continue;
       const gaps = detectGaps(
         dayLessons.map((l) => ({
           status: l.status,
@@ -1691,8 +1697,9 @@ function SchedulePage() {
           duration_minutes: l.duration_minutes,
           pupils: null,
         })),
-        dayConfig?.start || workStart,
-        dayConfig?.end || workEnd,
+        resolvedGapDay.start,
+        resolvedGapDay.end,
+
         bufferAfter,
         busyBlocksForGaps,
         recurringBlocks,
