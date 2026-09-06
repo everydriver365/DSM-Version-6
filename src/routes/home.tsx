@@ -7481,18 +7481,27 @@ function HomePage() {
                     if (gapRows.length === 0) return null;
                     const fmtG = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
                     const moveDur = moveModeHome && movingLessonHome ? Number(movingLessonHome.duration_minutes || 60) : 0;
-                    // Pupils in the shape the shared matcher expects.
-                    const availByPupilId = new Map(allAvailability.filter((a) => a.pupil_id).map((a) => [a.pupil_id, a] as const));
-                    const matchablePupils = allPupils.map((p) => {
-                      const a = availByPupilId.get(p.id);
-                      return {
-                        id: p.id,
-                        first_name: p.first_name,
-                        name: p.name,
-                        preferred_lesson_length: a?.preferred_duration_minutes ?? null,
-                        availability_days: a?.available_days ?? null,
-                      };
-                    });
+                    // Pupil availability rows in the shape the shared matcher
+                    // expects: days, time window, notice and preferred length.
+                    const matchAvailability = allAvailability
+                      .filter((a) => a.pupil_id)
+                      .map((a) => ({
+                        pupil_id: a.pupil_id,
+                        available_days: a.available_days ?? null,
+                        available_from: a.available_from ?? null,
+                        available_until: a.available_until ?? null,
+                        min_notice_hours: a.min_notice_hours ?? null,
+                        short_notice_opt_in: a.short_notice_opt_in ?? null,
+                        preferred_duration_minutes: a.preferred_duration_minutes ?? null,
+                      }));
+                    const matchablePupils = allPupils.map((p) => ({
+                      id: p.id,
+                      name: p.name ?? null,
+                      first_name: p.first_name ?? null,
+                      last_name: (p as { last_name?: string | null }).last_name ?? null,
+                      calendar_colour: (p as { calendar_colour?: string | null }).calendar_colour ?? null,
+                    }));
+
                     return (
                       <div style={{ marginTop: 10, background: '#FFFFFF', borderRadius: 8, padding: '10px 12px 12px' }}>
                         <div style={{ fontSize: 11, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 }}>
