@@ -2585,27 +2585,122 @@ function SchedulePage() {
             <div style={{ fontSize: 13, color: '#8A5A0B', fontWeight: 600, marginBottom: 4 }}>
               {Math.floor(gapSheet.gap.gapMins / 60)}h{gapSheet.gap.gapMins % 60 ? ` ${gapSheet.gap.gapMins % 60}m` : ''} free · ~£{gapSheet.gap.potential} potential
             </div>
-            <button
-              type="button"
-              onClick={() => { setGapSheet(null); navigate({ to: '/gaps' }); }}
-              style={{ background: '#2C97DE', color: '#FFFFFF', border: 0, borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-            >
-              Find pupils
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                const g = gapSheet;
-                setGapSheet(null);
-                setAddLessonPupilId(undefined);
-                setAddLessonDate(g.date);
-                setAddLessonTime(g.gap.startTime);
-                setAddLessonOpen(true);
-              }}
-              style={{ background: '#F3F8FF', color: '#0B1F3A', border: '1px solid #E4E8EF', borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-            >
-              Add lesson at {gapSheet.gap.startTime}
-            </button>
+
+            {(() => {
+              const gapStart = timeToMins(gapSheet.gap.startTime);
+              const gapEnd = timeToMins(gapSheet.gap.endTime);
+              const durations = [30, 45, 60, 90, 120].filter((d) => d <= gapEnd - gapStart);
+              const maxStart = gapEnd - gapDuration;
+              const starts: number[] = [];
+              for (let s = Math.ceil(gapStart / 15) * 15; s <= maxStart; s += 15) starts.push(s);
+              const chip = (active: boolean) => ({
+                border: active ? '1px solid #1877D6' : '1px solid #E4E8EF',
+                background: active ? '#1877D6' : '#FFFFFF',
+                color: active ? '#FFFFFF' : '#0B1F3A',
+                borderRadius: 999,
+                padding: '8px 12px',
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }) as React.CSSProperties;
+              return (
+                <>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4 }}>Length</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {durations.map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => {
+                          setGapDuration(d);
+                          if (gapStartMins + d > gapEnd) setGapStartMins(Math.max(gapStart, gapEnd - d));
+                        }}
+                        style={chip(gapDuration === d)}
+                      >
+                        {d >= 60 ? `${d / 60}h${d % 60 ? ' 30m' : ''}` : `${d}m`}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Start time</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 116, overflowY: 'auto' }}>
+                    {starts.length === 0 ? (
+                      <span style={{ fontSize: 13, color: '#8A6524' }}>That length doesn't fit in this gap.</span>
+                    ) : starts.map((s) => (
+                      <button key={s} type="button" onClick={() => setGapStartMins(s)} style={chip(gapStartMins === s)}>
+                        {minsToTime(s)}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Pupil</div>
+                  <select
+                    value={gapPupilId}
+                    onChange={(e) => setGapPupilId(e.target.value)}
+                    style={{ border: '1px solid #E4E8EF', borderRadius: 12, padding: '12px', fontSize: 15, background: '#FFFFFF', color: '#0B1F3A', fontFamily: 'inherit' }}
+                  >
+                    <option value="">Choose a pupil…</option>
+                    {allPupils.map((p: any) => (
+                      <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
+                    ))}
+                  </select>
+
+                  <button
+                    type="button"
+                    disabled={!gapPupilId || starts.length === 0}
+                    onClick={() => {
+                      const g = gapSheet;
+                      setGapSheet(null);
+                      setAddLessonPupilId(gapPupilId);
+                      setAddLessonDate(g.date);
+                      setAddLessonTime(minsToTime(gapStartMins));
+                      setAddLessonDuration(gapDuration);
+                      setAddLessonOpen(true);
+                    }}
+                    style={{
+                      background: !gapPupilId || starts.length === 0 ? '#C8D3E0' : '#1877D6',
+                      color: '#FFFFFF',
+                      border: 0,
+                      borderRadius: 12,
+                      padding: '14px 12px',
+                      fontSize: 15,
+                      fontWeight: 600,
+                      cursor: !gapPupilId || starts.length === 0 ? 'default' : 'pointer',
+                      fontFamily: 'inherit',
+                      marginTop: 6,
+                    }}
+                  >
+                    Book {minsToTime(gapStartMins)}–{minsToTime(Math.min(gapEnd, gapStartMins + gapDuration))}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const g = gapSheet;
+                      setGapSheet(null);
+                      setAddLessonPupilId(undefined);
+                      setAddLessonDate(g.date);
+                      setAddLessonTime(minsToTime(gapStartMins));
+                      setAddLessonDuration(gapDuration);
+                      setAddLessonOpen(true);
+                    }}
+                    style={{ background: '#F3F8FF', color: '#0B1F3A', border: '1px solid #E4E8EF', borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+                  >
+                    More options
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setGapSheet(null); navigate({ to: '/gaps' }); }}
+                    style={{ background: 'transparent', color: '#2C97DE', border: 0, padding: '6px 12px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+                  >
+                    Suggest pupils who could fill this
+                  </button>
+                </>
+              );
+            })()}
+
           </div>
         </div>
       )}
