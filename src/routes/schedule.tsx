@@ -806,6 +806,9 @@ function SchedulePage() {
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
   const [calendarView, setCalendarView] = useState<"day" | "week">("day");
+  const swipeRef = useRef<{ x: number; y: number } | null>(null);
+  const [swipeShift, setSwipeShift] = useState(0);
+
   const [clockNow, setClockNow] = useState(() => new Date());
   const [instructor, setInstructor] = useState<{ name: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
