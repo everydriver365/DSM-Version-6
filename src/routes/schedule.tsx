@@ -1531,7 +1531,7 @@ function SchedulePage() {
         const dayName = DAY_NAMES[cursor.getDay()];
         const dayConfig = perDayHours?.[dayName];
         const isActive = dayConfig
-          ? dayConfig.active === true
+          ? dayConfig.active !== false
           : workingDaysList.includes(dayName);
         if (isActive) out.push(key);
       }
@@ -1638,7 +1638,7 @@ function SchedulePage() {
       const dayStart = dayConfig?.start || workStart;
       const dayEnd = dayConfig?.end || workEnd;
       const isDayActive = dayConfig
-        ? dayConfig.active === true
+        ? dayConfig.active !== false
         : workingDaysList.includes(dayName);
       const gaps = isDayActive
         ? detectGaps(
@@ -1682,7 +1682,7 @@ function SchedulePage() {
         new Date(key + "T12:00:00").getDay()
       ];
       const dayConfig = perDayHours?.[dayName];
-      const isDayActive = dayConfig ? dayConfig.active === true : workingDaysList.includes(dayName);
+      const isDayActive = dayConfig ? dayConfig.active !== false : workingDaysList.includes(dayName);
       if (!isDayActive) continue;
       const gaps = detectGaps(
         dayLessons.map((l) => ({

@@ -7507,6 +7507,13 @@ function HomePage() {
                               <div key={`gap-${i}`} style={{ border: '1px dashed #E0A33C', background: '#FDF7EC', borderRadius: 8, padding: '10px 12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                                   <div style={{ minWidth: 0 }}>
+                                    <div style={{ fontSize: 10, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 2 }}>
+                                      {dateStr === todayISO
+                                        ? 'Today'
+                                        : dateStr === tomorrowISO
+                                          ? 'Tomorrow'
+                                          : gapStart.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
+                                    </div>
                                     <div style={{ fontSize: 13, fontWeight: 700, color: '#633806', fontVariantNumeric: 'tabular-nums' }}>
                                       {fmtG(gapStart)}–{fmtG(gapEnd)}
                                     </div>
