@@ -1531,7 +1531,7 @@ function SchedulePage() {
         const dayName = DAY_NAMES[cursor.getDay()];
         const dayConfig = perDayHours?.[dayName];
         const isActive = dayConfig
-          ? dayConfig.active === true
+          ? dayConfig.active !== false
           : workingDaysList.includes(dayName);
         if (isActive) out.push(key);
       }
