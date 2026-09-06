@@ -2254,6 +2254,100 @@ function SchedulePage() {
 
                 {loading ? (
                   <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+                ) : calendarView === "list" ? (
+                  <div style={{ padding: "12px 12px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
+                    {(() => {
+                      const listDays = Array.from({ length: 42 }, (_, i) => addDays(selected, i))
+                        .filter((d) => (entriesFor(d).length > 0) || (gapsByDay.get(ymdLocal(d)) ?? []).length > 0);
+                      if (!listDays.length) {
+                        return <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13, textAlign: "center" }}>Nothing scheduled in the next six weeks.</div>;
+                      }
+                      const moveDuration = moveMode && movingLesson ? Number(movingLesson.duration_minutes || 60) : 0;
+                      return listDays.map((date) => {
+                        const key = ymdLocal(date);
+                        const items: Array<{ sort: number; node: React.ReactNode }> = [];
+                        entriesFor(date).forEach((entry) => {
+                          const palette = paletteFor(entry);
+                          const lesson = entry.kind === "lesson" ? entry.lesson : null;
+                          const name = lesson ? pupilDisplayName(lesson.pupil) : "title" in entry ? entry.title : "Unavailable";
+                          const sub = lesson
+                            ? (isTest(lesson) ? (testCentreOf(lesson) || "Test") : (lesson.pickup_location || [lesson.pupil?.address, lesson.pupil?.postcode].filter(Boolean).join(", ")))
+                            : entry.kind === "personal" ? "Private event" : "Google Calendar";
+                          items.push({
+                            sort: entry.allDay ? -1 : entry.start.getHours() * 60 + entry.start.getMinutes(),
+                            node: (
+                              <button
+                                key={`li-${entry.id}`}
+                                type="button"
+                                onClick={() => openEntry(entry)}
+                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, border: 0, borderLeft: `3px solid ${palette.border}`, borderRadius: 8, background: palette.background, color: palette.color, padding: "10px 12px", textAlign: "left", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}
+                              >
+                                <span style={{ width: 74, flexShrink: 0, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
+                                  {entry.allDay ? "All day" : `${fmtTime(entry.start)}–${fmtTime(entry.end)}`}
+                                </span>
+                                <span style={{ flex: 1, minWidth: 0 }}>
+                                  <span style={{ display: "block", fontSize: 13, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</span>
+                                  {sub ? <span style={{ display: "block", fontSize: 10, color: "#536579", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</span> : null}
+                                </span>
+                                <IconDots size={16} color="#536579" />
+                              </button>
+                            ),
+                          });
+                        });
+                        (gapsByDay.get(key) ?? []).forEach((gap) => {
+                          if (moveMode && movingLesson) {
+                            const slots: number[] = [];
+                            for (let s = Math.ceil(gap.startMins / 15) * 15; s + moveDuration <= gap.endMins; s += 15) slots.push(s);
+                            if (!slots.length) return;
+                            items.push({
+                              sort: gap.startMins,
+                              node: (
+                                <div key={`slots-${key}-${gap.startMins}`} style={{ border: "1.5px dashed #1877D6", borderRadius: 8, background: "rgba(24,119,214,0.08)", padding: 10 }}>
+                                  <div style={{ fontSize: 10, fontWeight: 700, color: "#0C447C", marginBottom: 8 }}>Move to {gap.startTime}–{gap.endTime}</div>
+                                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                                    {slots.map((s) => (
+                                      <button key={s} type="button" onClick={() => setConfirmMove({ date: key, time: minsToTime(s) })} style={{ border: 0, borderRadius: 6, background: "#1877D6", color: "#FFFFFF", fontSize: 11, fontWeight: 700, padding: "6px 10px", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}>
+                                        {minsToTime(s)}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              ),
+                            });
+                            return;
+                          }
+                          items.push({
+                            sort: gap.startMins,
+                            node: (
+                              <button
+                                key={`ligap-${key}-${gap.startMins}`}
+                                type="button"
+                                onClick={() => setGapSheet({ date: key, gap })}
+                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, border: "1px dashed #E0A33C", borderRadius: 8, background: "#FDF7EC", color: "#633806", padding: "10px 12px", textAlign: "left", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}
+                              >
+                                <span style={{ width: 74, flexShrink: 0, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{gap.startTime}–{gap.endTime}</span>
+                                <span style={{ flex: 1, minWidth: 0 }}>
+                                  <span style={{ display: "block", fontSize: 13, fontWeight: 700 }}>Fill this gap</span>
+                                  <span style={{ display: "block", fontSize: 10 }}>
+                                    {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free · ~£{gap.potential} potential
+                                  </span>
+                                </span>
+                              </button>
+                            ),
+                          });
+                        });
+                        items.sort((a, b) => a.sort - b.sort);
+                        return (
+                          <div key={`listday-${key}`}>
+                            <div style={{ fontSize: 11, fontWeight: 700, color: key === todayKey ? "#2C97DE" : "#536579", textTransform: "uppercase", marginBottom: 8, paddingLeft: 2 }}>
+                              {key === todayKey ? "Today · " : ""}{date.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{items.map((i) => i.node)}</div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
                 ) : (
                   <div style={{ minWidth: calendarView === "week" ? 620 : undefined, transform: swipeShift ? `translateX(${swipeShift}px)` : undefined, transition: swipeShift ? "none" : "transform 180ms ease" }}>
                     {viewDays.some((date) => entriesFor(date).some((e) => e.allDay)) && (
