@@ -2370,6 +2370,16 @@ function SchedulePage() {
                                       {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free
                                     </span>
                                     <span style={{ display: "block", fontSize: 10 }}>~£{gap.potential} potential</span>
+                                    {(() => {
+                                      const m = matchForGapWindow(key, gap.startMins, gap.gapMins);
+                                      return (
+                                        <span style={{ display: "block", fontSize: 10, marginTop: 2, color: m.count ? "#0C447C" : "#8A6524" }}>
+                                          {m.count
+                                            ? `${m.count} pupil${m.count === 1 ? "" : "s"} available · ${m.topPupils.map((p) => pupilDisplayName(p as any)).join(", ")}${m.count > 3 ? "…" : ""}`
+                                            : "No pupil's availability fits this slot"}
+                                        </span>
+                                      );
+                                    })()}
                                   </span>
                                   <span style={{ flexShrink: 0, background: "#1877D6", color: "#FFFFFF", borderRadius: 999, fontSize: 11, fontWeight: 700, padding: "6px 12px" }}>Book</span>
                                 </button>
