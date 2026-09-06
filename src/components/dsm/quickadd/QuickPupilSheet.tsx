@@ -241,8 +241,10 @@ export function QuickPupilSheet({
               type="button"
               onClick={() => {
                 const draft = { firstName, lastName, phone, address, postcode };
+                reset();
                 onOpenFullForm(draft);
               }}
+
 
               style={{
                 width: "100%",
