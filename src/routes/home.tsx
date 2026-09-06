@@ -4246,6 +4246,8 @@ function HomePage() {
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
+  const [recurringBlocks, setRecurringBlocks] = useState<Array<{ id: string; day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
+  const [timeOff, setTimeOff] = useState<Array<{ id: string; start_date: string; end_date: string; all_day?: boolean | null; start_time?: string | null; end_time?: string | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
