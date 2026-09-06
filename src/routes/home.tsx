@@ -6799,7 +6799,7 @@ function HomePage() {
                 lesson_time: l.lesson_time || '',
                 duration_minutes: l.duration_minutes ?? 60,
                 status: l.status,
-                bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
+                bufferAfterMinutes: l.pupil_id ? Number(pupilBufferMap[l.pupil_id]?.after) || null : null,
               })),
               calendarBlocks: (visibleCalendarBlocks || [])
                 .filter((b) => localDateStr(b.start_datetime) === dateStr)
