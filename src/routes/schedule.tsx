@@ -2229,7 +2229,7 @@ function SchedulePage() {
       <button
         type="button"
         aria-label="Add to schedule"
-        onClick={() => { setAddLessonDate(selectedDate); setAddChooserOpen(true); }}
+        onClick={() => { setAddLessonDate(selectedDate); setAddLessonTime(undefined); setAddChooserOpen(true); }}
         style={{ position: "fixed", right: 18, bottom: "calc(80px + env(safe-area-inset-bottom, 0px))", width: 40, height: 40, borderRadius: "50%", border: 0, background: "#2C97DE", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(44,151,222,0.3)", zIndex: 30, cursor: "pointer", padding: 0 }}
       >
         <IconPlus size={22} stroke={2.2} />
