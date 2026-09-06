@@ -1801,31 +1801,98 @@ function SchedulePage() {
             ...POPPINS,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <IconArrowsMove size={16} color="#FFFFFF" />
-            <span style={{ color: '#FFFFFF', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, marginLeft: 8 }}>
-              Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => { setMovingLesson(null); setMoveMode(false); setConfirmMove(null); }}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              color: '#FFFFFF',
-              fontSize: 12,
-              fontWeight: tokens.fontWeight.semibold,
-              padding: '6px 12px',
-              borderRadius: tokens.radiusCard, minHeight: 44,
-              border: 'none',
-              cursor: 'pointer',
-              ...POPPINS,
-            }}
-          >
-            Cancel
-          </button>
+          {(() => {
+            const dur = Number(movingLesson.duration_minutes || 60);
+            const countFits = (key: string) =>
+              (gapsByDay.get(key) ?? []).reduce((n, g) => {
+                let c = 0;
+                for (let s = Math.ceil(g.startMins / 15) * 15; s + dur <= g.endMins; s += 15) c += 1;
+                return n + c;
+              }, 0);
+            const goto = (date: Date) => {
+              setSelectedDate(ymdLocal(date));
+              setViewMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+            };
+            const selected = new Date(`${selectedDate}T12:00:00`);
+            const fits = countFits(selectedDate);
+            const findNext = (dir: 1 | -1) => {
+              for (let i = 1; i <= 60; i += 1) {
+                const d = addDays(selected, dir * i);
+                if (countFits(ymdLocal(d)) > 0) return d;
+              }
+              return null;
+            };
+            const nextFree = findNext(1);
+            return (
+              <div style={{ width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+                    <IconArrowsMove size={16} color="#FFFFFF" />
+                    <span style={{ color: '#FFFFFF', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, marginLeft: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {dur} min lesson
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setMovingLesson(null); setMoveMode(false); setConfirmMove(null); }}
+                    style={{
+                      background: 'rgba(255,255,255,0.2)',
+                      color: '#FFFFFF',
+                      fontSize: 12,
+                      fontWeight: tokens.fontWeight.semibold,
+                      padding: '6px 12px',
+                      borderRadius: tokens.radiusCard,
+                      border: 'none',
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                      ...POPPINS,
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+                <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <button
+                    type="button"
+                    aria-label="Previous day"
+                    onClick={() => goto(addDays(selected, calendarView === 'week' ? -7 : -1))}
+                    style={{ width: 30, height: 30, borderRadius: 8, border: 0, background: 'rgba(255,255,255,0.18)', color: '#FFFFFF', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                  >
+                    <IconChevronLeft size={16} stroke={2} color="#FFFFFF" />
+                  </button>
+                  <div style={{ flex: 1, minWidth: 0, textAlign: 'center', color: '#FFFFFF', ...POPPINS }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {selected.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    </div>
+                    <div style={{ fontSize: 10, opacity: 0.85 }}>
+                      {fits > 0 ? `${fits} slot${fits === 1 ? '' : 's'} fit here` : 'No space this day'}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="Next day"
+                    onClick={() => goto(addDays(selected, calendarView === 'week' ? 7 : 1))}
+                    style={{ width: 30, height: 30, borderRadius: 8, border: 0, background: 'rgba(255,255,255,0.18)', color: '#FFFFFF', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                  >
+                    <IconChevronRight size={16} stroke={2} color="#FFFFFF" />
+                  </button>
+                  {nextFree && (
+                    <button
+                      type="button"
+                      onClick={() => goto(nextFree)}
+                      style={{ background: '#FFFFFF', color: '#1877D6', fontSize: 11, fontWeight: 700, padding: '7px 10px', borderRadius: 8, border: 0, cursor: 'pointer', flexShrink: 0, ...POPPINS }}
+                    >
+                      Next free day
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
+
       <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(26,82,160,0.5); } 50% { box-shadow: 0 0 0 6px rgba(26,82,160,0); } }`}</style>
 
 
