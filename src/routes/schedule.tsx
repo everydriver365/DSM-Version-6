@@ -14,6 +14,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEvent, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconEdit, IconLock, IconMapPin, IconNavigation, IconPhone, IconPlus, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
@@ -606,7 +607,7 @@ function TestLessonCard({
       </div>
 
       {/* Test lesson actions bottom sheet */}
-      {testActionsOpen && (
+      {testActionsOpen && createPortal((
         <div
           onClick={() => setTestActionsOpen(false)}
           style={{
@@ -739,7 +740,7 @@ function TestLessonCard({
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
     </>
   );
