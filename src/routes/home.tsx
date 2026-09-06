@@ -13,6 +13,8 @@ import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "@/lib/toast";
+import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
+
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
