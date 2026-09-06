@@ -13,8 +13,6 @@ import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "@/lib/toast";
-import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
-
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
 import edpLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
@@ -38,16 +36,7 @@ import { verifyAddress } from "@/lib/geocode.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
-import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
-import { resolveDayHours as resolveWorkingDayHours, computeRangeGaps, dateRange } from "@/lib/gapEngine";
-
-import { pupilInitials } from "@/lib/gapMatching";
-import { previewMatchForGap as sharedPreviewMatchForGap } from "@/lib/pupilMatching";
-
-
-
-
-
+import { computeDayGaps } from "@/lib/gapDetection";
 
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import ProPage from "@/routes/pro.tsx";
@@ -439,15 +428,10 @@ interface PupilReadySetting {
   pupil_id: string;
   instructor_id: string;
   available_days: string[] | null;
-  /** Earliest time of day the pupil can start, e.g. "16:00". */
-  available_from: string | null;
-  /** Latest time of day the pupil must finish by, e.g. "20:00". */
-  available_until: string | null;
   preferred_duration_minutes: number | null;
   min_notice_hours: number | null;
   short_notice_opt_in: boolean | null;
 }
-
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -1561,6 +1545,47 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
               Shop &amp; member perks.
             </div>
           </div>
+
+          <div style={{ position: "relative", flexShrink: 0, width: 50 }}>
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 44,
+                transform: "rotate(-7deg)",
+                whiteSpace: "nowrap",
+                color: "#FFFFFF",
+                fontSize: 12,
+                lineHeight: 1.15,
+                fontStyle: "italic",
+                fontWeight: 600,
+                fontFamily: "'Snell Roundhand', 'Brush Script MT', 'Segoe Script', cursive",
+                textShadow: "0 1px 4px rgba(0,0,0,0.5)",
+                textAlign: "right",
+              }}
+            >
+              More
+              <br />
+              for Instructors
+            </span>
+
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 46,
+                height: 46,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                boxShadow: "0 4px 12px rgba(11,31,58,0.25)",
+                marginLeft: "auto",
+              }}
+            >
+              <IconArrowRight size={22} stroke={2.4} color="#1877D6" />
+            </span>
+          </div>
         </div>
       </div>
 
@@ -1715,14 +1740,6 @@ function HomePage() {
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
   const [reloadKey, setReloadKey] = useState(0);
-  // Booking a pupil straight from a free-gap card on the teaching schedule tile.
-  const [gapBooking, setGapBooking] = useState<
-    { pupil: PreviewPupil; date: string; startMin: number; gapMins: number } | null
-  >(null);
-  const [gapBookingDur, setGapBookingDur] = useState(60);
-  const [gapBookingStart, setGapBookingStart] = useState(0);
-  const [gapBookingSaving, setGapBookingSaving] = useState(false);
-
   useEffect(() => {
     const onPaymentRecorded = () => setReloadKey((k) => k + 1);
     const onMessagesRead = () => setReloadKey((k) => k + 1);
@@ -2993,7 +3010,7 @@ function HomePage() {
           .from("pupils")
           .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
           .eq("instructor_id", userId)
-          .or("status.is.null,status.not.in.(inactive,passed,cancelled,archived)")
+          .eq("status", "active")
           .is("deleted_at", null),
         supabase
           .from("pupil_ready_to_learn_settings")
@@ -4266,17 +4283,10 @@ function HomePage() {
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
-  const [recurringBlocks, setRecurringBlocks] = useState<Array<{ id: string; day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
-  const [timeOff, setTimeOff] = useState<Array<{ id: string; start_date: string; end_date: string; all_day?: boolean | null; start_time?: string | null; end_time?: string | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
-  const in14DaysISO = useMemo(() => {
-    const d = new Date(todayStart);
-    d.setDate(d.getDate() + 14);
-    return ymd(d);
-  }, [todayStart]);
 
   useEffect(() => {
     if (!userId) return;
@@ -4288,8 +4298,8 @@ function HomePage() {
         .select("id, start_datetime, end_datetime, title, colour")
         .eq("instructor_id", userId)
         .eq("source", "external_calendar")
-        .gte("end_datetime", todayISO)
-        .lte("start_datetime", `${in14DaysISO}T23:59:59`);
+        .gte("start_datetime", todayISO)
+        .lte("start_datetime", `${tomorrowISO}T23:59:59`);
       if (cancelled) return;
       if (error) {
         console.warn("[home] calendar_blocks fetch failed", error);
@@ -4298,29 +4308,7 @@ function HomePage() {
       setCalendarBlocks((data as any[]) ?? []);
     };
 
-    const fetchRecurringAndTimeOff = async () => {
-      const [{ data: recData, error: recErr }, { data: toData, error: toErr }] = await Promise.all([
-        supabase
-          .from("instructor_recurring_blocks")
-          .select("id, day_of_week, start_time, end_time, is_active")
-          .eq("instructor_id", userId)
-          .eq("is_active", true),
-        supabase
-          .from("instructor_time_off")
-          .select("id, start_date, end_date, all_day, start_time, end_time")
-          .eq("instructor_id", userId)
-          .lte("start_date", in14DaysISO)
-          .gte("end_date", todayISO),
-      ]);
-      if (cancelled) return;
-      if (recErr) console.warn("[home] instructor_recurring_blocks fetch failed", recErr);
-      if (toErr) console.warn("[home] instructor_time_off fetch failed", toErr);
-      setRecurringBlocks((recData as any[]) ?? []);
-      setTimeOff((toData as any[]) ?? []);
-    };
-
     fetchCalendarBlocks();
-    fetchRecurringAndTimeOff();
 
     const handleCalendarSynced = () => {
       console.log("[home] calendar-synced event received; refetching calendar_blocks");
@@ -4332,51 +4320,18 @@ function HomePage() {
       cancelled = true;
       window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
-  }, [userId, todayISO, in14DaysISO]);
+  }, [userId, todayISO, tomorrowISO]);
 
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
 
-  // Tomorrow timeline: fetched directly with an exact lesson_date match so no
-  // lesson can be missed by the wider window query, then merged by id.
-  const [tomorrowLessonsRaw, setTomorrowLessonsRaw] = useState<any[]>([]);
-  useEffect(() => {
-    if (!userId || !tomorrowISO) return;
-    let cancelled = false;
-    (async () => {
-      const { data, error } = await supabase
-        .from("lessons")
-        .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, lesson_type, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120, test_status)"
-        )
-        .eq("instructor_id", userId)
-        .eq("lesson_date", tomorrowISO)
-        .is("deleted_at", null)
-        .order("lesson_time", { ascending: true });
-      if (cancelled) return;
-      if (error) {
-        console.warn("[home] tomorrow lessons fetch failed", error);
-        return;
-      }
-      setTomorrowLessonsRaw((data as any[]) ?? []);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [userId, tomorrowISO]);
-
-  const tomorrowLessons = useMemo(() => {
-    const byId = new Map<string, any>();
-    for (const l of (allLessons ?? []) as any[]) {
-      if (l.lesson_date === tomorrowISO && l.deleted_at == null) byId.set(String(l.id), l);
-    }
-    for (const l of tomorrowLessonsRaw) byId.set(String(l.id), l);
-    return Array.from(byId.values()).sort((a, b) =>
-      String(a.lesson_time ?? "").localeCompare(String(b.lesson_time ?? "")),
-    ) as unknown as LessonRow[];
-  }, [allLessons, tomorrowLessonsRaw, tomorrowISO]);
-
+  // Tomorrow timeline: include every lesson for tomorrow regardless of status
+  // (except soft-deleted). Match against the ISO date string so we avoid
+  // host-timezone drift between lessonDateTime() and tomorrowStart.
+  const tomorrowLessons = (allLessons ?? []).filter(
+    (l: any) => l.lesson_date === tomorrowISO && l.deleted_at == null,
+  ) as unknown as LessonRow[];
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now && l.status !== "cancelled");
   const nextTabLessons = nextLessons.slice(0, 5);
 
@@ -4415,16 +4370,13 @@ function HomePage() {
 
   // Convert calendar blocks for a given date to sorted [startMins, endMins] intervals.
   // Parses UTC timestamps into LOCAL date/time so BST/GMT boundaries don't misclassify blocks.
-  const blocksForDate = (dateStr: string) => {
-    const dayStartMs = new Date(`${dateStr}T00:00:00`).getTime();
-    const dayEndMs = dayStartMs + 24 * 60 * 60 * 1000;
-    return (visibleCalendarBlocks || [])
+  const blocksForDate = (dateStr: string) =>
+    (visibleCalendarBlocks || [])
       .map((b) => {
         const sd = new Date(b.start_datetime);
         const ed = new Date(b.end_datetime);
         if (isNaN(sd.getTime()) || isNaN(ed.getTime())) return null;
-        // Overlap test: keep any event that covers part of this day.
-        if (ed.getTime() <= dayStartMs || sd.getTime() >= dayEndMs) return null;
+        const localDateStr = `${sd.getFullYear()}-${String(sd.getMonth() + 1).padStart(2, '0')}-${String(sd.getDate()).padStart(2, '0')}`;
         const localStartTime = `${String(sd.getHours()).padStart(2, '0')}:${String(sd.getMinutes()).padStart(2, '0')}`;
         const localEndTime = `${String(ed.getHours()).padStart(2, '0')}:${String(ed.getMinutes()).padStart(2, '0')}`;
         const durationMins = Math.max(0, Math.round((ed.getTime() - sd.getTime()) / 60000));
@@ -4433,21 +4385,18 @@ function HomePage() {
         const isAllDay =
           (localStartTime === '00:00' && (localEndTime === '00:00' || localEndTime === '23:59')) ||
           (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
-        // Clamp the event to the requested day so multi-day events render correctly.
-        const startMins = isAllDay ? 0 : Math.max(0, Math.round((sd.getTime() - dayStartMs) / 60000));
-        const endMins = isAllDay ? 24 * 60 : Math.min(24 * 60, Math.round((ed.getTime() - dayStartMs) / 60000));
+        if (isAllDay) return null;
         return {
-          start: Math.min(startMins, 24 * 60),
-          end: Math.max(endMins, 0),
+          localDate: localDateStr,
+          start: timeToMins(localStartTime),
+          end: timeToMins(localEndTime),
           title: b.title ?? 'Busy',
           colour: (b as { colour?: string | null }).colour ?? null,
-          allDay: isAllDay,
         };
       })
-      .filter((b): b is { start: number; end: number; title: string; colour: string | null; allDay: boolean } => b !== null)
+      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null } => b !== null && b.localDate === dateStr)
+      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour }))
       .sort((a, b) => a.start - b.start);
-  };
-
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
 
@@ -4468,11 +4417,6 @@ function HomePage() {
     const active = cfg ? cfg.active === true : workingDaysArr.includes(name);
     return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
   })();
-
-  const dayTimeOffForDate = (dateStr: string) =>
-    (timeOff || [])
-      .filter((t) => t.start_date <= dateStr && t.end_date >= dateStr)
-      .map((t) => ({ start_time: t.start_time ?? null, end_time: t.end_time ?? null, all_day: t.all_day ?? null }));
 
   const nextFreeSlot = (() => {
     const mapLessons = (list: LessonRow[]) =>
@@ -4495,8 +4439,8 @@ function HomePage() {
       const todayGaps = computeDayGaps({
         dayLessons: mapLessons(todayLessons),
         calendarBlocks: rawBlocks,
-        recurringBlocks: recurringBlocks || [],
-        dayTimeOff: dayTimeOffForDate(todayISO),
+        recurringBlocks: [],
+        dayTimeOff: [],
         dayStart: startTimeStr,
         dayEnd: todayEndTime,
         instructorBufferAfter,
@@ -4511,8 +4455,8 @@ function HomePage() {
       const tomorrowGaps = computeDayGaps({
         dayLessons: mapLessons(tomorrowLessons),
         calendarBlocks: rawBlocks,
-        recurringBlocks: recurringBlocks || [],
-        dayTimeOff: dayTimeOffForDate(tomorrowISO),
+        recurringBlocks: [],
+        dayTimeOff: [],
         dayStart: startTimeStr,
         dayEnd: tomorrowEndTime,
         instructorBufferAfter,
@@ -4550,8 +4494,8 @@ function HomePage() {
         end_datetime: b.end_datetime,
         title: b.title,
       })),
-      recurringBlocks: recurringBlocks || [],
-      dayTimeOff: dayTimeOffForDate(dateStr),
+      recurringBlocks: [],
+      dayTimeOff: [],
       dayStart: startTimeStr,
       dayEnd: endTimeStr,
       instructorBufferAfter: bufferAfter,
@@ -5064,89 +5008,39 @@ function HomePage() {
 
   ] as const;
 
-  /**
-   * Which pupils could take this slot? Delegates to the shared matcher so the
-   * home tile, the schedule page and the gaps page apply identical rules:
-   * available days, the pupil's time-of-day window, their preferred lesson
-   * length and their minimum notice.
-   */
   function previewMatchForGap(gap: {
     date: string;
     dayName: string;
-    startMin: number;
     durationMin: number;
-  }): { count: number; topPupils: PreviewPupil[] } {
-    const res = sharedPreviewMatchForGap({
-      date: gap.date,
-      dayName: gap.dayName,
-      startMin: gap.startMin,
-      durationMin: gap.durationMin,
-      allPupils,
-      allAvailability: allAvailability.map((a) => ({
-        pupil_id: a.pupil_id,
-        available_days: a.available_days ?? null,
-        available_from: a.available_from ?? null,
-        available_until: a.available_until ?? null,
-        min_notice_hours: a.min_notice_hours ?? null,
-        short_notice_opt_in: a.short_notice_opt_in ?? null,
-        preferred_duration_minutes: a.preferred_duration_minutes ?? null,
-      })),
-    });
-    return { count: res.count, topPupils: res.topPupils };
-  }
-
-  /** Open the confirm sheet for booking a matched pupil into a free gap. */
-  function openGapBooking(pupil: PreviewPupil, date: string, startMin: number, gapMins: number) {
-    tapLight();
-    const avail = allAvailability.find((a) => a.pupil_id === pupil.id);
-    const preferred = Number((avail as any)?.preferred_duration_minutes ?? 0) || 60;
-    setGapBooking({ pupil, date, startMin, gapMins });
-    setGapBookingStart(Math.ceil(startMin / 15) * 15);
-    setGapBookingDur(Math.min(preferred, gapMins));
-  }
-
-  /** Create the lesson for the pupil chosen on a gap card. */
-  async function confirmGapBooking() {
-    if (!gapBooking || !userId || gapBookingSaving) return;
-    setGapBookingSaving(true);
-    const p = gapBooking.pupil;
-    const dur = gapBookingDur;
-    let amount = 0;
-    if (dur === 90 && Number(p.custom_rate_90) > 0) amount = Number(p.custom_rate_90);
-    else if (dur === 120 && Number(p.custom_rate_120) > 0) amount = Number(p.custom_rate_120);
-    else if (Number(p.custom_rate) > 0) amount = Math.round(Number(p.custom_rate) * (dur / 60) * 100) / 100;
-
-    const { data, error } = await supabase
-      .from("lessons")
-      .insert({
-        instructor_id: userId,
-        pupil_id: p.id,
-        lesson_date: gapBooking.date,
-        lesson_time: `${minsToTime(gapBookingStart)}:00`,
-        duration_minutes: dur,
-        lesson_type: "lesson",
-        status: "confirmed",
-        amount_due: amount,
-        payment_status: "unpaid",
-      })
-      .select("id")
-      .single();
-
-    setGapBookingSaving(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
+    if (!allPupils.length || !allAvailability.length) {
+      return { count: 0, topPupils: [] };
     }
-    const newId = (data as any)?.id as string | undefined;
-    if (newId) pushLessonToGoogle({ lesson_id: newId, instructor_id: userId, action: "upsert" });
-    hapticSuccess();
-    toast.success(`Lesson booked with ${p.first_name || p.name || "pupil"}`);
-    setGapBooking(null);
-    setReloadKey((k) => k + 1);
+    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
+    for (const a of allAvailability) {
+      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
+    }
+    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
+    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
+
+    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
+    for (const p of allPupils) {
+      const s = availByPupil.get(p.id);
+      if (!s) continue;
+      const availDays = s.available_days || [];
+      if (!availDays.includes(gap.dayName)) continue;
+      const minDuration = s.preferred_duration_minutes ?? 60;
+      if (gap.durationMin < minDuration) continue;
+      const minNoticeHours = s.min_notice_hours ?? 24;
+      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
+      matched.push({
+        name: p.name,
+        first_name: p.first_name,
+        calendar_colour: p.calendar_colour,
+      });
+    }
+    return { count: matched.length, topPupils: matched.slice(0, 3) };
   }
-
-
-
 
   const [naEnquiries, setNaEnquiries] = useState(0);
   useEffect(() => {
@@ -6783,25 +6677,25 @@ function HomePage() {
 
         type Row =
           | { kind: 'lesson'; l: LessonRow }
-          | { kind: 'gap'; start: Date; mins: number; isSoonOrPast?: boolean }
-          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null; allDay?: boolean };
+          | { kind: 'gap'; start: Date; mins: number }
+          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null };
         const rows: Row[] = [];
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
 
-        // Shared working-hours rule (see src/lib/gapEngine.ts) — identical on
-        // the schedule and gaps pages.
-        const gapPrefs = {
-          startTime: whStartStr,
-          endTime: whEndStr,
-          workingDays: (workingHours as Record<string, unknown> | null | undefined)?.working_days as string[] | null | undefined,
-          perDayHours: (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined,
-        };
+        // Resolve per-day working hours for today/tomorrow from per_day_hours if present.
         const resolveDayHours = (d: Date): { start: string; end: string } => {
-          const h = resolveWorkingDayHours(d, gapPrefs);
-          return { start: h.start, end: h.end };
+          const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'] as const;
+          const dayKeyToName: Record<string, string> = {
+            sun: 'Sunday', mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday',
+            thu: 'Thursday', fri: 'Friday', sat: 'Saturday',
+          };
+          const name = dayKeyToName[dayKeys[d.getDay()]];
+          const perDay = (workingHours as Record<string, unknown> | null | undefined)?.per_day_hours as Record<string, { start?: string; end?: string; active?: boolean }> | null | undefined;
+          const cfg = perDay?.[name];
+          if (cfg?.active === false) return { start: whStartStr, end: whStartStr }; // zero-width window → no gaps
+          return { start: cfg?.start || whStartStr, end: cfg?.end || whEndStr };
         };
-
 
         if (tab === 'today' || tab === 'tomorrow') {
           const baseDate = tab === 'today' ? todayStart : tomorrowStart;
@@ -6825,8 +6719,8 @@ function HomePage() {
               end_datetime: b.end_datetime,
               title: b.title,
             })),
-            recurringBlocks: recurringBlocks || [],
-            dayTimeOff: dayTimeOffForDate(dateStr),
+            recurringBlocks: [],
+            dayTimeOff: [],
             dayStart,
             dayEnd,
             instructorBufferAfter,
@@ -6834,81 +6728,36 @@ function HomePage() {
             isToday,
             minGapMinutes,
           });
-          // computeDayGaps is the single source of truth — it subtracts
-          // calendar blocks, so no gap is ever shown over a calendar event.
-          const gapsForDay = computed;
-          for (const g of gapsForDay) {
+          for (const g of computed) {
             const s = new Date(baseDate);
             s.setHours(0, 0, 0, 0);
             s.setMinutes(g.startMins);
             rows.push({ kind: 'gap', start: s, mins: g.gapMins });
           }
         } else {
-          // 'next' tab: compute gaps for EVERY day in the next 14 days (from the
-          // day after tomorrow), not just days that happen to contain a lesson.
-          for (const l of sorted) rows.push({ kind: 'lesson', l });
-
-          const lessonsByDate: Record<string, Array<{ lesson_time: string; duration_minutes: number | null; status?: string | null; bufferAfterMinutes?: number | null }>> = {};
-          for (const l of nextLessons) {
-            const key = String((l as LessonRow).lesson_date);
-            (lessonsByDate[key] ||= []).push({
-              lesson_time: l.lesson_time || '',
-              duration_minutes: l.duration_minutes ?? 60,
-              status: l.status,
-              bufferAfterMinutes: l.pupil_id ? Number(pupilBufferMap[l.pupil_id]?.after) || null : null,
-            });
-          }
-
-          const windowStart = new Date(todayStart);
-          windowStart.setDate(windowStart.getDate() + 2);
-          const dates = dateRange(windowStart, 14);
-
-          const dayGaps = computeRangeGaps(dates, {
-            prefs: gapPrefs,
-            lessonsByDate,
-            calendarBlocks: (visibleCalendarBlocks || []).map((b) => ({
-              start_datetime: b.start_datetime,
-              end_datetime: b.end_datetime,
-              title: b.title,
-            })),
-            recurringBlocks: recurringBlocks || [],
-            timeOff: (timeOff || []).map((t) => ({
-              start_date: t.start_date,
-              end_date: t.end_date,
-              start_time: t.start_time ?? null,
-              end_time: t.end_time ?? null,
-              all_day: t.all_day ?? null,
-            })),
-            instructorBufferAfter,
-            minGapMinutes,
-            todayISO,
-          });
-
-          for (const d of dayGaps) {
-            for (const g of d.gaps) {
-              const s = new Date(`${d.date}T00:00:00`);
-              s.setMinutes(g.startMins);
-              rows.push({ kind: 'gap', start: s, mins: g.gapMins, isSoonOrPast: g.isSoonOrPast ?? false });
-            }
-          }
-
-          // Show calendar events for those days too, so the list matches reality.
-          for (const b of visibleCalendarBlocks || []) {
-            const bDate = localDateStr(b.start_datetime);
-            if (!dates.includes(bDate)) continue;
-            const s = new Date(b.start_datetime);
-            const e = new Date(b.end_datetime);
-            if (isNaN(s.getTime()) || isNaN(e.getTime())) continue;
-            rows.push({
-              kind: 'calendar',
-              title: b.title || 'Busy',
-              start: s,
-              end: e,
-              colour: (b as { colour?: string | null }).colour ?? null,
-            });
+          // 'next' tab: lesson-to-lesson only (calendar blocks not fetched for arbitrary future dates).
+          const [whSh, whSm] = whStartStr.split(':').map(Number);
+          const [whEh, whEm] = whEndStr.split(':').map(Number);
+          for (let i = 0; i < sorted.length; i++) {
+            const l = sorted[i];
+            rows.push({ kind: 'lesson', l });
+            const next = sorted[i + 1];
+            if (!next) continue;
+            if (l.lesson_date !== next.lesson_date) continue;
+            const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+            const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
+            const rawGapStart = new Date(endThis.getTime() + afterBuf * 60000);
+            const rawNextStart = lessonDateTime(next);
+            const dayWorkStart = new Date(rawGapStart);
+            dayWorkStart.setHours(whSh || 9, whSm || 0, 0, 0);
+            const dayWorkEnd = new Date(rawGapStart);
+            dayWorkEnd.setHours(whEh || 18, whEm || 0, 0, 0);
+            const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
+            const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
+            const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
+            if (mins >= minGapMinutes) rows.push({ kind: 'gap', start: gapStart, mins });
           }
         }
-
 
 
         // Insert calendar blocks for today/tomorrow (not 'next' — blocksForDate isn't computed for arbitrary future dates).
@@ -6922,7 +6771,7 @@ function HomePage() {
             const e = new Date(baseDate);
             e.setHours(0, 0, 0, 0);
             e.setMinutes(b.end);
-            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null, allDay: (b as { allDay?: boolean }).allDay === true });
+            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null });
           }
         }
 
@@ -7183,7 +7032,7 @@ function HomePage() {
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
-              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null; allDay?: boolean } => r.kind === 'calendar');
+              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null } => r.kind === 'calendar');
               
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
@@ -7358,9 +7207,9 @@ function HomePage() {
                   )}
 
                   {/* Timeline container */}
-                  <div style={{ position: 'relative', padding: '4px 0 4px', background: '#FFFFFF', borderRadius: 8, overflow: 'hidden' }}>
-                    {rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'lesson' } | { kind: 'calendar' }> => r.kind === 'lesson' || r.kind === 'calendar').map((r, idx) => {
-                    const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
+                  <div style={{ position: 'relative', padding: '4px 0 4px' }}>
+                    {rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'lesson' }> => r.kind === 'lesson').slice(0, 3).map((r, idx) => {
+                    const rowStart = lessonDateTime(r.l);
                     const rowDay = ymd(rowStart);
                     const showDayDivider = rowDay !== lastDividerDate;
                     const isFirstDivider = lastDividerDate === '';
@@ -7371,43 +7220,7 @@ function HomePage() {
                       </div>
                     ) : null;
                     const rowContent = (() => {
-                    if (r.kind === 'calendar') {
-                      const cStart = r.start;
-                      const cEnd = r.end;
-                      const cColour = r.colour || '#8B5CF6';
-                      const fmtT = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-                      return (
-                        <div
-                          key={`cal-${idx}`}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'stretch',
-                            gap: 10,
-                            padding: '8px 14px',
-                            borderBottom: '0.5px solid #F4F6F8',
-                            background: '#FFFFFF',
-                            minHeight: 48,
-                            boxSizing: 'border-box',
-                          }}
-                        >
-                          <div style={{ width: 36, flexShrink: 0, fontSize: 11, color: '#536579', fontVariantNumeric: 'tabular-nums', paddingTop: 2 }}>
-                            {r.allDay ? 'All day' : fmtT(cStart)}
-                          </div>
-                          <div aria-hidden style={{ width: 2, borderRadius: 1, background: cColour, minHeight: 32, flexShrink: 0 }} />
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 700, color: '#0B2341', lineHeight: 1.25, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {r.title || 'Busy'}
-                            </div>
-                            <div style={{ fontSize: 11, color: '#536579', marginTop: 2, lineHeight: 1.25 }}>
-                              {r.allDay ? 'All day' : `${fmtT(cStart)}–${fmtT(cEnd)}`} · Calendar
-                            </div>
-                          </div>
-
-                        </div>
-                      );
-                    }
                     const row = { kind: 'lesson' as const, l: r.l };
-
 
                     const l = row.l;
                     const start = lessonDateTime(l);
@@ -7516,7 +7329,6 @@ function HomePage() {
                           items={[
                             { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
                             { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
-                            { label: 'Move lesson', onClick: () => { setMovingLessonHome(l); setMoveModeHome(true); setConfirmMoveHome(null); } },
                             { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
                             { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
                             { label: 'Full profile', onClick: () => { if (l.pupil_id) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } }), 0); } },
@@ -7537,122 +7349,10 @@ function HomePage() {
                     );
                   })}
                   </div>
-
-                  {(() => {
-                    const gapRows = rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'gap' }> => r.kind === 'gap');
-                    if (gapRows.length === 0) return null;
-                    const fmtG = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-                    const moveDur = moveModeHome && movingLessonHome ? Number(movingLessonHome.duration_minutes || 60) : 0;
-                    // Pupil matching (days, time window, preferred length,
-                    // notice) is handled by previewMatchForGap above.
-
-
-                    return (
-                      <div style={{ marginTop: 10, background: '#FFFFFF', borderRadius: 8, padding: '10px 12px 12px' }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 }}>
-                          Free gaps
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                          {gapRows.map((g, i) => {
-                            const gapStart = g.start;
-                            const gapEnd = new Date(gapStart.getTime() + g.mins * 60000);
-                            const dateStr = ymd(gapStart);
-                            const startMins = gapStart.getHours() * 60 + gapStart.getMinutes();
-                            const slots: number[] = [];
-                            if (moveDur) {
-                              for (let s = Math.ceil(startMins / 15) * 15; s + moveDur <= startMins + g.mins; s += 15) slots.push(s);
-                            }
-                            const hrs = Math.floor(g.mins / 60);
-                            const rem = g.mins % 60;
-                            const durLabel = `${hrs ? `${hrs}h` : ''}${rem ? `${hrs ? ' ' : ''}${rem}m` : ''}` || `${g.mins}m`;
-                            const match = previewMatchForGap({
-                              date: dateStr,
-                              dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
-                              startMin: startMins,
-                              durationMin: g.mins,
-                            });
-
-                            const matches = match.topPupils;
-
-                            return (
-                              <div key={`gap-${i}`} style={{ border: '1px dashed #E0A33C', background: '#FDF7EC', borderRadius: 8, padding: '10px 12px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                                  <div style={{ minWidth: 0 }}>
-                                    <div style={{ fontSize: 10, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 2 }}>
-                                      {dateStr === todayISO
-                                        ? 'Today'
-                                        : dateStr === tomorrowISO
-                                          ? 'Tomorrow'
-                                          : gapStart.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
-                                    </div>
-                                    <div style={{ fontSize: 13, fontWeight: 700, color: '#633806', fontVariantNumeric: 'tabular-nums' }}>
-                                      {fmtG(gapStart)}–{fmtG(gapEnd)}
-                                    </div>
-                                    <div style={{ fontSize: 11, color: '#8A6524' }}>{durLabel} free</div>
-                                  </div>
-                                  {!moveModeHome && (
-                                    <button
-                                      type="button"
-                                      onClick={() => navigate({ to: '/gaps' })}
-                                      style={{ border: 0, borderRadius: 8, background: '#0B1F3A', color: '#FFFFFF', fontSize: 11, fontWeight: 700, padding: '8px 12px', cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}
-                                    >
-                                      Fill this gap
-                                    </button>
-                                  )}
-                                </div>
-                                {match.count > 0 ? (
-                                  <div style={{ display: 'flex', gap: 4, marginTop: 6, alignItems: 'center' }}>
-                                    {matches.map((m) => (
-                                      <button
-                                        key={m.id}
-                                        type="button"
-                                        title={`Book ${m.name || m.first_name || 'pupil'}`}
-                                        aria-label={`Book ${m.name || m.first_name || 'pupil'} into this slot`}
-                                        onClick={(e) => { e.stopPropagation(); openGapBooking(m, dateStr, startMins, g.mins); }}
-                                        style={{ width: 28, height: 28, borderRadius: '50%', background: '#0B1F3A', color: '#FFFFFF', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: 0, cursor: 'pointer', fontFamily: PF }}
-                                      >
-                                        {pupilInitials(m)}
-                                      </button>
-                                    ))}
-                                    <span style={{ fontSize: 11, color: '#536579', marginLeft: 4 }}>
-                                      Tap to book · {match.count} available
-
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <div style={{ fontSize: 11, color: '#8A6524', marginTop: 6 }}>
-                                    No pupil's availability fits this slot
-                                  </div>
-                                )}
-
-                                {moveModeHome && movingLessonHome && (
-                                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-                                    {slots.length === 0 ? (
-                                      <span style={{ fontSize: 11, color: '#8A6524' }}>Lesson won't fit here</span>
-                                    ) : slots.map((s) => (
-                                      <button
-                                        key={s}
-                                        type="button"
-                                        onClick={() => setConfirmMoveHome({ date: dateStr, time: minsToTime(s) })}
-                                        style={{ border: 0, borderRadius: 6, background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 700, padding: '6px 10px', cursor: 'pointer', fontFamily: PF }}
-                                      >
-                                        {minsToTime(s)}
-                                      </button>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
                   <button
                     type="button"
                     onClick={() => navigate({ to: '/schedule' as never })}
-                    style={{ width: '100%', textAlign: 'center', fontSize: 12, color: '#2C97DE', padding: 10, border: 'none', background: '#FFFFFF', cursor: 'pointer', fontFamily: PF, fontWeight: 600, borderRadius: 8 }}
+                    style={{ width: '100%', textAlign: 'center', fontSize: 12, color: '#2C97DE', padding: 10, border: 'none', borderTop: '0.5px solid #F4F6F8', background: '#FFFFFF', cursor: 'pointer', fontFamily: PF, fontWeight: 600 }}
                   >
                     View full schedule →
                   </button>
@@ -10138,101 +9838,6 @@ function HomePage() {
           setReloadKey((k) => k + 1);
         }}
       />
-
-      {/* Confirm booking a matched pupil straight from a free-gap card */}
-      {gapBooking && (() => {
-        const gb = gapBooking;
-        const gapEndMin = gb.startMin + gb.gapMins;
-        const durations = [60, 90, 120].filter((d) => gapBookingStart + d <= gapEndMin);
-        if (!durations.includes(gapBookingDur)) durations.push(gapBookingDur);
-        const starts: number[] = [];
-        for (let s = Math.ceil(gb.startMin / 15) * 15; s + gapBookingDur <= gapEndMin; s += 15) starts.push(s);
-        const dObj = new Date(`${gb.date}T00:00:00`);
-        const dateLabel = dObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
-        const name = gb.pupil.name || [gb.pupil.first_name, gb.pupil.last_name].filter(Boolean).join(' ') || 'Pupil';
-        return (
-          <div
-            onClick={() => setGapBooking(null)}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(11,31,58,0.45)', zIndex: 4000, display: 'flex', alignItems: 'flex-end' }}
-          >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              style={{ width: '100%', background: '#FFFFFF', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: '16px 16px calc(16px + env(safe-area-inset-bottom))', fontFamily: 'Poppins, sans-serif' }}
-            >
-              <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E2E8F0', margin: '0 auto 12px' }} />
-              <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A' }}>Book {name}</div>
-              <div style={{ fontSize: 12, color: '#536579', marginTop: 2 }}>
-                {dateLabel} · free {minsToTime(gb.startMin)}–{minsToTime(gapEndMin)}
-              </div>
-
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.3, margin: '14px 0 6px' }}>Duration</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {durations.sort((a, b) => a - b).map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => {
-                      setGapBookingDur(d);
-                      setGapBookingStart((s) => Math.min(s, gapEndMin - d));
-                    }}
-                    style={{ border: `1px solid ${d === gapBookingDur ? '#1877D6' : '#E2E8F0'}`, background: d === gapBookingDur ? '#1877D6' : '#FFFFFF', color: d === gapBookingDur ? '#FFFFFF' : '#0B1F3A', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-                  >
-                    {d === 60 ? '1h' : d === 90 ? '1h 30' : d === 120 ? '2h' : `${d}m`}
-                  </button>
-                ))}
-              </div>
-
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.3, margin: '14px 0 6px' }}>Start time</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', maxHeight: 108, overflowY: 'auto' }}>
-                {starts.length === 0 ? (
-                  <span style={{ fontSize: 12, color: '#8A6524' }}>That length won't fit this gap</span>
-                ) : starts.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setGapBookingStart(s)}
-                    style={{ border: `1px solid ${s === gapBookingStart ? '#1877D6' : '#E2E8F0'}`, background: s === gapBookingStart ? '#E8F4FD' : '#FFFFFF', color: '#0B1F3A', borderRadius: 8, padding: '7px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontVariantNumeric: 'tabular-nums' }}
-                  >
-                    {minsToTime(s)}
-                  </button>
-                ))}
-              </div>
-
-              <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
-                <button
-                  type="button"
-                  onClick={() => setGapBooking(null)}
-                  style={{ flex: 1, border: '1px solid #E2E8F0', background: '#FFFFFF', color: '#536579', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  disabled={gapBookingSaving || starts.length === 0}
-                  onClick={() => { void confirmGapBooking(); }}
-                  style={{ flex: 2, border: 0, background: gapBookingSaving || starts.length === 0 ? '#9CB3CC' : '#1877D6', color: '#FFFFFF', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-                >
-                  {gapBookingSaving ? 'Booking…' : `Confirm ${minsToTime(gapBookingStart)}`}
-                </button>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setAddLessonPupilId(gb.pupil.id);
-                  setAddLessonDate(gb.date);
-                  setGapBooking(null);
-                  setAddLessonOpen(true);
-                }}
-                style={{ width: '100%', marginTop: 10, border: 0, background: 'transparent', color: '#2C97DE', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
-              >
-                More options →
-              </button>
-            </div>
-          </div>
-        );
-      })()}
-
-
 
       <PersonalEventSheet
         open={personalSheetOpen}

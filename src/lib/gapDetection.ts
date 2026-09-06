@@ -70,18 +70,13 @@ export type ComputedGap = {
   startMins: number;
   endMins: number;
   gapMins: number;
-  /** True when the gap starts within 30 minutes of the current time (or earlier).
-   *  Renderers should keep the gap visible but suppress the "Fill this gap"
-   *  booking/SMS offer and show a "Free time" label instead. */
-  isSoonOrPast?: boolean;
 };
 
 /**
  * Compute free-time gaps for a single day. Ported verbatim from the per-day
  * loop in src/routes/gaps.tsx (working-hours clamping, per-pupil buffer,
  * calendar/recurring/partial-time-off merging as busy blocks, tail-gap to end
- * of day). Gaps starting within 30 minutes of now are flagged as `isSoonOrPast`
- * so renderers can keep them visible while suppressing the booking/SMS offer.
+ * of day, and the "at least 30 min from now" rule for today).
  */
 export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
   const {
@@ -206,17 +201,22 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     });
   }
 
-  // Today-only: flag gaps that start within the next 30 min (or are already past)
-  // so renderers can hide the booking/SMS offer, but keep every gap visible.
+  // Today-only: don't offer slots starting within the next 30 min; round up to 15.
   if (isToday) {
     const nowMins =
       params.nowMinutes ??
       new Date().getHours() * 60 + new Date().getMinutes();
     const minStartMins = nowMins + 30;
-    return gaps.map((g) => ({
-      ...g,
-      isSoonOrPast: g.startMins < minStartMins,
-    }));
+    const adjusted: ComputedGap[] = [];
+    for (const g of gaps) {
+      let gStart = g.startMins;
+      if (gStart < minStartMins) gStart = Math.ceil(minStartMins / 15) * 15;
+      if (gStart >= g.endMins) continue;
+      const gapMins = g.endMins - gStart;
+      if (gapMins < minGap) continue;
+      adjusted.push({ startMins: gStart, endMins: g.endMins, gapMins });
+    }
+    return adjusted;
   }
   return gaps;
 }

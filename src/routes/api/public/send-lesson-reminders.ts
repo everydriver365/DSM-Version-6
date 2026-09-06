@@ -195,7 +195,7 @@ async function runReminders(request: Request): Promise<Response> {
 
   const now = Date.now();
   const today = isoDate(now);
-  const summary = { starting_soon: 0, custom_reminders: 0, lesson_tomorrow: 0, overdue_payments: 0, tests_tomorrow: 0, pupil_churn: 0 };
+  const summary = { starting_soon: 0, lesson_tomorrow: 0, overdue_payments: 0, tests_tomorrow: 0, pupil_churn: 0 };
   const errors: string[] = [];
 
   // ── 1. Lessons starting soon (25-35 mins) ────────────────
@@ -239,49 +239,6 @@ async function runReminders(request: Request): Promise<Response> {
     await markSent(due.map((l) => l.id));
   } catch (e: any) {
     errors.push(`starting_soon: ${e.message}`);
-  }
-
-  // ── 1b. Custom per-lesson reminders ──────────────────────
-  try {
-    const reminders: any[] =
-      (await rest(
-        `lesson_reminders?select=id,lesson_id,instructor_id,minutes_before,` +
-          `lessons(id,lesson_date,lesson_time,deleted_at,status,pupils(name))` +
-          `&enabled=is.true&sent_at=is.null`,
-      )) ?? [];
-
-    for (const r of reminders) {
-      const l = r.lessons;
-      if (!l || l.deleted_at || l.status === "cancelled") continue;
-      const ts = Date.parse(`${l.lesson_date}T${String(l.lesson_time ?? "00:00:00").slice(0, 8)}`);
-      if (Number.isNaN(ts)) continue;
-      const fireAt = ts - Number(r.minutes_before ?? 60) * 60000;
-      // fire once we're inside the window (and the lesson hasn't started)
-      if (now < fireAt || now > ts) continue;
-
-      const name = l.pupils?.name ?? "Pupil";
-      await notify({
-        instructor_id: r.instructor_id,
-        type: "lesson_reminder",
-        title: "Lesson reminder 🔔",
-        body: `${name}'s lesson at ${fmtTime(l.lesson_time)}`,
-        url: "/schedule",
-        reference_id: l.id,
-        reference_type: "lesson",
-        data: { lesson_id: l.id, pupil_name: name, lesson_time: l.lesson_time, lesson_date: l.lesson_date },
-      });
-      try {
-        await rest(`lesson_reminders?id=eq.${r.id}`, {
-          method: "PATCH",
-          body: JSON.stringify({ sent_at: new Date().toISOString() }),
-        });
-      } catch (e) {
-        console.error("[reminders] mark lesson_reminder sent failed", e);
-      }
-      summary.custom_reminders++;
-    }
-  } catch (e: any) {
-    errors.push(`custom_reminders: ${e.message}`);
   }
 
   // ── 2. Overdue payments (once per day per pupil) ─────────

@@ -41,24 +41,23 @@ export function ScheduleDateDivider({ date, label, showLabel = true }: ScheduleD
     return `${day} ${date.getDate()} ${MONTH_NAMES[date.getMonth()]}`;
   }, [date, label]);
 
-  if (!showLabel) return null;
-
   return (
     <div className={`flex items-center gap-2.5 ${date ? "mb-5" : "mb-1.5"}`}>
-      <span
-        style={{
-          fontSize: typography.sizes.sectionLabel,
-          fontWeight: typography.weights.bold,
-          color: typography.colors.accent,
-          letterSpacing: "0.3px",
-          textTransform: "uppercase",
-          fontFamily: typography.family,
-          paddingTop: 8,
-          paddingLeft: 5,
-        }}
-      >
-        {dateLabel}
-      </span>
+      {showLabel && (
+        <span
+          style={{
+            fontSize: typography.sizes.sectionLabel,
+            fontWeight: typography.weights.bold,
+            color: typography.colors.accent,
+            letterSpacing: "0.3px",
+            textTransform: "uppercase",
+            fontFamily: typography.family,
+            paddingTop: 8,
+          }}
+        >
+          {dateLabel}
+        </span>
+      )}
       <Separator className="flex-1 bg-border" />
     </div>
   );

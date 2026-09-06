@@ -51,7 +51,7 @@ export function previewMatchForGap<P extends PupilPreview>(params: {
   unavailability?: { pupil_id: string; start_date: string; end_date: string }[];
 }): { count: number; topPupils: P[]; allMatched: P[] } {
   const { date, dayName, startMin, durationMin, allPupils, allAvailability, unavailability } = params;
-  if (!allPupils.length) {
+  if (!allPupils.length || !allAvailability.length) {
     return { count: 0, topPupils: [], allMatched: [] };
   }
   const availByPupil = new Map<string, Availability>();
@@ -74,16 +74,15 @@ export function previewMatchForGap<P extends PupilPreview>(params: {
   const matched: P[] = [];
   for (const p of allPupils) {
     if (unavailablePupilIds.has(p.id)) continue;
-    // Pupils with no saved availability row still count as possible matches
-    // using sensible defaults (any weekday, 08:00-18:00, 24h notice).
-    const s = availByPupil.get(p.id) ?? null;
-    const availDays = s?.available_days || [];
-    if (availDays.length && !availDays.includes(dayName)) continue;
-    const minDuration = s?.preferred_duration_minutes ?? 60;
+    const s = availByPupil.get(p.id);
+    if (!s) continue;
+    const availDays = s.available_days || [];
+    if (!availDays.includes(dayName)) continue;
+    const minDuration = s.preferred_duration_minutes ?? 60;
     if (durationMin < minDuration) continue;
     if (!slotFitsPupilWindow(startMin, durationMin, s)) continue;
-    const minNoticeHours = s?.min_notice_hours ?? 24;
-    if (hoursUntilSlot < minNoticeHours && !s?.short_notice_opt_in) continue;
+    const minNoticeHours = s.min_notice_hours ?? 24;
+    if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
     matched.push(p);
   }
   return { count: matched.length, topPupils: matched.slice(0, 3), allMatched: matched };

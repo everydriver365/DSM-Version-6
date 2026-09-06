@@ -14,13 +14,10 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEvent, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconEdit, IconLock, IconMapPin, IconNavigation, IconPhone, IconPlus, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
-import { resolveDayHours as resolveWorkingDayHours } from "@/lib/gapEngine";
-
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
@@ -40,7 +37,6 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
-import { LessonReminderSheet } from "@/components/schedule/LessonReminderSheet";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
 
 
@@ -98,10 +94,6 @@ type GapInfo = {
   endTime: string;
   potential: number;
 };
-
-
-
-
 function detectGaps(
   lessons: Array<{ status?: string | null; lesson_time: string; duration_minutes?: number | null; pupils?: { buffer_after_minutes?: number | null } | null }>,
   workStart: string,
@@ -142,8 +134,6 @@ function detectGaps(
     isToday,
     minGapMinutes,
   });
-  // computeDayGaps is the single source of truth: it subtracts calendar
-  // blocks, recurring blocks and time off. Zero gaps means zero free slots.
   return computed.map((g) => ({
     startMins: g.startMins,
     endMins: g.endMins,
@@ -616,7 +606,7 @@ function TestLessonCard({
       </div>
 
       {/* Test lesson actions bottom sheet */}
-      {testActionsOpen && createPortal((
+      {testActionsOpen && (
         <div
           onClick={() => setTestActionsOpen(false)}
           style={{
@@ -749,7 +739,7 @@ function TestLessonCard({
             </div>
           </div>
         </div>
-      ), document.body)}
+      )}
     </div>
     </>
   );
@@ -795,23 +785,6 @@ function SchedulePage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
-  const [addLessonTime, setAddLessonTime] = useState<string | undefined>();
-  const [addLessonDuration, setAddLessonDuration] = useState<number | undefined>();
-  // Tapped free slot in the grid → small "what do you want to do" sheet.
-  const [gapSheet, setGapSheet] = useState<{ date: string; gap: GapInfo } | null>(null);
-  // Slot picker state inside the gap sheet: chosen start, length and pupil.
-  const [gapStartMins, setGapStartMins] = useState<number>(0);
-  const [gapDuration, setGapDuration] = useState<number>(60);
-  const [gapPupilId, setGapPupilId] = useState<string>("");
-  useEffect(() => {
-    if (!gapSheet) return;
-    const start = timeToMins(gapSheet.gap.startTime);
-    setGapStartMins(start);
-    setGapDuration(Math.min(60, Math.max(30, Math.floor(gapSheet.gap.gapMins / 15) * 15)));
-    setGapPupilId("");
-  }, [gapSheet]);
-
-
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
   // "add anything to my day" flow.
@@ -832,10 +805,7 @@ function SchedulePage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
-  const [calendarView, setCalendarView] = useState<"day" | "week" | "list" | "gaps">("day");
-  const swipeRef = useRef<{ x: number; y: number } | null>(null);
-  const [swipeShift, setSwipeShift] = useState(0);
-
+  const [calendarView, setCalendarView] = useState<"day" | "week">("day");
   const [clockNow, setClockNow] = useState(() => new Date());
   const [instructor, setInstructor] = useState<{ name: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -848,55 +818,7 @@ function SchedulePage() {
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
-  /**
-   * Which pupils' own availability fits a slot? Same shared rules as the home
-   * tile and the gaps page: available days, their time-of-day window, their
-   * preferred lesson length and their minimum notice.
-   */
-  const matchForSlot = useCallback(
-    (dateKey: string, startMins: number, durationMins: number) =>
-      previewMatchForGap({
-        date: dateKey,
-        dayName: new Date(`${dateKey}T12:00:00`).toLocaleDateString("en-GB", { weekday: "long" }),
-        startMin: startMins,
-        durationMin: durationMins,
-        allPupils,
-        allAvailability: (allAvailability || []).map((a: any) => ({
-          pupil_id: a.pupil_id,
-          available_days: a.available_days ?? null,
-          available_from: a.available_from ?? null,
-          available_until: a.available_until ?? null,
-          min_notice_hours: a.min_notice_hours ?? null,
-          short_notice_opt_in: a.short_notice_opt_in ?? null,
-          preferred_duration_minutes: a.preferred_duration_minutes ?? null,
-        })),
-      }),
-    [allPupils, allAvailability],
-  );
-  /**
-   * Pupils who fit a whole free gap at *any* workable lesson length that fits
-   * inside it, so a pupil who only ever does 90-minute lessons still shows on
-   * a two-hour gap.
-   */
-  const matchForGapWindow = useCallback(
-    (dateKey: string, startMins: number, gapMins: number) => {
-      const seen = new Map<string, { id: string; name: string | null; first_name: string | null }>();
-      for (const d of [30, 45, 60, 90, 120]) {
-        if (d > gapMins) continue;
-        for (const p of matchForSlot(dateKey, startMins, d).allMatched) {
-          if (!seen.has(p.id)) seen.set(p.id, p as any);
-        }
-      }
-      const all = Array.from(seen.values());
-      return { count: all.length, topPupils: all.slice(0, 3), allMatched: all };
-    },
-    [matchForSlot],
-  );
-
-
-
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
-  const [reminderLesson, setReminderLesson] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const closeActions = () => {
     setActionsLesson(null);
@@ -1252,7 +1174,7 @@ function SchedulePage() {
           .from("pupils")
           .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
           .eq("instructor_id", userId)
-          .or("status.is.null,status.not.in.(inactive,passed,cancelled,archived)")
+          .eq("status", "active")
           .is("deleted_at", null),
         supabase
           .from("pupil_ready_to_learn_settings")
@@ -1577,13 +1499,11 @@ function SchedulePage() {
     while (cursor.getTime() <= end.getTime()) {
       const key = ymdLocal(cursor);
       if (key >= todayKey) {
-        const isActive = resolveWorkingDayHours(cursor, {
-          startTime: workStart,
-          endTime: workEnd,
-          workingDays: workingDaysList,
-          perDayHours,
-        }).active;
-
+        const dayName = DAY_NAMES[cursor.getDay()];
+        const dayConfig = perDayHours?.[dayName];
+        const isActive = dayConfig
+          ? dayConfig.active === true
+          : workingDaysList.includes(dayName);
         if (isActive) out.push(key);
       }
       cursor.setDate(cursor.getDate() + 1);
@@ -1682,16 +1602,15 @@ function SchedulePage() {
       const dayBlocks = visibleCalendarBlocks.filter(
         (b) => (b.start_datetime || "").substring(0, 10) === key,
       );
-      const resolvedDay = resolveWorkingDayHours(key, {
-        startTime: workStart,
-        endTime: workEnd,
-        workingDays: workingDaysList,
-        perDayHours,
-      });
-      const dayStart = resolvedDay.start;
-      const dayEnd = resolvedDay.end;
-      const isDayActive = resolvedDay.active;
-
+      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+        new Date(key + "T12:00:00").getDay()
+      ];
+      const dayConfig = perDayHours?.[dayName];
+      const dayStart = dayConfig?.start || workStart;
+      const dayEnd = dayConfig?.end || workEnd;
+      const isDayActive = dayConfig
+        ? dayConfig.active === true
+        : workingDaysList.includes(dayName);
       const gaps = isDayActive
         ? detectGaps(
             dayLessons.map((l) => ({
@@ -1719,48 +1638,6 @@ function SchedulePage() {
     }
     return map;
   }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
-
-  // Free gaps per day, used to draw tappable empty slots in the grid.
-  const gapsByDay = useMemo(() => {
-    const map = new Map<string, GapInfo[]>();
-    const keys = new Set<string>(workingDayKeysInRange);
-    for (const l of lessons ?? []) keys.add(l.lesson_date.substring(0, 10));
-    for (const key of keys) {
-      const dayLessons = (lessons ?? []).filter(
-        (l) => l.lesson_date.substring(0, 10) === key &&
-          String(l.status || "").toLowerCase() !== "cancelled",
-      );
-      const resolvedGapDay = resolveWorkingDayHours(key, {
-        startTime: workStart,
-        endTime: workEnd,
-        workingDays: workingDaysList,
-        perDayHours,
-      });
-      if (!resolvedGapDay.active) continue;
-      const gaps = detectGaps(
-        dayLessons.map((l) => ({
-          status: l.status,
-          lesson_time: l.lesson_time,
-          duration_minutes: l.duration_minutes,
-          pupils: null,
-        })),
-        resolvedGapDay.start,
-        resolvedGapDay.end,
-
-        bufferAfter,
-        busyBlocksForGaps,
-        recurringBlocks,
-        timeOff,
-        key,
-        hourlyRate,
-        minGapMinutes,
-      );
-      if (gaps.length) map.set(key, gaps);
-    }
-    return map;
-  }, [lessons, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
-
-
 
   const scrollToDate = useCallback(
     (key: string) => {
@@ -1876,98 +1753,31 @@ function SchedulePage() {
             ...POPPINS,
           }}
         >
-          {(() => {
-            const dur = Number(movingLesson.duration_minutes || 60);
-            const countFits = (key: string) =>
-              (gapsByDay.get(key) ?? []).reduce((n, g) => {
-                let c = 0;
-                for (let s = Math.ceil(g.startMins / 15) * 15; s + dur <= g.endMins; s += 15) c += 1;
-                return n + c;
-              }, 0);
-            const goto = (date: Date) => {
-              setSelectedDate(ymdLocal(date));
-              setViewMonth(new Date(date.getFullYear(), date.getMonth(), 1));
-            };
-            const selected = new Date(`${selectedDate}T12:00:00`);
-            const fits = countFits(selectedDate);
-            const findNext = (dir: 1 | -1) => {
-              for (let i = 1; i <= 60; i += 1) {
-                const d = addDays(selected, dir * i);
-                if (countFits(ymdLocal(d)) > 0) return d;
-              }
-              return null;
-            };
-            const nextFree = findNext(1);
-            return (
-              <div style={{ width: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
-                    <IconArrowsMove size={16} color="#FFFFFF" />
-                    <span style={{ color: '#FFFFFF', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, marginLeft: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {dur} min lesson
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => { setMovingLesson(null); setMoveMode(false); setConfirmMove(null); }}
-                    style={{
-                      background: 'rgba(255,255,255,0.2)',
-                      color: '#FFFFFF',
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.semibold,
-                      padding: '6px 12px',
-                      borderRadius: tokens.radiusCard,
-                      border: 'none',
-                      cursor: 'pointer',
-                      flexShrink: 0,
-                      ...POPPINS,
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-
-                <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <button
-                    type="button"
-                    aria-label="Previous day"
-                    onClick={() => goto(addDays(selected, calendarView === 'week' ? -7 : -1))}
-                    style={{ width: 30, height: 30, borderRadius: 8, border: 0, background: 'rgba(255,255,255,0.18)', color: '#FFFFFF', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-                  >
-                    <IconChevronLeft size={16} stroke={2} color="#FFFFFF" />
-                  </button>
-                  <div style={{ flex: 1, minWidth: 0, textAlign: 'center', color: '#FFFFFF', ...POPPINS }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {selected.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
-                    </div>
-                    <div style={{ fontSize: 10, opacity: 0.85 }}>
-                      {fits > 0 ? `${fits} slot${fits === 1 ? '' : 's'} fit here` : 'No space this day'}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Next day"
-                    onClick={() => goto(addDays(selected, calendarView === 'week' ? 7 : 1))}
-                    style={{ width: 30, height: 30, borderRadius: 8, border: 0, background: 'rgba(255,255,255,0.18)', color: '#FFFFFF', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-                  >
-                    <IconChevronRight size={16} stroke={2} color="#FFFFFF" />
-                  </button>
-                  {nextFree && (
-                    <button
-                      type="button"
-                      onClick={() => goto(nextFree)}
-                      style={{ background: '#FFFFFF', color: '#1877D6', fontSize: 11, fontWeight: 700, padding: '7px 10px', borderRadius: 8, border: 0, cursor: 'pointer', flexShrink: 0, ...POPPINS }}
-                    >
-                      Next free day
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })()}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <IconArrowsMove size={16} color="#FFFFFF" />
+            <span style={{ color: '#FFFFFF', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, marginLeft: 8 }}>
+              Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => { setMovingLesson(null); setMoveMode(false); setConfirmMove(null); }}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              color: '#FFFFFF',
+              fontSize: 12,
+              fontWeight: tokens.fontWeight.semibold,
+              padding: '6px 12px',
+              borderRadius: tokens.radiusCard, minHeight: 44,
+              border: 'none',
+              cursor: 'pointer',
+              ...POPPINS,
+            }}
+          >
+            Cancel
+          </button>
         </div>
       )}
-
       <style>{`@keyframes movePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(26,82,160,0.5); } 50% { box-shadow: 0 0 0 6px rgba(26,82,160,0); } }`}</style>
 
 
@@ -1980,14 +1790,17 @@ function SchedulePage() {
           minHeight: 0,
           marginTop: -18,
           background: "#F4F6F8",
-          borderRadius: "8px 8px 0 0",
+          borderRadius: "16px 16px 0 0",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
         }}
       >
         {(() => {
+          const GRID_START = 8 * 60;
+          const GRID_END = 20 * 60;
           const HOUR_HEIGHT = 56;
+          const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * HOUR_HEIGHT;
           const selected = new Date(`${selectedDate}T12:00:00`);
           const stripStart = addDays(selected, -selected.getDay());
           const stripDays = Array.from({ length: 7 }, (_, i) => addDays(stripStart, i));
@@ -1995,35 +1808,7 @@ function SchedulePage() {
           const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
           const viewDays = calendarView === "day" ? [selected] : weekDays;
           const monthLabel = selected.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-
-          const entriesFor = (date: Date) => entriesByDay.get(ymdLocal(date)) ?? [];
-
-          // Grid bounds derive from working hours and the lessons on screen,
-          // with 30 min padding so gaps at the start/end of the day remain visible.
-          const workStartMins = timeToMins(workStart || "09:00");
-          const workEndMins = timeToMins(workEnd || "18:00");
-
-          const lessonsForDay = viewDays.flatMap((date) =>
-            entriesFor(date)
-              .filter((e): e is AgendaEntry & { kind: "lesson"; lesson: Lesson } => e.kind === "lesson")
-              .map((e) => e.lesson)
-          );
-
-          const earliestMins = Math.min(
-            workStartMins,
-            ...lessonsForDay.map((l) => timeToMins(l.lesson_time || "09:00"))
-          );
-          const latestMins = Math.max(
-            workEndMins,
-            ...lessonsForDay.map((l) => timeToMins(l.lesson_time || "09:00") + (l.duration_minutes ?? 60))
-          );
-
-          const GRID_START = Math.max(0, earliestMins - 30);
-          const GRID_END = Math.min(1439, latestMins + 30);
-          const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * HOUR_HEIGHT;
-          const hours = Array.from({ length: Math.ceil((GRID_END - GRID_START) / 60) + 1 }, (_, i) =>
-            Math.floor(GRID_START / 60) + i
-          );
+          const hours = Array.from({ length: 13 }, (_, i) => 8 + i);
 
           const selectDay = (date: Date) => {
             const key = ymdLocal(date);
@@ -2031,7 +1816,7 @@ function SchedulePage() {
             setViewMonth(new Date(date.getFullYear(), date.getMonth(), 1));
           };
 
-
+          const entriesFor = (date: Date) => entriesByDay.get(ymdLocal(date)) ?? [];
           const paletteFor = (entry: AgendaEntry) => {
             if (entry.kind !== "lesson") {
               const border = entry.kind === "personal"
@@ -2139,117 +1924,6 @@ function SchedulePage() {
             );
           };
 
-          // Free slots: normally tappable "fill this gap" bands; in move mode,
-          // 15-minute start options that fit the lesson being moved.
-          const renderGaps = (date: Date, compact: boolean) => {
-            const key = ymdLocal(date);
-            const gaps = gapsByDay.get(key) ?? [];
-            if (!gaps.length) return null;
-            const moveDuration = moveMode && movingLesson ? Number(movingLesson.duration_minutes || 60) : 0;
-
-            const bandStyle = (startMins: number, endMins: number) => {
-              const clippedStart = Math.max(startMins, GRID_START);
-              const clippedEnd = Math.min(endMins, GRID_END);
-              if (clippedEnd - clippedStart <= 0) return null;
-              return {
-                position: "absolute" as const,
-                top: ((clippedStart - GRID_START) / 60) * HOUR_HEIGHT + 1,
-                left: 2,
-                right: 2,
-                height: Math.max(16, ((clippedEnd - clippedStart) / 60) * HOUR_HEIGHT - 2),
-              };
-            };
-
-            if (moveMode && movingLesson) {
-              const slots: Array<{ startMins: number }> = [];
-              gaps.forEach((gap) => {
-                for (let s = Math.ceil(gap.startMins / 15) * 15; s + moveDuration <= gap.endMins; s += 15) {
-                  slots.push({ startMins: s });
-                }
-              });
-              return slots.map((slot) => {
-                const box = bandStyle(slot.startMins, slot.startMins + moveDuration);
-                if (!box) return null;
-                const timeLabel = minsToTime(slot.startMins);
-                return (
-                  <button
-                    key={`slot-${key}-${slot.startMins}`}
-                    type="button"
-                    onClick={() => setConfirmMove({ date: key, time: timeLabel })}
-                    style={{
-                      ...box,
-                      zIndex: 4,
-                      border: "1.5px dashed #1877D6",
-                      borderRadius: 6,
-                      background: "rgba(24,119,214,0.10)",
-                      color: "#0C447C",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: compact ? 8 : 10,
-                      fontWeight: 700,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      padding: 0,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {timeLabel}
-                  </button>
-                );
-              });
-            }
-
-            return gaps.map((gap) => {
-              const box = bandStyle(gap.startMins, gap.endMins);
-              if (!box) return null;
-              const hrs = Math.floor(gap.gapMins / 60);
-              const rem = gap.gapMins % 60;
-              const durLabel = `${hrs ? `${hrs}h` : ""}${rem ? `${hrs ? " " : ""}${rem}m` : ""}` || `${gap.gapMins}m`;
-              // The band is anchored to the grid, so the start time sits at the
-              // top edge and the end time at the bottom edge: the free window is
-              // readable straight off the day/week grid without opening a card.
-              const showEnd = box.height >= 34;
-              const showDuration = box.height >= 50;
-              return (
-                <button
-                  key={`gap-${key}-${gap.startMins}`}
-                  type="button"
-                  onClick={() => setGapSheet({ date: key, gap })}
-                  style={{
-                    ...box,
-                    zIndex: 0,
-                    border: "1px dashed #E0A33C",
-                    borderRadius: 6,
-                    background: "rgba(239,159,39,0.08)",
-                    color: "#8A5A0B",
-                    fontFamily: "Poppins, sans-serif",
-                    fontSize: compact ? 8 : 10,
-                    fontWeight: 700,
-                    fontVariantNumeric: "tabular-nums",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "stretch",
-                    justifyContent: showEnd ? "space-between" : "center",
-                    cursor: "pointer",
-                    padding: compact ? "1px 3px" : "2px 5px",
-                    overflow: "hidden",
-                    textAlign: "left",
-                  }}
-                >
-                  <span style={{ lineHeight: 1.1 }}>{gap.startTime}</span>
-                  {showDuration && (
-                    <span style={{ fontSize: compact ? 8 : 9, fontWeight: 600, opacity: 0.85, textAlign: "center", lineHeight: 1.1 }}>
-                      {durLabel} free{!compact && box.height >= 66 ? ` · ~£${gap.potential}` : ""}
-                    </span>
-                  )}
-                  {showEnd && <span style={{ lineHeight: 1.1, textAlign: "right" }}>{gap.endTime}</span>}
-                </button>
-              );
-            });
-
-          };
-
           const gridColumn = (date: Date, compact: boolean) => {
             const key = ymdLocal(date);
             const isToday = key === todayKey;
@@ -2260,11 +1934,7 @@ function SchedulePage() {
                 {hours.map((hour, index) => (
                   <div key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT, left: 0, right: 0, borderTop: "0.5px solid #F0F0F0" }} />
                 ))}
-                {renderGaps(date, compact)}
-                <div style={{ pointerEvents: moveMode ? "none" : undefined }}>
-                  {entriesFor(date).map((entry) => renderBlock(entry, compact))}
-                </div>
-
+                {entriesFor(date).map((entry) => renderBlock(entry, compact))}
                 {showNow && (
                   <div style={{ position: "absolute", top: ((currentMinutes - GRID_START) / 60) * HOUR_HEIGHT, left: 0, right: 0, height: 1, background: "#E24B4A", zIndex: 5, pointerEvents: "none" }}>
                     <span style={{ position: "absolute", left: -3, top: -3, width: 7, height: 7, borderRadius: "50%", background: "#E24B4A" }} />
@@ -2288,18 +1958,14 @@ function SchedulePage() {
                     </button>
                   </div>
                 </div>
-                <div role="tablist" aria-label="Calendar view" style={{ display: "flex", width: 236, background: "#F4F6F8", padding: 3, borderRadius: 999, marginTop: 10 }}>
-                  {(["day", "week", "list", "gaps"] as const).map((mode) => (
+                <div role="tablist" aria-label="Calendar view" style={{ display: "flex", width: 132, background: "#F4F6F8", padding: 3, borderRadius: 999, marginTop: 10 }}>
+                  {(["day", "week"] as const).map((mode) => (
                     <button key={mode} type="button" role="tab" aria-selected={calendarView === mode} onClick={() => setCalendarView(mode)} style={{ flex: 1, border: 0, borderRadius: 999, padding: "5px 8px", background: calendarView === mode ? "#0B2341" : "transparent", color: calendarView === mode ? "#FFFFFF" : "#536579", fontSize: 10, fontWeight: 700, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit" }}>
-                      {mode === "list" ? "All" : mode === "gaps" ? "Free" : mode}
+                      {mode}
                     </button>
                   ))}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 10 }}>
-                  <button type="button" aria-label="Previous week" onClick={() => selectDay(addDays(selected, -7))} style={{ width: 26, height: 26, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", border: 0, background: "transparent", cursor: "pointer", padding: 0 }}>
-                    <IconChevronLeft size={16} stroke={2} color="#536579" />
-                  </button>
-                  <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", marginTop: 10 }}>
                   {stripDays.map((date) => {
                     const key = ymdLocal(date);
                     const selectedDay = key === selectedDate;
@@ -2311,234 +1977,24 @@ function SchedulePage() {
                       </button>
                     );
                   })}
-                  </div>
-                  <button type="button" aria-label="Next week" onClick={() => selectDay(addDays(selected, 7))} style={{ width: 26, height: 26, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", border: 0, background: "transparent", cursor: "pointer", padding: 0 }}>
-                    <IconChevronRight size={16} stroke={2} color="#536579" />
-                  </button>
                 </div>
-
                 {syncMessage ? <div style={{ marginTop: 6, fontSize: 10, color: syncMessage.type === "success" ? "#3B6D11" : "#991B1B" }}>{syncMessage.text}</div> : null}
               </div>
 
-              <div
-                ref={scrollRef}
-                onTouchStart={(e) => {
-                  if (e.touches.length !== 1) return;
-                  swipeRef.current = { x: e.touches[0]!.clientX, y: e.touches[0]!.clientY };
-                }}
-                onTouchMove={(e) => {
-                  const start = swipeRef.current;
-                  if (!start || e.touches.length !== 1) return;
-                  const dx = e.touches[0]!.clientX - start.x;
-                  const dy = e.touches[0]!.clientY - start.y;
-                  if (Math.abs(dx) > Math.abs(dy) + 6) setSwipeShift(Math.max(-60, Math.min(60, dx * 0.4)));
-                }}
-                onTouchEnd={(e) => {
-                  const start = swipeRef.current;
-                  swipeRef.current = null;
-                  setSwipeShift(0);
-                  if (!start) return;
-                  const touch = e.changedTouches[0];
-                  if (!touch) return;
-                  const dx = touch.clientX - start.x;
-                  const dy = touch.clientY - start.y;
-                  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-                  const el = scrollRef.current;
-                  if (calendarView === "list" || calendarView === "gaps") return;
-                  if (calendarView === "week" && el && el.scrollWidth > el.clientWidth + 4) return;
-                  const step = calendarView === "week" ? 7 : 1;
-                  selectDay(addDays(selected, dx < 0 ? step : -step));
-                }}
-                style={{ flex: 1, overflow: "auto", background: "#FFFFFF", paddingBottom: "calc(76px + env(safe-area-inset-bottom, 0px))" }}
-              >
-
+              <div ref={scrollRef} style={{ flex: 1, overflow: "auto", background: "#FFFFFF", paddingBottom: "calc(76px + env(safe-area-inset-bottom, 0px))" }}>
                 {loading ? (
                   <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
-                ) : calendarView === "gaps" ? (
-                  <div style={{ padding: "12px 12px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
-                    {(() => {
-                      const days = Array.from({ length: 14 }, (_, i) => addDays(selected, i))
-                        .filter((d) => (gapsByDay.get(ymdLocal(d)) ?? []).length > 0);
-                      if (!days.length) {
-                        return <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13, textAlign: "center" }}>No free slots in the next two weeks.</div>;
-                      }
-                      return days.map((date) => {
-                        const key = ymdLocal(date);
-                        const gaps = gapsByDay.get(key) ?? [];
-                        return (
-                          <div key={`gapday-${key}`}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: key === todayKey ? "#2C97DE" : "#536579", textTransform: "uppercase", marginBottom: 8, paddingLeft: 2 }}>
-                              {key === todayKey ? "Today · " : ""}{date.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                              {gaps.map((gap) => (
-                                <button
-                                  key={`gapcard-${key}-${gap.startMins}`}
-                                  type="button"
-                                  onClick={() => setGapSheet({ date: key, gap })}
-                                  style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, border: "1px dashed #E0A33C", borderRadius: 8, background: "#FDF7EC", color: "#633806", padding: "12px", textAlign: "left", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}
-                                >
-                                  <span style={{ width: 88, flexShrink: 0, fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{gap.startTime}–{gap.endTime}</span>
-                                  <span style={{ flex: 1, minWidth: 0 }}>
-                                    <span style={{ display: "block", fontSize: 13, fontWeight: 700 }}>
-                                      {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free
-                                    </span>
-                                    <span style={{ display: "block", fontSize: 10 }}>~£{gap.potential} potential</span>
-                                    {(() => {
-                                      const m = matchForGapWindow(key, gap.startMins, gap.gapMins);
-                                      return (
-                                        <span style={{ display: "block", fontSize: 10, marginTop: 2, color: m.count ? "#0C447C" : "#8A6524" }}>
-                                          {m.count
-                                            ? `${m.count} pupil${m.count === 1 ? "" : "s"} available · ${m.topPupils.map((p) => pupilDisplayName(p as any)).join(", ")}${m.count > 3 ? "…" : ""}`
-                                            : "No pupil's availability fits this slot"}
-                                        </span>
-                                      );
-                                    })()}
-                                  </span>
-                                  <span style={{ flexShrink: 0, background: "#1877D6", color: "#FFFFFF", borderRadius: 999, fontSize: 11, fontWeight: 700, padding: "6px 12px" }}>Book</span>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
-                ) : calendarView === "list" ? (
-                  <div style={{ padding: "12px 12px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
-                    {(() => {
-                      const listDays = Array.from({ length: 42 }, (_, i) => addDays(selected, i))
-                        .filter((d) => (entriesFor(d).length > 0) || (gapsByDay.get(ymdLocal(d)) ?? []).length > 0);
-                      if (!listDays.length) {
-                        return <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13, textAlign: "center" }}>Nothing scheduled in the next six weeks.</div>;
-                      }
-                      const moveDuration = moveMode && movingLesson ? Number(movingLesson.duration_minutes || 60) : 0;
-                      return listDays.map((date) => {
-                        const key = ymdLocal(date);
-                        const items: Array<{ sort: number; node: React.ReactNode }> = [];
-                        entriesFor(date).forEach((entry) => {
-                          const palette = paletteFor(entry);
-                          const lesson = entry.kind === "lesson" ? entry.lesson : null;
-                          const name = lesson ? pupilDisplayName(lesson.pupil) : "title" in entry ? entry.title : "Unavailable";
-                          const sub = lesson
-                            ? (isTest(lesson) ? (testCentreOf(lesson) || "Test") : (lesson.pickup_location || [lesson.pupil?.address, lesson.pupil?.postcode].filter(Boolean).join(", ")))
-                            : entry.kind === "personal" ? "Private event" : "Google Calendar";
-                          items.push({
-                            sort: entry.allDay ? -1 : entry.start.getHours() * 60 + entry.start.getMinutes(),
-                            node: (
-                              <button
-                                key={`li-${entry.id}`}
-                                type="button"
-                                onClick={() => openEntry(entry)}
-                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, border: 0, borderLeft: `3px solid ${palette.border}`, borderRadius: 8, background: palette.background, color: palette.color, padding: "10px 12px", textAlign: "left", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}
-                              >
-                                <span style={{ width: 74, flexShrink: 0, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
-                                  {entry.allDay ? "All day" : `${fmtTime(entry.start)}–${fmtTime(entry.end)}`}
-                                </span>
-                                <span style={{ flex: 1, minWidth: 0 }}>
-                                  <span style={{ display: "block", fontSize: 13, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</span>
-                                  {sub ? <span style={{ display: "block", fontSize: 10, color: "#536579", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</span> : null}
-                                </span>
-                                <IconDots size={16} color="#536579" />
-                              </button>
-                            ),
-                          });
-                        });
-                        (gapsByDay.get(key) ?? []).forEach((gap) => {
-                          if (moveMode && movingLesson) {
-                            const slots: number[] = [];
-                            for (let s = Math.ceil(gap.startMins / 15) * 15; s + moveDuration <= gap.endMins; s += 15) slots.push(s);
-                            if (!slots.length) return;
-                            items.push({
-                              sort: gap.startMins,
-                              node: (
-                                <div key={`slots-${key}-${gap.startMins}`} style={{ border: "1.5px dashed #1877D6", borderRadius: 8, background: "rgba(24,119,214,0.08)", padding: 10 }}>
-                                  <div style={{ fontSize: 10, fontWeight: 700, color: "#0C447C", marginBottom: 8 }}>Move to {gap.startTime}–{gap.endTime}</div>
-                                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                                    {slots.map((s) => (
-                                      <button key={s} type="button" onClick={() => setConfirmMove({ date: key, time: minsToTime(s) })} style={{ border: 0, borderRadius: 6, background: "#1877D6", color: "#FFFFFF", fontSize: 11, fontWeight: 700, padding: "6px 10px", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}>
-                                        {minsToTime(s)}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-                              ),
-                            });
-                            return;
-                          }
-                          items.push({
-                            sort: gap.startMins,
-                            node: (
-                              <button
-                                key={`ligap-${key}-${gap.startMins}`}
-                                type="button"
-                                onClick={() => setGapSheet({ date: key, gap })}
-                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, border: "1px dashed #E0A33C", borderRadius: 8, background: "#FDF7EC", color: "#633806", padding: "10px 12px", textAlign: "left", cursor: "pointer", fontFamily: "Poppins, sans-serif" }}
-                              >
-                                <span style={{ width: 74, flexShrink: 0, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{gap.startTime}–{gap.endTime}</span>
-                                <span style={{ flex: 1, minWidth: 0 }}>
-                                  <span style={{ display: "block", fontSize: 13, fontWeight: 700 }}>Fill this gap</span>
-                                  <span style={{ display: "block", fontSize: 10 }}>
-                                    {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free · ~£{gap.potential} potential
-                                  </span>
-                                  {(() => {
-                                    const m = matchForGapWindow(key, gap.startMins, gap.gapMins);
-                                    return (
-                                      <span style={{ display: "block", fontSize: 10, marginTop: 2, color: m.count ? "#0C447C" : "#8A6524" }}>
-                                        {m.count ? `${m.count} pupil${m.count === 1 ? "" : "s"} available` : "No pupil's availability fits"}
-                                      </span>
-                                    );
-                                  })()}
-                                </span>
-                              </button>
-                            ),
-                          });
-                        });
-                        items.sort((a, b) => a.sort - b.sort);
-                        return (
-                          <div key={`listday-${key}`}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: key === todayKey ? "#2C97DE" : "#536579", textTransform: "uppercase", marginBottom: 8, paddingLeft: 2 }}>
-                              {key === todayKey ? "Today · " : ""}{date.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{items.map((i) => i.node)}</div>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
                 ) : (
-                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, transform: swipeShift ? `translateX(${swipeShift}px)` : undefined, transition: swipeShift ? "none" : "transform 180ms ease" }}>
-                    {viewDays.some((date) => entriesFor(date).some((e) => e.allDay)) && (
-                      <div style={{ display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "12px 12px 0", alignItems: "start" }}>
-                        <div style={{ fontSize: 8, color: "#9CA3AF", textTransform: "uppercase", paddingTop: 3, textAlign: "right", paddingRight: 5 }}>All day</div>
-                        {viewDays.map((date) => (
-                          <div key={`allday-${ymdLocal(date)}`} style={{ display: "flex", flexDirection: "column", gap: 3, padding: "0 3px", minWidth: 0 }}>
-                            {entriesFor(date).filter((e) => e.allDay).map((entry) => {
-                              const palette = paletteFor(entry);
-                              return (
-                                <button
-                                  key={entry.id}
-                                  type="button"
-                                  onClick={() => openEntry(entry)}
-                                  style={{ border: 0, borderLeft: `3px solid ${palette.border}`, borderRadius: 6, background: palette.background, color: palette.color, padding: "3px 6px", fontSize: 9, fontWeight: 700, textAlign: "left", cursor: "pointer", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "Poppins, sans-serif" }}
-                                >
-                                  {"title" in entry ? entry.title : "All day"}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div style={{ display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px" }}>
-                      <div style={{ position: "relative", height: GRID_HEIGHT }}>
-                        {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
-                      </div>
-                      {viewDays.map((date) => gridColumn(date, calendarView === "week"))}
+                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px" }}>
+                    <div style={{ position: "relative", height: GRID_HEIGHT }}>
+                      {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
                     </div>
+                    {calendarView === "week" && weekDays.map((date) => (
+                      <div key={`head-${ymdLocal(date)}`} style={{ gridRow: 1, display: "none" }} />
+                    ))}
+                    {viewDays.map((date) => gridColumn(date, calendarView === "week"))}
                   </div>
                 )}
-
               </div>
             </>
           );
@@ -2548,7 +2004,7 @@ function SchedulePage() {
       <button
         type="button"
         aria-label="Add to schedule"
-        onClick={() => { setAddLessonDate(selectedDate); setAddLessonTime(undefined); setAddChooserOpen(true); }}
+        onClick={() => { setAddLessonDate(selectedDate); setAddChooserOpen(true); }}
         style={{ position: "fixed", right: 18, bottom: "calc(80px + env(safe-area-inset-bottom, 0px))", width: 40, height: 40, borderRadius: "50%", border: 0, background: "#2C97DE", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(44,151,222,0.3)", zIndex: 30, cursor: "pointer", padding: 0 }}
       >
         <IconPlus size={22} stroke={2.2} />
@@ -2646,9 +2102,6 @@ function SchedulePage() {
         onClose={() => setAddLessonOpen(false)}
         initialPupilId={addLessonPupilId}
         initialDate={addLessonDate}
-        initialTime={addLessonTime}
-        initialDuration={addLessonDuration}
-
         onSaved={() => {
           setAddLessonOpen(false);
           setLessonsReloadKey((k) => k + 1);
@@ -2706,195 +2159,7 @@ function SchedulePage() {
         onSaved={() => setPersonalReloadKey((k) => k + 1)}
       />
 
-      {gapSheet && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
-          <div className="absolute inset-0 bg-black/30" onClick={() => setGapSheet(null)} />
-          <div
-            className="relative w-full max-w-md"
-            style={{
-              background: '#fff',
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              padding: '18px 16px calc(18px + 90px + env(safe-area-inset-bottom))',
-              display: 'grid',
-              gap: 10,
-            }}
-          >
-            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Sora, sans-serif' }}>
-              Free slot
-            </div>
-            <div style={{ fontSize: 13, color: '#536579' }}>
-              {new Date(`${gapSheet.date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
-              {' · '}{gapSheet.gap.startTime}–{gapSheet.gap.endTime}
-            </div>
-            <div style={{ fontSize: 13, color: '#8A5A0B', fontWeight: 600, marginBottom: 4 }}>
-              {Math.floor(gapSheet.gap.gapMins / 60)}h{gapSheet.gap.gapMins % 60 ? ` ${gapSheet.gap.gapMins % 60}m` : ''} free · ~£{gapSheet.gap.potential} potential
-            </div>
-
-            {(() => {
-              const gapStart = timeToMins(gapSheet.gap.startTime);
-              const gapEnd = timeToMins(gapSheet.gap.endTime);
-              const durations = [30, 45, 60, 90, 120].filter((d) => d <= gapEnd - gapStart);
-              const maxStart = gapEnd - gapDuration;
-              const starts: number[] = [];
-              for (let s = Math.ceil(gapStart / 15) * 15; s <= maxStart; s += 15) starts.push(s);
-              const chip = (active: boolean) => ({
-                border: active ? '1px solid #1877D6' : '1px solid #E4E8EF',
-                background: active ? '#1877D6' : '#FFFFFF',
-                color: active ? '#FFFFFF' : '#0B1F3A',
-                borderRadius: 999,
-                padding: '8px 12px',
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-              }) as React.CSSProperties;
-              return (
-                <>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4 }}>Length</div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {durations.map((d) => {
-                      // How many pupils' own availability fits this length at
-                      // the currently chosen start time.
-                      const fit = matchForSlot(gapSheet.date, gapStartMins, d).count;
-                      return (
-                        <button
-                          key={d}
-                          type="button"
-                          onClick={() => {
-                            setGapDuration(d);
-                            if (gapStartMins + d > gapEnd) setGapStartMins(Math.max(gapStart, gapEnd - d));
-                          }}
-                          style={chip(gapDuration === d)}
-                        >
-                          {d >= 60 ? `${d / 60}h${d % 60 ? ' 30m' : ''}` : `${d}m`}
-                          <span style={{ opacity: 0.7, marginLeft: 4, fontWeight: 500 }}>· {fit}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Start time</div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 116, overflowY: 'auto' }}>
-                    {starts.length === 0 ? (
-                      <span style={{ fontSize: 13, color: '#8A6524' }}>That length doesn't fit in this gap.</span>
-                    ) : starts.map((s) => (
-                      <button key={s} type="button" onClick={() => setGapStartMins(s)} style={chip(gapStartMins === s)}>
-                        {minsToTime(s)}
-                      </button>
-                    ))}
-                  </div>
-
-                  {(() => {
-                    // Pupils whose own availability (days, time window,
-                    // preferred lesson length, notice) fits the chosen slot.
-                    const fitting = matchForSlot(gapSheet.date, gapStartMins, gapDuration).allMatched;
-                    const fittingIds = new Set(fitting.map((p: any) => p.id));
-                    const others = allPupils.filter((p: any) => !fittingIds.has(p.id));
-                    return (
-                      <>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>
-                          Pupil {fitting.length ? `· ${fitting.length} available` : ''}
-                        </div>
-                        {fitting.length > 0 ? (
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                            {fitting.map((p: any) => (
-                              <button key={p.id} type="button" onClick={() => setGapPupilId(p.id)} style={chip(gapPupilId === p.id)}>
-                                {pupilDisplayName(p)}
-                              </button>
-                            ))}
-                          </div>
-                        ) : (
-                          <div style={{ fontSize: 12, color: '#8A6524' }}>
-                            No pupil's availability fits this time and length — try another start time or length.
-                          </div>
-                        )}
-                        <select
-                          value={gapPupilId}
-                          onChange={(e) => setGapPupilId(e.target.value)}
-                          style={{ border: '1px solid #E4E8EF', borderRadius: 12, padding: '12px', fontSize: 15, background: '#FFFFFF', color: '#0B1F3A', fontFamily: 'inherit' }}
-                        >
-                          <option value="">Choose a pupil…</option>
-                          {fitting.length > 0 && (
-                            <optgroup label="Available for this slot">
-                              {fitting.map((p: any) => (
-                                <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
-                              ))}
-                            </optgroup>
-                          )}
-                          {others.length > 0 && (
-                            <optgroup label="Outside their usual availability">
-                              {others.map((p: any) => (
-                                <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
-                              ))}
-                            </optgroup>
-                          )}
-                        </select>
-                      </>
-                    );
-                  })()}
-
-                  <button
-                    type="button"
-                    disabled={!gapPupilId || starts.length === 0}
-                    onClick={() => {
-                      const g = gapSheet;
-                      setGapSheet(null);
-                      setAddLessonPupilId(gapPupilId);
-                      setAddLessonDate(g.date);
-                      setAddLessonTime(minsToTime(gapStartMins));
-                      setAddLessonDuration(gapDuration);
-                      setAddLessonOpen(true);
-                    }}
-                    style={{
-                      background: !gapPupilId || starts.length === 0 ? '#C8D3E0' : '#1877D6',
-                      color: '#FFFFFF',
-                      border: 0,
-                      borderRadius: 12,
-                      padding: '14px 12px',
-                      fontSize: 15,
-                      fontWeight: 600,
-                      cursor: !gapPupilId || starts.length === 0 ? 'default' : 'pointer',
-                      fontFamily: 'inherit',
-                      marginTop: 6,
-                    }}
-                  >
-                    Book {minsToTime(gapStartMins)}–{minsToTime(Math.min(gapEnd, gapStartMins + gapDuration))}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const g = gapSheet;
-                      setGapSheet(null);
-                      setAddLessonPupilId(undefined);
-                      setAddLessonDate(g.date);
-                      setAddLessonTime(minsToTime(gapStartMins));
-                      setAddLessonDuration(gapDuration);
-                      setAddLessonOpen(true);
-                    }}
-                    style={{ background: '#F3F8FF', color: '#0B1F3A', border: '1px solid #E4E8EF', borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-                  >
-                    More options
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => { setGapSheet(null); navigate({ to: '/gaps' }); }}
-                    style={{ background: 'transparent', color: '#2C97DE', border: 0, padding: '6px 12px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-                  >
-                    Suggest pupils who could fill this
-                  </button>
-                </>
-              );
-            })()}
-
-          </div>
-        </div>
-      )}
-
       {addChooserOpen && (
-
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
           <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
           <div
@@ -3174,44 +2439,6 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
-                  const lesson = actionsLesson;
-                  closeActions();
-                  setMovingLesson(lesson);
-                  setMoveMode(true);
-                  setConfirmMove(null);
-                }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
-                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
-                }}
-              >
-                <IconArrowsMove size={20} color="#111827" stroke={1.5} />
-                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
-                  Move lesson
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const lesson = actionsLesson;
-                  closeActions();
-                  setReminderLesson(lesson);
-                }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
-                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
-                }}
-              >
-                <IconBell size={20} color="#111827" stroke={1.5} />
-                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
-                  Reminder
-                </span>
-              </button>
-
-
-              <button
-                type="button"
-                onClick={() => {
                   closeActions();
                   setUnifiedPayPupilId(actionsLesson.pupil_id ?? undefined);
                   setUnifiedPayOpen(true);
@@ -3328,13 +2555,6 @@ function SchedulePage() {
           </div>
         </div>
       )}
-
-      <LessonReminderSheet
-        open={!!reminderLesson}
-        lesson={reminderLesson}
-        instructorId={userId}
-        onClose={() => setReminderLesson(null)}
-      />
 
     </div>
   );

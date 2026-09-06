@@ -19,8 +19,6 @@ import {
 } from "../components/dsm/BottomSheetV2";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { resolveDayHours as resolveWorkingDayHours } from "@/lib/gapEngine";
-
 
 import {
   slotFitsPupilWindow,
@@ -721,18 +719,12 @@ function GapsPage() {
           dt.setDate(dt.getDate() + i);
           const dayName = DAYS[dt.getDay()];
           const iso = addDaysIso(today, i);
-          // Shared working-hours rule (src/lib/gapEngine.ts): a configured day
-          // is off only when active === false; otherwise fall back to working_days.
-          const resolved = resolveWorkingDayHours(dt, {
-            startTime: workStart,
-            endTime: workEnd,
-            workingDays: workDays,
-            perDayHours,
-          });
-          const dayStart = resolved.start;
-          const dayEnd = resolved.end;
-          const isDayActive = resolved.active;
-
+          const dayConfig = perDayHours?.[dayName];
+          const dayStart = dayConfig?.start || workStart || "09:00";
+          const dayEnd = dayConfig?.end || workEnd || "18:00";
+          const isDayActive = dayConfig
+            ? dayConfig.active === true
+            : workDays.includes(dayName);
           const isWorkDay = isDayActive;
           const wsMin = hmToMin(dayStart);
           const weMin = hmToMin(dayEnd);
@@ -1044,7 +1036,7 @@ function GapsPage() {
             "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
           )
           .eq("instructor_id", userId)
-          .or("status.is.null,status.not.in.(inactive,passed,cancelled,archived)")
+          .eq("status", "active")
           .is("deleted_at", null),
         supabase
           .from("pupil_ready_to_learn_settings")
@@ -1076,7 +1068,7 @@ function GapsPage() {
             "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
           )
           .eq("instructor_id", userId)
-          .or("status.is.null,status.not.in.(inactive,passed,cancelled,archived)")
+          .eq("status", "active")
           .is("deleted_at", null),
         supabase
           .from("pupil_ready_to_learn_settings")
