@@ -1801,10 +1801,7 @@ function SchedulePage() {
         }}
       >
         {(() => {
-          const GRID_START = 8 * 60;
-          const GRID_END = 20 * 60;
           const HOUR_HEIGHT = 56;
-          const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * HOUR_HEIGHT;
           const selected = new Date(`${selectedDate}T12:00:00`);
           const stripStart = addDays(selected, -selected.getDay());
           const stripDays = Array.from({ length: 7 }, (_, i) => addDays(stripStart, i));
@@ -1812,7 +1809,25 @@ function SchedulePage() {
           const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
           const viewDays = calendarView === "day" ? [selected] : weekDays;
           const monthLabel = selected.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-          const hours = Array.from({ length: 13 }, (_, i) => 8 + i);
+
+          const entriesFor = (date: Date) => entriesByDay.get(ymdLocal(date)) ?? [];
+
+          // Grid bounds expand beyond 08:00–20:00 so early/late entries stay visible.
+          let minHour = 8;
+          let maxHour = 20;
+          viewDays.forEach((date) => {
+            entriesFor(date).forEach((entry) => {
+              if (entry.allDay) return;
+              const startH = entry.start.getHours() + entry.start.getMinutes() / 60;
+              const endH = entry.end.getHours() + entry.end.getMinutes() / 60;
+              if (startH < minHour) minHour = Math.floor(startH);
+              if (endH > maxHour) maxHour = Math.min(24, Math.ceil(endH));
+            });
+          });
+          const GRID_START = minHour * 60;
+          const GRID_END = maxHour * 60;
+          const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * HOUR_HEIGHT;
+          const hours = Array.from({ length: maxHour - minHour + 1 }, (_, i) => minHour + i);
 
           const selectDay = (date: Date) => {
             const key = ymdLocal(date);
@@ -1820,7 +1835,7 @@ function SchedulePage() {
             setViewMonth(new Date(date.getFullYear(), date.getMonth(), 1));
           };
 
-          const entriesFor = (date: Date) => entriesByDay.get(ymdLocal(date)) ?? [];
+
           const paletteFor = (entry: AgendaEntry) => {
             if (entry.kind !== "lesson") {
               const border = entry.kind === "personal"
