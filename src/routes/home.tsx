@@ -38,57 +38,8 @@ import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 
-/**
- * Plain working-hours gap finder used as a safety net when the canonical
- * computeDayGaps() returns nothing. Covers the gap before the first lesson,
- * gaps between lessons, and the gap after the last lesson.
- */
-export function getSimpleGaps(
-  dayLessons: Array<{ lesson_time?: string | null; duration_minutes?: number | null; status?: string | null }>,
-  workStart: string,
-  workEnd: string,
-  minGapMins: number,
-  opts?: { isToday?: boolean; nowMinutes?: number },
-): Array<{ startMins: number; endMins: number; gapMins: number }> {
-  const toMin = (t?: string | null) => {
-    if (!t) return 0;
-    const [h, m] = String(t).split(":").map(Number);
-    return (h || 0) * 60 + (m || 0);
-  };
-  const ws = toMin(workStart || "09:00");
-  const we = toMin(workEnd || "18:00");
-  if (we <= ws) return [];
 
-  const busy = (dayLessons || [])
-    .filter((l) => l.lesson_time && String(l.status || "").toLowerCase() !== "cancelled")
-    .map((l) => {
-      const s = toMin(l.lesson_time);
-      return { start: s, end: s + (l.duration_minutes ?? 60) };
-    })
-    .sort((a, b) => a.start - b.start);
 
-  const out: Array<{ startMins: number; endMins: number; gapMins: number }> = [];
-  let cursor = ws;
-  for (const b of busy) {
-    if (b.end <= ws || b.start >= we) continue;
-    const gapEnd = Math.min(b.start, we);
-    if (gapEnd - cursor >= minGapMins) out.push({ startMins: cursor, endMins: gapEnd, gapMins: gapEnd - cursor });
-    cursor = Math.max(cursor, Math.min(b.end, we));
-  }
-  if (we - cursor >= minGapMins) out.push({ startMins: cursor, endMins: we, gapMins: we - cursor });
-
-  if (opts?.isToday) {
-    const nowM = opts.nowMinutes ?? new Date().getHours() * 60 + new Date().getMinutes();
-    const earliest = Math.ceil((nowM + 30) / 15) * 15;
-    return out
-      .map((g) => {
-        const s = Math.max(g.startMins, earliest);
-        return { startMins: s, endMins: g.endMins, gapMins: g.endMins - s };
-      })
-      .filter((g) => g.gapMins >= minGapMins);
-  }
-  return out;
-}
 
 
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
@@ -4343,12 +4294,45 @@ function HomePage() {
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
 
-  // Tomorrow timeline: include every lesson for tomorrow regardless of status
-  // (except soft-deleted). Match against the ISO date string so we avoid
-  // host-timezone drift between lessonDateTime() and tomorrowStart.
-  const tomorrowLessons = (allLessons ?? []).filter(
-    (l: any) => l.lesson_date === tomorrowISO && l.deleted_at == null,
-  ) as unknown as LessonRow[];
+  // Tomorrow timeline: fetched directly with an exact lesson_date match so no
+  // lesson can be missed by the wider window query, then merged by id.
+  const [tomorrowLessonsRaw, setTomorrowLessonsRaw] = useState<any[]>([]);
+  useEffect(() => {
+    if (!userId || !tomorrowISO) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("lessons")
+        .select(
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, lesson_type, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120, test_status)"
+        )
+        .eq("instructor_id", userId)
+        .eq("lesson_date", tomorrowISO)
+        .is("deleted_at", null)
+        .order("lesson_time", { ascending: true });
+      if (cancelled) return;
+      if (error) {
+        console.warn("[home] tomorrow lessons fetch failed", error);
+        return;
+      }
+      setTomorrowLessonsRaw((data as any[]) ?? []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, tomorrowISO]);
+
+  const tomorrowLessons = useMemo(() => {
+    const byId = new Map<string, any>();
+    for (const l of (allLessons ?? []) as any[]) {
+      if (l.lesson_date === tomorrowISO && l.deleted_at == null) byId.set(String(l.id), l);
+    }
+    for (const l of tomorrowLessonsRaw) byId.set(String(l.id), l);
+    return Array.from(byId.values()).sort((a, b) =>
+      String(a.lesson_time ?? "").localeCompare(String(b.lesson_time ?? "")),
+    ) as unknown as LessonRow[];
+  }, [allLessons, tomorrowLessonsRaw, tomorrowISO]);
+
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now && l.status !== "cancelled");
   const nextTabLessons = nextLessons.slice(0, 5);
 
@@ -6746,21 +6730,9 @@ function HomePage() {
             isToday,
             minGapMinutes,
           });
-          // Safety net: if the canonical detector finds nothing, fall back to a
-          // plain working-hours scan so real free time always surfaces.
-          const gapsForDay = computed.length
-            ? computed
-            : getSimpleGaps(
-                sorted.map((l) => ({
-                  lesson_time: l.lesson_time,
-                  duration_minutes: l.duration_minutes ?? 60,
-                  status: l.status,
-                })),
-                dayStart,
-                dayEnd,
-                minGapMinutes,
-                { isToday },
-              );
+          // computeDayGaps is the single source of truth — it subtracts
+          // calendar blocks, so no gap is ever shown over a calendar event.
+          const gapsForDay = computed;
           for (const g of gapsForDay) {
             const s = new Date(baseDate);
             s.setHours(0, 0, 0, 0);
