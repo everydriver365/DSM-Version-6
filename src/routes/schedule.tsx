@@ -787,6 +787,7 @@ function SchedulePage() {
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [addLessonTime, setAddLessonTime] = useState<string | undefined>();
+  const [addLessonDuration, setAddLessonDuration] = useState<number | undefined>();
   // Tapped free slot in the grid → small "what do you want to do" sheet.
   const [gapSheet, setGapSheet] = useState<{ date: string; gap: GapInfo } | null>(null);
   // Slot picker state inside the gap sheet: chosen start, length and pupil.
@@ -2503,6 +2504,7 @@ function SchedulePage() {
         initialPupilId={addLessonPupilId}
         initialDate={addLessonDate}
         initialTime={addLessonTime}
+        initialDuration={addLessonDuration}
 
         onSaved={() => {
           setAddLessonOpen(false);
