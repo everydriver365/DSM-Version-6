@@ -37,6 +37,7 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
+import { getMatchingPupils, pupilInitials } from "@/lib/gapMatching";
 
 
 
