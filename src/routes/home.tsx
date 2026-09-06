@@ -38,6 +38,59 @@ import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 
+/**
+ * Plain working-hours gap finder used as a safety net when the canonical
+ * computeDayGaps() returns nothing. Covers the gap before the first lesson,
+ * gaps between lessons, and the gap after the last lesson.
+ */
+export function getSimpleGaps(
+  dayLessons: Array<{ lesson_time?: string | null; duration_minutes?: number | null; status?: string | null }>,
+  workStart: string,
+  workEnd: string,
+  minGapMins: number,
+  opts?: { isToday?: boolean; nowMinutes?: number },
+): Array<{ startMins: number; endMins: number; gapMins: number }> {
+  const toMin = (t?: string | null) => {
+    if (!t) return 0;
+    const [h, m] = String(t).split(":").map(Number);
+    return (h || 0) * 60 + (m || 0);
+  };
+  const ws = toMin(workStart || "09:00");
+  const we = toMin(workEnd || "18:00");
+  if (we <= ws) return [];
+
+  const busy = (dayLessons || [])
+    .filter((l) => l.lesson_time && String(l.status || "").toLowerCase() !== "cancelled")
+    .map((l) => {
+      const s = toMin(l.lesson_time);
+      return { start: s, end: s + (l.duration_minutes ?? 60) };
+    })
+    .sort((a, b) => a.start - b.start);
+
+  const out: Array<{ startMins: number; endMins: number; gapMins: number }> = [];
+  let cursor = ws;
+  for (const b of busy) {
+    if (b.end <= ws || b.start >= we) continue;
+    const gapEnd = Math.min(b.start, we);
+    if (gapEnd - cursor >= minGapMins) out.push({ startMins: cursor, endMins: gapEnd, gapMins: gapEnd - cursor });
+    cursor = Math.max(cursor, Math.min(b.end, we));
+  }
+  if (we - cursor >= minGapMins) out.push({ startMins: cursor, endMins: we, gapMins: we - cursor });
+
+  if (opts?.isToday) {
+    const nowM = opts.nowMinutes ?? new Date().getHours() * 60 + new Date().getMinutes();
+    const earliest = Math.ceil((nowM + 30) / 15) * 15;
+    return out
+      .map((g) => {
+        const s = Math.max(g.startMins, earliest);
+        return { startMins: s, endMins: g.endMins, gapMins: g.endMins - s };
+      })
+      .filter((g) => g.gapMins >= minGapMins);
+  }
+  return out;
+}
+
+
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import ProPage from "@/routes/pro.tsx";
 import { ProTeaserPage } from "@/routes/pro-teaser.tsx";
@@ -4246,6 +4299,11 @@ function HomePage() {
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
+  const in14DaysISO = useMemo(() => {
+    const d = new Date(todayStart);
+    d.setDate(d.getDate() + 14);
+    return ymd(d);
+  }, [todayStart]);
 
   useEffect(() => {
     if (!userId) return;
@@ -4258,7 +4316,7 @@ function HomePage() {
         .eq("instructor_id", userId)
         .eq("source", "external_calendar")
         .gte("start_datetime", todayISO)
-        .lte("start_datetime", `${tomorrowISO}T23:59:59`);
+        .lte("start_datetime", `${in14DaysISO}T23:59:59`);
       if (cancelled) return;
       if (error) {
         console.warn("[home] calendar_blocks fetch failed", error);
@@ -4279,7 +4337,7 @@ function HomePage() {
       cancelled = true;
       window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
-  }, [userId, todayISO, tomorrowISO]);
+  }, [userId, todayISO, in14DaysISO]);
 
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
@@ -6688,7 +6746,22 @@ function HomePage() {
             isToday,
             minGapMinutes,
           });
-          for (const g of computed) {
+          // Safety net: if the canonical detector finds nothing, fall back to a
+          // plain working-hours scan so real free time always surfaces.
+          const gapsForDay = computed.length
+            ? computed
+            : getSimpleGaps(
+                sorted.map((l) => ({
+                  lesson_time: l.lesson_time,
+                  duration_minutes: l.duration_minutes ?? 60,
+                  status: l.status,
+                })),
+                dayStart,
+                dayEnd,
+                minGapMinutes,
+                { isToday },
+              );
+          for (const g of gapsForDay) {
             const s = new Date(baseDate);
             s.setHours(0, 0, 0, 0);
             s.setMinutes(g.startMins);
