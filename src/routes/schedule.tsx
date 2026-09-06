@@ -789,6 +789,19 @@ function SchedulePage() {
   const [addLessonTime, setAddLessonTime] = useState<string | undefined>();
   // Tapped free slot in the grid → small "what do you want to do" sheet.
   const [gapSheet, setGapSheet] = useState<{ date: string; gap: GapInfo } | null>(null);
+  // Slot picker state inside the gap sheet: chosen start, length and pupil.
+  const [gapStartMins, setGapStartMins] = useState<number>(0);
+  const [gapDuration, setGapDuration] = useState<number>(60);
+  const [gapPupilId, setGapPupilId] = useState<string>("");
+  const [gapSaving, setGapSaving] = useState(false);
+  useEffect(() => {
+    if (!gapSheet) return;
+    const start = timeToMins(gapSheet.gap.startTime);
+    setGapStartMins(start);
+    setGapDuration(Math.min(60, Math.max(30, Math.floor(gapSheet.gap.gapMins / 15) * 15)));
+    setGapPupilId("");
+  }, [gapSheet]);
+
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
