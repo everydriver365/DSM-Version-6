@@ -1530,11 +1530,13 @@ function SchedulePage() {
     while (cursor.getTime() <= end.getTime()) {
       const key = ymdLocal(cursor);
       if (key >= todayKey) {
-        const dayName = DAY_NAMES[cursor.getDay()];
-        const dayConfig = perDayHours?.[dayName];
-        const isActive = dayConfig
-          ? dayConfig.active !== false
-          : workingDaysList.includes(dayName);
+        const isActive = resolveWorkingDayHours(cursor, {
+          startTime: workStart,
+          endTime: workEnd,
+          workingDays: workingDaysList,
+          perDayHours,
+        }).active;
+
         if (isActive) out.push(key);
       }
       cursor.setDate(cursor.getDate() + 1);
