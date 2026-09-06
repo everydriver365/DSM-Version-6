@@ -1,7 +1,7 @@
 # Task Roadmap
 
 - [x] Fix calendar blocks query in home.tsx to catch multi-day events overlapping the visible range
-- [ ] Pass real recurring blocks and time off to computeDayGaps in home.tsx
+- [x] Pass real recurring blocks and time off to computeDayGaps in home.tsx
 
 - [x] Home FAB EOL picker for multiple candidate lessons
 - [x] Add camera receipt capture to expense sheet
