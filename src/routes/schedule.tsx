@@ -1682,7 +1682,7 @@ function SchedulePage() {
         new Date(key + "T12:00:00").getDay()
       ];
       const dayConfig = perDayHours?.[dayName];
-      const isDayActive = dayConfig ? dayConfig.active === true : workingDaysList.includes(dayName);
+      const isDayActive = dayConfig ? dayConfig.active !== false : workingDaysList.includes(dayName);
       if (!isDayActive) continue;
       const gaps = detectGaps(
         dayLessons.map((l) => ({
