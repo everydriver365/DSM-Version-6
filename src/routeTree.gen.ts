@@ -125,7 +125,7 @@ import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
-import { Route as SubscribeCompleteRouteImport } from './routes/subscribe.complete'
+import { Route as SubscribeCompleteRouteImport } from './routes/subscribe_.complete'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
 import { Route as QuotesNewRouteImport } from './routes/quotes.new'
 import { Route as QuoteTokenRouteImport } from './routes/quote.$token'
@@ -770,9 +770,9 @@ const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubscribeCompleteRoute = SubscribeCompleteRouteImport.update({
-  id: '/complete',
-  path: '/complete',
-  getParentRoute: () => SubscribeRoute,
+  id: '/subscribe_/complete',
+  path: '/subscribe/complete',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ReflectiveLogPupilIdRoute = ReflectiveLogPupilIdRouteImport.update({
   id: '/reflective-log/$pupilId',
@@ -1185,7 +1185,7 @@ export interface FileRoutesByFullPath {
   '/showcase': typeof ShowcaseRoute
   '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
-  '/subscribe': typeof SubscribeRouteWithChildren
+  '/subscribe': typeof SubscribeRoute
   '/subscription': typeof SubscriptionRoute
   '/subscription-success': typeof SubscriptionSuccessRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1363,7 +1363,7 @@ export interface FileRoutesByTo {
   '/showcase': typeof ShowcaseRoute
   '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
-  '/subscribe': typeof SubscribeRouteWithChildren
+  '/subscribe': typeof SubscribeRoute
   '/subscription': typeof SubscriptionRoute
   '/subscription-success': typeof SubscriptionSuccessRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1545,7 +1545,7 @@ export interface FileRoutesById {
   '/showcase': typeof ShowcaseRoute
   '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
-  '/subscribe': typeof SubscribeRouteWithChildren
+  '/subscribe': typeof SubscribeRoute
   '/subscription': typeof SubscriptionRoute
   '/subscription-success': typeof SubscriptionSuccessRoute
   '/take-payment': typeof TakePaymentRoute
@@ -1604,7 +1604,7 @@ export interface FileRoutesById {
   '/quote/$token': typeof QuoteTokenRoute
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
-  '/subscribe/complete': typeof SubscribeCompleteRoute
+  '/subscribe_/complete': typeof SubscribeCompleteRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
@@ -2146,7 +2146,7 @@ export interface FileRouteTypes {
     | '/quote/$token'
     | '/quotes/new'
     | '/reflective-log/$pupilId'
-    | '/subscribe/complete'
+    | '/subscribe_/complete'
     | '/test-day/$pupilId'
     | '/courses/'
     | '/dsm-live/'
@@ -2269,7 +2269,7 @@ export interface RootRouteChildren {
   ShowcaseRoute: typeof ShowcaseRoute
   SquareRoute: typeof SquareRoute
   StandardsRoute: typeof StandardsRoute
-  SubscribeRoute: typeof SubscribeRouteWithChildren
+  SubscribeRoute: typeof SubscribeRoute
   SubscriptionRoute: typeof SubscriptionRoute
   SubscriptionSuccessRoute: typeof SubscriptionSuccessRoute
   TakePaymentRoute: typeof TakePaymentRoute
@@ -2311,6 +2311,7 @@ export interface RootRouteChildren {
   PupilsNewRoute: typeof PupilsNewRoute
   QuoteTokenRoute: typeof QuoteTokenRoute
   ReflectiveLogPupilIdRoute: typeof ReflectiveLogPupilIdRoute
+  SubscribeCompleteRoute: typeof SubscribeCompleteRoute
   TestDayPupilIdRoute: typeof TestDayPupilIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
@@ -3150,12 +3151,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestDayPupilIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/subscribe/complete': {
-      id: '/subscribe/complete'
-      path: '/complete'
+    '/subscribe_/complete': {
+      id: '/subscribe_/complete'
+      path: '/subscribe/complete'
       fullPath: '/subscribe/complete'
       preLoaderRoute: typeof SubscribeCompleteRouteImport
-      parentRoute: typeof SubscribeRoute
+      parentRoute: typeof rootRouteImport
     }
     '/reflective-log/$pupilId': {
       id: '/reflective-log/$pupilId'
@@ -3674,18 +3675,6 @@ const QuotesRouteChildren: QuotesRouteChildren = {
 const QuotesRouteWithChildren =
   QuotesRoute._addFileChildren(QuotesRouteChildren)
 
-interface SubscribeRouteChildren {
-  SubscribeCompleteRoute: typeof SubscribeCompleteRoute
-}
-
-const SubscribeRouteChildren: SubscribeRouteChildren = {
-  SubscribeCompleteRoute: SubscribeCompleteRoute,
-}
-
-const SubscribeRouteWithChildren = SubscribeRoute._addFileChildren(
-  SubscribeRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -3778,7 +3767,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShowcaseRoute: ShowcaseRoute,
   SquareRoute: SquareRoute,
   StandardsRoute: StandardsRoute,
-  SubscribeRoute: SubscribeRouteWithChildren,
+  SubscribeRoute: SubscribeRoute,
   SubscriptionRoute: SubscriptionRoute,
   SubscriptionSuccessRoute: SubscriptionSuccessRoute,
   TakePaymentRoute: TakePaymentRoute,
@@ -3820,6 +3809,7 @@ const rootRouteChildren: RootRouteChildren = {
   PupilsNewRoute: PupilsNewRoute,
   QuoteTokenRoute: QuoteTokenRoute,
   ReflectiveLogPupilIdRoute: ReflectiveLogPupilIdRoute,
+  SubscribeCompleteRoute: SubscribeCompleteRoute,
   TestDayPupilIdRoute: TestDayPupilIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
