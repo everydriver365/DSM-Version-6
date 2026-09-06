@@ -1635,15 +1635,16 @@ function SchedulePage() {
       const dayBlocks = visibleCalendarBlocks.filter(
         (b) => (b.start_datetime || "").substring(0, 10) === key,
       );
-      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
-        new Date(key + "T12:00:00").getDay()
-      ];
-      const dayConfig = perDayHours?.[dayName];
-      const dayStart = dayConfig?.start || workStart;
-      const dayEnd = dayConfig?.end || workEnd;
-      const isDayActive = dayConfig
-        ? dayConfig.active !== false
-        : workingDaysList.includes(dayName);
+      const resolvedDay = resolveWorkingDayHours(key, {
+        startTime: workStart,
+        endTime: workEnd,
+        workingDays: workingDaysList,
+        perDayHours,
+      });
+      const dayStart = resolvedDay.start;
+      const dayEnd = resolvedDay.end;
+      const isDayActive = resolvedDay.active;
+
       const gaps = isDayActive
         ? detectGaps(
             dayLessons.map((l) => ({
