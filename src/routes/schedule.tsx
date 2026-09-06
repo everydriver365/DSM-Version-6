@@ -2245,6 +2245,7 @@ function SchedulePage() {
                   const dy = touch.clientY - start.y;
                   if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
                   const el = scrollRef.current;
+                  if (calendarView === "list") return;
                   if (calendarView === "week" && el && el.scrollWidth > el.clientWidth + 4) return;
                   const step = calendarView === "week" ? 7 : 1;
                   selectDay(addDays(selected, dx < 0 ? step : -step));
