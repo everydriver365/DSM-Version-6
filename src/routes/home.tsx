@@ -39,7 +39,9 @@ import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
 import { resolveDayHours as resolveWorkingDayHours, computeRangeGaps, dateRange } from "@/lib/gapEngine";
 
-import { getMatchingPupils, pupilInitials } from "@/lib/gapMatching";
+import { pupilInitials } from "@/lib/gapMatching";
+import { previewMatchForGap } from "@/lib/pupilMatching";
+
 
 
 
