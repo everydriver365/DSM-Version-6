@@ -97,57 +97,8 @@ type GapInfo = {
   potential: number;
 };
 
-/**
- * Plain working-hours gap finder used as a safety net when the canonical
- * computeDayGaps() returns nothing. Covers the gap before the first lesson,
- * gaps between lessons, and the gap after the last lesson.
- */
-function getSimpleGaps(
-  dayLessons: Array<{ lesson_time?: string | null; duration_minutes?: number | null; status?: string | null }>,
-  workStartStr: string,
-  workEndStr: string,
-  minGapMins: number,
-  opts?: { isToday?: boolean; nowMinutes?: number },
-): Array<{ startMins: number; endMins: number; gapMins: number }> {
-  const toMin = (t?: string | null) => {
-    if (!t) return 0;
-    const [h, m] = String(t).split(":").map(Number);
-    return (h || 0) * 60 + (m || 0);
-  };
-  const ws = toMin(workStartStr || "09:00");
-  const we = toMin(workEndStr || "18:00");
-  if (we <= ws) return [];
 
-  const busy = (dayLessons || [])
-    .filter((l) => l.lesson_time && String(l.status || "").toLowerCase() !== "cancelled")
-    .map((l) => {
-      const s = toMin(l.lesson_time);
-      return { start: s, end: s + (l.duration_minutes ?? 60) };
-    })
-    .sort((a, b) => a.start - b.start);
 
-  const out: Array<{ startMins: number; endMins: number; gapMins: number }> = [];
-  let cursor = ws;
-  for (const b of busy) {
-    if (b.end <= ws || b.start >= we) continue;
-    const gapEnd = Math.min(b.start, we);
-    if (gapEnd - cursor >= minGapMins) out.push({ startMins: cursor, endMins: gapEnd, gapMins: gapEnd - cursor });
-    cursor = Math.max(cursor, Math.min(b.end, we));
-  }
-  if (we - cursor >= minGapMins) out.push({ startMins: cursor, endMins: we, gapMins: we - cursor });
-
-  if (opts?.isToday) {
-    const nowM = opts.nowMinutes ?? new Date().getHours() * 60 + new Date().getMinutes();
-    const earliest = Math.ceil((nowM + 30) / 15) * 15;
-    return out
-      .map((g) => {
-        const s = Math.max(g.startMins, earliest);
-        return { startMins: s, endMins: g.endMins, gapMins: g.endMins - s };
-      })
-      .filter((g) => g.gapMins >= minGapMins);
-  }
-  return out;
-}
 
 function detectGaps(
   lessons: Array<{ status?: string | null; lesson_time: string; duration_minutes?: number | null; pupils?: { buffer_after_minutes?: number | null } | null }>,
