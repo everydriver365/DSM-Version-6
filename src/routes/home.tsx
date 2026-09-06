@@ -7325,6 +7325,7 @@ function HomePage() {
                           items={[
                             { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
                             { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                            { label: 'Move lesson', onClick: () => { setMovingLessonHome(l); setMoveModeHome(true); setConfirmMoveHome(null); } },
                             { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
                             { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
                             { label: 'Full profile', onClick: () => { if (l.pupil_id) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: l.pupil_id } }), 0); } },
@@ -7345,6 +7346,73 @@ function HomePage() {
                     );
                   })}
                   </div>
+
+                  {(() => {
+                    const gapRows = rows.filter((r): r is Extract<(typeof rows)[number], { kind: 'gap' }> => r.kind === 'gap');
+                    if (gapRows.length === 0) return null;
+                    const fmtG = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                    const moveDur = moveModeHome && movingLessonHome ? Number(movingLessonHome.duration_minutes || 60) : 0;
+                    return (
+                      <div style={{ marginTop: 10, background: '#FFFFFF', borderRadius: 8, padding: '10px 12px 12px' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 }}>
+                          Free gaps
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {gapRows.slice(0, 4).map((g, i) => {
+                            const gapStart = g.start;
+                            const gapEnd = new Date(gapStart.getTime() + g.mins * 60000);
+                            const dateStr = ymd(gapStart);
+                            const startMins = gapStart.getHours() * 60 + gapStart.getMinutes();
+                            const slots: number[] = [];
+                            if (moveDur) {
+                              for (let s = Math.ceil(startMins / 15) * 15; s + moveDur <= startMins + g.mins; s += 15) slots.push(s);
+                            }
+                            const hrs = Math.floor(g.mins / 60);
+                            const rem = g.mins % 60;
+                            const durLabel = `${hrs ? `${hrs}h` : ''}${rem ? `${hrs ? ' ' : ''}${rem}m` : ''}` || `${g.mins}m`;
+                            return (
+                              <div key={`gap-${i}`} style={{ border: '1px dashed #E0A33C', background: '#FDF7EC', borderRadius: 8, padding: '10px 12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                                  <div style={{ minWidth: 0 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 700, color: '#633806', fontVariantNumeric: 'tabular-nums' }}>
+                                      {fmtG(gapStart)}–{fmtG(gapEnd)}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: '#8A6524' }}>{durLabel} free</div>
+                                  </div>
+                                  {!moveModeHome && (
+                                    <button
+                                      type="button"
+                                      onClick={() => navigate({ to: '/gaps' })}
+                                      style={{ border: 0, borderRadius: 8, background: '#0B1F3A', color: '#FFFFFF', fontSize: 11, fontWeight: 700, padding: '8px 12px', cursor: 'pointer', fontFamily: PF, flexShrink: 0 }}
+                                    >
+                                      Fill this gap
+                                    </button>
+                                  )}
+                                </div>
+                                {moveModeHome && movingLessonHome && (
+                                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                                    {slots.length === 0 ? (
+                                      <span style={{ fontSize: 11, color: '#8A6524' }}>Lesson won't fit here</span>
+                                    ) : slots.map((s) => (
+                                      <button
+                                        key={s}
+                                        type="button"
+                                        onClick={() => setConfirmMoveHome({ date: dateStr, time: minsToTime(s) })}
+                                        style={{ border: 0, borderRadius: 6, background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 700, padding: '6px 10px', cursor: 'pointer', fontFamily: PF }}
+                                      >
+                                        {minsToTime(s)}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   <button
                     type="button"
                     onClick={() => navigate({ to: '/schedule' as never })}
