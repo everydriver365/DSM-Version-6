@@ -2386,7 +2386,57 @@ function SchedulePage() {
         onSaved={() => setPersonalReloadKey((k) => k + 1)}
       />
 
+      {gapSheet && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/30" onClick={() => setGapSheet(null)} />
+          <div
+            className="relative w-full max-w-md"
+            style={{
+              background: '#fff',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '18px 16px calc(18px + 90px + env(safe-area-inset-bottom))',
+              display: 'grid',
+              gap: 10,
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Sora, sans-serif' }}>
+              Free slot
+            </div>
+            <div style={{ fontSize: 13, color: '#536579' }}>
+              {new Date(`${gapSheet.date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
+              {' · '}{gapSheet.gap.startTime}–{gapSheet.gap.endTime}
+            </div>
+            <div style={{ fontSize: 13, color: '#8A5A0B', fontWeight: 600, marginBottom: 4 }}>
+              {Math.floor(gapSheet.gap.gapMins / 60)}h{gapSheet.gap.gapMins % 60 ? ` ${gapSheet.gap.gapMins % 60}m` : ''} free · ~£{gapSheet.gap.potential} potential
+            </div>
+            <button
+              type="button"
+              onClick={() => { setGapSheet(null); navigate({ to: '/gaps' }); }}
+              style={{ background: '#2C97DE', color: '#FFFFFF', border: 0, borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            >
+              Find pupils
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const g = gapSheet;
+                setGapSheet(null);
+                setAddLessonPupilId(undefined);
+                setAddLessonDate(g.date);
+                setAddLessonTime(g.gap.startTime);
+                setAddLessonOpen(true);
+              }}
+              style={{ background: '#F3F8FF', color: '#0B1F3A', border: '1px solid #E4E8EF', borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            >
+              Add lesson at {gapSheet.gap.startTime}
+            </button>
+          </div>
+        </div>
+      )}
+
       {addChooserOpen && (
+
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
           <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
           <div
