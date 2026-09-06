@@ -4294,12 +4294,45 @@ function HomePage() {
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
 
-  // Tomorrow timeline: include every lesson for tomorrow regardless of status
-  // (except soft-deleted). Match against the ISO date string so we avoid
-  // host-timezone drift between lessonDateTime() and tomorrowStart.
-  const tomorrowLessons = (allLessons ?? []).filter(
-    (l: any) => l.lesson_date === tomorrowISO && l.deleted_at == null,
-  ) as unknown as LessonRow[];
+  // Tomorrow timeline: fetched directly with an exact lesson_date match so no
+  // lesson can be missed by the wider window query, then merged by id.
+  const [tomorrowLessonsRaw, setTomorrowLessonsRaw] = useState<any[]>([]);
+  useEffect(() => {
+    if (!userId || !tomorrowISO) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("lessons")
+        .select(
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, lesson_type, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120, test_status)"
+        )
+        .eq("instructor_id", userId)
+        .eq("lesson_date", tomorrowISO)
+        .is("deleted_at", null)
+        .order("lesson_time", { ascending: true });
+      if (cancelled) return;
+      if (error) {
+        console.warn("[home] tomorrow lessons fetch failed", error);
+        return;
+      }
+      setTomorrowLessonsRaw((data as any[]) ?? []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, tomorrowISO]);
+
+  const tomorrowLessons = useMemo(() => {
+    const byId = new Map<string, any>();
+    for (const l of (allLessons ?? []) as any[]) {
+      if (l.lesson_date === tomorrowISO && l.deleted_at == null) byId.set(String(l.id), l);
+    }
+    for (const l of tomorrowLessonsRaw) byId.set(String(l.id), l);
+    return Array.from(byId.values()).sort((a, b) =>
+      String(a.lesson_time ?? "").localeCompare(String(b.lesson_time ?? "")),
+    ) as unknown as LessonRow[];
+  }, [allLessons, tomorrowLessonsRaw, tomorrowISO]);
+
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now && l.status !== "cancelled");
   const nextTabLessons = nextLessons.slice(0, 5);
 
