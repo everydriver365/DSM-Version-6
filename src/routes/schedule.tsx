@@ -140,22 +140,9 @@ function detectGaps(
     isToday,
     minGapMinutes,
   });
-  // Safety net: if the canonical detector finds nothing, fall back to a plain
-  // working-hours scan (gap before first lesson, between lessons, after last).
-  const resolved = computed.length
-    ? computed
-    : getSimpleGaps(
-        (lessons || []).map((l) => ({
-          lesson_time: l.lesson_time,
-          duration_minutes: l.duration_minutes ?? 60,
-          status: l.status ?? null,
-        })),
-        workStart,
-        workEnd,
-        minGapMinutes,
-        { isToday },
-      );
-  return resolved.map((g) => ({
+  // computeDayGaps is the single source of truth: it subtracts calendar
+  // blocks, recurring blocks and time off. Zero gaps means zero free slots.
+  return computed.map((g) => ({
     startMins: g.startMins,
     endMins: g.endMins,
     gapMins: g.gapMins,
