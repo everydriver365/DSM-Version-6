@@ -37,6 +37,7 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
+import { getMatchingPupils, pupilInitials } from "@/lib/gapMatching";
 
 
 
@@ -7458,6 +7459,18 @@ function HomePage() {
                     if (gapRows.length === 0) return null;
                     const fmtG = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
                     const moveDur = moveModeHome && movingLessonHome ? Number(movingLessonHome.duration_minutes || 60) : 0;
+                    // Pupils in the shape the shared matcher expects.
+                    const availByPupilId = new Map(allAvailability.filter((a) => a.pupil_id).map((a) => [a.pupil_id, a] as const));
+                    const matchablePupils = allPupils.map((p) => {
+                      const a = availByPupilId.get(p.id);
+                      return {
+                        id: p.id,
+                        first_name: p.first_name,
+                        name: p.name,
+                        preferred_lesson_length: a?.preferred_duration_minutes ?? null,
+                        availability_days: a?.available_days ?? null,
+                      };
+                    });
                     return (
                       <div style={{ marginTop: 10, background: '#FFFFFF', borderRadius: 8, padding: '10px 12px 12px' }}>
                         <div style={{ fontSize: 11, fontWeight: 700, color: '#B5661E', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 }}>
@@ -7476,6 +7489,15 @@ function HomePage() {
                             const hrs = Math.floor(g.mins / 60);
                             const rem = g.mins % 60;
                             const durLabel = `${hrs ? `${hrs}h` : ''}${rem ? `${hrs ? ' ' : ''}${rem}m` : ''}` || `${g.mins}m`;
+                            const matches = getMatchingPupils(
+                              {
+                                date: dateStr,
+                                dayName: gapStart.toLocaleDateString('en-GB', { weekday: 'long' }),
+                                startMins,
+                                durationMins: g.mins,
+                              },
+                              matchablePupils,
+                            );
                             return (
                               <div key={`gap-${i}`} style={{ border: '1px dashed #E0A33C', background: '#FDF7EC', borderRadius: 8, padding: '10px 12px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
@@ -7495,6 +7517,22 @@ function HomePage() {
                                     </button>
                                   )}
                                 </div>
+                                {matches.length > 0 && (
+                                  <div style={{ display: 'flex', gap: 4, marginTop: 6, alignItems: 'center' }}>
+                                    {matches.map((m) => (
+                                      <div
+                                        key={m.pupil.id}
+                                        title={m.pupil.name || m.pupil.first_name || 'Pupil'}
+                                        style={{ width: 28, height: 28, borderRadius: '50%', background: '#0B1F3A', color: '#FFFFFF', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                                      >
+                                        {pupilInitials(m.pupil)}
+                                      </div>
+                                    ))}
+                                    <span style={{ fontSize: 11, color: '#536579', marginLeft: 4 }}>
+                                      {matches.length} pupil{matches.length === 1 ? '' : 's'} available
+                                    </span>
+                                  </div>
+                                )}
                                 {moveModeHome && movingLessonHome && (
                                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                                     {slots.length === 0 ? (
