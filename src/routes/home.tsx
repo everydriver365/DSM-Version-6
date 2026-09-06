@@ -6780,27 +6780,48 @@ function HomePage() {
             rows.push({ kind: 'gap', start: s, mins: g.gapMins });
           }
         } else {
-          // 'next' tab: lesson-to-lesson only (calendar blocks not fetched for arbitrary future dates).
-          const [whSh, whSm] = whStartStr.split(':').map(Number);
-          const [whEh, whEm] = whEndStr.split(':').map(Number);
-          for (let i = 0; i < sorted.length; i++) {
-            const l = sorted[i];
-            rows.push({ kind: 'lesson', l });
-            const next = sorted[i + 1];
-            if (!next) continue;
-            if (l.lesson_date !== next.lesson_date) continue;
-            const endThis = new Date(lessonDateTime(l).getTime() + (l.duration_minutes ?? 60) * 60000);
-            const afterBuf = (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) || 0;
-            const rawGapStart = new Date(endThis.getTime() + afterBuf * 60000);
-            const rawNextStart = lessonDateTime(next);
-            const dayWorkStart = new Date(rawGapStart);
-            dayWorkStart.setHours(whSh || 9, whSm || 0, 0, 0);
-            const dayWorkEnd = new Date(rawGapStart);
-            dayWorkEnd.setHours(whEh || 18, whEm || 0, 0, 0);
-            const gapStart = new Date(Math.max(rawGapStart.getTime(), dayWorkStart.getTime()));
-            const gapEnd = new Date(Math.min(rawNextStart.getTime(), dayWorkEnd.getTime()));
-            const mins = Math.round((gapEnd.getTime() - gapStart.getTime()) / 60000);
-            if (mins >= minGapMinutes) rows.push({ kind: 'gap', start: gapStart, mins });
+          // 'next' tab: use computeDayGaps per day so calendar blocks, recurring blocks and time off are subtracted.
+          const nextByDate = new Map<string, LessonRow[]>();
+          for (const l of sorted) {
+            const list = nextByDate.get(l.lesson_date) ?? [];
+            list.push(l);
+            nextByDate.set(l.lesson_date, list);
+          }
+          for (const [dateStr, lessonsForDate] of nextByDate) {
+            const baseDate = new Date(`${dateStr}T12:00:00`);
+            const { start: dayStart, end: dayEnd } = resolveDayHours(baseDate);
+
+            // Emit lesson rows.
+            for (const l of lessonsForDate) rows.push({ kind: 'lesson', l });
+
+            const computed = computeDayGaps({
+              dayLessons: lessonsForDate.map((l) => ({
+                lesson_time: l.lesson_time || '',
+                duration_minutes: l.duration_minutes ?? 60,
+                status: l.status,
+                bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
+              })),
+              calendarBlocks: (visibleCalendarBlocks || [])
+                .filter((b) => localDateStr(b.start_datetime) === dateStr)
+                .map((b) => ({
+                  start_datetime: b.start_datetime,
+                  end_datetime: b.end_datetime,
+                })),
+              recurringBlocks: recurringBlocks || [],
+              dayTimeOff: dayTimeOffForDate(dateStr),
+              dayStart,
+              dayEnd,
+              instructorBufferAfter,
+              dateStr,
+              isToday: false,
+              minGapMinutes,
+            });
+            for (const g of computed) {
+              const s = new Date(baseDate);
+              s.setHours(0, 0, 0, 0);
+              s.setMinutes(g.startMins);
+              rows.push({ kind: 'gap', start: s, mins: g.gapMins, isSoonOrPast: g.isSoonOrPast ?? false });
+            }
           }
         }
 
