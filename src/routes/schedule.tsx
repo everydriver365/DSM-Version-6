@@ -848,6 +848,32 @@ function SchedulePage() {
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
+  /**
+   * Which pupils' own availability fits a slot? Same shared rules as the home
+   * tile and the gaps page: available days, their time-of-day window, their
+   * preferred lesson length and their minimum notice.
+   */
+  const matchForSlot = useCallback(
+    (dateKey: string, startMins: number, durationMins: number) =>
+      previewMatchForGap({
+        date: dateKey,
+        dayName: new Date(`${dateKey}T12:00:00`).toLocaleDateString("en-GB", { weekday: "long" }),
+        startMin: startMins,
+        durationMin: durationMins,
+        allPupils,
+        allAvailability: (allAvailability || []).map((a: any) => ({
+          pupil_id: a.pupil_id,
+          available_days: a.available_days ?? null,
+          available_from: a.available_from ?? null,
+          available_until: a.available_until ?? null,
+          min_notice_hours: a.min_notice_hours ?? null,
+          short_notice_opt_in: a.short_notice_opt_in ?? null,
+          preferred_duration_minutes: a.preferred_duration_minutes ?? null,
+        })),
+      }),
+    [allPupils, allAvailability],
+  );
+
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
   const [reminderLesson, setReminderLesson] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
