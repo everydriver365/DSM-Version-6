@@ -435,10 +435,15 @@ interface PupilReadySetting {
   pupil_id: string;
   instructor_id: string;
   available_days: string[] | null;
+  /** Earliest time of day the pupil can start, e.g. "16:00". */
+  available_from: string | null;
+  /** Latest time of day the pupil must finish by, e.g. "20:00". */
+  available_until: string | null;
   preferred_duration_minutes: number | null;
   min_notice_hours: number | null;
   short_notice_opt_in: boolean | null;
 }
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
