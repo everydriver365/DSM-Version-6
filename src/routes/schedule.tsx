@@ -810,7 +810,7 @@ function SchedulePage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
-  const [calendarView, setCalendarView] = useState<"day" | "week">("day");
+  const [calendarView, setCalendarView] = useState<"day" | "week" | "list">("day");
   const swipeRef = useRef<{ x: number; y: number } | null>(null);
   const [swipeShift, setSwipeShift] = useState(0);
 
