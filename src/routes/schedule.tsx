@@ -786,6 +786,10 @@ function SchedulePage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
+  const [addLessonTime, setAddLessonTime] = useState<string | undefined>();
+  // Tapped free slot in the grid → small "what do you want to do" sheet.
+  const [gapSheet, setGapSheet] = useState<{ date: string; gap: GapInfo } | null>(null);
+
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
   // "add anything to my day" flow.
@@ -1643,6 +1647,46 @@ function SchedulePage() {
     return map;
   }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
+  // Free gaps per day, used to draw tappable empty slots in the grid.
+  const gapsByDay = useMemo(() => {
+    const map = new Map<string, GapInfo[]>();
+    const keys = new Set<string>(workingDayKeysInRange);
+    for (const l of lessons ?? []) keys.add(l.lesson_date.substring(0, 10));
+    for (const key of keys) {
+      const dayLessons = (lessons ?? []).filter(
+        (l) => l.lesson_date.substring(0, 10) === key &&
+          String(l.status || "").toLowerCase() !== "cancelled",
+      );
+      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
+        new Date(key + "T12:00:00").getDay()
+      ];
+      const dayConfig = perDayHours?.[dayName];
+      const isDayActive = dayConfig ? dayConfig.active === true : workingDaysList.includes(dayName);
+      if (!isDayActive) continue;
+      const gaps = detectGaps(
+        dayLessons.map((l) => ({
+          status: l.status,
+          lesson_time: l.lesson_time,
+          duration_minutes: l.duration_minutes,
+          pupils: null,
+        })),
+        dayConfig?.start || workStart,
+        dayConfig?.end || workEnd,
+        bufferAfter,
+        busyBlocksForGaps,
+        recurringBlocks,
+        timeOff,
+        key,
+        hourlyRate,
+        minGapMinutes,
+      );
+      if (gaps.length) map.set(key, gaps);
+    }
+    return map;
+  }, [lessons, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+
+
+
   const scrollToDate = useCallback(
     (key: string) => {
       // If that date has no entries, jump to the nearest future day that does.
@@ -1943,6 +1987,103 @@ function SchedulePage() {
             );
           };
 
+          // Free slots: normally tappable "fill this gap" bands; in move mode,
+          // 15-minute start options that fit the lesson being moved.
+          const renderGaps = (date: Date, compact: boolean) => {
+            const key = ymdLocal(date);
+            const gaps = gapsByDay.get(key) ?? [];
+            if (!gaps.length) return null;
+            const moveDuration = moveMode && movingLesson ? Number(movingLesson.duration_minutes || 60) : 0;
+
+            const bandStyle = (startMins: number, endMins: number) => {
+              const clippedStart = Math.max(startMins, GRID_START);
+              const clippedEnd = Math.min(endMins, GRID_END);
+              if (clippedEnd - clippedStart <= 0) return null;
+              return {
+                position: "absolute" as const,
+                top: ((clippedStart - GRID_START) / 60) * HOUR_HEIGHT + 1,
+                left: 2,
+                right: 2,
+                height: Math.max(16, ((clippedEnd - clippedStart) / 60) * HOUR_HEIGHT - 2),
+              };
+            };
+
+            if (moveMode && movingLesson) {
+              const slots: Array<{ startMins: number }> = [];
+              gaps.forEach((gap) => {
+                for (let s = Math.ceil(gap.startMins / 15) * 15; s + moveDuration <= gap.endMins; s += 15) {
+                  slots.push({ startMins: s });
+                }
+              });
+              return slots.map((slot) => {
+                const box = bandStyle(slot.startMins, slot.startMins + moveDuration);
+                if (!box) return null;
+                const timeLabel = minsToTime(slot.startMins);
+                return (
+                  <button
+                    key={`slot-${key}-${slot.startMins}`}
+                    type="button"
+                    onClick={() => setConfirmMove({ date: key, time: timeLabel })}
+                    style={{
+                      ...box,
+                      zIndex: 4,
+                      border: "1.5px dashed #1877D6",
+                      borderRadius: 6,
+                      background: "rgba(24,119,214,0.10)",
+                      color: "#0C447C",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: compact ? 8 : 10,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      padding: 0,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {timeLabel}
+                  </button>
+                );
+              });
+            }
+
+            return gaps.map((gap) => {
+              const box = bandStyle(gap.startMins, gap.endMins);
+              if (!box) return null;
+              return (
+                <button
+                  key={`gap-${key}-${gap.startMins}`}
+                  type="button"
+                  onClick={() => setGapSheet({ date: key, gap })}
+                  style={{
+                    ...box,
+                    zIndex: 0,
+                    border: "1px dashed #E0A33C",
+                    borderRadius: 6,
+                    background: "rgba(239,159,39,0.08)",
+                    color: "#8A5A0B",
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: compact ? 8 : 10,
+                    fontWeight: 600,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 2,
+                    cursor: "pointer",
+                    padding: 0,
+                    overflow: "hidden",
+                  }}
+                >
+                  {!compact && <span>{gap.startTime}–{gap.endTime} free</span>}
+                  {!compact && box.height >= 54 && <span style={{ fontSize: 9, fontWeight: 700 }}>~£{gap.potential} potential</span>}
+                  {compact && <span>Free</span>}
+                </button>
+              );
+            });
+          };
+
           const gridColumn = (date: Date, compact: boolean) => {
             const key = ymdLocal(date);
             const isToday = key === todayKey;
@@ -1953,7 +2094,11 @@ function SchedulePage() {
                 {hours.map((hour, index) => (
                   <div key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT, left: 0, right: 0, borderTop: "0.5px solid #F0F0F0" }} />
                 ))}
-                {entriesFor(date).map((entry) => renderBlock(entry, compact))}
+                {renderGaps(date, compact)}
+                <div style={{ pointerEvents: moveMode ? "none" : undefined }}>
+                  {entriesFor(date).map((entry) => renderBlock(entry, compact))}
+                </div>
+
                 {showNow && (
                   <div style={{ position: "absolute", top: ((currentMinutes - GRID_START) / 60) * HOUR_HEIGHT, left: 0, right: 0, height: 1, background: "#E24B4A", zIndex: 5, pointerEvents: "none" }}>
                     <span style={{ position: "absolute", left: -3, top: -3, width: 7, height: 7, borderRadius: "50%", background: "#E24B4A" }} />
@@ -2084,7 +2229,7 @@ function SchedulePage() {
       <button
         type="button"
         aria-label="Add to schedule"
-        onClick={() => { setAddLessonDate(selectedDate); setAddChooserOpen(true); }}
+        onClick={() => { setAddLessonDate(selectedDate); setAddLessonTime(undefined); setAddChooserOpen(true); }}
         style={{ position: "fixed", right: 18, bottom: "calc(80px + env(safe-area-inset-bottom, 0px))", width: 40, height: 40, borderRadius: "50%", border: 0, background: "#2C97DE", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(44,151,222,0.3)", zIndex: 30, cursor: "pointer", padding: 0 }}
       >
         <IconPlus size={22} stroke={2.2} />
@@ -2182,6 +2327,8 @@ function SchedulePage() {
         onClose={() => setAddLessonOpen(false)}
         initialPupilId={addLessonPupilId}
         initialDate={addLessonDate}
+        initialTime={addLessonTime}
+
         onSaved={() => {
           setAddLessonOpen(false);
           setLessonsReloadKey((k) => k + 1);
@@ -2239,7 +2386,57 @@ function SchedulePage() {
         onSaved={() => setPersonalReloadKey((k) => k + 1)}
       />
 
+      {gapSheet && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/30" onClick={() => setGapSheet(null)} />
+          <div
+            className="relative w-full max-w-md"
+            style={{
+              background: '#fff',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '18px 16px calc(18px + 90px + env(safe-area-inset-bottom))',
+              display: 'grid',
+              gap: 10,
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Sora, sans-serif' }}>
+              Free slot
+            </div>
+            <div style={{ fontSize: 13, color: '#536579' }}>
+              {new Date(`${gapSheet.date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
+              {' · '}{gapSheet.gap.startTime}–{gapSheet.gap.endTime}
+            </div>
+            <div style={{ fontSize: 13, color: '#8A5A0B', fontWeight: 600, marginBottom: 4 }}>
+              {Math.floor(gapSheet.gap.gapMins / 60)}h{gapSheet.gap.gapMins % 60 ? ` ${gapSheet.gap.gapMins % 60}m` : ''} free · ~£{gapSheet.gap.potential} potential
+            </div>
+            <button
+              type="button"
+              onClick={() => { setGapSheet(null); navigate({ to: '/gaps' }); }}
+              style={{ background: '#2C97DE', color: '#FFFFFF', border: 0, borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            >
+              Find pupils
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const g = gapSheet;
+                setGapSheet(null);
+                setAddLessonPupilId(undefined);
+                setAddLessonDate(g.date);
+                setAddLessonTime(g.gap.startTime);
+                setAddLessonOpen(true);
+              }}
+              style={{ background: '#F3F8FF', color: '#0B1F3A', border: '1px solid #E4E8EF', borderRadius: 12, padding: '14px 12px', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+            >
+              Add lesson at {gapSheet.gap.startTime}
+            </button>
+          </div>
+        </div>
+      )}
+
       {addChooserOpen && (
+
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
           <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
           <div
@@ -2516,6 +2713,26 @@ function SchedulePage() {
                   Reschedule
                 </span>
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const lesson = actionsLesson;
+                  closeActions();
+                  setMovingLesson(lesson);
+                  setMoveMode(true);
+                  setConfirmMove(null);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconArrowsMove size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Move lesson
+                </span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => {
