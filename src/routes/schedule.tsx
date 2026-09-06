@@ -2739,19 +2739,25 @@ function SchedulePage() {
                 <>
                   <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4 }}>Length</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                    {durations.map((d) => (
-                      <button
-                        key={d}
-                        type="button"
-                        onClick={() => {
-                          setGapDuration(d);
-                          if (gapStartMins + d > gapEnd) setGapStartMins(Math.max(gapStart, gapEnd - d));
-                        }}
-                        style={chip(gapDuration === d)}
-                      >
-                        {d >= 60 ? `${d / 60}h${d % 60 ? ' 30m' : ''}` : `${d}m`}
-                      </button>
-                    ))}
+                    {durations.map((d) => {
+                      // How many pupils' own availability fits this length at
+                      // the currently chosen start time.
+                      const fit = matchForSlot(gapSheet.date, gapStartMins, d).count;
+                      return (
+                        <button
+                          key={d}
+                          type="button"
+                          onClick={() => {
+                            setGapDuration(d);
+                            if (gapStartMins + d > gapEnd) setGapStartMins(Math.max(gapStart, gapEnd - d));
+                          }}
+                          style={chip(gapDuration === d)}
+                        >
+                          {d >= 60 ? `${d / 60}h${d % 60 ? ' 30m' : ''}` : `${d}m`}
+                          <span style={{ opacity: 0.7, marginLeft: 4, fontWeight: 500 }}>· {fit}</span>
+                        </button>
+                      );
+                    })}
                   </div>
 
                   <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Start time</div>
@@ -2765,17 +2771,54 @@ function SchedulePage() {
                     ))}
                   </div>
 
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>Pupil</div>
-                  <select
-                    value={gapPupilId}
-                    onChange={(e) => setGapPupilId(e.target.value)}
-                    style={{ border: '1px solid #E4E8EF', borderRadius: 12, padding: '12px', fontSize: 15, background: '#FFFFFF', color: '#0B1F3A', fontFamily: 'inherit' }}
-                  >
-                    <option value="">Choose a pupil…</option>
-                    {allPupils.map((p: any) => (
-                      <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
-                    ))}
-                  </select>
+                  {(() => {
+                    // Pupils whose own availability (days, time window,
+                    // preferred lesson length, notice) fits the chosen slot.
+                    const fitting = matchForSlot(gapSheet.date, gapStartMins, gapDuration).allMatched;
+                    const fittingIds = new Set(fitting.map((p: any) => p.id));
+                    const others = allPupils.filter((p: any) => !fittingIds.has(p.id));
+                    return (
+                      <>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.4, marginTop: 4 }}>
+                          Pupil {fitting.length ? `· ${fitting.length} available` : ''}
+                        </div>
+                        {fitting.length > 0 ? (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                            {fitting.map((p: any) => (
+                              <button key={p.id} type="button" onClick={() => setGapPupilId(p.id)} style={chip(gapPupilId === p.id)}>
+                                {pupilDisplayName(p)}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: 12, color: '#8A6524' }}>
+                            No pupil's availability fits this time and length — try another start time or length.
+                          </div>
+                        )}
+                        <select
+                          value={gapPupilId}
+                          onChange={(e) => setGapPupilId(e.target.value)}
+                          style={{ border: '1px solid #E4E8EF', borderRadius: 12, padding: '12px', fontSize: 15, background: '#FFFFFF', color: '#0B1F3A', fontFamily: 'inherit' }}
+                        >
+                          <option value="">Choose a pupil…</option>
+                          {fitting.length > 0 && (
+                            <optgroup label="Available for this slot">
+                              {fitting.map((p: any) => (
+                                <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
+                              ))}
+                            </optgroup>
+                          )}
+                          {others.length > 0 && (
+                            <optgroup label="Outside their usual availability">
+                              {others.map((p: any) => (
+                                <option key={p.id} value={p.id}>{pupilDisplayName(p)}</option>
+                              ))}
+                            </optgroup>
+                          )}
+                        </select>
+                      </>
+                    );
+                  })()}
 
                   <button
                     type="button"
