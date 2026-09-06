@@ -1683,12 +1683,13 @@ function SchedulePage() {
         (l) => l.lesson_date.substring(0, 10) === key &&
           String(l.status || "").toLowerCase() !== "cancelled",
       );
-      const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
-        new Date(key + "T12:00:00").getDay()
-      ];
-      const dayConfig = perDayHours?.[dayName];
-      const isDayActive = dayConfig ? dayConfig.active !== false : workingDaysList.includes(dayName);
-      if (!isDayActive) continue;
+      const resolvedGapDay = resolveWorkingDayHours(key, {
+        startTime: workStart,
+        endTime: workEnd,
+        workingDays: workingDaysList,
+        perDayHours,
+      });
+      if (!resolvedGapDay.active) continue;
       const gaps = detectGaps(
         dayLessons.map((l) => ({
           status: l.status,
@@ -1696,8 +1697,9 @@ function SchedulePage() {
           duration_minutes: l.duration_minutes,
           pupils: null,
         })),
-        dayConfig?.start || workStart,
-        dayConfig?.end || workEnd,
+        resolvedGapDay.start,
+        resolvedGapDay.end,
+
         bufferAfter,
         busyBlocksForGaps,
         recurringBlocks,
