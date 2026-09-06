@@ -1525,7 +1525,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           backgroundPosition: "center",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 14, paddingRight: 64 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 14 }}>
           <img
             src={proLogo.url}
             alt="EDP PRO"
@@ -1544,24 +1544,6 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
               <br />
               Shop &amp; member perks.
             </div>
-          </div>
-
-          <div style={{ position: "absolute", top: "50%", right: 14, transform: "translateY(-50%)", flexShrink: 0, width: 50 }}>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 46,
-                height: 46,
-                borderRadius: 999,
-                background: "#FFFFFF",
-                boxShadow: "0 4px 12px rgba(11,31,58,0.25)",
-                marginLeft: "auto",
-              }}
-            >
-              <IconArrowRight size={22} stroke={2.4} color="#1877D6" />
-            </span>
           </div>
         </div>
       </div>
