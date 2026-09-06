@@ -137,6 +137,7 @@ export interface AddLessonSheetProps {
   initialPupilId?: string;
   initialDate?: string;
   initialTime?: string;
+  initialDuration?: number;
   editingLesson?: {
     id: string;
     pupil_id?: string;
@@ -168,6 +169,7 @@ export function AddLessonSheet({
   initialPupilId,
   initialDate,
   initialTime,
+  initialDuration,
   editingLesson,
 }: AddLessonSheetProps) {
   const [pupils, setPupils] = useState<Pupil[]>([]);
@@ -237,6 +239,7 @@ export function AddLessonSheet({
     setPupilId(initialPupilId ?? "");
     setDate(initialDate || todayISO());
     if (initialTime) setTime(initialTime);
+    if (initialDuration && !editingLesson) setDuration(initialDuration);
     setIsEvent(false);
     setEventTitle("");
     if (!editingLesson) {
@@ -244,7 +247,7 @@ export function AddLessonSheet({
       setTestDropoffTime("");
       setTestTimesTouched(false);
     }
-  }, [open, initialPupilId, initialDate, initialTime]);
+  }, [open, initialPupilId, initialDate, initialTime, initialDuration]);
 
   // Populate sheet state when editing an existing lesson.
   useEffect(() => {
