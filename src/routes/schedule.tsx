@@ -873,6 +873,27 @@ function SchedulePage() {
       }),
     [allPupils, allAvailability],
   );
+  /**
+   * Pupils who fit a whole free gap at *any* workable lesson length that fits
+   * inside it, so a pupil who only ever does 90-minute lessons still shows on
+   * a two-hour gap.
+   */
+  const matchForGapWindow = useCallback(
+    (dateKey: string, startMins: number, gapMins: number) => {
+      const seen = new Map<string, { id: string; name: string | null; first_name: string | null }>();
+      for (const d of [30, 45, 60, 90, 120]) {
+        if (d > gapMins) continue;
+        for (const p of matchForSlot(dateKey, startMins, d).allMatched) {
+          if (!seen.has(p.id)) seen.set(p.id, p as any);
+        }
+      }
+      const all = Array.from(seen.values());
+      return { count: all.length, topPupils: all.slice(0, 3), allMatched: all };
+    },
+    [matchForSlot],
+  );
+
+
 
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
   const [reminderLesson, setReminderLesson] = useState<any | null>(null);
