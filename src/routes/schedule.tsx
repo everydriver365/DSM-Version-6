@@ -806,6 +806,9 @@ function SchedulePage() {
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
   const [calendarView, setCalendarView] = useState<"day" | "week">("day");
+  const swipeRef = useRef<{ x: number; y: number } | null>(null);
+  const [swipeShift, setSwipeShift] = useState(0);
+
   const [clockNow, setClockNow] = useState(() => new Date());
   const [instructor, setInstructor] = useState<{ name: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -1990,11 +1993,41 @@ function SchedulePage() {
                 {syncMessage ? <div style={{ marginTop: 6, fontSize: 10, color: syncMessage.type === "success" ? "#3B6D11" : "#991B1B" }}>{syncMessage.text}</div> : null}
               </div>
 
-              <div ref={scrollRef} style={{ flex: 1, overflow: "auto", background: "#FFFFFF", paddingBottom: "calc(76px + env(safe-area-inset-bottom, 0px))" }}>
+              <div
+                ref={scrollRef}
+                onTouchStart={(e) => {
+                  if (e.touches.length !== 1) return;
+                  swipeRef.current = { x: e.touches[0]!.clientX, y: e.touches[0]!.clientY };
+                }}
+                onTouchMove={(e) => {
+                  const start = swipeRef.current;
+                  if (!start || e.touches.length !== 1) return;
+                  const dx = e.touches[0]!.clientX - start.x;
+                  const dy = e.touches[0]!.clientY - start.y;
+                  if (Math.abs(dx) > Math.abs(dy) + 6) setSwipeShift(Math.max(-60, Math.min(60, dx * 0.4)));
+                }}
+                onTouchEnd={(e) => {
+                  const start = swipeRef.current;
+                  swipeRef.current = null;
+                  setSwipeShift(0);
+                  if (!start) return;
+                  const touch = e.changedTouches[0];
+                  if (!touch) return;
+                  const dx = touch.clientX - start.x;
+                  const dy = touch.clientY - start.y;
+                  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+                  const el = scrollRef.current;
+                  if (calendarView === "week" && el && el.scrollWidth > el.clientWidth + 4) return;
+                  const step = calendarView === "week" ? 7 : 1;
+                  selectDay(addDays(selected, dx < 0 ? step : -step));
+                }}
+                style={{ flex: 1, overflow: "auto", background: "#FFFFFF", paddingBottom: "calc(76px + env(safe-area-inset-bottom, 0px))" }}
+              >
+
                 {loading ? (
                   <div style={{ padding: 24, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
                 ) : (
-                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px" }}>
+                  <div style={{ minWidth: calendarView === "week" ? 620 : undefined, display: "grid", gridTemplateColumns: calendarView === "week" ? "36px repeat(7, minmax(76px, 1fr))" : "36px minmax(0, 1fr)", padding: "14px 12px 20px", transform: swipeShift ? `translateX(${swipeShift}px)` : undefined, transition: swipeShift ? "none" : "transform 180ms ease" }}>
                     <div style={{ position: "relative", height: GRID_HEIGHT }}>
                       {hours.map((hour, index) => <span key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT - 6, right: 5, fontSize: 9, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>{String(hour).padStart(2, "0")}:00</span>)}
                     </div>
