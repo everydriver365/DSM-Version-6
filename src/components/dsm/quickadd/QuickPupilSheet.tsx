@@ -38,6 +38,7 @@ export function QuickPupilSheet({
   const [contactsList, setContactsList] = useState<any[]>([]);
   const [contactsPickerOpen, setContactsPickerOpen] = useState(false);
   const [contactSearch, setContactSearch] = useState("");
+  const [addressSeed, setAddressSeed] = useState(0);
 
   if (!open) return null;
 
@@ -137,7 +138,7 @@ export function QuickPupilSheet({
     if (given) setFirstName(given);
     if (family) setLastName(family);
     if (phone) setPhone(phone.replace(/\s/g, ""));
-    if (addressStr) setAddress(addressStr);
+    if (addressStr) { setAddress(addressStr); setAddressSeed((n) => n + 1); }
 
     toast.success("Contact imported");
   }
@@ -228,6 +229,7 @@ export function QuickPupilSheet({
           <TextField label="Phone" value={phone} onChange={setPhone} placeholder="07…" inputMode="tel" />
           <div style={{ marginBottom: 12 }}>
             <AddressLookup
+              key={addressSeed}
               initialAddress={address}
               initialPostcode={postcode}
               onAddressFound={({ address: addr, postcode: pc }) => {
