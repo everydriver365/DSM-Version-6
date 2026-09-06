@@ -1944,22 +1944,32 @@ function SchedulePage() {
 
           const entriesFor = (date: Date) => entriesByDay.get(ymdLocal(date)) ?? [];
 
-          // Grid bounds expand beyond 08:00–20:00 so early/late entries stay visible.
-          let minHour = 8;
-          let maxHour = 20;
-          viewDays.forEach((date) => {
-            entriesFor(date).forEach((entry) => {
-              if (entry.allDay) return;
-              const startH = entry.start.getHours() + entry.start.getMinutes() / 60;
-              const endH = entry.end.getHours() + entry.end.getMinutes() / 60;
-              if (startH < minHour) minHour = Math.floor(startH);
-              if (endH > maxHour) maxHour = Math.min(24, Math.ceil(endH));
-            });
-          });
-          const GRID_START = minHour * 60;
-          const GRID_END = maxHour * 60;
+          // Grid bounds derive from working hours and the lessons on screen,
+          // with 30 min padding so gaps at the start/end of the day remain visible.
+          const workStartMins = timeToMins(workStart || "09:00");
+          const workEndMins = timeToMins(workEnd || "18:00");
+
+          const lessonsForDay = viewDays.flatMap((date) =>
+            entriesFor(date)
+              .filter((e): e is AgendaEntry & { kind: "lesson"; lesson: Lesson } => e.kind === "lesson")
+              .map((e) => e.lesson)
+          );
+
+          const earliestMins = Math.min(
+            workStartMins,
+            ...lessonsForDay.map((l) => timeToMins(l.lesson_time || "09:00"))
+          );
+          const latestMins = Math.max(
+            workEndMins,
+            ...lessonsForDay.map((l) => timeToMins(l.lesson_time || "09:00") + (l.duration_minutes ?? 60))
+          );
+
+          const GRID_START = Math.max(0, earliestMins - 30);
+          const GRID_END = Math.min(1439, latestMins + 30);
           const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * HOUR_HEIGHT;
-          const hours = Array.from({ length: maxHour - minHour + 1 }, (_, i) => minHour + i);
+          const hours = Array.from({ length: Math.ceil((GRID_END - GRID_START) / 60) + 1 }, (_, i) =>
+            Math.floor(GRID_START / 60) + i
+          );
 
           const selectDay = (date: Date) => {
             const key = ymdLocal(date);
