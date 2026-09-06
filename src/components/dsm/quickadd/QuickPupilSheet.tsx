@@ -130,18 +130,34 @@ export function QuickPupilSheet({
     const given = contact.name?.given ?? "";
     const family = contact.name?.family ?? "";
     const phone = contact.phones?.[0]?.number ?? "";
-    const address = contact.postalAddresses?.[0];
-    const addressStr = [address?.street, address?.city, address?.postcode]
-      .filter(Boolean)
-      .join(", ");
+    const addr = contact.postalAddresses?.[0];
+
+    // Contacts can hold the postcode in postcode/postalCode, or tucked into
+    // the street/region text. Pull it out so it lands in the postcode field.
+    const rawParts = [addr?.street, addr?.city, addr?.region, addr?.postcode ?? addr?.postalCode]
+      .map((p: any) => (typeof p === "string" ? p.trim() : ""))
+      .filter(Boolean);
+    const joined = rawParts.join(", ");
+
+    const pcMatch = joined.match(/\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/i);
+    const foundPostcode = pcMatch ? pcMatch[0].toUpperCase().replace(/\s+/g, " ") : "";
+    const addressStr = (foundPostcode ? joined.replace(pcMatch![0], "") : joined)
+      .replace(/\s*,\s*,\s*/g, ", ")
+      .replace(/(^[\s,]+|[\s,]+$)/g, "");
 
     if (given) setFirstName(given);
     if (family) setLastName(family);
     if (phone) setPhone(phone.replace(/\s/g, ""));
-    if (addressStr) { setAddress(addressStr); setAddressSeed((n) => n + 1); }
+    if (addressStr || foundPostcode) {
+      setAddress(addressStr);
+      setPostcode(foundPostcode);
+      // Remount the address lookup so it picks up the imported values.
+      setAddressSeed((n) => n + 1);
+    }
 
     toast.success("Contact imported");
   }
+
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
