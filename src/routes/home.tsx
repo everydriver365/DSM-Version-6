@@ -5093,6 +5093,58 @@ function HomePage() {
     return { count: res.count, topPupils: res.topPupils };
   }
 
+  /** Open the confirm sheet for booking a matched pupil into a free gap. */
+  function openGapBooking(pupil: PreviewPupil, date: string, startMin: number, gapMins: number) {
+    tapLight();
+    const avail = allAvailability.find((a) => a.pupil_id === pupil.id);
+    const preferred = Number((avail as any)?.preferred_duration_minutes ?? 0) || 60;
+    setGapBooking({ pupil, date, startMin, gapMins });
+    setGapBookingStart(Math.ceil(startMin / 15) * 15);
+    setGapBookingDur(Math.min(preferred, gapMins));
+  }
+
+  /** Create the lesson for the pupil chosen on a gap card. */
+  async function confirmGapBooking() {
+    if (!gapBooking || !userId || gapBookingSaving) return;
+    setGapBookingSaving(true);
+    const p = gapBooking.pupil;
+    const dur = gapBookingDur;
+    let amount = 0;
+    if (dur === 90 && Number(p.custom_rate_90) > 0) amount = Number(p.custom_rate_90);
+    else if (dur === 120 && Number(p.custom_rate_120) > 0) amount = Number(p.custom_rate_120);
+    else if (Number(p.custom_rate) > 0) amount = Math.round(Number(p.custom_rate) * (dur / 60) * 100) / 100;
+
+    const { data, error } = await supabase
+      .from("lessons")
+      .insert({
+        instructor_id: userId,
+        pupil_id: p.id,
+        lesson_date: gapBooking.date,
+        lesson_time: `${minsToTime(gapBookingStart)}:00`,
+        duration_minutes: dur,
+        lesson_type: "lesson",
+        status: "confirmed",
+        amount_due: amount,
+        payment_status: "unpaid",
+      })
+      .select("id")
+      .single();
+
+    setGapBookingSaving(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    const newId = (data as any)?.id as string | undefined;
+    if (newId) pushLessonToGoogle({ lesson_id: newId, instructor_id: userId, action: "upsert" });
+    hapticSuccess();
+    toast.success(`Lesson booked with ${p.first_name || p.name || "pupil"}`);
+    setGapBooking(null);
+    setReloadKey((k) => k + 1);
+  }
+
+
+
 
   const [naEnquiries, setNaEnquiries] = useState(0);
   useEffect(() => {
