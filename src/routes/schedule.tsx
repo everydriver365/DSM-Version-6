@@ -2666,6 +2666,26 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
+                  const lesson = actionsLesson;
+                  closeActions();
+                  setMovingLesson(lesson);
+                  setMoveMode(true);
+                  setConfirmMove(null);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconArrowsMove size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Move lesson
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
                   closeActions();
                   setUnifiedPayPupilId(actionsLesson.pupil_id ?? undefined);
                   setUnifiedPayOpen(true);
