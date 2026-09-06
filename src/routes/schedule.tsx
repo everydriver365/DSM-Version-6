@@ -3184,6 +3184,13 @@ function SchedulePage() {
         </div>
       )}
 
+      <LessonReminderSheet
+        open={!!reminderLesson}
+        lesson={reminderLesson}
+        instructorId={userId}
+        onClose={() => setReminderLesson(null)}
+      />
+
     </div>
   );
 }
