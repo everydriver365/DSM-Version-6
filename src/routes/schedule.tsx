@@ -3045,6 +3045,24 @@ function SchedulePage() {
                   Move lesson
                 </span>
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const lesson = actionsLesson;
+                  closeActions();
+                  setReminderLesson(lesson);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconBell size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Reminder
+                </span>
+              </button>
+
 
               <button
                 type="button"
