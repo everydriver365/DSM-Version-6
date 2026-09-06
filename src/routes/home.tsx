@@ -4470,8 +4470,8 @@ function HomePage() {
       const todayGaps = computeDayGaps({
         dayLessons: mapLessons(todayLessons),
         calendarBlocks: rawBlocks,
-        recurringBlocks: [],
-        dayTimeOff: [],
+        recurringBlocks: recurringBlocks || [],
+        dayTimeOff: dayTimeOffForDate(todayISO),
         dayStart: startTimeStr,
         dayEnd: todayEndTime,
         instructorBufferAfter,
