@@ -2059,7 +2059,7 @@ function SchedulePage() {
                   style={{
                     ...box,
                     zIndex: 0,
-                    border: "1px dashed #E3B externally".slice(0, 0) || "1px dashed #E0A33C",
+                    border: "1px dashed #E0A33C",
                     borderRadius: 6,
                     background: "rgba(239,159,39,0.08)",
                     color: "#8A5A0B",
