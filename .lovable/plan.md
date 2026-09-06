@@ -1,36 +1,22 @@
-# Pass real recurring blocks and time off to `computeDayGaps` in home.tsx
+# Why "Tomorrow" doesn't show all events
 
-## Goal
-Stop the home teaching schedule tile from calculating false gaps over Google Calendar events and booked time off by supplying real `recurringBlocks` and `dayTimeOff` data to every `computeDayGaps` call.
+Two real limits in the home Teaching Schedule tile explain it.
 
-## Current state
-`src/routes/home.tsx` calls `computeDayGaps` four times (today/tomorrow free-slot lookup, `computeFreeMinutes`, and the teaching schedule tile render). All four currently pass empty arrays:
+## 1. The list is capped at 4 items
+The tile only ever renders the first four entries (lessons + calendar events) for the selected day. Anything after that is silently dropped, even on Tomorrow.
 
-```ts
-recurringBlocks: [],
-dayTimeOff: [],
-```
+## 2. Multi-day and overnight events are missed
+Calendar events are matched to a day by the day they *start*. An event that starts today (or earlier) and runs into tomorrow, and all-day events spanning several days, never appear under Tomorrow.
 
-These arrays are not fetched anywhere else in the component.
+## Fix
 
-## Proposed change
-1. Fetch the two datasets once when the instructor ID is known:
-   - `instructor_recurring_blocks` where `instructor_id = userId` and `is_active = true`.
-   - `instructor_time_off` where `instructor_id = userId`, overlapping today and tomorrow (`start_date <= tomorrowISO` and `end_date >= todayISO`).
-2. Store them in local state (e.g. `recurringBlocks`, `timeOff`).
-3. Derive `dayTimeOffForDate` helpers so each call passes only the rows relevant to the date being checked.
-4. Update all four `computeDayGaps` calls in `src/routes/home.tsx` to use:
-   ```ts
-   recurringBlocks: recurringBlocks || [],
-   dayTimeOff: dayTimeOffForDate(dateStr) || [],
-   ```
+1. Show all entries for the day instead of the first four. Keep the tile compact with a "Show all (N)" expand control, so the default view stays short but nothing is hidden.
+2. Match calendar events to a day by overlap (event ends after the day starts and starts before the day ends) instead of by start date, so overnight and multi-day events appear on every day they cover. All-day events keep the existing all-day treatment.
 
-## Scope
-- Only `src/routes/home.tsx` is modified.
-- `capacitor.config.ts` is not touched.
-- No gap-card styling changes.
-- No navigation changes.
+## Technical notes
 
-## Verification
-- Run `bunx tsgo --noEmit` after the edit.
-- Show the updated `computeDayGaps` calls before finishing.
+- File: `src/routes/home.tsx` only.
+- Remove the `.slice(0, 4)` on the timeline rows; add local expand state defaulting to collapsed at 4 rows.
+- Rewrite `blocksForDate(dateStr)` to keep any block whose local start/end range intersects `dateStr`, clamping `start`/`end` minutes to 0–1440 for the requested day.
+- Gap calculation already uses `computeDayGaps`; clamped multi-day blocks will feed into it correctly, so no false gaps over long events.
+- No backend, data or navigation changes.
