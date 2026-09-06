@@ -38,6 +38,7 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
+import { LessonReminderSheet } from "@/components/schedule/LessonReminderSheet";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
 
 
@@ -840,6 +841,7 @@ function SchedulePage() {
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
+  const [reminderLesson, setReminderLesson] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const closeActions = () => {
     setActionsLesson(null);
@@ -3043,6 +3045,24 @@ function SchedulePage() {
                   Move lesson
                 </span>
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const lesson = actionsLesson;
+                  closeActions();
+                  setReminderLesson(lesson);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconBell size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Reminder
+                </span>
+              </button>
+
 
               <button
                 type="button"
@@ -3163,6 +3183,13 @@ function SchedulePage() {
           </div>
         </div>
       )}
+
+      <LessonReminderSheet
+        open={!!reminderLesson}
+        lesson={reminderLesson}
+        instructorId={userId}
+        onClose={() => setReminderLesson(null)}
+      />
 
     </div>
   );
