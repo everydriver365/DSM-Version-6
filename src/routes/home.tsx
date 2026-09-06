@@ -5054,39 +5054,37 @@ function HomePage() {
 
   ] as const;
 
+  /**
+   * Which pupils could take this slot? Delegates to the shared matcher so the
+   * home tile, the schedule page and the gaps page apply identical rules:
+   * available days, the pupil's time-of-day window, their preferred lesson
+   * length and their minimum notice.
+   */
   function previewMatchForGap(gap: {
     date: string;
     dayName: string;
+    startMin: number;
     durationMin: number;
-  }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
-    if (!allPupils.length || !allAvailability.length) {
-      return { count: 0, topPupils: [] };
-    }
-    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
-    for (const a of allAvailability) {
-      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
-    }
-    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
-    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
-
-    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
-    for (const p of allPupils) {
-      const s = availByPupil.get(p.id);
-      if (!s) continue;
-      const availDays = s.available_days || [];
-      if (!availDays.includes(gap.dayName)) continue;
-      const minDuration = s.preferred_duration_minutes ?? 60;
-      if (gap.durationMin < minDuration) continue;
-      const minNoticeHours = s.min_notice_hours ?? 24;
-      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
-      matched.push({
-        name: p.name,
-        first_name: p.first_name,
-        calendar_colour: p.calendar_colour,
-      });
-    }
-    return { count: matched.length, topPupils: matched.slice(0, 3) };
+  }): { count: number; topPupils: PreviewPupil[] } {
+    const res = sharedPreviewMatchForGap({
+      date: gap.date,
+      dayName: gap.dayName,
+      startMin: gap.startMin,
+      durationMin: gap.durationMin,
+      allPupils,
+      allAvailability: allAvailability.map((a) => ({
+        pupil_id: a.pupil_id,
+        available_days: a.available_days ?? null,
+        available_from: a.available_from ?? null,
+        available_until: a.available_until ?? null,
+        min_notice_hours: a.min_notice_hours ?? null,
+        short_notice_opt_in: a.short_notice_opt_in ?? null,
+        preferred_duration_minutes: a.preferred_duration_minutes ?? null,
+      })),
+    });
+    return { count: res.count, topPupils: res.topPupils };
   }
+
 
   const [naEnquiries, setNaEnquiries] = useState(0);
   useEffect(() => {
