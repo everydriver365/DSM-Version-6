@@ -1525,7 +1525,7 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
           backgroundPosition: "center",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 14, paddingRight: 64 }}>
           <img
             src={proLogo.url}
             alt="EDP PRO"
