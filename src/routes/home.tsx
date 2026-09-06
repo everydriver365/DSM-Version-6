@@ -4299,6 +4299,11 @@ function HomePage() {
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
+  const in14DaysISO = useMemo(() => {
+    const d = new Date(todayStart);
+    d.setDate(d.getDate() + 14);
+    return ymd(d);
+  }, [todayStart]);
 
   useEffect(() => {
     if (!userId) return;
