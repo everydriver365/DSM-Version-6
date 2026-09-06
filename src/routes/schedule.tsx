@@ -1987,6 +1987,103 @@ function SchedulePage() {
             );
           };
 
+          // Free slots: normally tappable "fill this gap" bands; in move mode,
+          // 15-minute start options that fit the lesson being moved.
+          const renderGaps = (date: Date, compact: boolean) => {
+            const key = ymdLocal(date);
+            const gaps = gapsByDay.get(key) ?? [];
+            if (!gaps.length) return null;
+            const moveDuration = moveMode && movingLesson ? Number(movingLesson.duration_minutes || 60) : 0;
+
+            const bandStyle = (startMins: number, endMins: number) => {
+              const clippedStart = Math.max(startMins, GRID_START);
+              const clippedEnd = Math.min(endMins, GRID_END);
+              if (clippedEnd - clippedStart <= 0) return null;
+              return {
+                position: "absolute" as const,
+                top: ((clippedStart - GRID_START) / 60) * HOUR_HEIGHT + 1,
+                left: 2,
+                right: 2,
+                height: Math.max(16, ((clippedEnd - clippedStart) / 60) * HOUR_HEIGHT - 2),
+              };
+            };
+
+            if (moveMode && movingLesson) {
+              const slots: Array<{ startMins: number }> = [];
+              gaps.forEach((gap) => {
+                for (let s = Math.ceil(gap.startMins / 15) * 15; s + moveDuration <= gap.endMins; s += 15) {
+                  slots.push({ startMins: s });
+                }
+              });
+              return slots.map((slot) => {
+                const box = bandStyle(slot.startMins, slot.startMins + moveDuration);
+                if (!box) return null;
+                const timeLabel = minsToTime(slot.startMins);
+                return (
+                  <button
+                    key={`slot-${key}-${slot.startMins}`}
+                    type="button"
+                    onClick={() => setConfirmMove({ date: key, time: timeLabel })}
+                    style={{
+                      ...box,
+                      zIndex: 4,
+                      border: "1.5px dashed #1877D6",
+                      borderRadius: 6,
+                      background: "rgba(24,119,214,0.10)",
+                      color: "#0C447C",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: compact ? 8 : 10,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      padding: 0,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {timeLabel}
+                  </button>
+                );
+              });
+            }
+
+            return gaps.map((gap) => {
+              const box = bandStyle(gap.startMins, gap.endMins);
+              if (!box) return null;
+              return (
+                <button
+                  key={`gap-${key}-${gap.startMins}`}
+                  type="button"
+                  onClick={() => setGapSheet({ date: key, gap })}
+                  style={{
+                    ...box,
+                    zIndex: 0,
+                    border: "1px dashed #E3B externally".slice(0, 0) || "1px dashed #E0A33C",
+                    borderRadius: 6,
+                    background: "rgba(239,159,39,0.08)",
+                    color: "#8A5A0B",
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: compact ? 8 : 10,
+                    fontWeight: 600,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 2,
+                    cursor: "pointer",
+                    padding: 0,
+                    overflow: "hidden",
+                  }}
+                >
+                  {!compact && <span>{gap.startTime}–{gap.endTime} free</span>}
+                  {!compact && box.height >= 54 && <span style={{ fontSize: 9, fontWeight: 700 }}>~£{gap.potential} potential</span>}
+                  {compact && <span>Free</span>}
+                </button>
+              );
+            });
+          };
+
           const gridColumn = (date: Date, compact: boolean) => {
             const key = ymdLocal(date);
             const isToday = key === todayKey;
@@ -1997,7 +2094,11 @@ function SchedulePage() {
                 {hours.map((hour, index) => (
                   <div key={hour} style={{ position: "absolute", top: index * HOUR_HEIGHT, left: 0, right: 0, borderTop: "0.5px solid #F0F0F0" }} />
                 ))}
-                {entriesFor(date).map((entry) => renderBlock(entry, compact))}
+                {renderGaps(date, compact)}
+                <div style={{ pointerEvents: moveMode ? "none" : undefined }}>
+                  {entriesFor(date).map((entry) => renderBlock(entry, compact))}
+                </div>
+
                 {showNow && (
                   <div style={{ position: "absolute", top: ((currentMinutes - GRID_START) / 60) * HOUR_HEIGHT, left: 0, right: 0, height: 1, background: "#E24B4A", zIndex: 5, pointerEvents: "none" }}>
                     <span style={{ position: "absolute", left: -3, top: -3, width: 7, height: 7, borderRadius: "50%", background: "#E24B4A" }} />
