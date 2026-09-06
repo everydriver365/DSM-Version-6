@@ -206,22 +206,17 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     });
   }
 
-  // Today-only: don't offer slots starting within the next 30 min; round up to 15.
+  // Today-only: flag gaps that start within the next 30 min (or are already past)
+  // so renderers can hide the booking/SMS offer, but keep every gap visible.
   if (isToday) {
     const nowMins =
       params.nowMinutes ??
       new Date().getHours() * 60 + new Date().getMinutes();
     const minStartMins = nowMins + 30;
-    const adjusted: ComputedGap[] = [];
-    for (const g of gaps) {
-      let gStart = g.startMins;
-      if (gStart < minStartMins) gStart = Math.ceil(minStartMins / 15) * 15;
-      if (gStart >= g.endMins) continue;
-      const gapMins = g.endMins - gStart;
-      if (gapMins < minGap) continue;
-      adjusted.push({ startMins: gStart, endMins: g.endMins, gapMins });
-    }
-    return adjusted;
+    return gaps.map((g) => ({
+      ...g,
+      isSoonOrPast: g.startMins < minStartMins,
+    }));
   }
   return gaps;
 }
