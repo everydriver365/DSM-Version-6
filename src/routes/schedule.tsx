@@ -2467,6 +2467,14 @@ function SchedulePage() {
                                   <span style={{ display: "block", fontSize: 10 }}>
                                     {Math.floor(gap.gapMins / 60)}h{gap.gapMins % 60 ? ` ${gap.gapMins % 60}m` : ""} free · ~£{gap.potential} potential
                                   </span>
+                                  {(() => {
+                                    const m = matchForGapWindow(key, gap.startMins, gap.gapMins);
+                                    return (
+                                      <span style={{ display: "block", fontSize: 10, marginTop: 2, color: m.count ? "#0C447C" : "#8A6524" }}>
+                                        {m.count ? `${m.count} pupil${m.count === 1 ? "" : "s"} available` : "No pupil's availability fits"}
+                                      </span>
+                                    );
+                                  })()}
                                 </span>
                               </button>
                             ),
