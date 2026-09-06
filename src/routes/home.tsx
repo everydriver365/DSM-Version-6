@@ -4444,6 +4444,11 @@ function HomePage() {
     return active ? (cfg?.end || String((workingHours as Record<string, unknown>).end_time ?? "18:00")) : null;
   })();
 
+  const dayTimeOffForDate = (dateStr: string) =>
+    (timeOff || [])
+      .filter((t) => t.start_date <= dateStr && t.end_date >= dateStr)
+      .map((t) => ({ start_time: t.start_time ?? null, end_time: t.end_time ?? null, all_day: t.all_day ?? null }));
+
   const nextFreeSlot = (() => {
     const mapLessons = (list: LessonRow[]) =>
       list.map((l) => ({
