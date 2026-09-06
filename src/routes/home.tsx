@@ -40,7 +40,7 @@ import { computeDayGaps, localDateStr } from "@/lib/gapDetection";
 import { resolveDayHours as resolveWorkingDayHours, computeRangeGaps, dateRange } from "@/lib/gapEngine";
 
 import { pupilInitials } from "@/lib/gapMatching";
-import { previewMatchForGap } from "@/lib/pupilMatching";
+import { previewMatchForGap as sharedPreviewMatchForGap } from "@/lib/pupilMatching";
 
 
 
