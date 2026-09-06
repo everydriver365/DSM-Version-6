@@ -19,7 +19,6 @@ import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEven
 import { toast } from "@/lib/toast";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
-import { getSimpleGaps } from "@/routes/home";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
