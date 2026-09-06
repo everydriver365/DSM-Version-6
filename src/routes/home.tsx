@@ -10139,6 +10139,101 @@ function HomePage() {
         }}
       />
 
+      {/* Confirm booking a matched pupil straight from a free-gap card */}
+      {gapBooking && (() => {
+        const gb = gapBooking;
+        const gapEndMin = gb.startMin + gb.gapMins;
+        const durations = [60, 90, 120].filter((d) => gapBookingStart + d <= gapEndMin);
+        if (!durations.includes(gapBookingDur)) durations.push(gapBookingDur);
+        const starts: number[] = [];
+        for (let s = Math.ceil(gb.startMin / 15) * 15; s + gapBookingDur <= gapEndMin; s += 15) starts.push(s);
+        const dObj = new Date(`${gb.date}T00:00:00`);
+        const dateLabel = dObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+        const name = gb.pupil.name || [gb.pupil.first_name, gb.pupil.last_name].filter(Boolean).join(' ') || 'Pupil';
+        return (
+          <div
+            onClick={() => setGapBooking(null)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(11,31,58,0.45)', zIndex: 4000, display: 'flex', alignItems: 'flex-end' }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ width: '100%', background: '#FFFFFF', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: '16px 16px calc(16px + env(safe-area-inset-bottom))', fontFamily: PF }}
+            >
+              <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E2E8F0', margin: '0 auto 12px' }} />
+              <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A' }}>Book {name}</div>
+              <div style={{ fontSize: 12, color: '#536579', marginTop: 2 }}>
+                {dateLabel} · free {minsToTime(gb.startMin)}–{minsToTime(gapEndMin)}
+              </div>
+
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.3, margin: '14px 0 6px' }}>Duration</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {durations.sort((a, b) => a - b).map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => {
+                      setGapBookingDur(d);
+                      setGapBookingStart((s) => Math.min(s, gapEndMin - d));
+                    }}
+                    style={{ border: `1px solid ${d === gapBookingDur ? '#1877D6' : '#E2E8F0'}`, background: d === gapBookingDur ? '#1877D6' : '#FFFFFF', color: d === gapBookingDur ? '#FFFFFF' : '#0B1F3A', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: PF }}
+                  >
+                    {d === 60 ? '1h' : d === 90 ? '1h 30' : d === 120 ? '2h' : `${d}m`}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#536579', textTransform: 'uppercase', letterSpacing: 0.3, margin: '14px 0 6px' }}>Start time</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', maxHeight: 108, overflowY: 'auto' }}>
+                {starts.length === 0 ? (
+                  <span style={{ fontSize: 12, color: '#8A6524' }}>That length won't fit this gap</span>
+                ) : starts.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setGapBookingStart(s)}
+                    style={{ border: `1px solid ${s === gapBookingStart ? '#1877D6' : '#E2E8F0'}`, background: s === gapBookingStart ? '#E8F4FD' : '#FFFFFF', color: '#0B1F3A', borderRadius: 8, padding: '7px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}
+                  >
+                    {minsToTime(s)}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
+                <button
+                  type="button"
+                  onClick={() => setGapBooking(null)}
+                  style={{ flex: 1, border: '1px solid #E2E8F0', background: '#FFFFFF', color: '#536579', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: PF }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={gapBookingSaving || starts.length === 0}
+                  onClick={() => { void confirmGapBooking(); }}
+                  style={{ flex: 2, border: 0, background: gapBookingSaving || starts.length === 0 ? '#9CB3CC' : '#1877D6', color: '#FFFFFF', borderRadius: 8, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: PF }}
+                >
+                  {gapBookingSaving ? 'Booking…' : `Confirm ${minsToTime(gapBookingStart)}`}
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setAddLessonPupilId(gb.pupil.id);
+                  setAddLessonDate(gb.date);
+                  setGapBooking(null);
+                  setAddLessonOpen(true);
+                }}
+                style={{ width: '100%', marginTop: 10, border: 0, background: 'transparent', color: '#2C97DE', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: PF }}
+              >
+                More options →
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+
+
+
       <PersonalEventSheet
         open={personalSheetOpen}
         defaultDate={addLessonDate}
