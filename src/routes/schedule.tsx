@@ -1252,7 +1252,7 @@ function SchedulePage() {
           .from("pupils")
           .select("id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120")
           .eq("instructor_id", userId)
-          .not("status", "in", "(inactive,passed,cancelled,archived)")
+          .or("status.is.null,status.not.in.(inactive,passed,cancelled,archived)")
           .is("deleted_at", null),
         supabase
           .from("pupil_ready_to_learn_settings")
