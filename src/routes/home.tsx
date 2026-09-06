@@ -4311,7 +4311,7 @@ function HomePage() {
         .eq("instructor_id", userId)
         .eq("source", "external_calendar")
         .gte("start_datetime", todayISO)
-        .lte("start_datetime", `${tomorrowISO}T23:59:59`);
+        .lte("start_datetime", `${in14DaysISO}T23:59:59`);
       if (cancelled) return;
       if (error) {
         console.warn("[home] calendar_blocks fetch failed", error);
@@ -6741,7 +6741,22 @@ function HomePage() {
             isToday,
             minGapMinutes,
           });
-          for (const g of computed) {
+          // Safety net: if the canonical detector finds nothing, fall back to a
+          // plain working-hours scan so real free time always surfaces.
+          const gapsForDay = computed.length
+            ? computed
+            : getSimpleGaps(
+                sorted.map((l) => ({
+                  lesson_time: l.lesson_time,
+                  duration_minutes: l.duration_minutes ?? 60,
+                  status: l.status,
+                })),
+                dayStart,
+                dayEnd,
+                minGapMinutes,
+                { isToday },
+              );
+          for (const g of gapsForDay) {
             const s = new Date(baseDate);
             s.setHours(0, 0, 0, 0);
             s.setMinutes(g.startMins);
