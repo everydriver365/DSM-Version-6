@@ -4278,7 +4278,29 @@ function HomePage() {
       setCalendarBlocks((data as any[]) ?? []);
     };
 
+    const fetchRecurringAndTimeOff = async () => {
+      const [{ data: recData, error: recErr }, { data: toData, error: toErr }] = await Promise.all([
+        supabase
+          .from("instructor_recurring_blocks")
+          .select("id, day_of_week, start_time, end_time, is_active")
+          .eq("instructor_id", userId)
+          .eq("is_active", true),
+        supabase
+          .from("instructor_time_off")
+          .select("id, start_date, end_date, all_day, start_time, end_time")
+          .eq("instructor_id", userId)
+          .lte("start_date", in14DaysISO)
+          .gte("end_date", todayISO),
+      ]);
+      if (cancelled) return;
+      if (recErr) console.warn("[home] instructor_recurring_blocks fetch failed", recErr);
+      if (toErr) console.warn("[home] instructor_time_off fetch failed", toErr);
+      setRecurringBlocks((recData as any[]) ?? []);
+      setTimeOff((toData as any[]) ?? []);
+    };
+
     fetchCalendarBlocks();
+    fetchRecurringAndTimeOff();
 
     const handleCalendarSynced = () => {
       console.log("[home] calendar-synced event received; refetching calendar_blocks");
