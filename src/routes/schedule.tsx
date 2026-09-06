@@ -19,6 +19,8 @@ import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEven
 import { toast } from "@/lib/toast";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
+import { resolveDayHours as resolveWorkingDayHours } from "@/lib/gapEngine";
+
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";

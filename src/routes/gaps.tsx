@@ -19,6 +19,8 @@ import {
 } from "../components/dsm/BottomSheetV2";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { resolveDayHours as resolveWorkingDayHours } from "@/lib/gapEngine";
+
 
 import {
   slotFitsPupilWindow,
