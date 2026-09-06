@@ -7389,7 +7389,7 @@ function HomePage() {
                   <button
                     type="button"
                     onClick={() => navigate({ to: '/schedule' as never })}
-                    style={{ width: '100%', textAlign: 'center', fontSize: 12, color: '#2C97DE', padding: 10, border: 'none', borderTop: '0.5px solid #F4F6F8', background: '#FFFFFF', cursor: 'pointer', fontFamily: PF, fontWeight: 600 }}
+                    style={{ width: '100%', textAlign: 'center', fontSize: 12, color: '#2C97DE', padding: 10, border: 'none', borderTop: '0.5px solid #F4F6F8', background: '#FFFFFF', cursor: 'pointer', fontFamily: PF, fontWeight: 600, borderRadius: 8 }}
                   >
                     View full schedule →
                   </button>
