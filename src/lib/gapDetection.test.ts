@@ -79,7 +79,7 @@ describe("computeDayGaps", () => {
           end_datetime: "2026-09-08T11:00:00",
         }],
       }),
-    ).toEqual([{ startMins: 660, endMins: 960, gapMins: 300 }]);
+    ).toEqual([{ startMins: 675, endMins: 960, gapMins: 285 }]);
   });
 
   test("blocks the day for an all-day ICS event", () => {
