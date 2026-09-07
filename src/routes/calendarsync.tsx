@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconCalendar, IconChevronRight, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconChevronRight, IconCopy, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -307,6 +307,20 @@ function CalendarSyncPage() {
     }
   }
 
+  const icsUrl = userId
+    ? `${SUPABASE_URL}/functions/v1/ics-feed?instructor_id=${userId}`
+    : "";
+
+  async function copyIcsUrl() {
+    if (!icsUrl) return;
+    try {
+      await navigator.clipboard.writeText(icsUrl);
+      toast.success("Link copied!");
+    } catch {
+      toast.error("Copy failed");
+    }
+  }
+
   return (
     <DSMTopSheet title="Calendar Sync" onBack={() => navigate({ to: "/settings" as never })}>
       <div style={{ ...POPPINS, minHeight: "100%" }}>
@@ -334,6 +348,116 @@ function CalendarSyncPage() {
             >
               Connect your Google Calendar to import events and push EDP lessons automatically.
             </p>
+          </div>
+
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 12,
+              border: "0.5px solid #E4E8EF",
+              padding: 16,
+              marginBottom: 16,
+              ...POPPINS,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 8,
+              }}
+            >
+              <IconCalendar size={20} color="#2C97DE" />
+              <div
+                style={{
+                  color: "#0B2341",
+                  fontSize: 14,
+                  fontWeight: tokens.fontWeight.bold,
+                }}
+              >
+                Add EDP to your calendar
+              </div>
+            </div>
+
+            <p
+              style={{
+                color: "#536579",
+                fontSize: 12,
+                lineHeight: 1.5,
+                margin: 0,
+              }}
+            >
+              Subscribe to your lesson calendar in Google, Apple or Outlook. Your lessons update automatically.
+            </p>
+
+            <div
+              style={{
+                background: "#F4F6F8",
+                borderRadius: 8,
+                padding: "10px 12px",
+                marginTop: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <div
+                style={{
+                  flex: 1,
+                  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                  fontSize: 11,
+                  color: "#536579",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {icsUrl || "Sign in to see your calendar link"}
+              </div>
+              {icsUrl && (
+                <button
+                  type="button"
+                  onClick={copyIcsUrl}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconCopy size={16} color="#2C97DE" />
+                </button>
+              )}
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              <div
+                style={{
+                  color: "#0B2341",
+                  fontSize: 11,
+                  fontWeight: tokens.fontWeight.bold,
+                  marginBottom: 6,
+                }}
+              >
+                How to add:
+              </div>
+              <div style={{ fontSize: 11, color: "#536579", lineHeight: 1.6 }}>
+                <div>1. Open Google Calendar on desktop → click "+" next to "Other calendars" → select "From URL"</div>
+                <div style={{ marginTop: 4 }}>2. Paste the link above and click "Add calendar"</div>
+                <div style={{ marginTop: 4 }}>
+                  ⚠️ Important: choose "From URL" — not "Import". Using Import will create duplicates
+                </div>
+                <div style={{ marginTop: 4 }}>3. Your EDP lessons will appear within a few minutes and update automatically</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 8, fontSize: 10, color: "#9CA3AF" }}>
+              Apple Calendar: File → New Calendar Subscription → paste the link
+            </div>
           </div>
 
           <div style={{ marginTop: 24 }}>
