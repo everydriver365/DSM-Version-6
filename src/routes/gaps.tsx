@@ -252,7 +252,7 @@ function GapsPage() {
             .from("calendar_blocks")
             .select("start_datetime, end_datetime, title, is_all_day, blocks_availability")
             .eq("instructor_id", uid)
-            .in("source", ["ics_inbound", "external_calendar"])
+            .eq("source", "ics_inbound")
             .gt("end_datetime", `${today}T00:00:00`)
             .lt("start_datetime", `${addDays(endDate, 1)}T00:00:00`),
           supabase.from("instructor_recurring_blocks").select("day_of_week, start_time, end_time, is_active").eq("instructor_id", uid),
