@@ -761,16 +761,21 @@ function GapsPage() {
           }
 
           // Merge ICS inbound calendar blocks as pseudo-lessons for gap detection.
-          const dayBlocks = getCalendarBlocksForDate(icsBlocksLocal, iso).filter((b) => !b.isAllDay).map((b) => {
-            const c = getBlockColour(b.title);
-            return {
-              start: b.startMins,
-              end: b.endMins,
-              title: `${c.icon} ${b.title}`,
-              color: c.border as string | null,
-              bufAfter: instrBufAfter,
-            };
-          });
+          // Only subtract the overlap with working hours — a block starting before
+          // the day begins should only block from the day start onward.
+          const dayBlocks = getCalendarBlocksForDate(icsBlocksLocal, iso)
+            .filter((b) => !b.isAllDay)
+            .map((b) => {
+              const c = getBlockColour(b.title);
+              return {
+                start: Math.max(b.startMins, wsMin),
+                end: Math.min(b.endMins, weMin),
+                title: `${c.icon} ${b.title}`,
+                color: c.border as string | null,
+                bufAfter: instrBufAfter,
+              };
+            })
+            .filter((b) => b.start < b.end);
           // Recurring blocks for this weekday.
           const dayRecurring = recurringBlocks
             .filter(b => b.day_of_week === dayName)
