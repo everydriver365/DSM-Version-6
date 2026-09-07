@@ -307,6 +307,20 @@ function CalendarSyncPage() {
     }
   }
 
+  const icsUrl = userId
+    ? `${SUPABASE_URL}/functions/v1/ics-feed?instructor_id=${userId}`
+    : "";
+
+  async function copyIcsUrl() {
+    if (!icsUrl) return;
+    try {
+      await navigator.clipboard.writeText(icsUrl);
+      toast.success("Link copied!");
+    } catch {
+      toast.error("Copy failed");
+    }
+  }
+
   return (
     <DSMTopSheet title="Calendar Sync" onBack={() => navigate({ to: "/settings" as never })}>
       <div style={{ ...POPPINS, minHeight: "100%" }}>
