@@ -741,7 +741,14 @@ function SchedulePage() {
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
+  const [icsBlocks, setIcsBlocks] = useState<Array<{
+    id: string;
+    start_datetime: string;
+    end_datetime: string;
+    title: string | null;
+  }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
+
   // "add anything to my day" flow.
   const [personalEvents, setPersonalEvents] = useState<PersonalEvent[]>([]);
   const [personalReloadKey, setPersonalReloadKey] = useState(0);
