@@ -79,7 +79,7 @@ describe("computeDayGaps", () => {
           end_datetime: "2026-09-08T11:00:00",
         }],
       }),
-    ).toEqual([{ startMins: 660, endMins: 960, gapMins: 300 }]);
+    ).toEqual([{ startMins: 675, endMins: 960, gapMins: 285 }]);
   });
 
   test("blocks the day for an all-day ICS event", () => {
@@ -91,6 +91,27 @@ describe("computeDayGaps", () => {
           end_datetime: "2026-09-09T00:00:00",
           is_all_day: true,
         }],
+      }),
+    ).toEqual([]);
+  });
+
+  test("reserves travel time on both sides of imported calendar events", () => {
+    expect(
+      computeDayGaps({
+        ...base,
+        dayStart: "10:30",
+        dayEnd: "16:00",
+        instructorBufferAfter: 30,
+        calendarBlocks: [
+          {
+            start_datetime: "2026-09-08T09:00:00",
+            end_datetime: "2026-09-08T12:00:00",
+          },
+          {
+            start_datetime: "2026-09-08T13:00:00",
+            end_datetime: "2026-09-08T16:00:00",
+          },
+        ],
       }),
     ).toEqual([]);
   });
