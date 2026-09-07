@@ -108,19 +108,31 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Build event
+  // Build event — wall-clock time + explicit Europe/London (no "Z" instant)
   const isEvent = lesson.lesson_type === "event";
   const title = isEvent ? (lesson.event_title ?? "Event") : `Lesson — ${(lesson.pupils as any)?.name ?? "Pupil"}`;
-  const startDateTime = new Date(`${lesson.lesson_date}T${lesson.lesson_time}`).toISOString();
-  const endDateTime = new Date(new Date(startDateTime).getTime() + (lesson.duration_minutes ?? 60) * 60000).toISOString();
+  const range = lessonWallRange(
+    String(lesson.lesson_date),
+    String(lesson.lesson_time ?? "00:00:00"),
+    lesson.duration_minutes ?? 60,
+  );
 
   const event = {
     summary: title,
     location: lesson.pickup_location ?? undefined,
     description: lesson.notes ?? undefined,
-    start: { dateTime: startDateTime, timeZone: "Europe/London" },
-    end: { dateTime: endDateTime, timeZone: "Europe/London" },
+    start: { dateTime: range.start, timeZone: range.timeZone },
+    end: { dateTime: range.end, timeZone: range.timeZone },
+    // Marks this event as owned by EveryDriver so the importer can recognise
+    // its own lessons coming back from Google instead of guessing by time.
+    extendedProperties: {
+      private: {
+        everydriver_origin: "EVERYDRIVER",
+        everydriver_lesson_id: String(lesson.id),
+      },
+    },
   };
+
 
   const calendarId = instructor.google_calendar_id ?? "primary";
 
