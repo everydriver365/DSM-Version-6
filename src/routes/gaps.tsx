@@ -221,9 +221,10 @@ function GapsPage() {
           .eq("instructor_id", uid)
           .eq("source", "ics_inbound")
           // Overlap, not "starts inside": ends after the window opens and
-          // starts before it closes.
-          .gt("end_datetime", `${today}T00:00:00`)
-          .lt("start_datetime", `${addDays(endDate, 1)}T00:00:00`),
+          // starts before it closes. Local midnight is converted to a real
+          // instant (BST/GMT aware) so nothing is lost at either boundary.
+          .gt("end_datetime", new Date(`${today}T00:00:00`).toISOString())
+          .lt("start_datetime", new Date(`${addDays(endDate, 1)}T00:00:00`).toISOString()),
         supabase
           .from("instructor_recurring_blocks")
           .select("day_of_week, start_time, end_time, is_active")
