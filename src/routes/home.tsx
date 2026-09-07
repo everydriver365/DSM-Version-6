@@ -37,6 +37,7 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
+import { previewMatchForGap as previewMatchForGapShared } from "@/lib/pupilMatching";
 
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import ProPage from "@/routes/pro.tsx";
@@ -1739,6 +1740,7 @@ function HomePage() {
   }, [userId]);
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
+  const [allUnavailability, setAllUnavailability] = useState<Array<{ pupil_id: string; start_date: string; end_date: string }>>([]);
   const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
     const onPaymentRecorded = () => setReloadKey((k) => k + 1);
@@ -3020,8 +3022,20 @@ function HomePage() {
       ]);
       if (pupilsRes.error) console.error("[home] pupils query failed:", pupilsRes.error);
       if (availRes.error) console.error("[home] availability query failed:", availRes.error);
-      setAllPupils((pupilsRes.data ?? []) as PreviewPupil[]);
+      const pupilRows = (pupilsRes.data ?? []) as PreviewPupil[];
+      setAllPupils(pupilRows);
       setAllAvailability((availRes.data ?? []) as PupilReadySetting[]);
+      // Pupil holidays: keyed by pupil only (no instructor column on this table).
+      if (pupilRows.length > 0) {
+        const unavailRes = await supabase
+          .from("pupil_unavailability")
+          .select("pupil_id,start_date,end_date")
+          .in("pupil_id", pupilRows.map((p) => p.id));
+        if (unavailRes.error) console.error("[home] pupil holidays query failed:", unavailRes.error);
+        setAllUnavailability((unavailRes.data ?? []) as Array<{ pupil_id: string; start_date: string; end_date: string }>);
+      } else {
+        setAllUnavailability([]);
+      }
     })();
   }, [userId]);
 
