@@ -560,53 +560,120 @@ function CalendarSyncPage() {
               Paste your Google or Apple private calendar URL below. EDP will import your personal events so gaps are never offered when you're busy.
             </p>
 
-            <label
-              style={{
-                display: "block",
-                color: "#0B2341",
-                fontSize: 11,
-                fontWeight: tokens.fontWeight.bold,
-                marginBottom: 4,
-              }}
-            >
-              Your private calendar URL
-            </label>
-            <input
-              type="url"
-              placeholder="https://calendar.google.com/calendar/ical/..."
-              value={icsInboundUrl}
-              onChange={(e) => setIcsInboundUrl(e.target.value)}
-              style={{
-                width: "100%",
-                background: "#F4F6F8",
-                borderRadius: 8,
-                border: "0.5px solid #E4E8EF",
-                padding: "10px 12px",
-                fontSize: 12,
-                fontFamily: "inherit",
-                outline: "none",
-                boxSizing: "border-box",
-              }}
-            />
+            {!icsInboundUrl.trim() ? (
+              <>
+                <label
+                  style={{
+                    display: "block",
+                    color: "#0B2341",
+                    fontSize: 11,
+                    fontWeight: tokens.fontWeight.bold,
+                    marginBottom: 4,
+                  }}
+                >
+                  Your private calendar URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://calendar.google.com/calendar/ical/..."
+                  value={icsInboundUrl}
+                  onChange={(e) => setIcsInboundUrl(e.target.value)}
+                  style={{
+                    width: "100%",
+                    background: "#F4F6F8",
+                    borderRadius: 8,
+                    border: "0.5px solid #E4E8EF",
+                    padding: "10px 12px",
+                    fontSize: 12,
+                    fontFamily: "inherit",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
 
-            <button
-              type="button"
-              onClick={saveIcsUrl}
-              style={{
-                marginTop: 10,
-                background: "#18A999",
-                color: "white",
-                borderRadius: 8,
-                padding: "10px 16px",
-                fontSize: 13,
-                fontWeight: 600,
-                border: "none",
-                cursor: "pointer",
-                width: "100%",
-              }}
-            >
-              Save calendar URL
-            </button>
+                <button
+                  type="button"
+                  onClick={saveIcsUrl}
+                  style={{
+                    marginTop: 10,
+                    background: "#18A999",
+                    color: "white",
+                    borderRadius: 8,
+                    padding: "10px 16px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    border: "none",
+                    cursor: "pointer",
+                    width: "100%",
+                  }}
+                >
+                  Save calendar URL
+                </button>
+              </>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "12px",
+                  background: "#F0FDF4",
+                  borderRadius: 8,
+                  border: "1px solid #BBF7D0",
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "#DCFCE7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconCalendarPlus size={20} color="#15803D" stroke={1.5} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      color: "#0B2341",
+                      fontSize: 14,
+                      fontWeight: tokens.fontWeight.bold,
+                    }}
+                  >
+                    Personal calendar connected
+                  </div>
+                  <div style={{ fontSize: 11, color: "#536579", marginTop: 2 }}>
+                    {icsFeedStatus === "healthy"
+                      ? `Importing events · fetched ${icsLastFetched ? timeAgo(icsLastFetched) : "never"}`
+                      : icsFeedStatus === "failed"
+                        ? "Connection failed — check your URL"
+                        : "Calendar URL saved"}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setIcsInboundUrl("");
+                    await saveIcsUrl();
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#CC2229",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
 
             {icsInboundUrl.trim() && (
               <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6 }}>
