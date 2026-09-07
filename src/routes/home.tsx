@@ -4284,9 +4284,11 @@ function HomePage() {
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
+  const [icsBlocks, setIcsBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
+  const in14DaysISO = ymd(in14DaysStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
 
   useEffect(() => {
