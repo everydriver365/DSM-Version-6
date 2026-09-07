@@ -2062,7 +2062,13 @@ function SchedulePage() {
                                     {e.startTime} – {e.endTime}
                                   </div>
                                   <div style={{ fontSize: 10, color: "#633806", fontWeight: 700, marginBottom: 3 }}>
-                                    Free · {formatMins(e.mins)} · £{e.potential}
+                                    Free · {(() => {
+                                      const h = Math.floor(e.mins / 60);
+                                      const m = e.mins % 60;
+                                      if (h > 0 && m > 0) return `${h}hr ${m}min`;
+                                      if (h > 0) return `${h}hr`;
+                                      return `${m}min`;
+                                    })()}
                                   </div>
                                   <div style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
                                     {preview.count > 0 && (
