@@ -1,36 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { notifyInstructors } from "@/lib/notify";
-import { tokens } from "@/lib/tokens";
-import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { EmptyState } from "@/components/dsm/EmptyState";
-import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconDeviceMobile, IconInfoCircle, IconMapPin, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
+import { useState, useEffect, useMemo } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { computeDayGaps } from "@/lib/gapDetection";
+import { previewMatchForGap } from "@/lib/pupilMatching";
+import { useMinGapMinutes } from "@/lib/gapPrefs";
+import {
+  IconArrowLeft,
+  IconBolt,
+  IconCalendar,
+  IconClock,
+  IconCurrencyPound,
+  IconSend,
+  IconUsers,
+  IconInfoCircle,
+  IconLoader2,
+} from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
-import { Toaster } from "@/components/ui/sonner";
-import { supabase } from "../lib/supabaseClient";
-import { useMinGapMinutes } from "../lib/gapPrefs";
-import { BottomSheet } from "../components/dsm/BottomSheet";
-import {
-  BottomSheet as BottomSheetV2,
-  SheetGroup,
-  SheetRow,
-  SheetRadioRow,
-  SheetSearchRow,
-} from "../components/dsm/BottomSheetV2";
-
-import { ConfirmDialog } from "@/components/ConfirmDialog";
-
-import {
-  slotFitsPupilWindow,
-  previewMatchForGap,
-} from "../lib/pupilMatching";
-
-type DiscountCode = {
-  id: string;
-  code: string;
-  type: "percentage" | "fixed";
-  value: number;
-};
 
 export const Route = createFileRoute("/gaps")({
   head: () => ({
@@ -45,208 +30,79 @@ export const Route = createFileRoute("/gaps")({
   component: GapsPage,
 });
 
-const FONT = { fontFamily: "Poppins, sans-serif" } as const;
-const NAVY = "#0B1F3A";
-const BLUE = "#1A52A0";
-const BLUE_BRIGHT = "#3B82F6";
-const TINT = "#E0F4FF";
-const TEAL = "#00B5A5";
-const MUTED = "#6B7280";
-const BORDER = "#E2E6ED";
-const DAYS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-const GAP_FILLER_FUTURE_DAYS = 7;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-interface FreeSlot {
-  date: string;
-  startTime: string;
-  endTime: string;
-  gapMinutes: number;
-  possibleDurations: number[];
-  bufferMinutes?: number;
-  gapReason?: string;
-  toPostcode?: string | null;
-  fromPostcode?: string | null;
-}
+const FUTURE_DAYS = 7;
+const MIN_GAP = 60;
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-interface DayGroup {
-  iso: string;
-  dayName: string;
-  isWorkDay: boolean;
-  slots: FreeSlot[];
-  totalFreeMinutes: number;
-  busyMinutes: number;
-  busy: BusyEntry[];
-  lunch?: { start: string; end: string } | null;
-}
-
-interface BusyEntry {
-  start: number; // minutes from midnight
-  end: number;
-  title: string;
-  color: string;
-}
-
-const BUSY_PALETTE = ["#EF4444", "#F97316", "#3B82F6", "#8B5CF6", "#10B981", "#EC4899"];
-function pickBusyColor(preferred: string | null | undefined, idx: number) {
-  if (preferred && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(preferred)) return preferred;
-  return BUSY_PALETTE[idx % BUSY_PALETTE.length];
-}
-function fmtGap(mins: number) {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  if (h && m) return `${h}h ${m}m`;
-  if (h) return `${h}h`;
-  return `${m}m`;
-}
-
-function addDaysIso(base: Date, n: number) {
-  const d = new Date(base);
-  d.setDate(d.getDate() + n);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate(),
-  ).padStart(2, "0")}`;
-}
-
-function hmToMin(t: string) {
-  const [h, m] = t.split(":").map((x) => parseInt(x, 10));
+function hmToMin(t: string): number {
+  const [h, m] = t.split(":").map(Number);
   return (h || 0) * 60 + (m || 0);
 }
 
-
-function minToHm(m: number) {
-  const h = Math.floor(m / 60);
-  const mm = m % 60;
-  return `${String(h).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+function minToHm(m: number): string {
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 }
 
-function getBlockColour(title: string): { bg: string; border: string; icon: string; text: string } {
-  const t = (title || "").toLowerCase();
-  if (t.includes("meeting") || t.includes("call") || t.includes("zoom") || t.includes("teams"))
-    return { bg: "#EFF6FF", border: "#1A52A0", icon: "💼", text: "#1A52A0" };
-  if (
-    t.includes("doctor") || t.includes("dentist") || t.includes("hospital") ||
-    t.includes("appointment") || t.includes("medical") || t.includes("physio")
-  )
-    return { bg: "#FEF2F2", border: "#CC2229", icon: "🏥", text: "#CC2229" };
-  if (
-    t.includes("school") || t.includes("pickup") || t.includes("drop") ||
-    t.includes("kids") || t.includes("child") || t.includes("nursery")
-  )
-    return { bg: "#FFFBEB", border: "#B45309", icon: "🎒", text: "#B45309" };
-  if (
-    t.includes("lunch") || t.includes("dinner") || t.includes("coffee") ||
-    t.includes("birthday") || t.includes("party") || t.includes("wedding")
-  )
-    return { bg: "#E0FFF4", border: "#16A34A", icon: "🎉", text: "#16A34A" };
-  if (
-    t.includes("travel") || t.includes("flight") || t.includes("train") ||
-    t.includes("holiday") || t.includes("vacation") || t.includes("away")
-  )
-    return { bg: "#F5F3FF", border: "#7C3AED", icon: "✈️", text: "#7C3AED" };
-  if (
-    t.includes("gym") || t.includes("sport") || t.includes("football") ||
-    t.includes("tennis") || t.includes("run") || t.includes("swim")
-  )
-    return { bg: "#E0FFF4", border: "#00B5A5", icon: "🏃", text: "#00B5A5" };
-  return { bg: "#F3F4F6", border: "#9CA3AF", icon: "📅", text: "#6B7280" };
-}
-
-function localDateStr(iso?: string | null): string {
-  if (!iso) return "";
+function localDateStr(iso: string): string {
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function localTimeStr(iso?: string | null): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+function todayIso(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function getCalendarBlocksForDate(
-  calendarBlocks: Array<{ start_datetime?: string | null; end_datetime?: string | null; title?: string | null }>,
-  dateStr: string,
-): { startMins: number; endMins: number; title: string; isAllDay: boolean }[] {
-  return (calendarBlocks || [])
-    .filter((b) => {
-      const startDate = localDateStr(b.start_datetime);
-      const endDate = localDateStr(b.end_datetime);
-      return (
-        startDate === dateStr ||
-        (startDate < dateStr && endDate > dateStr) ||
-        (startDate < dateStr && endDate === dateStr)
-      );
-    })
-    .map((b) => {
-      const startDate = localDateStr(b.start_datetime);
-      const endDate = localDateStr(b.end_datetime);
-      const startTime = localTimeStr(b.start_datetime) || "00:00";
-      const endTime = localTimeStr(b.end_datetime) || "23:59";
-      const startMs = new Date(b.start_datetime || "").getTime();
-      const endMs = new Date(b.end_datetime || "").getTime();
-      const durationMins = Number.isFinite(startMs) && Number.isFinite(endMs)
-        ? Math.max(0, Math.round((endMs - startMs) / 60000))
-        : 0;
-      const startsAtBoundary = startTime === "00:00" || startTime === "01:00";
-      const endsAtBoundary = endTime === "00:00" || endTime === "01:00" || endTime === "23:59";
-      const isAllDay =
-        (startTime === "00:00" && (endTime === "00:00" || endTime === "23:59")) ||
-        (durationMins >= 20 * 60 && startsAtBoundary && endsAtBoundary);
-      // For multi-day spans, clamp to full-day on interior/end dates.
-      const spansIntoDay = startDate < dateStr;
-      const spansOutOfDay = endDate > dateStr;
-      return {
-        startMins: isAllDay || spansIntoDay ? 0 : hmToMin(startTime),
-        endMins: isAllDay || spansOutOfDay ? 1439 : hmToMin(endTime),
-        title: b.title || "Busy",
-        isAllDay,
-      };
-    });
+function addDays(iso: string, n: number): string {
+  const d = new Date(iso + "T12:00:00");
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function fmtSlotDateLong(iso: string) {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
+function fmtDateLong(iso: string): string {
+  return new Date(iso + "T12:00:00").toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
 }
 
-function fmt12h(t: string) {
-  const [hStr, mStr] = t.split(":");
-  let h = parseInt(hStr, 10);
-  const m = parseInt(mStr, 10);
-  const suffix = h >= 12 ? "pm" : "am";
-  h = h % 12;
-  if (h === 0) h = 12;
-  return m === 0 ? `${h}${suffix}` : `${h}:${String(m).padStart(2, "0")}${suffix}`;
+function initials(name: string): string {
+  const parts = (name || "").trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-interface Pupil {
+const AVATAR_COLOURS = ["#1877D6", "#18A999", "#E53935", "#F59E0B", "#8B5CF6", "#EC4899"];
+
+function avatarColor(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLOURS[Math.abs(h) % AVATAR_COLOURS.length];
+}
+
+type Gap = {
+  date: string;
+  startMins: number;
+  endMins: number;
+  durationMins: number;
+};
+
+type Pupil = {
   id: string;
   name: string | null;
   first_name: string | null;
   last_name: string | null;
   phone: string | null;
+  address: string | null;
   postcode: string | null;
   calendar_colour: string | null;
-  custom_rate: number | null;
-  custom_rate_90: number | null;
-  custom_rate_120: number | null;
-}
+};
 
-interface Availability {
+type Availability = {
   pupil_id: string;
   available_days: string[] | null;
   available_from: string | null;
@@ -254,3517 +110,808 @@ interface Availability {
   min_notice_hours: number | null;
   short_notice_opt_in: boolean | null;
   preferred_duration_minutes: number | null;
-  max_lessons_per_week: number | null;
-}
+};
 
-interface Ranked {
-  pupil: Pupil;
-  settings: Availability | null;
-  lastLesson: string | null;
-  daysSince: number | null;
-  score: number;
-  dayMatch: "yes" | "no" | "unknown";
-  shortNotice: boolean;
-  shortNoticeOk: boolean;
-  minNoticeHours: number;
-  matchedSlots: SlotMatch[];
-  warnings: string[];
-}
-
-interface SelectedSlot {
-  date: string;
-  time: string;
-  duration: number;
-}
-
-interface SlotMatch extends SelectedSlot {
-  match: boolean;
-  subScore: number;
-}
-
-interface OfferRow {
-  id: string;
+type Unavailability = {
   pupil_id: string;
-  slot_date: string;
-  slot_time: string;
-  duration_minutes: number;
-  status: string;
-  created_at: string;
-  pupils?: { name: string | null; first_name: string | null } | null;
-}
+  start_date: string;
+  end_date: string;
+};
 
-function todayIso() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate(),
-  ).padStart(2, "0")}`;
-}
+type MatchResult = {
+  pupil: Pupil;
+  tier: "high" | "good" | "possible";
+  reasons: string[];
+};
 
-function firstNameOf(p: Pupil) {
-  return (
-    p.first_name ||
-    (p.name ? p.name.split(" ")[0] : "there") ||
-    "there"
-  );
-}
-
-function fullNameOf(p: Pupil) {
-  return (
-    p.name ||
-    [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-    "Unnamed pupil"
-  );
-}
-
-function fmtDateLong(iso: string) {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
-}
-
-function fmtTimeHm(t: string) {
-  return t.slice(0, 5);
-}
-
-function slotKey(s: SelectedSlot) {
-  return `${s.date}|${s.time}|${s.duration}`;
-}
-
-function describeSlot(
-  _p: Pupil,
-  s: Availability | null,
-  last: string | null,
-  sl: SelectedSlot,
-  nowMs: number,
-) {
-  const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
-  const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
-  let daysSince: number | null = null;
-  if (last) {
-    daysSince = Math.floor(
-      (new Date(sl.date + "T00:00:00").getTime() -
-        new Date(last + "T00:00:00").getTime()) /
-        86400000,
-    );
+function tierStyle(tier: MatchResult["tier"]) {
+  switch (tier) {
+    case "high":
+      return { bg: "#EAF3DE", color: "#3B6D11" };
+    case "good":
+      return { bg: "#EAF5FC", color: "#185FA5" };
+    default:
+      return { bg: "#F3F4F6", color: "#6B7280" };
   }
-  let dayMatch: "yes" | "no" | "unknown" = "unknown";
-  let shortNotice = false;
-  let shortNoticeOk = false;
-  let minNoticeHours = 24;
-  if (s) {
-    const availDays = s.available_days || [];
-    if (availDays.length) {
-      dayMatch = availDays.includes(dayOfWeek) ? "yes" : "no";
-    }
-    const hoursUntilSlot = Math.floor(
-      (slotDateTime.getTime() - nowMs) / 3600000,
-    );
-    minNoticeHours = s.min_notice_hours || 24;
-    if (hoursUntilSlot < minNoticeHours) {
-      shortNotice = true;
-      if (s.short_notice_opt_in) shortNoticeOk = true;
-    }
-  }
-  return { daysSince, dayMatch, shortNotice, shortNoticeOk, minNoticeHours };
 }
 
-
-
-
-
-function scoreSlot(
-  p: Pupil,
-  s: Availability | null,
-  last: string | null,
-  sl: SelectedSlot,
-  nowMs: number,
-): SlotMatch {
-  let score = 50;
-  const dayOfWeek = DAYS[new Date(sl.date + "T00:00:00").getDay()];
-  
-  const slotDateTime = new Date(`${sl.date}T${sl.time}:00`);
-
-  if (last) {
-    const daysSince = Math.floor(
-      (new Date(sl.date + "T00:00:00").getTime() -
-        new Date(last + "T00:00:00").getTime()) /
-        86400000,
-    );
-    if (daysSince > 14) score += 20;
-    else if (daysSince > 7) score += 10;
-    else if (daysSince < 3) score -= 20;
-  } else {
-    score += 30;
+function reasonsFor(pupil: Pupil, avail: Availability | undefined, durationMins: number): string[] {
+  const reasons: string[] = [];
+  if (avail?.available_days?.length) {
+    reasons.push("Available this day");
   }
-
-  if (s) {
-    const availDays = s.available_days || [];
-    if (availDays.length) {
-      if (availDays.includes(dayOfWeek)) score += 15;
-      else score -= 30;
-    }
-    const slotStartMin = hmToMin(sl.time);
-    const fitsWindow = slotFitsPupilWindow(slotStartMin, sl.duration, s);
-    if (fitsWindow) score += 10;
-    else score -= 100;
-
-    const hoursUntilSlot = Math.floor(
-      (slotDateTime.getTime() - nowMs) / 3600000,
-    );
-    const minNoticeHours = s.min_notice_hours || 24;
-    if (hoursUntilSlot < minNoticeHours) {
-      if (s.short_notice_opt_in) score += 5;
-      else score -= 40;
-    }
-    if (s.preferred_duration_minutes === sl.duration) score += 10;
+  if (avail?.preferred_duration_minutes === durationMins) {
+    reasons.push("Preferred duration");
   }
-
-  score = Math.max(0, Math.min(100, score));
-  // Suppress unused parameter warning
-  void p;
-  return { ...sl, subScore: score, match: score >= 50 };
+  if (avail?.short_notice_opt_in) {
+    reasons.push("Short notice OK");
+  }
+  if (reasons.length === 0) {
+    reasons.push("Active pupil");
+  }
+  return reasons;
 }
 
 function GapsPage() {
   const navigate = useNavigate();
-  console.log("[gaps] component mounted");
-  const [userId, setUserId] = useState<string | null>(null);
   const minGapMinutes = useMinGapMinutes();
 
-  const [slotDate, setSlotDate] = useState<string>(todayIso());
-  const [slotTime, setSlotTime] = useState<string>("10:00");
-  const [duration, setDuration] = useState<number>(60);
-
-  const [loading, setLoading] = useState(false);
-  const [ranked, setRanked] = useState<Ranked[] | null>(null);
-  const [selectedPupilIds, setSelectedPupilIds] = useState<Set<string>>(new Set());
-  const [recipientsExpanded, setRecipientsExpanded] = useState(false);
-  const [searchSlots, setSearchSlots] = useState<SelectedSlot[]>([]);
-  const [messageSheetOpen, setMessageSheetOpen] = useState(false);
-  const [confirmSendOpen, setConfirmSendOpen] = useState(false);
-  const [messageTemplate, setMessageTemplate] = useState("");
-  const [sendingText, setSendingText] = useState(false);
-  const [sendingInApp, setSendingInApp] = useState(false);
-
-  const pupilListRef = useRef<HTMLDivElement | null>(null);
-
-  const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
-  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
-  const [instructorName, setInstructorName] = useState("Your instructor");
-
-
-  const [offers, setOffers] = useState<OfferRow[]>([]);
-  const [offersOpen, setOffersOpen] = useState(false);
-  const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
-  const [reloadKey, setReloadKey] = useState(0);
-
-  const [freeSlots, setFreeSlots] = useState<FreeSlot[]>([]);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-  const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([]);
-  const [manualMode, setManualMode] = useState(false);
-  const [dayGroups, setDayGroups] = useState<DayGroup[]>([]);
-  const [selectedDateIso, setSelectedDateIso] = useState<string | null>(null);
-  useEffect(() => {
-    if (selectedDateIso) return;
-    if (dayGroups.length === 0) return;
-    const first = dayGroups.find((g) => g.slots.length > 0);
-    setSelectedDateIso(first?.iso ?? dayGroups[0]?.iso ?? todayIso());
-  }, [dayGroups, selectedDateIso]);
-  const daySectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  useEffect(() => {
-    if (!selectedDateIso) return;
-    const el = daySectionRefs.current[selectedDateIso];
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [selectedDateIso]);
-  const [hourlyRate, setHourlyRate] = useState<number>(0);
-  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
-  const [icsBlocks, setIcsBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
-  const [allPupils, setAllPupils] = useState<Pupil[]>([]);
-  const [allAvailability, setAllAvailability] = useState<Availability[]>([]);
-
-  // ---- Direct booking (single slot + single pupil) ----
-  const [pupilSearchQuery, setPupilSearchQuery] = useState("");
-
-  // ---- Pre-filter (arrived from a cancellation via /gaps?date=&time=&duration=) ----
-  const [prefilter, setPrefilter] = useState<{ date: string; time: string; duration: number } | null>(null);
-  const [prefilterFound, setPrefilterFound] = useState<boolean | null>(null);
-  const prefilterHandledRef = useRef(false);
+  const [loading, setLoading] = useState(true);
+  const [gaps, setGaps] = useState<Gap[]>([]);
+  const [pupils, setPupils] = useState<Pupil[]>([]);
+  const [availability, setAvailability] = useState<Availability[]>([]);
+  const [unavailability, setUnavailability] = useState<Unavailability[]>([]);
+  const [selectedGapIdx, setSelectedGapIdx] = useState(0);
+  const [offerPupil, setOfferPupil] = useState<Pupil | null>(null);
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [instructorName, setInstructorName] = useState("");
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const sp = new URLSearchParams(window.location.search);
-    const d = sp.get("date");
-    const t = sp.get("time");
-    const dur = sp.get("duration");
-    if (d && t) {
-      setPrefilter({
-        date: d,
-        time: t,
-        duration: dur ? parseInt(dur, 10) || 60 : 60,
-      });
-    }
+    load();
   }, []);
 
-  useEffect(() => {
-    if (!prefilter || prefilterHandledRef.current) return;
-    if (slotsLoading) return;
-    if (freeSlots.length === 0) {
-      // Wait for slots to load; if still empty after load, mark not found.
-      setPrefilterFound(false);
-      return;
-    }
-    const match = freeSlots.find(
-      (s) => s.date === prefilter.date && s.startTime === prefilter.time,
-    );
-    if (match) {
-      prefilterHandledRef.current = true;
-      setPrefilterFound(true);
-      const dur = match.possibleDurations.includes(prefilter.duration)
-        ? prefilter.duration
-        : match.possibleDurations[0] || 60;
-      const slot = { date: match.date, time: match.startTime, duration: dur };
-      setSelectedSlots([slot]);
-      // Auto-expand ranked pupils for the freed slot
-      findPupils([slot]);
-      setTimeout(() => {
-        const el = document.querySelector(
-          `[data-slot-key="${match.date}-${match.startTime}"]`,
-        );
-        if (el && "scrollIntoView" in el) {
-          (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }, 350);
-    } else {
-      prefilterHandledRef.current = true;
-      setPrefilterFound(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefilter, freeSlots, slotsLoading]);
-
-  const prefilterDateLabel = useMemo(() => {
-    if (!prefilter) return "";
+  async function load() {
+    setLoading(true);
     try {
-      return new Date(prefilter.date + "T00:00:00").toLocaleDateString("en-GB", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-      });
-    } catch {
-      return prefilter.date;
-    }
-  }, [prefilter]);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        navigate({ to: "/login" as never });
+        return;
+      }
+      const uid = user.id;
 
-  useEffect(() => {
-    console.log("[gaps] slot-detection effect fired; userId =", userId);
-    if (!userId) return;
-    const minGap = minGapMinutes;
-    let cancelled = false;
-    (async () => {
-      setSlotsLoading(true);
-      try {
-        const today = new Date();
-        today.setHours(12, 0, 0, 0);
-        const startIso = todayIso();
-        const endIso = addDaysIso(today, GAP_FILLER_FUTURE_DAYS);
-        console.log("[gaps] today ISO:", startIso, "date range:", startIso, "→", endIso);
-        
-        const { data: { session: dbgSession } } = await supabase.auth.getSession();
-        console.log("[gaps] auth session user:", dbgSession?.user?.id);
-        const [lessonsRes, instrRes] = await Promise.all([
+      const { data: instr } = await supabase
+        .from("instructors")
+        .select("name, working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after")
+        .eq("id", uid)
+        .single();
+
+      setInstructorName(instr?.name ?? "");
+
+      const workStart = String(instr?.working_hours_start ?? "09:00").slice(0, 5);
+      const workEnd = String(instr?.working_hours_end ?? "18:00").slice(0, 5);
+      const workingDays: string[] = instr?.working_days ?? ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+      const perDay = instr?.per_day_hours as Record<string, { active?: boolean; start?: string; end?: string }> | null;
+      const bufferAfter = instr?.lesson_buffer_after ?? 0;
+
+      const today = todayIso();
+      const endDate = addDays(today, FUTURE_DAYS);
+
+      const [{ data: lessons }, { data: icsData }, { data: recurringData }, { data: timeOffData }, { data: pupilData }, { data: availData }, { data: unavailData }] =
+        await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date,lesson_time,duration_minutes,notes,pupil_id,pupils(name,first_name,calendar_colour,buffer_after_minutes,postcode)")
-            .eq("instructor_id", userId)
-            .is("deleted_at", null)
-            .in("status", ["confirmed", "pending", "in_progress"])
-            .gte("lesson_date", startIso)
-            .lte("lesson_date", endIso)
-            .order("lesson_date", { ascending: true })
-            .order("lesson_time", { ascending: true }),
+            .select("lesson_date, lesson_time, duration_minutes, status")
+            .eq("instructor_id", uid)
+            .gte("lesson_date", today)
+            .lte("lesson_date", endDate)
+            .neq("status", "cancelled"),
           supabase
-            .from("instructors")
+            .from("calendar_blocks")
+            .select("start_datetime, end_datetime, title")
+            .eq("instructor_id", uid)
+            .eq("source", "ics_inbound")
+            .gte("end_datetime", today)
+            .lte("start_datetime", endDate + "T23:59:59"),
+          supabase.from("instructor_recurring_blocks").select("day_of_week, start_time, end_time, is_active").eq("instructor_id", uid),
+          supabase
+            .from("instructor_time_off")
+            .select("start_date, end_date, start_time, end_time, all_day")
+            .eq("instructor_id", uid)
+            .gte("end_date", today)
+            .lte("start_date", endDate),
+          supabase
+            .from("pupils")
+            .select("id, name, first_name, last_name, phone, address, postcode, calendar_colour")
+            .eq("instructor_id", uid)
+            .eq("status", "active"),
+          supabase
+            .from("pupil_availability")
             .select(
-              "working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,lunch_break_start,lunch_break_end",
+              "pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in, preferred_duration_minutes",
             )
-            .eq("id", userId)
-            .maybeSingle(),
+            .in(
+              "pupil_id",
+              (await supabase.from("pupils").select("id").eq("instructor_id", uid).eq("status", "active")).data?.map((p) => p.id) ?? [],
+            ),
+          supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date").eq("instructor_id", uid),
         ]);
 
-        // Fetch external calendar blocks (visual only) and ICS inbound blocks (gap detection) in the same window.
-        let blocks: Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }> = [];
-        let icsBlocksLocal: Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }> = [];
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const token = session?.access_token;
-          if (token) {
-            const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-            const SUPABASE_ANON_KEY =
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-            const [blocksRes, icsRes] = await Promise.all([
-              fetch(
-                `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
-                { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-              ),
-              fetch(
-                `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.ics_inbound&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
-                { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-              ),
-            ]);
-            if (blocksRes.ok) {
-              const data = await blocksRes.json();
-              if (Array.isArray(data)) blocks = data;
-            }
-            if (icsRes.ok) {
-              const data = await icsRes.json();
-              if (Array.isArray(data)) icsBlocksLocal = data;
-            }
-          }
-        } catch (err) {
-          console.warn("[gaps] calendar_blocks fetch failed", err);
-        }
+      setPupils((pupilData as Pupil[]) ?? []);
+      setAvailability((availData as Availability[]) ?? []);
+      setUnavailability((unavailData as Unavailability[]) ?? []);
 
-        // Fetch recurring blocks + time off in parallel.
-        let recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; label: string | null; is_active: boolean }> = [];
-        let timeOffRows: Array<{ start_date: string; end_date: string; reason: string | null; all_day: boolean; start_time?: string | null; end_time?: string | null }> = [];
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const token = session?.access_token;
-          if (token) {
-            const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
-            const SUPABASE_ANON_KEY =
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-            const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` };
-            const [rRes, tRes] = await Promise.all([
-              fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${userId}&is_active=eq.true`, { headers }),
-              fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${userId}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
-            ]);
-            if (rRes.ok) {
-              const d = await rRes.json();
-              if (Array.isArray(d)) recurringBlocks = d;
-            }
-            if (tRes.ok) {
-              const d = await tRes.json();
-              if (Array.isArray(d)) timeOffRows = d;
-            }
-          }
-        } catch (err) {
-          console.warn("[gaps] recurring/time_off fetch failed", err);
-        }
+      const computed: Gap[] = [];
 
-        console.log("[gaps] calendar blocks:", blocks.length, "recurring blocks:", recurringBlocks.length, "time off:", timeOffRows.length);
-        if (!cancelled) setCalendarBlocks(blocks);
-        if (!cancelled) setIcsBlocks(icsBlocksLocal);
-        if (cancelled) return;
-        console.log(
-          "[gaps] lessons fetched:",
-          (lessonsRes.data ?? []).length,
-          "err:",
-          lessonsRes.error,
+      for (let i = 0; i <= FUTURE_DAYS; i++) {
+        const dateStr = addDays(today, i);
+        const date = new Date(dateStr + "T12:00:00");
+        const dayName = DAY_NAMES[date.getDay()];
+
+        const dayCfg = perDay?.[dayName];
+        const isActive = dayCfg ? dayCfg.active !== false : workingDays.includes(dayName);
+        if (!isActive) continue;
+
+        const dayStart = dayCfg?.start || workStart;
+        const dayEnd = dayCfg?.end || workEnd;
+        if (!dayEnd) continue;
+
+        const fullDayOff = (timeOffData ?? []).some(
+          (t) => t.all_day && t.start_date <= dateStr && t.end_date >= dateStr,
         );
-        console.log(
-          "[gaps] instructor row:",
-          instrRes.data,
-          "err:",
-          instrRes.error,
-        );
+        if (fullDayOff) continue;
 
-        const instr = (instrRes.data ?? {}) as {
-          working_hours_start?: string | null;
-          working_hours_end?: string | null;
-          working_days?: string[] | null;
-          per_day_hours?: Record<string, { start: string; end: string; active: boolean }> | null;
-          lesson_buffer_after?: number | null;
-          lunch_break_start?: string | null;
-          lunch_break_end?: string | null;
-        };
-        const workStart = instr.working_hours_start || "09:00";
-        const workEnd = instr.working_hours_end || "18:00";
-        const instrBufAfter = instr.lesson_buffer_after ?? 15;
-        const workDays =
-          instr.working_days && instr.working_days.length
-            ? instr.working_days
-            : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        console.log("[gaps] working days:", workDays, "hours:", workStart, "-", workEnd);
-        const rate = Number(
-          (instr as { hourly_rate?: number | null }).hourly_rate ?? 0,
-        );
-        if (!cancelled) setHourlyRate(rate);
+        const dayLessons = (lessons ?? [])
+          .filter((l) => l.lesson_date === dateStr)
+          .map((l) => ({
+            lesson_time: l.lesson_time || "",
+            duration_minutes: l.duration_minutes ?? 60,
+            status: l.status,
+            bufferAfterMinutes: bufferAfter,
+          }));
 
-        const byDay = new Map<
-          string,
-          { start: number; end: number; title: string; color: string | null; bufAfter: number; postcode: string | null }[]
-        >();
-        let busyIdx = 0;
-        for (const l of (lessonsRes.data ?? []) as {
-          lesson_date: string | null;
-          lesson_time: string | null;
-          duration_minutes: number | null;
-          notes: string | null;
-          pupil_id?: string | null;
-          pupils?: { name?: string | null; first_name?: string | null; calendar_colour?: string | null; buffer_after_minutes?: number | null; postcode?: string | null } | null;
-        }[]) {
-          if (!l.lesson_date || !l.lesson_time) continue;
-          const s = hmToMin(l.lesson_time);
-          const e = s + (l.duration_minutes ?? 60);
-          const title =
-            l.pupils?.name ||
-            l.pupils?.first_name ||
-            (l.notes ? l.notes.split("\n")[0].slice(0, 40) : null) ||
-            "Lesson";
-          const bufAfter = l.pupils?.buffer_after_minutes != null
-            ? Number(l.pupils.buffer_after_minutes)
-            : instrBufAfter;
-          const arr = byDay.get(l.lesson_date) ?? [];
-          arr.push({ start: s, end: e, title, color: l.pupils?.calendar_colour ?? null, bufAfter, postcode: l.pupils?.postcode ?? null });
-          byDay.set(l.lesson_date, arr);
-          busyIdx++;
-        }
-        void busyIdx;
+        const dayIcsBlocks = (icsData ?? [])
+          .filter((b) => {
+            const sd = localDateStr(b.start_datetime);
+            const ed = localDateStr(b.end_datetime);
+            return sd === dateStr || (sd < dateStr && ed > dateStr) || (sd < dateStr && ed === dateStr);
+          })
+          .map((b) => ({
+            start_datetime: b.start_datetime,
+            end_datetime: b.end_datetime,
+          }));
 
+        const dayTimeOff = (timeOffData ?? [])
+          .filter((t) => !t.all_day && t.start_date <= dateStr && t.end_date >= dateStr && t.start_time && t.end_time)
+          .map((t) => ({
+            start_time: t.start_time,
+            end_time: t.end_time,
+            all_day: false as boolean,
+          }));
 
-        const slots: FreeSlot[] = [];
-        const groups: DayGroup[] = [];
-        const perDayHours = instr.per_day_hours ?? null;
-        console.log("[gaps] per_day_hours:", perDayHours);
-        for (let i = 0; i <= GAP_FILLER_FUTURE_DAYS; i++) {
-          const dt = new Date(today);
-          dt.setDate(dt.getDate() + i);
-          const dayName = DAYS[dt.getDay()];
-          const iso = addDaysIso(today, i);
-          const dayConfig = perDayHours?.[dayName];
-          const dayStart = dayConfig?.start || workStart || "09:00";
-          const dayEnd = dayConfig?.end || workEnd || "18:00";
-          const isDayActive = dayConfig
-            ? dayConfig.active === true
-            : workDays.includes(dayName);
-          const isWorkDay = isDayActive;
-          const wsMin = hmToMin(dayStart);
-          const weMin = hmToMin(dayEnd);
+        const dayRecurring = (recurringData ?? [])
+          .filter((b) => b.day_of_week === dayName && b.is_active !== false)
+          .map((b) => ({
+            day_of_week: b.day_of_week,
+            start_time: b.start_time,
+            end_time: b.end_time,
+          }));
 
+        const isToday = dateStr === today;
 
-          // Time off — if any covers this date and is all-day, skip the day entirely.
-          const dayTimeOff = timeOffRows.filter(t => t.start_date <= iso && t.end_date >= iso);
-          const fullDayOff = dayTimeOff.find(t => t.all_day);
-          if (fullDayOff) {
-            groups.push({
-              iso,
-              dayName: `${dayName} · Time off${fullDayOff.reason ? `: ${fullDayOff.reason}` : ""}`,
-              isWorkDay: false,
-              slots: [],
-              totalFreeMinutes: 0,
-              busyMinutes: weMin - wsMin,
-              busy: [],
-            });
-            continue;
-          }
+        const result = computeDayGaps({
+          dayLessons,
+          calendarBlocks: dayIcsBlocks,
+          recurringBlocks: dayRecurring,
+          dayTimeOff,
+          dayStart,
+          dayEnd,
+          instructorBufferAfter: bufferAfter,
+          dateStr,
+          isToday,
+          minGapMinutes: minGapMinutes ?? MIN_GAP,
+        });
 
-          // Merge ICS inbound calendar blocks as pseudo-lessons for gap detection.
-          // Only subtract the overlap with working hours — a block starting before
-          // the day begins should only block from the day start onward.
-          const dayBlocks = getCalendarBlocksForDate(icsBlocksLocal, iso)
-            .filter((b) => !b.isAllDay)
-            .map((b) => {
-              const c = getBlockColour(b.title);
-              return {
-                start: Math.max(b.startMins, wsMin),
-                end: Math.min(b.endMins, weMin),
-                title: `${c.icon} ${b.title}`,
-                color: c.border as string | null,
-                bufAfter: instrBufAfter,
-              };
-            })
-            .filter((b) => b.start < b.end);
-          // Recurring blocks for this weekday.
-          const dayRecurring = recurringBlocks
-            .filter(b => b.day_of_week === dayName)
-            .map(b => ({
-              start: hmToMin(b.start_time),
-              end: hmToMin(b.end_time),
-              title: `🔄 ${b.label ?? "Recurring"}`,
-              color: "#7C3AED" as string | null,
-              bufAfter: instrBufAfter,
-            }));
-          // Partial time off for this day.
-          const dayPartialOff = dayTimeOff
-            .filter(t => !t.all_day && t.start_time && t.end_time)
-            .map(t => ({
-              start: hmToMin(t.start_time!),
-              end: hmToMin(t.end_time!),
-              title: `🌴 ${t.reason ?? "Time off"}`,
-              color: "#0EA5E9" as string | null,
-              bufAfter: instrBufAfter,
-            }));
-          // Lunch break — block gap detection during it.
-          const lunchInfo =
-            isWorkDay && instr.lunch_break_start && instr.lunch_break_end
-              ? { start: instr.lunch_break_start, end: instr.lunch_break_end }
-              : null;
-          const lunchBusy = lunchInfo
-            ? [{
-                start: hmToMin(lunchInfo.start),
-                end: hmToMin(lunchInfo.end),
-                title: "🍽 Lunch break",
-                color: tokens.textMuted as string | null,
-                bufAfter: 0,
-              }]
-            : [];
-          const dayLessons: {
-            start: number;
-            end: number;
-            title: string;
-            color: string | null;
-            bufAfter: number;
-            postcode?: string | null;
-          }[] = [
-            ...(byDay.get(iso) ?? []),
-            ...dayBlocks,
-            ...dayRecurring,
-            ...dayPartialOff,
-            ...lunchBusy,
-          ].slice().sort((a, b) => a.start - b.start);
-          
-          const busyMinutes = dayLessons.reduce(
-            (sum, l) => sum + (l.end - l.start),
-            0,
-          );
-          if (!isWorkDay) {
-            groups.push({
-              iso,
-              dayName,
-              isWorkDay: false,
-              slots: [],
-              totalFreeMinutes: 0,
-              busyMinutes,
-              busy: dayLessons.map((l, i) => ({
-                start: l.start,
-                end: l.end,
-                title: l.title,
-                color: pickBusyColor(l.color, i),
-              })),
-            });
-            continue;
-          }
-          // Build gap boundaries. For each consecutive pair A → B, the required
-          // minimum gap between A.end and B.start is A.bufAfter (pupil override
-          // via buffer_after_minutes, else instructor default).
-          // Buffer before B is NEVER added on top — a single "buffer after" is
-          // the only reservation between lessons.
-          const gaps: {
-            start: number;
-            end: number;
-            bufferTotal: number;
-            gapReason?: string;
-            fromPostcode?: string | null;
-            toPostcode?: string | null;
-          }[] = [];
-          let rawCursor = wsMin; // real end of the previous block (lesson end or workday start)
-          let previousLesson: (typeof dayLessons)[0] | null = null;
-          let hasPrevLesson = false; // false only for the very first gap of the day
-          for (const l of dayLessons) {
-            const rawEnd = l.start;
-            const current = l;
-            let leftReserve = 0;
-            let gapReason = "";
-            if (hasPrevLesson && previousLesson) {
-              const bufferAfterA = previousLesson.bufAfter;
-              leftReserve = bufferAfterA;
-              gapReason = bufferAfterA > 0 ? `${bufferAfterA} min buffer` : "";
-            }
-            const effStart = rawCursor + leftReserve;
-            const effEnd = hasPrevLesson ? rawEnd : rawEnd - l.bufAfter;
-            const clampedStart = Math.max(effStart, wsMin);
-            const clampedEnd = Math.min(effEnd, weMin);
-            if (clampedEnd - clampedStart >= minGap) {
-              gaps.push({
-                start: clampedStart,
-                end: clampedEnd,
-                bufferTotal: leftReserve,
-                gapReason,
-                fromPostcode: previousLesson?.postcode,
-                toPostcode: current.postcode,
-              });
-            }
-            rawCursor = Math.max(rawCursor, l.end);
-            previousLesson = l;
-            hasPrevLesson = true;
-          }
-          // Tail gap to end of workday (no next lesson → only reserve A's after buffer)
-          const tailLeftReserve = hasPrevLesson ? previousLesson!.bufAfter : 0;
-          const tailStart = rawCursor + tailLeftReserve;
-          const clampedTailStart = Math.max(tailStart, wsMin);
-          const clampedTailEnd = weMin;
-          if (clampedTailEnd - clampedTailStart >= minGap) {
-            gaps.push({
-              start: clampedTailStart,
-              end: clampedTailEnd,
-              bufferTotal: tailLeftReserve,
-              gapReason:
-                tailLeftReserve > 0 ? `${tailLeftReserve} min buffer` : "",
-            });
-          }
-          const daySlots: FreeSlot[] = [];
-          let dayFree = 0;
-          for (const g of gaps) {
-            let gStart = g.start;
-            if (i === 0) {
-              const nowMins = today.getHours() * 60 + today.getMinutes();
-              const minStartMins = nowMins + 30; // at least 30 mins from now
-              if (gStart < minStartMins) gStart = Math.ceil(minStartMins / 15) * 15;
-              if (gStart >= g.end) continue; // slot fully in the past / too soon
-            }
-            const gapMinutes = g.end - gStart;
-            if (gapMinutes < minGap) continue;
-            const possible = [60, 90, 120].filter((d) => d <= gapMinutes);
-            if (!possible.length) continue;
-            const slot: FreeSlot = {
-              date: iso,
-              startTime: minToHm(gStart),
-              endTime: minToHm(g.end),
-              gapMinutes,
-              possibleDurations: possible,
-              bufferMinutes: g.bufferTotal,
-              gapReason: g.gapReason,
-              fromPostcode: g.fromPostcode,
-              toPostcode: g.toPostcode,
-            };
-            slots.push(slot);
-            daySlots.push(slot);
-            dayFree += gapMinutes;
-          }
-          groups.push({
-            iso,
-            dayName,
-            isWorkDay: true,
-            slots: daySlots,
-            totalFreeMinutes: dayFree,
-            busyMinutes,
-            busy: dayLessons.map((l, i) => ({
-              start: l.start,
-              end: l.end,
-              title: l.title,
-              color: pickBusyColor(l.color, i),
-            })),
-            lunch: lunchInfo,
+        for (const g of result) {
+          computed.push({
+            date: dateStr,
+            startMins: g.startMins,
+            endMins: g.endMins,
+            durationMins: g.gapMins,
           });
         }
-        if (!cancelled) {
-          setFreeSlots(slots);
-          setDayGroups(groups);
-          console.log(
-            "[gaps] detected",
-            slots.length,
-            "free slots across",
-            groups.filter((g) => g.slots.length > 0).length,
-            "days",
-          );
-        }
-      } catch (err) {
-        console.error("[gaps] free-slot detection failed:", err);
-        if (!cancelled) {
-          setFreeSlots([]);
-          setDayGroups([]);
-        }
-      } finally {
-        if (!cancelled) setSlotsLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [userId, reloadKey, minGapMinutes]);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data, error }) => {
-      console.log("[gaps] getUser →", data?.user?.id, "err:", error);
-      setUserId(data.user?.id ?? null);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      const { data: offerRows } = await supabase
-        .from("gap_filler_offers")
-        .select("*, pupils(name, first_name)")
-        .eq("instructor_id", userId)
-        .is("dismissed_at", null)
-        .order("created_at", { ascending: false })
-        .limit(10);
-      setOffers((offerRows ?? []) as OfferRow[]);
-
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-        .toISOString()
-        .slice(0, 10);
-      const { data: accepted } = await supabase
-        .from("gap_filler_offers")
-        .select("id")
-        .eq("instructor_id", userId)
-        .eq("status", "accepted")
-        .gte("created_at", monthStart);
-      const { data: recent } = await supabase
-        .from("lesson_history")
-        .select("lesson_cost")
-        .eq("instructor_id", userId)
-        .eq("payment_status", "paid")
-        .order("created_at", { ascending: false })
-        .limit(20);
-      const paid = (recent ?? [])
-        .map((r: { lesson_cost: number | null }) => Number(r.lesson_cost ?? 0))
-        .filter((n: number) => n > 0);
-      const avg = paid.length
-        ? paid.reduce((a: number, b: number) => a + b, 0) / paid.length
-        : 40;
-      setMonthlyRevenue(Math.round((accepted?.length ?? 0) * avg * 100) / 100);
-    })();
-  }, [userId, reloadKey]);
-
-  useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      const { data: inst, error: instErr } = await supabase
-        .from("instructors")
-        .select("name")
-        .eq("id", userId)
-        .maybeSingle();
-      if (instErr) console.error("[gaps] instructor name fetch failed:", instErr);
-      if (inst) {
-        setInstructorName(inst.name || "Your instructor");
-      }
-      const { data: dcs, error: dcErr } = await supabase
-        .from("discount_codes")
-        .select("id, code, type, value")
-        .eq("instructor_id", userId)
-        .eq("active", true)
-        .is("deleted_at", null);
-      if (dcErr) console.error("[gaps] discount_codes fetch failed", dcErr);
-      setDiscountCodes(((dcs ?? []) as any[]) as DiscountCode[]);
-    })();
-  }, [userId]);
-
-  // Fetch all pupils + availability once for the lightweight per-gap preview.
-  useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      const [pupilsRes, availRes] = await Promise.all([
-        supabase
-          .from("pupils")
-          .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
-          )
-          .eq("instructor_id", userId)
-          .eq("status", "active")
-          .is("deleted_at", null),
-        supabase
-          .from("pupil_ready_to_learn_settings")
-          .select("*")
-          .eq("instructor_id", userId),
-      ]);
-      if (pupilsRes.error) console.error("[gaps] pupils query failed:", pupilsRes.error);
-      if (availRes.error) console.error("[gaps] availability query failed:", availRes.error);
-      setAllPupils((pupilsRes.data ?? []) as Pupil[]);
-      setAllAvailability((availRes.data ?? []) as Availability[]);
-    })();
-  }, [userId]);
-
-
-
-
-  async function findPupils(override?: SelectedSlot[]) {
-
-    if (!userId) return;
-    const slotsToScore = override && override.length ? override : selectedSlots;
-    if (slotsToScore.length === 0) return;
-    setLoading(true);
-    setRanked(null);
-    try {
-      const [pupilsRes, availRes, lessonsRes] = await Promise.all([
-        supabase
-          .from("pupils")
-          .select(
-            "id,name,first_name,last_name,phone,postcode,calendar_colour,custom_rate,custom_rate_90,custom_rate_120",
-          )
-          .eq("instructor_id", userId)
-          .eq("status", "active")
-          .is("deleted_at", null),
-        supabase
-          .from("pupil_ready_to_learn_settings")
-          .select("*")
-          .eq("instructor_id", userId),
-        supabase
-          .from("lessons")
-          .select("pupil_id,lesson_date,lesson_time,status")
-          .eq("instructor_id", userId)
-          .is("deleted_at", null)
-          .in("status", ["completed", "confirmed", "pending", "in_progress"])
-          .order("lesson_date", { ascending: false }),
-      ]);
-
-      if (pupilsRes.error) console.error("[gaps] pupils query failed:", pupilsRes.error);
-      if (availRes.error) console.error("[gaps] availability query failed:", availRes.error);
-      if (lessonsRes.error) console.error("[gaps] lessons query failed:", lessonsRes.error);
-
-      const pupils = (pupilsRes.data ?? []) as Pupil[];
-      const availMap = new Map<string, Availability>();
-      for (const a of (availRes.data ?? []) as Availability[]) {
-        if (a.pupil_id) availMap.set(a.pupil_id, a);
-      }
-      const allLessons = (lessonsRes.data ?? []) as {
-        pupil_id: string | null;
-        lesson_date: string | null;
-        lesson_time: string | null;
-        status: string | null;
-      }[];
-      const lastLessonMap = new Map<string, string>();
-      for (const l of allLessons) {
-        if (!l.pupil_id || !l.lesson_date) continue;
-        if (l.status !== "completed" && l.status !== "confirmed") continue;
-        if (!lastLessonMap.has(l.pupil_id))
-          lastLessonMap.set(l.pupil_id, l.lesson_date);
       }
 
-      // Week window for max-lessons-per-week check, based on the first slot's date.
-      const firstSlotDate = slotsToScore[0]?.date;
-      let weekStart: Date | null = null;
-      let weekEnd: Date | null = null;
-      if (firstSlotDate) {
-        const d = new Date(firstSlotDate + "T00:00:00");
-        const dow = d.getDay(); // 0 = Sun
-        const mondayOffset = (dow + 6) % 7;
-        weekStart = new Date(d);
-        weekStart.setDate(d.getDate() - mondayOffset);
-        weekStart.setHours(0, 0, 0, 0);
-        weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        weekEnd.setHours(23, 59, 59, 999);
-      }
-
-      const nowMs = Date.now();
-      // slotsToScore captured above
-
-      const scored: Ranked[] = pupils.map((p) => {
-        const s = availMap.get(p.id) || null;
-        const last = lastLessonMap.get(p.id) || null;
-        const matched: SlotMatch[] = slotsToScore.map((sl) =>
-          scoreSlot(p, s, last, sl, nowMs),
-        );
-        const matchCount = matched.filter((m) => m.match).length;
-        const avg =
-          matched.reduce((sum, m) => sum + m.subScore, 0) /
-          Math.max(1, matched.length);
-        let score = Math.max(
-          0,
-          Math.min(
-            100,
-            Math.round((matchCount / matched.length) * 60 + avg * 0.4),
-          ),
-        );
-        const warnings: string[] = [];
-
-        // Hard cutoff — if pupil already has max lessons this week, penalise heavily.
-        if (s?.max_lessons_per_week && weekStart && weekEnd) {
-          const lessonsThisWeek = allLessons.filter((l) => {
-            if (l.pupil_id !== p.id || !l.lesson_date) return false;
-            const ld = new Date(l.lesson_date + "T00:00:00");
-            return (
-              ld >= weekStart! &&
-              ld <= weekEnd! &&
-              l.status !== "cancelled"
-            );
-          }).length;
-          if (lessonsThisWeek >= s.max_lessons_per_week) {
-            score = Math.max(0, score - 40);
-            warnings.push(
-              `Already has ${lessonsThisWeek} lesson${lessonsThisWeek !== 1 ? "s" : ""} this week (max ${s.max_lessons_per_week})`,
-            );
-          }
-        }
-
-        // Minimum gap between last lesson and new offer — no same-day offers.
-        if (last && slotsToScore[0]) {
-          const slotDateTime = new Date(
-            slotsToScore[0].date + "T" + slotsToScore[0].time + ":00",
-          ).getTime();
-          const lastMs = new Date(last + "T00:00:00").getTime();
-          const hoursSince = (slotDateTime - lastMs) / 3600000;
-          if (hoursSince < 20 && hoursSince > -24) {
-            score = Math.max(0, score - 50);
-            warnings.push("Had a lesson very recently");
-          }
-        }
-
-        // Best slot for "summary" fields
-        const best = matched.reduce((a, b) =>
-          b.subScore > a.subScore ? b : a,
-        );
-        const bestInfo = describeSlot(p, s, last, best, nowMs);
-        return {
-          pupil: p,
-          settings: s,
-          lastLesson: last,
-          daysSince: bestInfo.daysSince,
-          score,
-          dayMatch: bestInfo.dayMatch,
-          shortNotice: bestInfo.shortNotice,
-          shortNoticeOk: bestInfo.shortNoticeOk,
-          minNoticeHours: bestInfo.minNoticeHours,
-          matchedSlots: matched,
-          warnings,
-        };
-      });
-
-      scored.sort((a, b) => b.score - a.score);
-      setRanked(scored);
-      setSearchSlots(slotsToScore);
-    } catch (err) {
-      console.error("[gaps] findPupils failed:", err);
-      toast.error("Could not load pupils");
+      setGaps(computed);
+      setSelectedGapIdx(0);
     } finally {
       setLoading(false);
     }
   }
 
-  function calcOriginalPrice(pupil: Pupil, durationMinutes: number): number {
-    if (durationMinutes === 90 && pupil.custom_rate_90 && pupil.custom_rate_90 > 0) {
-      return Number(pupil.custom_rate_90);
-    }
-    if (durationMinutes === 120 && pupil.custom_rate_120 && pupil.custom_rate_120 > 0) {
-      return Number(pupil.custom_rate_120);
-    }
-    if (durationMinutes === 60 && pupil.custom_rate && pupil.custom_rate > 0) {
-      return Number(pupil.custom_rate);
-    }
-    if (pupil.custom_rate && pupil.custom_rate > 0) {
-      return Math.round(Number(pupil.custom_rate) * (durationMinutes / 60) * 100) / 100;
-    }
-    return Math.round((hourlyRate || 0) * (durationMinutes / 60) * 100) / 100;
+  const selectedGap = gaps[selectedGapIdx] ?? null;
+
+  const matches: MatchResult[] = useMemo(() => {
+    if (!selectedGap || !pupils.length) return [];
+    const date = selectedGap.date;
+    const dayName = DAY_NAMES[new Date(date + "T12:00:00").getDay()];
+
+    const { allMatched } = previewMatchForGap({
+      date,
+      dayName,
+      startMin: selectedGap.startMins,
+      durationMin: selectedGap.durationMins,
+      allPupils: pupils,
+      allAvailability: availability,
+      unavailability,
+    });
+
+    return allMatched
+      .map((p) => {
+        const avail = availability.find((a) => a.pupil_id === p.id);
+        return {
+          pupil: p,
+          tier: "possible" as MatchResult["tier"],
+          reasons: reasonsFor(p, avail, selectedGap.durationMins),
+        };
+      })
+      .map((m, i, arr) => {
+        const tier: MatchResult["tier"] = i < Math.ceil(arr.length / 3) ? "high" : i < Math.ceil((arr.length * 2) / 3) ? "good" : "possible";
+        return { ...m, tier };
+      })
+      .slice(0, 6);
+  }, [selectedGap, pupils, availability, unavailability]);
+
+  function openOffer(pupil: Pupil) {
+    const firstName = pupil.first_name || (pupil.name || "").split(" ")[0] || "there";
+    const gap = selectedGap!;
+    const timeStr = `${minToHm(gap.startMins)}–${minToHm(gap.endMins)}`;
+    const isToday = gap.date === todayIso();
+    const dateLabel = isToday ? "today" : fmtDateLong(gap.date);
+    setMessage(
+      `Hi ${firstName}, I have a lesson available ${dateLabel} ${timeStr}. Reply YES to book or NO to decline. — ${instructorName || "Your instructor"}`,
+    );
+    setOfferPupil(pupil);
   }
 
-  async function logOffer(
-    pupilId: string,
-    via: "sms" | "message",
-    slot: { date: string; time: string; duration: number },
-    discount?: DiscountCode,
-  ) {
-    if (!userId) return;
+  async function sendOffer() {
+    if (!offerPupil || !selectedGap) return;
+    setSending(true);
     try {
-      const pupil = ranked?.find((r) => r.pupil.id === pupilId)?.pupil;
-      let original_price: number | null = null;
-      let discounted_price: number | null = null;
-      let discount_type: string | null = null;
-      let discount_value: number | null = null;
-      let discount_code_id: string | null = null;
-      if (pupil && discount) {
-        original_price = calcOriginalPrice(pupil, slot.duration);
-        discount_type = discount.type;
-        discount_value = Number(discount.value);
-        discount_code_id = discount.id;
-        discounted_price =
-          discount.type === "percentage"
-            ? Math.round(original_price * (1 - Number(discount.value) / 100) * 100) / 100
-            : Math.max(0, Math.round((original_price - Number(discount.value)) * 100) / 100);
-      }
-      const row = {
-        instructor_id: userId,
-        pupil_id: pupilId,
-        slot_date: slot.date,
-        slot_time: slot.time,
-        duration_minutes: slot.duration,
-        status: "sent",
-        sent_via: via,
-        discount_code_id,
-        discount_type,
-        discount_value,
-        original_price,
-        discounted_price,
-      };
-      const { error } = await supabase.from("gap_filler_offers").insert(row);
-      if (error) throw error;
-      setReloadKey((k) => k + 1);
-    } catch (err) {
-      console.warn("[gaps] logOffer failed:", err);
-    }
-  }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
 
-  function buildTextBody(r: Ranked): string {
-    const first = firstNameOf(r.pupil);
-    const matches = r.matchedSlots.filter((m) => m.match);
-    const offerSlots = matches.length > 0 ? matches : r.matchedSlots;
-    if (offerSlots.length === 1) {
-      const s = offerSlots[0];
-      return `Hi ${first}, I have a ${s.duration} minute lesson slot available on ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)}. Would you like it? Reply YES to confirm or let me know if another time works better. Thanks!`;
-    }
-    const lines = offerSlots
-      .map(
-        (s) =>
-          `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`,
-      )
-      .join("\n");
-    return `Hi ${first}, I have ${offerSlots.length} lesson slots available — would any of these suit you?\n${lines}\nReply with which one(s) you'd like and I'll get you booked in!`;
-  }
-
-  async function handleText(r: Ranked) {
-    const body = buildTextBody(r);
-    if (!r.pupil.phone) {
-      toast.error("Pupil has no phone number");
-      return;
-    }
-    const { error } = await supabase.from("sms_queue").insert({
-      instructor_id: userId,
-      pupil_phone: r.pupil.phone,
-      message: body,
-    });
-    if (error) {
-      console.error("[gaps] sms_queue insert failed:", error);
-      toast.error("Failed to queue text");
-      return;
-    }
-    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
-    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    for (const s of slotsForOffer) {
-      void logOffer(r.pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
-    }
-    toast.success(`Text queued for ${firstNameOf(r.pupil)} — sending shortly`);
-  }
-
-  function buildDefaultTemplate(): string {
-    const slots = searchSlots.length ? searchSlots : selectedSlots;
-    const cta = "Reply YES to confirm, or let me know if another time works better!";
-    let when = "[date] at [time]";
-    if (slots.length === 1) {
-      when = `${fmtDateLong(slots[0].date)} at ${fmtTimeHm(slots[0].time)} (${slots[0].duration} min)`;
-      return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? ${cta} {instructor_name}`;
-    } else if (slots.length > 1) {
-      const lines = slots
-        .map((s) => `- ${fmtDateLong(s.date)} at ${fmtTimeHm(s.time)} (${s.duration} min)`)
-        .join("\n");
-      return `Hi {name}, I have a few lesson slots available — would any of these work for you?\n${lines}\n${cta} {instructor_name}`;
-    }
-    return `Hi {name}, I have a lesson slot available on ${when} — would this work for you? ${cta} {instructor_name}`;
-  }
-
-  function openMessageSheet() {
-    setMessageTemplate(buildDefaultTemplate());
-    setSelectedDiscountId(null);
-    setMessageSheetOpen(true);
-  }
-
-  function discountLineFor(dc: DiscountCode): string {
-    const value =
-      dc.type === "percentage" ? `${dc.value}% off` : `£${dc.value} off`;
-    return `Use code ${dc.code} for ${value} this lesson!`;
-  }
-
-  const DISCOUNT_MARKER = "Use code ";
-  function applyDiscountToTemplate(dcId: string | null) {
-    setSelectedDiscountId(dcId);
-    setMessageTemplate((prev) => {
-      // strip any existing discount line
-      const stripped = prev
-        .split("\n")
-        .filter((l) => !l.trimStart().startsWith(DISCOUNT_MARKER))
-        .join("\n")
-        .replace(/\n{3,}/g, "\n\n")
-        .trimEnd();
-      if (!dcId) return stripped;
-      const dc = discountCodes.find((d) => d.id === dcId);
-      if (!dc) return stripped;
-      return `${stripped}\n\n${discountLineFor(dc)}`;
-    });
-  }
-
-  async function bulkMessageSelected() {
-    if (selectedPupilIds.size === 0 || !ranked || !userId) return;
-    const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
-
-    const withBodies = selected.map((r) => {
-      const first = firstNameOf(r.pupil);
-      const body = messageTemplate
-        .replace(/\{name\}/g, first)
-        .replace(/\{instructor_name\}/g, instructorName);
-      return { pupil: r.pupil, body };
-    });
-
-    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
-    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-
-    // 1. Insert in-app chat_messages for everyone immediately + log offers.
-    for (const { pupil, body } of withBodies) {
-      const { error: chatErr } = await supabase.from("chat_messages").insert({
-        instructor_id: userId,
-        pupil_id: pupil.id,
-        sender_type: "instructor",
-        sender_id: userId,
-        body,
+      await supabase.from("gap_filler_offers").insert({
+        instructor_id: user.id,
+        pupil_id: offerPupil.id,
+        slot_date: selectedGap.date,
+        slot_time: minToHm(selectedGap.startMins),
+        duration_minutes: selectedGap.durationMins,
+        status: "pending",
+        sent_via: "sms",
       });
-      if (chatErr) {
-        console.error("[gaps] chat_messages insert failed:", chatErr);
-      }
-      for (const s of slotsForOffer) {
-        void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
-      }
-    }
 
-    await notifyInstructors({
-      instructor_id: userId,
-      type: "gap_message_sent",
-      title: "Gap filler messages sent",
-      body: `Message sent to ${withBodies.length} pupil${withBodies.length === 1 ? "" : "s"} for ${slotsForOffer.length} slot${slotsForOffer.length === 1 ? "" : "s"}.`,
-      read: false,
-    });
+      if (offerPupil.phone) {
+        await supabase.from("sms_queue").insert({
+          instructor_id: user.id,
+          pupil_phone: offerPupil.phone,
+          message,
+        });
 
-    setMessageSheetOpen(false);
-    setSelectedPupilIds(new Set());
-    setRanked(null);
-
-    const pupilCount = withBodies.length;
-    const phoneCandidates = withBodies.filter((x) => !!x.pupil.phone);
-    const noPhone = withBodies.filter((x) => !x.pupil.phone);
-
-    let smsQueuedCount = 0;
-    const failedNames: string[] = [];
-
-    // 2. Queue texts via sms_queue for pupils with a phone number.
-    if (phoneCandidates.length > 0) {
-      const smsRows = phoneCandidates.map((x) => ({
-        instructor_id: userId,
-        pupil_phone: x.pupil.phone!,
-        message: x.body,
-      }));
-      const { error: smsErr } = await supabase.from("sms_queue").insert(smsRows);
-      if (smsErr) {
-        console.error("[gaps] sms_queue insert failed:", smsErr);
-        failedNames.push(...phoneCandidates.map((x) => fullNameOf(x.pupil)));
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        await fetch(`${SUPABASE_URL}/functions/v1/send-sms`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+            apikey: SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({}),
+        });
+        toast.success(`Offer sent to ${offerPupil.first_name || offerPupil.name}`);
       } else {
-        smsQueuedCount = phoneCandidates.length;
-        // Trigger immediate SMS processing — don't wait for cron
-        void supabase.functions.invoke("send-sms", { body: {} });
-      }
-    }
-
-    const descriptionParts = [
-      smsQueuedCount > 0
-        ? `SMS queued for ${smsQueuedCount} pupil${smsQueuedCount === 1 ? "" : "s"}`
-        : null,
-      noPhone.length > 0
-        ? `No phone number for ${noPhone.length} pupil${noPhone.length === 1 ? "" : "s"}: ${noPhone.map((x) => fullNameOf(x.pupil)).join(", ")}`
-        : null,
-      failedNames.length > 0 ? `SMS queue failed: ${failedNames.join(", ")}` : null,
-    ].filter(Boolean) as string[];
-
-    const title = `Message sent to ${pupilCount} pupil${pupilCount === 1 ? "" : "s"}`;
-    if (failedNames.length > 0) {
-      toast.error(title, { description: descriptionParts.join(" · ") });
-    } else {
-      toast.success(title, { description: descriptionParts.join(" · ") });
-    }
-  }
-
-  async function handleSendTextToSelected() {
-    if (selectedPupilIds.size === 0 || !ranked || !userId) return;
-    setSendingText(true);
-    try {
-      const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
-      const withBodies = selected.map((r) => {
-        const first = firstNameOf(r.pupil);
-        const body = messageTemplate
-          .replace(/\{name\}/g, first)
-          .replace(/\{instructor_name\}/g, instructorName);
-        return { pupil: r.pupil, body };
-      });
-
-      const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
-      const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-
-      for (const { pupil } of withBodies) {
-        for (const s of slotsForOffer) {
-          void logOffer(pupil.id, "sms", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
-        }
+        toast.error("No phone number for this pupil");
       }
 
-      const phoneCandidates = withBodies.filter((x) => !!x.pupil.phone);
-      const noPhone = withBodies.filter((x) => !x.pupil.phone);
-
-      let smsQueuedCount = 0;
-      if (phoneCandidates.length > 0) {
-        const smsRows = phoneCandidates.map((x) => ({
-          instructor_id: userId,
-          pupil_phone: x.pupil.phone!,
-          message: x.body,
-        }));
-        const { error: smsErr } = await supabase.from("sms_queue").insert(smsRows);
-        if (smsErr) {
-          console.error("[gaps] sms_queue insert failed:", smsErr);
-          toast.error("Failed to queue texts");
-        } else {
-          smsQueuedCount = phoneCandidates.length;
-          void supabase.functions.invoke("send-sms", { body: {} });
-        }
-      }
-
-      if (noPhone.length > 0) {
-        toast.info(`${noPhone.length} pupil${noPhone.length === 1 ? "" : "s"} had no phone number`, {
-          description: "Send an in-app message to reach them",
-        });
-      }
-
-      const count = withBodies.length;
-      toast.success(`Message sent to ${count} pupil${count === 1 ? "" : "s"} ✅`);
-      setSelectedPupilIds(new Set());
+      setOfferPupil(null);
+    } catch (err) {
+      toast.error("Failed to send offer");
     } finally {
-      setSendingText(false);
+      setSending(false);
     }
   }
 
-  async function handleSendInAppToSelected() {
-    if (selectedPupilIds.size === 0 || !ranked || !userId) return;
-    setSendingInApp(true);
-    try {
-      const selected = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
-      const withBodies = selected.map((r) => {
-        const first = firstNameOf(r.pupil);
-        const body = messageTemplate
-          .replace(/\{name\}/g, first)
-          .replace(/\{instructor_name\}/g, instructorName);
-        return { pupil: r.pupil, body };
-      });
-
-      const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
-      const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-
-      for (const { pupil, body } of withBodies) {
-        const { error: chatErr } = await supabase.from("chat_messages").insert({
-          instructor_id: userId,
-          pupil_id: pupil.id,
-          sender_type: "instructor",
-          sender_id: userId,
-          body,
-        });
-        if (chatErr) {
-          console.error("[gaps] chat_messages insert failed:", chatErr);
-        }
-        for (const s of slotsForOffer) {
-          void logOffer(pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
-        }
-      }
-
-      await notifyInstructors({
-        instructor_id: userId,
-        type: "gap_message_sent",
-        title: "Gap filler messages sent",
-        body: `Message sent to ${withBodies.length} pupil${withBodies.length === 1 ? "" : "s"} for ${slotsForOffer.length} slot${slotsForOffer.length === 1 ? "" : "s"}.`,
-        read: false,
-      });
-
-      const count = withBodies.length;
-      toast.success(`Message sent to ${count} pupil${count === 1 ? "" : "s"} ✅`);
-      setSelectedPupilIds(new Set());
-    } finally {
-      setSendingInApp(false);
-    }
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        <IconLoader2 size={28} style={{ animation: "spin 1s linear infinite", color: "#1877D6" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
   }
-
-  function handleMessage(r: Ranked) {
-    const slotsForOffer = searchSlots.length ? searchSlots : selectedSlots;
-    const dc = selectedDiscountId ? discountCodes.find((d) => d.id === selectedDiscountId) : null;
-    for (const s of slotsForOffer) {
-      void logOffer(r.pupil.id, "message", { date: s.date, time: s.time, duration: s.duration }, dc ?? undefined);
-    }
-    navigate({ to: "/messages/$pupilId", params: { pupilId: r.pupil.id } });
-  }
-
-  function handleBook(r: Ranked) {
-    const matches = r.matchedSlots.filter((m) => m.match);
-    const s = matches[0] || r.matchedSlots[0];
-    if (!s) return;
-    const qs = new URLSearchParams({
-      pupilId: r.pupil.id,
-      date: s.date,
-      time: s.time,
-      duration: String(s.duration),
-    });
-    navigate({ to: `/lessons/new?${qs.toString()}` as unknown as "/lessons/new" });
-  }
-
-  const noGoodMatches = useMemo(
-    () =>
-      ranked !== null && ranked.length > 0 && ranked.every((r) => r.score < 20),
-    [ranked],
-  );
-
-  const dayOfWeekLabel =
-    searchSlots[0]
-      ? DAYS[new Date(searchSlots[0].date + "T00:00:00").getDay()]
-      : "";
-
-  // NOTE: Potential earnings requires hourlyRate from profile — if 0/absent we render "—" per spec.
-  const totalFreeMinsAll = freeSlots.reduce((s, slot) => s + (slot.gapMinutes ?? 0), 0);
-  const potentialValue =
-    hourlyRate > 0
-      ? `£${Math.round((totalFreeMinsAll / 60) * hourlyRate).toLocaleString()}`
-      : "—";
-  const daysWithGaps = dayGroups.filter((g) => g.slots.length > 0).length;
-
-  const HAIRLINE = "#EEF2F7";
-  const CHIP_BG = "#E6F1FB";
-  const ACCENT = "#1877D6";
-  const TEXT_PRIMARY = "#12142B";
-  const TEXT_MUTED = "#B0BAC9";
-  const TEXT_SUBTLE = "#8A94A6";
 
   return (
-    <DSMTopSheet
-      title="Gap filler"
-      right={
-        <button
-          type="button"
-          aria-label="Gap filler information"
-          onClick={() => toast.info("Choose a free slot and offer it to pupils whose availability is the best match.")}
-          style={{ width: 40, height: 40, borderRadius: 20, border: 0, background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
-        >
-          <IconInfoCircle size={19} color="#FFFFFF" stroke={1.8} />
-        </button>
-      }
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#F4F6F8",
+        fontFamily: "Poppins, sans-serif",
+        paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)",
+      }}
     >
-      <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", overflow: "hidden", paddingBottom: 80 }}>
-      {/* Pulse animation for the freed-slot highlight */}
-      <style>{`
-        @keyframes gapsPrefilterPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.55), 0 4px 14px rgba(24,95,165,0.12); }
-          50%      { box-shadow: 0 0 0 6px rgba(245,158,11,0), 0 4px 14px rgba(24,95,165,0.12); }
-        }
-        .gaps-prefilter-match {
-          border-color: #F59E0B !important;
-          animation: gapsPrefilterPulse 1.6s ease-in-out infinite;
-        }
-      `}</style>
-
-      {/* Pre-filter banner (from cancellation) */}
-      {prefilter && (
-        <div
+      {/* Header */}
+      <div
+        style={{
+          background: "#fff",
+          padding: "16px",
+          paddingTop: "calc(env(safe-area-inset-top) + 16px)",
+          borderBottom: "0.5px solid #E4E8EF",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }}
+      >
+        <button
+          onClick={() => navigate({ to: "/home" as never })}
           style={{
-            background: "#FEF2F2",
-            border: "0.5px solid #FECACA",
-            borderRadius: tokens.radiusCard,
-            padding: "14px 16px",
-            margin: "12px 16px 0",
+            width: 36,
+            height: 36,
+            borderRadius: 10,
+            border: "0.5px solid #E4E8EF",
+            background: "#fff",
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            justifyContent: "center",
+            cursor: "pointer",
           }}
         >
-          <IconCircleX size={16} color="#CC2229" style={{ flexShrink: 0 }} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, color: tokens.navy }}>
-              Lesson cancelled — fill this slot?
+          <IconArrowLeft size={20} color="#0B2341" />
+        </button>
+        <span style={{ fontSize: 18, fontWeight: 600, color: "#0B2341" }}>Gap filler</span>
+      </div>
+
+      <div style={{ padding: 16 }}>
+        {/* Success banner */}
+        {gaps.length > 0 ? (
+          <div
+            style={{
+              background: "#EAF3DE",
+              borderRadius: 12,
+              padding: 14,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              marginBottom: 16,
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#3B6D11",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconBolt size={20} color="#fff" />
             </div>
-            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
-              {prefilterDateLabel} at {prefilter.time} · {prefilter.duration} mins
-            </div>
-            {prefilterFound === false && (
-              <div style={{ fontSize: 12, color: "#B45309", marginTop: 4 }}>
-                This slot is outside your working hours — showing all available slots instead
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#3B6D11" }}>
+                {gaps.length} gap{gaps.length !== 1 ? "s" : ""} available
               </div>
-            )}
+              <div style={{ fontSize: 11, color: "#5A7C3A", marginTop: 2 }}>
+                Based on your diary and working hours
+              </div>
+            </div>
           </div>
-          <button
-            onClick={() => {
-              setPrefilter(null);
-              setPrefilterFound(null);
-              prefilterHandledRef.current = true;
-            }}
-            aria-label="Dismiss"
+        ) : (
+          <div
             style={{
-              background: "transparent",
-              border: "none",
-              padding: 4,
-              cursor: "pointer",
-              color: tokens.textMuted,
-              flexShrink: 0,
+              background: "#F3F4F6",
+              borderRadius: 12,
+              padding: 14,
+              color: "#536579",
+              fontSize: 13,
+              textAlign: "center",
+              marginBottom: 16,
             }}
           >
-            <IconX size={16} />
-          </button>
-        </div>
-      )}
-
-      {freeSlots.length > 0 && <div
-        style={{
-          margin: "12px 16px 14px",
-          padding: "10px 12px",
-          borderRadius: 10,
-          background: "#EAF3DE",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <div style={{ width: 32, height: 32, borderRadius: 8, background: "#639922", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <IconBolt size={16} color="#FFFFFF" stroke={2.2} />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#27500A" }}>
-            {freeSlots.filter((slot) => slot.date === todayIso()).length} gap{freeSlots.filter((slot) => slot.date === todayIso()).length === 1 ? "" : "s"} found today
+            No gaps found in the next {FUTURE_DAYS} days
           </div>
-          <div style={{ fontSize: 11, color: "#3B6D11", marginTop: 1 }}>Based on your diary and working hours</div>
-        </div>
-      </div>}
-
-      {/* Section header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 16px",
-          marginBottom: 2,
-        }}
-      >
-        <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: "#0B2341" }}>
-          Available gaps
-        </div>
-        {freeSlots.length > 0 && (
-          <button
-            onClick={() => {
-              if (selectedSlots.length > 0) {
-                setSelectedSlots([]);
-              } else {
-                setSelectedSlots(
-                  freeSlots.map((s) => ({
-                    date: s.date,
-                    time: s.startTime,
-                    duration: 60,
-                  })),
-                );
-              }
-            }}
-            style={{
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              fontSize: tokens.fontSize.base,
-              fontWeight: tokens.fontWeight.medium,
-              color: tokens.blue,
-              cursor: "pointer",
-            }}
-          >
-            {selectedSlots.length > 0 ? "Clear all" : "Select all"}
-          </button>
-        )}
-      </div>
-      <div
-        style={{
-          fontSize: 12,
-          color: "#8A93A3",
-          padding: "0 16px",
-          marginBottom: 18,
-        }}
-      >
-        {slotsLoading
-          ? "Scanning diary…"
-          : `${freeSlots.length} gap${freeSlots.length === 1 ? "" : "s"} across ${daysWithGaps} day${daysWithGaps === 1 ? "" : "s"} · ${potentialValue} potential`}
-      </div>
-
-      <div>
-        {!slotsLoading && freeSlots.length === 0 && (
-          <EmptyState
-            icon={<IconCalendar size={32} color="#9CA3AF" stroke={1.5} />}
-            title="No gaps found"
-            subtitle="Available slots in your schedule will show here"
-          />
         )}
 
-        {/* Horizontal date strip */}
-        {dayGroups.length > 0 && (
+        {/* Slot pills */}
+        {gaps.length > 1 && (
           <div
             style={{
               display: "flex",
-              gap: 6,
+              gap: 8,
               overflowX: "auto",
-              padding: "0 16px 14px",
+              paddingBottom: 12,
+              marginBottom: 4,
               scrollbarWidth: "none",
             }}
           >
-            {dayGroups.map((g) => {
-              const d = new Date(g.iso + "T00:00:00");
-              const dow = d.toLocaleDateString("en-GB", { weekday: "short" });
-              const dom = d.getDate();
-              const hasSlots = g.slots.length > 0;
-              const isSelected = selectedDateIso === g.iso;
+            {gaps.map((g, i) => {
+              const isToday = g.date === todayIso();
+              const label = isToday
+                ? `Today ${minToHm(g.startMins)}`
+                : `${new Date(g.date + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric" })} ${minToHm(g.startMins)}`;
               return (
                 <button
-                  key={g.iso}
-                  onClick={() => setSelectedDateIso(g.iso)}
+                  key={i}
+                  onClick={() => setSelectedGapIdx(i)}
                   style={{
-                    flex: "0 0 auto",
-                    background: isSelected ? "#0B2341" : "#FFFFFF",
-                    color: isSelected ? "#FFFFFF" : "#0B1F3A",
-                    border: isSelected ? "0.5px solid #0B2341" : "0.5px solid #E4E8EF",
-                    borderRadius: 20,
                     padding: "5px 10px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 2,
+                    borderRadius: 20,
+                    fontSize: 11,
+                    whiteSpace: "nowrap",
                     cursor: "pointer",
-                    position: "relative",
+                    border: "0.5px solid",
+                    background: i === selectedGapIdx ? "#0B2341" : "#fff",
+                    color: i === selectedGapIdx ? "#fff" : "#536579",
+                    borderColor: i === selectedGapIdx ? "#0B2341" : "#E4E8EF",
+                    fontWeight: 500,
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: tokens.fontSize.xs,
-                      fontWeight: tokens.fontWeight.medium,
-                      letterSpacing: "0.04em",
-                      textTransform: "none",
-                      color: isSelected ? "#FFFFFF" : "#6B7686",
-                    }}
-                  >
-                    {dow}
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.1 }}>
-                    {dom}
-                  </span>
-                  {hasSlots && <span style={{ fontSize: 9, color: isSelected ? "#FFFFFF" : "#8A93A3" }}>{g.slots.length}</span>}
+                  {label}
                 </button>
               );
             })}
           </div>
         )}
 
-        {/* All days content (date strip scrolls to a day) */}
-        {dayGroups
-          .map((g) => {
-            const hasGaps = g.slots.length > 0;
-            const dayDate = new Date(g.iso + "T00:00:00");
-            const isSelectedDay = g.iso === selectedDateIso;
-            return (
-              <div
-                key={g.iso}
-                ref={(el) => {
-                  daySectionRefs.current[g.iso] = el;
-                }}
-                style={{ marginBottom: 14, scrollMarginTop: 12 }}
-              >
-                <div
-                  style={{
-                    background: isSelectedDay ? "#DCE4F0" : "#EEF2F7",
-                    padding: "8px 16px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 10,
-                  }}
-                >
-                  <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
-                    {dayDate.toLocaleDateString("en-GB", { weekday: "long" })}
-                    <span style={{ fontWeight: tokens.fontWeight.medium, marginLeft: 6 }}>
-                      {dayDate.toLocaleDateString("en-GB", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                      })}
-                    </span>
-                  </span>
-                  <span
-                    style={{
-                      fontSize: tokens.fontSize.base,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: hasGaps ? "#1877D6" : "#8A93A3",
-                    }}
-                  >
-                    {hasGaps
-                      ? `${g.slots.length} slot${g.slots.length === 1 ? "" : "s"}`
-                      : "No gaps"}
-                  </span>
-                </div>
-
-                {g.lunch && (
-                  <div
-                    style={{
-                      background: "#F9FAFB",
-                      borderRadius: tokens.radiusCard,
-                      padding: "8px 16px",
-                      margin: "0 16px 10px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
-                    <IconCoffee size={14} color="#9CA3AF" />
-                    <span style={{ fontSize: tokens.fontSize.base, color: "#6B7280" }}>
-                      Lunch break
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: tokens.textMuted,
-                        marginLeft: "auto",
-                      }}
-                    >
-                      {g.lunch.start} – {g.lunch.end}
-                    </span>
-                  </div>
-                )}
-
-                {!hasGaps && (
-                  <div style={{ padding: "8px 16px 4px" }}>
-                    <button
-                      onClick={() => {
-                        setManualMode(true);
-                        setSlotDate(g.iso);
-                        setSelectedSlots([]);
-                      }}
-                      style={{
-                        background: "transparent",
-                        border: "none",
-                        padding: 0,
-                        fontSize: tokens.fontSize.md,
-                        fontWeight: tokens.fontWeight.medium,
-                        color: tokens.blue,
-                        cursor: "pointer",
-                      }}
-                    >
-                      + Add a slot manually
-                    </button>
-                  </div>
-                )}
-
-                {g.slots.map((slot) => {
-                  const anySelected = slot.possibleDurations.some((d) =>
-                    selectedSlots.some(
-                      (s) =>
-                        slotKey(s) ===
-                        slotKey({
-                          date: slot.date,
-                          time: slot.startTime,
-                          duration: d,
-                        }),
-                    ),
-                  );
-                  const default60Key = slotKey({
-                    date: slot.date,
-                    time: slot.startTime,
-                    duration: 60,
-                  });
-                  const isPrefilterMatch =
-                    !!prefilter &&
-                    prefilterFound === true &&
-                    slot.date === prefilter.date &&
-                    slot.startTime === prefilter.time;
-                  return (
-                    <div
-                      key={`gap-${slot.startTime}`}
-                      data-slot-key={`${slot.date}-${slot.startTime}`}
-                      className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
-                      style={{
-                        position: "relative",
-                        background: anySelected ? "#FFF8E8" : "#FFFFFF",
-                        borderRadius: 8,
-                        border: anySelected ? "1.5px solid #D4A853" : "1px solid #E4E8EF",
-                        borderLeft: "4px solid #D4A853",
-                        boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
-                        margin: "0 16px 10px",
-                        padding: "12px 14px",
-                      }}
-                    >
-                      {anySelected && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <IconCheck size={14} color="#1877D6" stroke={2.5} />
-                        </div>
-                      )}
-
-                      <button
-                        onClick={() => {
-                          setSelectedSlots((prev) => {
-                            const exists = prev.some(
-                              (s) => slotKey(s) === default60Key,
-                            );
-                            if (exists)
-                              return prev.filter(
-                                (s) =>
-                                  !(
-                                    s.date === slot.date &&
-                                    s.time === slot.startTime
-                                  ),
-                              );
-                            return [
-                              ...prev,
-                              {
-                                date: slot.date,
-                                time: slot.startTime,
-                                duration: 60,
-                              },
-                            ];
-                          });
-                        }}
-                        style={{
-                          width: "100%",
-                          textAlign: "left",
-                          background: "transparent",
-                          border: "none",
-                          padding: 0,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 12,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {(() => {
-                          const startMin = hmToMin(slot.startTime);
-                          const dayName = DAYS[new Date(slot.date + "T00:00:00").getDay()];
-                          const preview = previewMatchForGap({
-                            date: slot.date,
-                            dayName,
-                            startMin,
-                            durationMin: slot.gapMinutes,
-                            allPupils,
-                            allAvailability,
-                          });
-                          const hasMatches = preview.count > 0;
-                          return (
-                            <>
-                              {hasMatches ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    flexShrink: 0,
-                                    height: 42,
-                                  }}
-                                >
-                                  {preview.topPupils.map((p, i) => {
-                                    const nm =
-                                      p.name ||
-                                      [p.first_name, p.last_name]
-                                        .filter(Boolean)
-                                        .join(" ") ||
-                                      "?";
-                                    const initials = nm
-                                      .split(/\s+/)
-                                      .map((s) => s.charAt(0))
-                                      .join("")
-                                      .slice(0, 2)
-                                      .toUpperCase();
-                                    const isLast =
-                                      i === preview.topPupils.length - 1;
-                                    return (
-                                      <div
-                                        key={p.id}
-                                        style={{
-                                          width: 32,
-                                          height: 32,
-                                          borderRadius: 999,
-                                          background:
-                                            p.calendar_colour ?? "#6B7280",
-                                          border: "2px solid #FFFFFF",
-                                          color: tokens.white,
-                                          fontSize: tokens.fontSize.sm,
-                                          fontWeight: tokens.fontWeight.bold,
-                                          display: "flex",
-                                          alignItems: "center",
-                                          justifyContent: "center",
-                                          marginRight: isLast ? 0 : -10,
-                                          flexShrink: 0,
-                                        }}
-                                      >
-                                        {initials}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <div
-                                  style={{
-                                    width: 42,
-                                    height: 42,
-                                    borderRadius: 12,
-                                    background:
-                                      "linear-gradient(135deg, #1877D6, #0B1F3A)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    flexShrink: 0,
-                                  }}
-                                >
-                                  <IconBolt size={20} color="#FFFFFF" />
-                                </div>
-                              )}
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div
-                                  style={{
-                                    color: tokens.navy,
-                                    fontWeight: tokens.fontWeight.semibold,
-                                    fontSize: 15,
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  {minToHm(hmToMin(slot.startTime))} – {minToHm(hmToMin(slot.endTime))}
-                                </div>
-                                <div
-                                  style={{
-                                    color: "#8A93A3",
-                                    fontSize: 12,
-                                    marginTop: 1,
-                                  }}
-                                >
-                                  {fmtGap(slot.gapMinutes)} free{hasMatches ? ` · ${preview.count} pupil${preview.count === 1 ? "" : "s"} available` : ""}
-                                </div>
-                              </div>
-                              {anySelected ? (
-                                <div
-                                  style={{
-                                    width: 16,
-                                    height: 16,
-                                    borderRadius: "50%",
-                                    background: tokens.blue,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    flexShrink: 0,
-                                  }}
-                                >
-                                  <IconCheck size={10} color="#FFFFFF" stroke={3} />
-                                </div>
-                              ) : (
-                                !hasMatches && (
-                                  <IconRefresh
-                                    size={16}
-                                    color="#C7CCD4"
-                                    style={{ flexShrink: 0 }}
-                                  />
-                                )
-                              )}
-                              <IconChevronRight
-                                size={16}
-                                color="#C7CCD4"
-                                style={{ flexShrink: 0 }}
-                              />
-                            </>
-                          );
-                        })()}
-                      </button>
-
-                      {slot.gapReason && (
-                        <div
-                          style={{
-                            background: "#E6F1FB",
-                            borderRadius: tokens.radiusCard,
-                            padding: "12px 16px",
-                            marginTop: 10,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <IconClock size={14} color="#1877D6" />
-                          <span
-                            style={{
-                              fontSize: tokens.fontSize.base,
-                              color: tokens.blue,
-                              fontWeight: tokens.fontWeight.medium,
-                            }}
-                          >
-                            {slot.gapReason}
-                          </span>
-                          {slot.fromPostcode && slot.toPostcode && (
-                            <span
-                              style={{
-                                fontSize: 12,
-                                color: "#8A93A3",
-                                marginLeft: "auto",
-                              }}
-                            >
-                              {slot.fromPostcode} → {slot.toPostcode}
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {anySelected && slot.possibleDurations.length > 1 && (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 6,
-                            paddingTop: 10,
-                          }}
-                        >
-                          {slot.possibleDurations.map((d) => {
-                            const key = slotKey({
-                              date: slot.date,
-                              time: slot.startTime,
-                              duration: d,
-                            });
-                            const isSelected = selectedSlots.some(
-                              (s) => slotKey(s) === key,
-                            );
-                            return (
-                              <button
-                                key={d}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedSlots((prev) => {
-                                    const filtered = prev.filter(
-                                      (s) =>
-                                        !(
-                                          s.date === slot.date &&
-                                          s.time === slot.startTime
-                                        ),
-                                    );
-                                    if (isSelected) return filtered;
-                                    return [
-                                      ...filtered,
-                                      {
-                                        date: slot.date,
-                                        time: slot.startTime,
-                                        duration: d,
-                                      },
-                                    ];
-                                  });
-                                }}
-                                style={{
-                                  background: isSelected ? "#1877D6" : "#FFFFFF",
-                                  color: isSelected ? "#FFFFFF" : "#8A94A6",
-                                  border: `1px solid ${isSelected ? "#1877D6" : "#EEF2F7"}`,
-                                  borderRadius: 999,
-                                  padding: "4px 10px",
-                                  fontSize: tokens.fontSize.sm,
-                                  fontWeight: tokens.fontWeight.medium,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                {d} MIN
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-
-        {!slotsLoading && dayGroups.length > 0 && (
-          <SummaryStats
-            dayGroups={dayGroups}
-            hourlyRate={hourlyRate}
-            freeSlots={freeSlots}
-          />
-        )}
-
-
-        <div style={{ marginTop: 8, textAlign: "center" }}>
-          <button
-            onClick={() => setManualMode((m) => !m)}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: BLUE,
-              fontSize: 12,
-              fontWeight: tokens.fontWeight.semibold,
-              cursor: "pointer",
-            }}
-          >
-            {manualMode
-              ? "Hide manual entry"
-              : "Don't see the right slot? Enter manually →"}
-          </button>
-        </div>
-
-        {manualMode && (
-          <div
-            style={{
-              background: tokens.white,
-              border: `0.5px solid ${BORDER}`,
-              borderRadius: 8,
-              padding: 16,
-              marginTop: 8,
-            }}
-          >
-            <FieldLabel>Date</FieldLabel>
-            <input
-              type="date"
-              value={slotDate}
-              onChange={(e) => {
-                setSlotDate(e.target.value);
-                setSelectedSlots([]);
-              }}
-              style={inputStyle}
-            />
-            <div style={{ height: 10 }} />
-            <FieldLabel>Start time</FieldLabel>
-            <input
-              type="time"
-              value={slotTime}
-              onChange={(e) => {
-                setSlotTime(e.target.value);
-                setSelectedSlots([]);
-              }}
-              style={inputStyle}
-            />
-            <div style={{ height: 10 }} />
-            <FieldLabel>Duration</FieldLabel>
-            <select
-              value={duration}
-              onChange={(e) => {
-                setDuration(parseInt(e.target.value, 10));
-                setSelectedSlots([]);
-              }}
-              style={inputStyle}
-            >
-              <option value={60}>60 mins</option>
-              <option value={90}>90 mins</option>
-              <option value={120}>120 mins</option>
-            </select>
-            <button
-              onClick={() => {
-                const one: SelectedSlot = {
-                  date: slotDate,
-                  time: slotTime,
-                  duration,
-                };
-                setSelectedSlots([one]);
-                void findPupils([one]);
-              }}
-              disabled={loading}
-              style={{
-                marginTop: 16,
-                width: "100%",
-                height: 48,
-                borderRadius: 12,
-                background: NAVY,
-                color: tokens.white,
-                fontWeight: tokens.fontWeight.semibold,
-                fontSize: 15,
-                border: "none",
-                cursor: "pointer",
-                opacity: loading ? 0.6 : 1,
-              }}
-            >
-              {loading ? "Finding pupils…" : "Find pupils →"}
-            </button>
-          </div>
-        )}
-      </div>
-
-      {monthlyRevenue > 0 && (
-        <div
-          style={{
-            background: "#E0FFF4",
-            border: "1px solid #86EFAC",
-            borderRadius: tokens.radiusCard,
-            padding: 16,
-            margin: "12px 16px 0",
-            color: "#065F46",
-            fontWeight: tokens.fontWeight.semibold,
-            fontSize: tokens.fontSize.md,
-          }}
-        >
-          💰 Revenue recovered this month: £{monthlyRevenue.toFixed(2)}
-        </div>
-      )}
-
-      {ranked !== null && (
-        <BottomSheetV2
-          title="Offer this gap"
-          subtitle={
-            searchSlots.length === 1
-              ? `${fmtDateLong(searchSlots[0].date)} at ${fmtTimeHm(searchSlots[0].time)} · ${searchSlots[0].duration} min`
-              : `Across ${new Set(searchSlots.map((s) => s.date)).size} day${new Set(searchSlots.map((s) => s.date)).size === 1 ? "" : "s"}`
-          }
-          onClose={() => setRanked(null)}
-        >
-          {ranked.length === 0 && (
+        {/* Selected gap card */}
+        {selectedGap && (
+          <>
             <div
               style={{
-                margin: "0 0 12px",
-                padding: 24,
-                textAlign: "center",
-                border: `0.5px solid ${BORDER}`,
-                borderRadius: 8,
-                background: tokens.white,
+                background: "#fff",
+                borderRadius: 12,
+                padding: 16,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                marginBottom: 16,
               }}
             >
-              <IconUsers size={40} color="#9CA3AF" style={{ margin: "0 auto" }} />
-              <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY, marginTop: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#0B2341", marginBottom: 4 }}>
+                {fmtDateLong(selectedGap.date)}
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#0B2341", marginBottom: 8 }}>
+                {minToHm(selectedGap.startMins)} – {minToHm(selectedGap.endMins)}
+              </div>
+              <div style={{ fontSize: 12, color: "#536579", display: "flex", alignItems: "center", gap: 6 }}>
+                <span>
+                  {selectedGap.durationMins >= 60
+                    ? `${Math.floor(selectedGap.durationMins / 60)}h${selectedGap.durationMins % 60 ? ` ${selectedGap.durationMins % 60}m` : ""} free`
+                    : `${selectedGap.durationMins}m free`}
+                </span>
+                <span>·</span>
+                <span style={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <IconCurrencyPound size={12} />
+                  {Math.round((selectedGap.durationMins / 60) * 40)} potential
+                </span>
+              </div>
+            </div>
+
+            {/* Suggested pupils */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 10,
+              }}
+            >
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B2341" }}>Suggested pupils</div>
+              <div style={{ fontSize: 11, color: "#536579", display: "flex", alignItems: "center", gap: 4 }}>
+                <IconUsers size={12} />
+                All pupils ({pupils.length})
+              </div>
+            </div>
+
+            {matches.length === 0 ? (
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 12,
+                  padding: 16,
+                  textAlign: "center",
+                  color: "#536579",
+                  fontSize: 13,
+                }}
+              >
                 No active pupils found
               </div>
-              <div style={{ color: MUTED, fontSize: tokens.fontSize.base, marginTop: 4 }}>
-                Add pupils to EDP to use gap filler
-              </div>
-            </div>
-          )}
+            ) : (
+              matches.map((m, i) => {
+                const name = m.pupil.first_name || m.pupil.name || "";
+                const col = avatarColor(m.pupil.id);
+                const pill = tierStyle(m.tier);
 
-          {noGoodMatches && (
-            <div
-              style={{
-                margin: "0 0 12px",
-                padding: 16,
-                background: "#FEF3C7",
-                border: "1px solid #FCD34D",
-                borderRadius: tokens.radiusCard,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  color: "#B45309",
-                  fontWeight: tokens.fontWeight.bold,
-                  fontSize: tokens.fontSize.md,
-                }}
-              >
-                <IconAlertTriangle size={16} /> No strong matches for this slot
-              </div>
-              <div style={{ color: "#78350F", fontSize: tokens.fontSize.base, marginTop: 6 }}>
-                These pupils have low availability for this time — consider
-                offering to EveryDriver instead.
-              </div>
-              <button
-                onClick={() => navigate({ to: "/marketplace" })}
-                style={{
-                  marginTop: 10,
-                  background: tokens.navy,
-                  color: tokens.white,
-                  border: "none",
-                  borderRadius: tokens.radiusCard,
-                  padding: "8px 16px",
-                  fontSize: tokens.fontSize.base,
-                  fontWeight: tokens.fontWeight.semibold,
-                  cursor: "pointer",
-                }}
-              >
-                Post to EveryDriver →
-              </button>
-            </div>
-          )}
-
-          {(() => {
-            const q = pupilSearchQuery.trim().toLowerCase();
-            const filteredRanked = q
-              ? ranked.filter((r) => {
-                  const p = r.pupil;
-                  const nm = (
-                    p.name ||
-                    [p.first_name, p.last_name].filter(Boolean).join(" ") ||
-                    ""
-                  ).toLowerCase();
-                  return nm.includes(q);
-                })
-              : ranked;
-
-            const toggle = (id: string) =>
-              setSelectedPupilIds((prev) => {
-                const next = new Set(prev);
-                if (next.has(id)) next.delete(id);
-                else next.add(id);
-                return next;
-              });
-
-            const selectedList = ranked.filter((r) => selectedPupilIds.has(r.pupil.id));
-            const selectedNames = selectedList.map((r) => firstNameOf(r.pupil));
-            const selectedNamesLabel =
-              selectedNames.length === 0
-                ? ""
-                : selectedNames.length <= 3
-                  ? selectedNames.join(", ")
-                  : `${selectedNames.slice(0, 3).join(", ")} +${selectedNames.length - 3} more`;
-
-            return (
-              <>
-                <div ref={pupilListRef}>
-                  <div style={{ margin: "2px 16px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2341" }}>Suggested pupils</span>
-                    <span style={{ fontSize: 11, color: "#1877D6", fontWeight: 600 }}>See all ({ranked.length}) ›</span>
-                  </div>
-                  <SheetGroup>
-                    <SheetSearchRow
-                      value={pupilSearchQuery}
-                      onChange={setPupilSearchQuery}
-                      placeholder="Search pupils…"
-                    />
-                  </SheetGroup>
-
-                  {filteredRanked.length === 0 ? (
-                    <div
-                      style={{
-                        margin: "0 16px 12px",
-                        padding: 16,
-                        border: `0.5px solid ${BORDER}`,
-                        borderRadius: 8,
-                        background: tokens.white,
-                      }}
-                    >
-                      <div style={{ color: MUTED, fontSize: 13 }}>
-                        No pupils match "{pupilSearchQuery}"
-                      </div>
-                    </div>
-                  ) : (
-                    filteredRanked.map((r) => {
-                      const name = fullNameOf(r.pupil);
-                      const parts = name.trim().split(/\s+/);
-                      const initials =
-                        ((parts[0]?.[0] ?? "") +
-                          (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
-                        "?";
-                      const checked = selectedPupilIds.has(r.pupil.id);
-                      const availLabel =
-                        r.dayMatch === "yes"
-                          ? `✓ Available ${dayOfWeekLabel}s`
-                          : r.dayMatch === "no"
-                            ? `⚠ Usually busy ${dayOfWeekLabel}s`
-                            : "✗ No availability set";
-                      const last =
-                        r.lastLesson && r.daysSince !== null
-                          ? `Last lesson: ${r.daysSince} day${r.daysSince === 1 ? "" : "s"} ago`
-                          : "New pupil";
-
-                      return (
-                        <div
-                          key={r.pupil.id}
-                          style={{
-                            padding: "10px 12px",
-                            margin: "0 16px 8px",
-                            borderRadius: 10,
-                            border: "0.5px solid #E4E8EF",
-                            background: "#FFFFFF",
-                            textAlign: "left",
-                            width: "calc(100% - 32px)",
-                            boxSizing: "border-box",
-                          }}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <div
-                              style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 999,
-                                background: r.pupil.calendar_colour ?? "#6B7280",
-                                color: tokens.white,
-                                fontSize: 12,
-                                fontWeight: tokens.fontWeight.bold,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                flexShrink: 0,
-                              }}
-                            >{initials}</div>
-                            <div
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 700,
-                                color: "#0B2341",
-                                flex: 1,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {name}
-                            </div>
-                          <span
-                            style={{
-                              background: r.score >= 70 ? "#EAF3DE" : r.score >= 45 ? "#EAF5FC" : "#F4F6F8",
-                              color: r.score >= 70 ? "#3B6D11" : r.score >= 45 ? "#185FA5" : "#536579",
-                              border: r.score < 45 ? "0.5px solid #E4E8EF" : "none",
-                              fontWeight: 600,
-                              fontSize: 10,
-                              padding: "4px 7px",
-                              borderRadius: 10,
-                              flexShrink: 0,
-                            }}
-                          >
-                            {r.score >= 70 ? "High match" : r.score >= 45 ? "Good match" : "Possible"}
-                          </span>
-                          </div>
-                          <div style={{ fontSize: 11, color: "#6B7280", margin: "7px 0 8px", display: "flex", alignItems: "center", gap: 5 }}>
-                            <IconCheck size={13} color={r.dayMatch === "yes" ? "#639922" : "#8A93A3"} />
-                            <span>{availLabel} · {last}</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedPupilIds(new Set([r.pupil.id]));
-                              setMessageTemplate(buildDefaultTemplate());
-                              setSelectedDiscountId(null);
-                              setMessageSheetOpen(true);
-                            }}
-                            style={{ width: "100%", background: "#0B2341", color: "#FFFFFF", border: 0, borderRadius: 6, padding: 7, fontSize: 12, fontWeight: 500, cursor: "pointer" }}
-                          >
-                            Offer slot
-                          </button>
-                        </div>
-                      );
-                    })
-                  )}
-                  {ranked.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedPupilIds(new Set(ranked.map((r) => r.pupil.id)));
-                        openMessageSheet();
-                      }}
-                      style={{ margin: "12px 16px 4px", width: "calc(100% - 32px)", padding: "10px 12px", border: 0, borderRadius: 10, background: "#EAF5FC", display: "flex", alignItems: "center", gap: 10, textAlign: "left", cursor: "pointer" }}
-                    >
-                      <span style={{ width: 32, height: 32, borderRadius: 16, background: "#2C97DE", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <IconUsers size={17} color="#FFFFFF" />
-                      </span>
-                      <span style={{ flex: 1 }}>
-                        <span style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#0C447C" }}>Offer to all {ranked.length} pupils</span>
-                        <span style={{ display: "block", fontSize: 11, color: "#185FA5", marginTop: 1 }}>First to reply YES gets the slot</span>
-                      </span>
-                      <IconChevronRight size={16} color="#185FA5" />
-                    </button>
-                  )}
-                </div>
-
-                {selectedPupilIds.size > 0 && (
+                return (
                   <div
+                    key={m.pupil.id + i}
                     style={{
-                      background: "#FFFFFF",
-                      borderRadius: 8,
-                      border: "1px solid #E4E8EF",
-                      padding: 16,
-                      margin: "16px",
-                      boxShadow: "0 2px 8px rgba(11,35,65,0.08)",
+                      background: "#fff",
+                      borderRadius: 12,
+                      padding: 12,
+                      marginBottom: 10,
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        justifyContent: "space-between",
-                        gap: 12,
-                      }}
-                    >
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: "#536579",
-                            fontWeight: tokens.fontWeight.bold,
-                            marginBottom: 4,
-                          }}
-                        >
-                          Selected pupils
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 14,
-                            fontWeight: tokens.fontWeight.bold,
-                            color: "#0B2341",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {selectedNamesLabel}
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          pupilListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-                        }
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                      <div
                         style={{
+                          width: 38,
+                          height: 38,
+                          borderRadius: "50%",
+                          background: col,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#fff",
                           fontSize: 12,
-                          color: "#2C97DE",
-                          background: "transparent",
-                          border: "none",
-                          padding: 0,
-                          cursor: "pointer",
-                          fontWeight: tokens.fontWeight.semibold,
+                          fontWeight: 700,
                           flexShrink: 0,
                         }}
                       >
-                        Change selection
-                      </button>
+                        {initials(name)}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B2341", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 600,
+                            background: pill.bg,
+                            color: pill.color,
+                            display: "inline-block",
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            marginTop: 2,
+                          }}
+                        >
+                          {m.tier === "high" ? "High match" : m.tier === "good" ? "Good match" : "Possible"}
+                        </div>
+                      </div>
                     </div>
 
-                    <div
+                    <div style={{ fontSize: 11, color: "#536579", marginBottom: 10 }}>
+                      {m.reasons.join(" · ")}
+                    </div>
+
+                    <button
+                      onClick={() => openOffer(m.pupil)}
                       style={{
-                        height: 1,
-                        background: "#F4F6F8",
-                        margin: "14px 0",
+                        width: "100%",
+                        background: "#0B2341",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        padding: "7px 0",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        cursor: "pointer",
                       }}
-                    />
-
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          fontSize: 12,
-                          color: "#536579",
-                          fontWeight: tokens.fontWeight.bold,
-                          marginBottom: 6,
-                        }}
-                      >
-                        Message preview
-                      </label>
-                      <textarea
-                        value={messageTemplate}
-                        onChange={(e) => setMessageTemplate(e.target.value)}
-                        style={{
-                          background: "#F4F6F8",
-                          borderRadius: 10,
-                          border: "1px solid #E4E8EF",
-                          padding: 12,
-                          fontSize: 13,
-                          color: "#0B2341",
-                          lineHeight: 1.5,
-                          minHeight: 100,
-                          width: "100%",
-                          resize: "none",
-                          fontFamily: "inherit",
-                        }}
-                      />
-                      <p
-                        style={{
-                          fontSize: 11,
-                          color: "#536579",
-                          marginTop: 6,
-                          marginBottom: 0,
-                        }}
-                      >
-                        {"{name}"} will be replaced with each pupil's first name
-                      </p>
-                    </div>
-
-                    <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
-                      <button
-                        type="button"
-                        onClick={() => void handleSendTextToSelected()}
-                        disabled={sendingText || sendingInApp}
-                        style={{
-                          flex: 1,
-                          height: 48,
-                          borderRadius: 12,
-                          background: "#0B2341",
-                          color: "#FFFFFF",
-                          fontSize: 14,
-                          fontWeight: tokens.fontWeight.bold,
-                          border: "none",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 6,
-                          opacity: sendingText || sendingInApp ? 0.6 : 1,
-                        }}
-                      >
-                        <IconDeviceMobile size={18} color="#FFFFFF" />
-                        {sendingText ? "Sending…" : "Send SMS"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void handleSendInAppToSelected()}
-                        disabled={sendingText || sendingInApp}
-                        style={{
-                          flex: 1,
-                          height: 48,
-                          borderRadius: 12,
-                          background: "#2C97DE",
-                          color: "#FFFFFF",
-                          fontSize: 14,
-                          fontWeight: tokens.fontWeight.bold,
-                          border: "none",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 6,
-                          opacity: sendingText || sendingInApp ? 0.6 : 1,
-                        }}
-                      >
-                        <IconMessage size={18} color="#FFFFFF" />
-                        {sendingInApp ? "Sending…" : "Send in app"}
-                      </button>
-                    </div>
+                    >
+                      Offer slot
+                    </button>
                   </div>
-                )}
-              </>
-            );
-          })()}
+                );
+              })
+            )}
 
-        </BottomSheetV2>
-      )}
-
-      <div style={{ margin: "16px 16px 40px" }}>
-        <button
-          onClick={() => setOffersOpen((o) => !o)}
-          style={{
-            width: "100%",
-            background: tokens.white,
-            border: `1px solid ${BORDER}`,
-            borderRadius: 8,
-            padding: "14px 16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            cursor: "pointer",
-          }}
-        >
-          <span
-            style={{
-              fontWeight: tokens.fontWeight.bold,
-              color: NAVY,
-              fontSize: tokens.fontSize.md,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            Recent offers
-            <span
-              style={{
-                background: TINT,
-                color: BLUE,
-                fontSize: tokens.fontSize.sm,
-                fontWeight: tokens.fontWeight.bold,
-                padding: "2px 8px",
-                borderRadius: 999,
-              }}
-            >
-              {offers.length}
-            </span>
-          </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {offersOpen && offers.length > 0 && (
-              <button
-                type="button"
-                onClick={async () => {
-                  if (!userId) return;
-                  if (
-                    !window.confirm(
-                      "Hide all recent offers? You can still find them in your full history.",
-                    )
-                  ) {
-                    return;
-                  }
-                  const { error } = await supabase
-                    .from("gap_filler_offers")
-                    .update({ dismissed_at: new Date().toISOString() })
-                    .eq("instructor_id", userId)
-                    .is("dismissed_at", null);
-                  if (error) {
-                    console.error("[gaps] dismiss all offers failed:", error);
-                    toast.error("Could not hide offers");
-                    return;
-                  }
-                  setOffers([]);
-                  setOffersOpen(false);
-                }}
-                style={{
-                  fontSize: 12,
-                  color: MUTED,
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                }}
-              >
-                Clear all
-              </button>
-            )}
-            {offersOpen ? (
-              <IconChevronUp size={18} color={MUTED} />
-            ) : (
-              <IconChevronDown size={18} color={MUTED} />
-            )}
-          </div>
-        </button>
-        {offersOpen && (
-          <div style={{ marginTop: 10 }}>
-            {offers.length === 0 && (
+            {/* Broadcast */}
+            {matches.length > 0 && (
               <div
-                style={{
-                  color: MUTED,
-                  fontSize: tokens.fontSize.base,
-                  padding: "10px 4px",
-                  textAlign: "center",
+                onClick={() => {
+                  const p = matches[0].pupil;
+                  openOffer(p);
                 }}
-              >
-                No offers yet.
-              </div>
-            )}
-            {offers.map((o) => (
-              <div
-                key={o.id}
                 style={{
-                  background: "#F8FAFC",
-                  borderRadius: tokens.radiusCard,
-                  padding: "12px 16px",
-                  marginBottom: 6,
+                  background: "#EAF5FC",
+                  borderRadius: 10,
+                  padding: "10px 12px",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 10,
+                  cursor: "pointer",
+                  marginTop: 6,
                 }}
               >
-                <div>
-                  <div style={{ color: NAVY, fontWeight: tokens.fontWeight.semibold, fontSize: 13 }}>
-                    {o.pupils?.name || o.pupils?.first_name || "Pupil"}
-                  </div>
-                  <div style={{ color: MUTED, fontSize: 12 }}>
-                    {fmtDateLong(o.slot_date)} · {fmtTimeHm(o.slot_time)} ·{" "}
-                    {o.duration_minutes}m
-                  </div>
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    background: "#185FA5",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconSend size={14} color="#fff" />
                 </div>
-                <StatusBadge status={o.status} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B2341" }}>
+                    Offer to all {matches.length} pupils
+                  </div>
+                  <div style={{ fontSize: 11, color: "#536579" }}>First to reply YES gets the slot</div>
+                </div>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
 
-      {selectedSlots.length > 0 && ranked === null && (
-        <div style={{ height: 108 }} />
-      )}
-      {selectedSlots.length > 0 && ranked === null && (
-        <button
-          onClick={() => void findPupils()}
-          disabled={loading}
+      {/* Offer sheet */}
+      {offerPupil && (
+        <div
+          onClick={() => setOfferPupil(null)}
           style={{
             position: "fixed",
-            bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
-            left: 16,
-            right: 16,
-            zIndex: 50,
-            width: "calc(100% - 32px)",
-            height: 52,
-            borderRadius: 14,
-            background: "#2C97DE",
-            color: "#fff",
-            fontSize: 15,
-            fontWeight: 700,
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 200,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            border: "none",
-            cursor: "pointer",
-            opacity: loading ? 0.6 : 1,
-            boxShadow: "0 4px 16px rgba(44,151,222,0.4)",
+            alignItems: "flex-end",
           }}
         >
-          <IconUsers size={20} color="#fff" />
-          {loading ? "Finding pupils…" : "Find pupils for this slot"}
-        </button>
-      )}
-
-      <BottomSheet
-        open={messageSheetOpen}
-        onOpenChange={setMessageSheetOpen}
-        title="Confirm offer"
-        description={`Review the lesson and message for ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 80 }}>
-          {(() => {
-            const selectedList =
-              ranked?.filter((r) => selectedPupilIds.has(r.pupil.id)) ?? [];
-            const preview = selectedList.slice(0, 3);
-            return (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setRecipientsExpanded((v) => !v)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    width: "100%",
-                    background: "#F5F7FA",
-                    borderRadius: tokens.radiusCard,
-                    padding: 16,
-                    border: "none",
-                    cursor: "pointer",
-                    textAlign: "left",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {preview.length === 0 ? (
-                      <div
-                        style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: 999,
-                          background: "#D5DDE8",
-                        }}
-                      />
-                    ) : (
-                      preview.map((r, i) => {
-                        const name = fullNameOf(r.pupil);
-                        const parts = name.trim().split(/\s+/);
-                        const init =
-                          ((parts[0]?.[0] ?? "") +
-                            (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
-                          "?";
-                        return (
-                          <div
-                            key={r.pupil.id}
-                            style={{
-                              width: 28,
-                              height: 28,
-                              borderRadius: 999,
-                              background: r.pupil.calendar_colour ?? "#6B7280",
-                              color: tokens.white,
-                              fontSize: tokens.fontSize.sm,
-                              fontWeight: tokens.fontWeight.bold,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              border: "2px solid #F5F7FA",
-                              marginLeft: i === 0 ? 0 : -8,
-                            }}
-                          >
-                            {init}
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
-                      Sending to {selectedPupilIds.size} pupil
-                      {selectedPupilIds.size === 1 ? "" : "s"}
-                    </div>
-                    <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                      Tap to customise recipients
-                    </div>
-                  </div>
-                  {recipientsExpanded ? (
-                    <IconChevronUp size={18} color="#6B7280" />
-                  ) : (
-                    <IconChevronDown size={18} color="#6B7280" />
-                  )}
-                </button>
-
-                {recipientsExpanded && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {(() => {
-                      const list = ranked ?? [];
-                      const withPhone = list.filter((r) => !!(r.pupil.phone && r.pupil.phone.trim()));
-                      const withoutPhone = list.filter((r) => !(r.pupil.phone && r.pupil.phone.trim()));
-                      const allSelected =
-                        list.length > 0 && list.every((r) => selectedPupilIds.has(r.pupil.id));
-                      const toggle = (id: string) =>
-                        setSelectedPupilIds((prev) => {
-                          const next = new Set(prev);
-                          if (next.has(id)) next.delete(id);
-                          else next.add(id);
-                          return next;
-                        });
-                      const renderRow = (r: Ranked, hasPhone: boolean) => {
-                        const name = fullNameOf(r.pupil);
-                        const parts = name.trim().split(/\s+/);
-                        const init =
-                          ((parts[0]?.[0] ?? "") +
-                            (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() ||
-                          "?";
-                        const checked = selectedPupilIds.has(r.pupil.id);
-                        return (
-                          <div
-                            key={r.pupil.id}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 12,
-                              padding: "10px 4px",
-                            }}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => toggle(r.pupil.id)}
-                              aria-label={checked ? "Deselect" : "Select"}
-                              style={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 12,
-                                border: checked ? "none" : "1.5px solid #9CA3AF",
-                                background: checked ? "#1877D6" : "#FFFFFF",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                padding: 0,
-                                cursor: "pointer",
-                                flexShrink: 0,
-                              }}
-                            >
-                              {checked && (
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                  <path
-                                    d="M2 6.5L5 9.5L10 3"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              )}
-                            </button>
-                            <div
-                              onClick={() => toggle(r.pupil.id)}
-                              style={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: 999,
-                                background: r.pupil.calendar_colour ?? "#6B7280",
-                                color: tokens.white,
-                                fontSize: 12,
-                                fontWeight: tokens.fontWeight.bold,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                flexShrink: 0,
-                                cursor: "pointer",
-                              }}
-                            >
-                              {init}
-                            </div>
-                            <div
-                              onClick={() => toggle(r.pupil.id)}
-                              style={{
-                                flex: 1,
-                                minWidth: 0,
-                                fontSize: tokens.fontSize.md,
-                                color: hasPhone ? "#0B1F3A" : "#9CA3AF",
-                                cursor: "pointer",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {name}
-                            </div>
-                            {hasPhone ? (
-                              <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", flexShrink: 0 }}>
-                                {r.pupil.phone}
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setRecipientsExpanded(false);
-                                  setMessageSheetOpen(false);
-                                  navigate({ to: "/pupils/$id", params: { id: r.pupil.id } });
-                                }}
-                                style={{
-                                  background: "none",
-                                  border: "none",
-                                  color: tokens.blue,
-                                  fontWeight: tokens.fontWeight.semibold,
-                                  fontSize: tokens.fontSize.base,
-                                  cursor: "pointer",
-                                  padding: 0,
-                                  flexShrink: 0,
-                                }}
-                              >
-                                Add number
-                              </button>
-                            )}
-                          </div>
-                        );
-                      };
-                      return (
-                        <>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "flex-end",
-                              gap: 12,
-                            }}
-                          >
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setSelectedPupilIds(new Set(list.map((r) => r.pupil.id)))
-                              }
-                              disabled={allSelected}
-                              style={{
-                                background: "none",
-                                border: "none",
-                                color: tokens.blue,
-                                fontWeight: tokens.fontWeight.semibold,
-                                fontSize: tokens.fontSize.base,
-                                cursor: "pointer",
-                                padding: 0,
-                                opacity: allSelected ? 0.4 : 1,
-                              }}
-                            >
-                              Select all
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedPupilIds(new Set())}
-                              disabled={selectedPupilIds.size === 0}
-                              style={{
-                                background: "none",
-                                border: "none",
-                                color: tokens.blue,
-                                fontWeight: tokens.fontWeight.semibold,
-                                fontSize: tokens.fontSize.base,
-                                cursor: "pointer",
-                                padding: 0,
-                                opacity: selectedPupilIds.size === 0 ? 0.4 : 1,
-                              }}
-                            >
-                              Clear
-                            </button>
-                          </div>
-
-                          {withPhone.map((r) => renderRow(r, true))}
-
-                          {withoutPhone.length > 0 && (
-                            <>
-                              <div
-                                style={{
-                                  fontSize: tokens.fontSize.xs,
-                                  fontWeight: tokens.fontWeight.bold,
-                                  color: tokens.textMuted,
-                                  letterSpacing: 0.4,
-                                  marginTop: 12,
-                                  padding: "0 4px",
-                                }}
-                              >
-                                NO PHONE NUMBER ON FILE
-                              </div>
-                              {withoutPhone.map((r) => renderRow(r, false))}
-                            </>
-                          )}
-
-                          <button
-                            type="button"
-                            onClick={() => setRecipientsExpanded(false)}
-                            style={{
-                              marginTop: 12,
-                              width: "100%",
-                              background: tokens.navy,
-                              color: tokens.white,
-                              fontWeight: tokens.fontWeight.bold,
-                              fontSize: 15,
-                              borderRadius: tokens.radiusCard,
-                              border: "none",
-                              padding: "14px 16px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Done
-                          </button>
-                        </>
-                      );
-                    })()}
-                  </div>
-                )}
-                {selectedList.length === 1 && (() => {
-                  const match = selectedList[0];
-                  const slot = (searchSlots.length ? searchSlots : selectedSlots)[0];
-                  if (!match || !slot) return null;
-                  const pupilName = fullNameOf(match.pupil);
-                  const initials = pupilName.split(/\s+/).map((part) => part.charAt(0)).join("").slice(0, 2).toUpperCase();
-                  const reasons = [
-                    match.dayMatch === "yes" ? `Available on ${dayOfWeekLabel}s` : "Availability considered",
-                    match.shortNoticeOk ? "Accepts short-notice lessons" : `${match.minNoticeHours} hours notice preferred`,
-                    match.daysSince !== null ? `Last lesson ${match.daysSince} day${match.daysSince === 1 ? "" : "s"} ago` : "New pupil",
-                  ];
-                  return (
-                    <>
-                      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                        <div style={{ width: 36, height: 36, borderRadius: 18, background: match.pupil.calendar_colour ?? "#6B7280", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>{initials || "?"}</div>
-                        <div style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0B2341" }}>{pupilName}</div>
-                        <span style={{ borderRadius: 10, padding: "4px 7px", fontSize: 10, fontWeight: 600, background: match.score >= 70 ? "#EAF3DE" : "#EAF5FC", color: match.score >= 70 ? "#3B6D11" : "#185FA5" }}>{match.score >= 70 ? "High match" : "Good match"}</span>
-                      </div>
-                      <div>
-                        {reasons.map((reason) => (
-                          <div key={reason} style={{ display: "flex", alignItems: "center", gap: 6, color: "#536579", fontSize: 11, marginTop: 5 }}>
-                            <IconCheck size={13} color="#639922" stroke={2.4} />{reason}
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{ background: "#F4F6F8", borderRadius: 8, padding: 10, display: "grid", gap: 7 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconCalendar size={15} color="#536579" />{fmtDateLong(slot.date)}</div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconClock size={15} color="#536579" />{fmtTimeHm(slot.time)} · {slot.duration} minutes</div>
-                        {match.pupil.postcode && <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconMapPin size={15} color="#536579" />{match.pupil.postcode}</div>}
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconCar size={15} color="#536579" />Lesson vehicle</div>
-                      </div>
-                    </>
-                  );
-                })()}
-              </>
-            );
-          })()}
-
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: 12,
-                fontWeight: tokens.fontWeight.semibold,
-                color: "#4A5A73",
-                marginBottom: 6,
-              }}
-            >
-              Message to pupil
-            </label>
-            <textarea
-              value={messageTemplate}
-              onChange={(e) => setMessageTemplate(e.target.value)}
-              rows={7}
-              style={{
-                width: "100%",
-                border: "1px solid #D5DDE8",
-                borderRadius: tokens.radiusCard,
-                padding: 16,
-                fontSize: tokens.fontSize.md,
-                color: tokens.navy,
-                fontFamily: "inherit",
-                resize: "vertical",
-              }}
-            />
-            <p style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 6 }}>
-              {"{name}"} and {"{instructor_name}"} will be replaced for each pupil.
-            </p>
-          </div>
-
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: 12,
-                fontWeight: tokens.fontWeight.semibold,
-                color: "#4A5A73",
-                marginBottom: 6,
-              }}
-            >
-              Add a discount
-            </label>
-            <select
-              value={selectedDiscountId ?? ""}
-              onChange={(e) => applyDiscountToTemplate(e.target.value || null)}
-              style={{
-                width: "100%",
-                border: "1px solid #D5DDE8",
-                borderRadius: tokens.radiusCard,
-                padding: "12px 16px",
-                fontSize: tokens.fontSize.md,
-                color: tokens.navy,
-                background: tokens.white,
-              }}
-            >
-              <option value="">No discount</option>
-              {discountCodes.map((dc) => (
-                <option key={dc.id} value={dc.id}>
-                  {dc.code} —{" "}
-                  {dc.type === "percentage"
-                    ? `${dc.value}% off`
-                    : `£${dc.value} off`}
-                </option>
-              ))}
-            </select>
-            {discountCodes.length === 0 && (
-              <p style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 6 }}>
-                No active discount codes.
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div
-          style={{
-            position: "sticky",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: "12px 16px",
-            background: tokens.white,
-            borderTop: "1px solid #E2E8F0",
-            zIndex: 10,
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setConfirmSendOpen(true)}
-            disabled={selectedPupilIds.size === 0}
+          <div
+            onClick={(e) => e.stopPropagation()}
             style={{
-
+              background: "#fff",
+              borderRadius: "16px 16px 0 0",
               width: "100%",
-              height: 48,
-              borderRadius: 12,
-              background: "#0B2341",
-              color: tokens.white,
-              fontWeight: tokens.fontWeight.bold,
-              fontSize: 15,
-              border: "none",
-              cursor: "pointer",
-              opacity: selectedPupilIds.size === 0 ? 0.5 : 1,
+              padding: 16,
+              paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)",
             }}
           >
-            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
-              <IconSend size={17} color="#FFFFFF" />
-              {selectedPupilIds.size === 0
-                ? "Select pupils to send"
-                : selectedPupilIds.size === 1
-                  ? "Send offer + SMS"
-                  : `Send offer to ${selectedPupilIds.size} pupils`}
-            </span>
-          </button>
-        </div>
-      </BottomSheet>
-
-      <ConfirmDialog
-        open={confirmSendOpen}
-        title="Send bulk message?"
-        message={`You are about to send a message to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"} for ${selectedSlots.length} selected slot${selectedSlots.length === 1 ? "" : "s"}. This will queue SMS messages where phone numbers are available and send an in-app message to all selected pupils.`}
-        confirmLabel="Send"
-        cancelLabel="Cancel"
-        onConfirm={() => {
-          setConfirmSendOpen(false);
-          void bulkMessageSelected();
-        }}
-        onCancel={() => setConfirmSendOpen(false)}
-      />
-
-      <Toaster />
-    </div>
-    </DSMTopSheet>
-  );
-}
-
-
-function SummaryStats({
-  dayGroups,
-  hourlyRate,
-  freeSlots,
-}: {
-  dayGroups: DayGroup[];
-  hourlyRate: number;
-  freeSlots: FreeSlot[];
-}) {
-  const workDays = dayGroups.filter((d) => d.isWorkDay);
-  if (!workDays.length) return null;
-  const busiest = workDays.reduce((a, b) =>
-    b.busyMinutes > a.busyMinutes ? b : a,
-  );
-  const mostFree = workDays.reduce((a, b) =>
-    b.totalFreeMinutes > a.totalFreeMinutes ? b : a,
-  );
-  const totalFreeMins = freeSlots.reduce((s, slot) => s + (slot.gapMinutes ?? 0), 0);
-  const totalFreeHours = totalFreeMins / 60;
-  const potential = hourlyRate > 0 ? totalFreeHours * hourlyRate : 0;
-
-  const dayLabel = (iso: string) =>
-    new Date(iso + "T00:00:00").toLocaleDateString("en-GB", {
-      weekday: "long",
-    });
-
-  return (
-    <div
-      style={{
-        background: tokens.white,
-        border: `0.5px solid ${BORDER}`,
-        borderRadius: 8,
-        padding: 14,
-        margin: "12px 16px 0",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "4px 0",
-          fontSize: tokens.fontSize.base,
-        }}
-      >
-        <span style={{ color: MUTED }}>Busiest day this week:</span>
-        <span style={{ color: NAVY, fontWeight: 600 }}>
-          {busiest.busyMinutes > 0 ? dayLabel(busiest.iso) : "—"}
-        </span>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "4px 0",
-          fontSize: tokens.fontSize.base,
-        }}
-      >
-        <span style={{ color: MUTED }}>Most free time:</span>
-        <span style={{ color: NAVY, fontWeight: 600 }}>
-          {mostFree.totalFreeMinutes > 0
-            ? `${dayLabel(mostFree.iso)} · ${(mostFree.totalFreeMinutes / 60).toFixed(1)}h`
-            : "—"}
-        </span>
-      </div>
-      {hourlyRate > 0 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "4px 0",
-            fontSize: tokens.fontSize.base,
-          }}
-        >
-          <span style={{ color: MUTED }}>Potential revenue if filled:</span>
-          <span style={{ color: "#065F46", fontWeight: 700 }}>
-            £{potential.toFixed(0)}
-          </span>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  height: 44,
-  borderRadius: 8,
-  border: `0.5px solid ${BORDER}`,
-  padding: "0 12px",
-  fontSize: tokens.fontSize.md,
-  color: NAVY,
-  background: tokens.white,
-  fontFamily: "Poppins, sans-serif",
-};
-
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{ fontSize: 12, color: MUTED, fontWeight: tokens.fontWeight.medium, marginBottom: 4 }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { bg: string; fg: string; label: string }> = {
-    sent: { bg: "#DBEAFE", fg: "#1E40AF", label: "Sent" },
-    accepted: { bg: "#D1FAE5", fg: "#065F46", label: "Accepted" },
-    declined: { bg: "#FEE2E2", fg: "#B91C1C", label: "Declined" },
-    expired: { bg: "#E5E7EB", fg: "#374151", label: "Expired" },
-  };
-  const s = map[status] || { bg: "#E5E7EB", fg: "#374151", label: status };
-  return (
-    <span
-      style={{
-        background: s.bg,
-        color: s.fg,
-        borderRadius: 999,
-        padding: "3px 10px",
-        fontSize: tokens.fontSize.sm,
-        fontWeight: tokens.fontWeight.semibold,
-      }}
-    >
-      {s.label}
-    </span>
-  );
-}
-
-function rankColor(rank: number) {
-  if (rank === 1) return { bg: "#FEF3C7", fg: "#B45309" };
-  if (rank === 2) return { bg: "#E5E7EB", fg: "#374151" };
-  if (rank === 3) return { bg: "#FED7AA", fg: "#7C2D12" };
-  return { bg: "#F3F4F6", fg: "#6B7280" };
-}
-
-function PupilCard({
-  rank,
-  r,
-  dayOfWeekLabel,
-  multi,
-  selected,
-  onToggleSelect,
-}: {
-  rank: number;
-  r: Ranked;
-  dayOfWeekLabel: string;
-  multi: boolean;
-  selected: boolean;
-  onToggleSelect: () => void;
-}) {
-  const rc = rankColor(rank);
-  const availLabel =
-    r.dayMatch === "yes"
-      ? { text: `✓ Available ${dayOfWeekLabel}s`, color: "#047857" }
-      : r.dayMatch === "no"
-        ? { text: `⚠ Usually busy ${dayOfWeekLabel}s`, color: "#B45309" }
-        : { text: "✗ No availability set", color: "#B91C1C" };
-  const last =
-    r.lastLesson && r.daysSince !== null
-      ? `Last lesson: ${r.daysSince} day${r.daysSince === 1 ? "" : "s"} ago`
-      : "New pupil";
-
-  return (
-    <div
-      style={{
-        background: tokens.white,
-        border: `0.5px solid ${BORDER}`,
-        borderRadius: 8,
-        padding: "14px 16px",
-        margin: "0 16px 8px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <input
-            type="checkbox"
-            checked={selected}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleSelect();
-            }}
-            onChange={() => {}}
-            style={{
-              width: 18,
-              height: 18,
-              accentColor: NAVY,
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              background: rc.bg,
-              color: rc.fg,
-              borderRadius: 999,
-              width: 26,
-              height: 26,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 12,
-              fontWeight: tokens.fontWeight.bold,
-            }}
-          >
-            #{rank}
-          </span>
-          <span style={{ color: NAVY, fontWeight: tokens.fontWeight.bold, fontSize: 14 }}>
-            {fullNameOf(r.pupil)}
-          </span>
-        </div>
-        <span
-          style={{
-            background: "#E0F4FF",
-            color: BLUE,
-            fontWeight: tokens.fontWeight.bold,
-            fontSize: tokens.fontSize.sm,
-            padding: "2px 8px",
-            borderRadius: 999,
-          }}
-        >
-          {r.score}%
-        </span>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          marginTop: 6,
-          flexWrap: "wrap",
-          fontSize: 12,
-        }}
-      >
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            color: availLabel.color,
-          }}
-        >
-          <IconCalendar size={12} /> {availLabel.text}
-        </span>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            color: MUTED,
-          }}
-        >
-          <IconClock size={12} /> {last}
-        </span>
-      </div>
-
-      {r.shortNotice && (
-        <div style={{ marginTop: 4, fontSize: 12 }}>
-          {r.shortNoticeOk ? (
-            <span style={{ color: "#047857" }}>✓ Accepts short notice</span>
-          ) : (
-            <span style={{ color: "#B45309" }}>
-              ⚠ Prefers {r.minNoticeHours}hrs notice
-            </span>
-          )}
-        </div>
-      )}
-
-      {r.warnings.length > 0 && (
-        <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-          {r.warnings.map((w, i) => (
-            <span key={i} style={{ color: "#B45309", fontSize: 12 }}>
-              ⚠️ {w}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {multi && r.matchedSlots.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            gap: 6,
-            flexWrap: "wrap",
-            marginTop: 8,
-          }}
-        >
-          {r.matchedSlots.map((m) => {
-            const label = `${new Date(m.date + "T00:00:00").toLocaleDateString(
-              "en-GB",
-              { weekday: "short" },
-            )} ${fmt12h(m.time)}`;
-            return (
-              <span
-                key={slotKey(m)}
+            {/* Pupil header */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+              <div
                 style={{
-                  background: m.match ? "#D1FAE5" : "#F3F4F6",
-                  color: m.match ? "#065F46" : "#6B7280",
-                  border: `0.5px solid ${m.match ? "#86EFAC" : "#E5E7EB"}`,
-                  borderRadius: 999,
-                  padding: "2px 8px",
-                  fontSize: tokens.fontSize.sm,
-                  fontWeight: tokens.fontWeight.semibold,
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  background: avatarColor(offerPupil.id),
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 700,
                 }}
               >
-                {m.match ? "✓" : "✗"} {label}
-              </span>
-            );
-          })}
+                {initials(offerPupil.first_name || offerPupil.name || "")}
+              </div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#0B2341" }}>
+                  {offerPupil.first_name || offerPupil.name}
+                </div>
+                <div style={{ fontSize: 12, color: "#536579" }}>
+                  {offerPupil.phone || "No phone number"}
+                </div>
+              </div>
+            </div>
+
+            {/* Lesson details */}
+            {selectedGap && (
+              <div
+                style={{
+                  background: "#F4F6F8",
+                  borderRadius: 10,
+                  padding: 12,
+                  marginBottom: 14,
+                }}
+              >
+                <div style={{ fontSize: 12, color: "#536579", display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
+                  <IconCalendar size={12} />
+                  {fmtDateLong(selectedGap.date)}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#0B2341", display: "flex", alignItems: "center", gap: 4 }}>
+                  <IconClock size={12} />
+                  {minToHm(selectedGap.startMins)} – {minToHm(selectedGap.endMins)} ·{" "}
+                  {selectedGap.durationMins >= 60
+                    ? `${Math.floor(selectedGap.durationMins / 60)}h${selectedGap.durationMins % 60 ? ` ${selectedGap.durationMins % 60}m` : ""}`
+                    : `${selectedGap.durationMins}m`}
+                </div>
+              </div>
+            )}
+
+            {/* Message */}
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#0B2341", marginBottom: 6 }}>Message to pupil</div>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              style={{
+                width: "100%",
+                border: "0.5px solid #E4E8EF",
+                borderRadius: 8,
+                padding: "8px 10px",
+                fontSize: 12,
+                color: "#0B2341",
+                background: "#F4F6F8",
+                resize: "none",
+                height: 80,
+                fontFamily: "inherit",
+                lineHeight: 1.4,
+              }}
+            />
+
+            {/* Buttons */}
+            <button
+              onClick={sendOffer}
+              disabled={sending}
+              style={{
+                width: "100%",
+                marginTop: 10,
+                background: sending ? "#9CA3AF" : "#0B2341",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                padding: "12px 0",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: sending ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+              }}
+            >
+              {sending ? (
+                "Sending..."
+              ) : (
+                <>
+                  <IconSend size={14} /> Send offer + SMS
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => setOfferPupil(null)}
+              style={{
+                width: "100%",
+                marginTop: 6,
+                background: "none",
+                color: "#536579",
+                border: "0.5px solid #E4E8EF",
+                borderRadius: 8,
+                padding: "10px 0",
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
-
     </div>
   );
 }
