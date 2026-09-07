@@ -568,7 +568,7 @@ function CalendarSyncPage() {
               Paste your Google or Apple private calendar URL below. EDP will import your personal events so gaps are never offered when you're busy.
             </p>
 
-            {(!savedIcsInboundUrl.trim() || isEditingIcs) ? (
+            {(!savedIcsUrl.trim() || isEditingIcs) ? (
               <>
                 <label
                   style={{
@@ -603,7 +603,6 @@ function CalendarSyncPage() {
                   type="button"
                   onClick={async () => {
                     await saveIcsUrl();
-                    setSavedIcsInboundUrl(icsInboundUrl.trim());
                     setIsEditingIcs(false);
                   }}
                   style={{
@@ -670,7 +669,7 @@ function CalendarSyncPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setIcsInboundUrl(savedIcsInboundUrl);
+                      setIcsInboundUrl(savedIcsUrl);
                       setIsEditingIcs(true);
                     }}
                     style={{
@@ -688,9 +687,6 @@ function CalendarSyncPage() {
                   <button
                     type="button"
                     onClick={async () => {
-                      setIcsInboundUrl("");
-                      setSavedIcsInboundUrl("");
-                      setIsEditingIcs(false);
                       await saveIcsUrl("");
                     }}
                     style={{
