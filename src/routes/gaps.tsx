@@ -4,7 +4,7 @@ import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconCurrencyPound, IconDeviceMobile, IconInfoCircle, IconMapPin, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconDeviceMobile, IconInfoCircle, IconMapPin, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "../lib/supabaseClient";
