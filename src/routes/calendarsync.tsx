@@ -356,18 +356,19 @@ function CalendarSyncPage() {
     }
   }
 
-  async function saveIcsUrl() {
+  async function saveIcsUrl(overrideUrl?: string) {
+    const value = (overrideUrl ?? icsInboundUrl).trim();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     await supabase
       .from("instructors")
       .update({
-        ics_feed_url: icsInboundUrl.trim() || null,
+        ics_feed_url: value || null,
       })
       .eq("id", user.id);
 
-    if (icsInboundUrl.trim()) {
+    if (value) {
       await fetch(
         `${SUPABASE_URL}/functions/v1/sync-ics-feed?instructor_id=${user.id}`,
         {
