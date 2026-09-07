@@ -614,7 +614,14 @@ function GapsPage() {
               marginBottom: 16,
             }}
           >
-            {loadError ? "We couldn't load your diary. Please try again." : `No gaps found in the next ${RANGE_DAYS} days`}
+            {loadError ? (
+              <>
+                <div>We couldn't load your diary. Please try again.</div>
+                <div style={{ fontSize: 11, color: "#7A8A9A", marginTop: 6 }}>{loadError}</div>
+              </>
+            ) : (
+              `No gaps found in the next ${RANGE_DAYS} days`
+            )}
           </div>
         )}
 
