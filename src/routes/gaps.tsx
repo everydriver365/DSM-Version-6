@@ -191,26 +191,42 @@ function GapsPage() {
       }
       const uid = user.id;
 
+      // Profile settings are optional: Schedule and Home both fall back to
+      // defaults when the row (or a column) is unavailable, so Gap filler must
+      // never fail the whole page because of them.
       const INSTRUCTOR_COLS =
         "name, working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after, hourly_rate";
-      let instructorResult = await supabase
-        .from("instructors")
-        .select(INSTRUCTOR_COLS)
-        .eq("id", uid)
-        .maybeSingle();
-      if (!instructorResult.data) {
-        // Some accounts store the auth user under user_id rather than id.
-        const byUserId = await supabase
-          .from("instructors")
-          .select(INSTRUCTOR_COLS)
-          .eq("user_id", uid)
-          .maybeSingle();
-        if (byUserId.data) instructorResult = byUserId;
+      const INSTRUCTOR_COLS_MIN = "name, working_hours_start, working_hours_end, working_days, lesson_buffer_after";
+      type InstructorSettings = {
+        name?: string | null;
+        working_hours_start?: string | null;
+        working_hours_end?: string | null;
+        working_days?: string[] | null;
+        per_day_hours?: Record<string, { active?: boolean; start?: string; end?: string }> | null;
+        lesson_buffer_after?: number | null;
+        hourly_rate?: number | null;
+      };
+      let instr: InstructorSettings = {};
+      try {
+        let row = await supabase.from("instructors").select(INSTRUCTOR_COLS).eq("id", uid).maybeSingle();
+        if (row.error) {
+          console.warn("[gaps] instructor settings retry:", row.error.message);
+          row = await supabase.from("instructors").select(INSTRUCTOR_COLS_MIN).eq("id", uid).maybeSingle();
+        }
+        if (!row.data) {
+          // Some accounts store the auth user under user_id rather than id.
+          const byUserId = await supabase
+            .from("instructors")
+            .select(INSTRUCTOR_COLS_MIN)
+            .eq("user_id", uid)
+            .maybeSingle();
+          if (byUserId.data) row = byUserId as typeof row;
+        }
+        if (row.data) instr = row.data as InstructorSettings;
+        else console.warn("[gaps] no instructor settings row; using defaults");
+      } catch (settingsError) {
+        console.warn("[gaps] instructor settings unavailable:", settingsError);
       }
-      if (instructorResult.error || !instructorResult.data) {
-        throw new Error(instructorResult.error?.message || "Your working hours could not be loaded.");
-      }
-      const instr = instructorResult.data;
 
       setInstructorName(instr?.name ?? "");
       setHourlyRate(instr.hourly_rate == null ? null : Number(instr.hourly_rate));
