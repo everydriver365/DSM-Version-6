@@ -19,16 +19,38 @@ describe("computeDayGaps", () => {
     expect(computeDayGaps(base)).toEqual([{ startMins: 540, endMins: 1080, gapMins: 540 }]);
   });
 
-  test("does not subtract an upcoming lesson's after-buffer from the morning gap", () => {
+  test("reserves travel time before a lesson and drops the gap when too short", () => {
     expect(
       computeDayGaps({
         ...base,
         dayLessons: [{ lesson_time: "10:00", duration_minutes: 60, bufferAfterMinutes: 15 }],
       }),
+    ).toEqual([{ startMins: 675, endMins: 1080, gapMins: 405 }]);
+  });
+
+  test("shortens a gap by the travel buffer of the following lesson", () => {
+    expect(
+      computeDayGaps({
+        ...base,
+        dayLessons: [
+          { lesson_time: "09:00", duration_minutes: 120, bufferAfterMinutes: 15 },
+          { lesson_time: "13:00", duration_minutes: 60, bufferAfterMinutes: 15 },
+        ],
+        minGapMinutes: 30,
+      }),
     ).toEqual([
-      { startMins: 540, endMins: 600, gapMins: 60 },
-      { startMins: 675, endMins: 1080, gapMins: 405 },
+      { startMins: 675, endMins: 765, gapMins: 90 },
+      { startMins: 855, endMins: 1080, gapMins: 225 },
     ]);
+  });
+
+  test("leaves the end-of-day gap at full length", () => {
+    expect(
+      computeDayGaps({
+        ...base,
+        dayLessons: [{ lesson_time: "09:00", duration_minutes: 60, bufferAfterMinutes: 15 }],
+      }),
+    ).toEqual([{ startMins: 615, endMins: 1080, gapMins: 465 }]);
   });
 
   test("merges overlapping busy periods without moving the cursor backwards", () => {
@@ -86,7 +108,7 @@ describe("computeDayGaps", () => {
     ).toEqual([{ startMins: 540, endMins: 1080, gapMins: 540 }]);
   });
 
-  test("applies partial time off and recurring blocks without travel buffers", () => {
+  test("applies partial time off and recurring blocks with travel time before them", () => {
     expect(
       computeDayGaps({
         ...base,
@@ -94,8 +116,8 @@ describe("computeDayGaps", () => {
         dayTimeOff: [{ start_time: "14:00", end_time: "15:00", all_day: false }],
       }),
     ).toEqual([
-      { startMins: 540, endMins: 660, gapMins: 120 },
-      { startMins: 720, endMins: 840, gapMins: 120 },
+      { startMins: 540, endMins: 645, gapMins: 105 },
+      { startMins: 720, endMins: 825, gapMins: 105 },
       { startMins: 900, endMins: 1080, gapMins: 180 },
     ]);
   });
