@@ -128,6 +128,7 @@ Deno.serve(async (req: Request) => {
 
     lines.push("BEGIN:VEVENT");
     lines.push(`UID:${l.id}@everydriver.co.uk`);
+    lines.push(`X-EVERYDRIVER-ID:${l.id}`);
     lines.push(`DTSTAMP:${now}`);
     lines.push(`DTSTART:${fmtUtc(start)}`);
     lines.push(`DTEND:${fmtUtc(end)}`);
