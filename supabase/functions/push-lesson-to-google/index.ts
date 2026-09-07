@@ -6,6 +6,48 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// --- Europe/London wall-clock helpers (mirror of src/lib/londonTime.ts) ---
+// Lesson times are naive UK wall-clock values. They must be sent to Google as
+// wall-clock + timeZone, never as a "Z" instant: a "Z" makes Google ignore the
+// timeZone field, which shifted every BST lesson by one hour.
+const LONDON = "Europe/London";
+function londonOffsetMs(utcMs: number): number {
+  const dtf = new Intl.DateTimeFormat("en-GB", {
+    timeZone: LONDON, hour12: false,
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+  });
+  const p: Record<string, string> = {};
+  for (const part of dtf.formatToParts(new Date(utcMs))) p[part.type] = part.value;
+  const asUtc = Date.UTC(
+    Number(p.year), Number(p.month) - 1, Number(p.day),
+    Number(p.hour) % 24, Number(p.minute), Number(p.second),
+  );
+  return asUtc - utcMs;
+}
+function londonWallToUtcMs(date: string, time: string): number {
+  const [y, mo, d] = date.split("-").map(Number);
+  const [h, mi, s] = time.split(":").map(Number);
+  const guess = Date.UTC(y, mo - 1, d, h, mi, Number.isFinite(s) ? s : 0);
+  let ms = guess - londonOffsetMs(guess);
+  ms = guess - londonOffsetMs(ms);
+  return ms;
+}
+const pad = (n: number) => String(n).padStart(2, "0");
+function utcMsToLondonWall(utcMs: number): string {
+  const d = new Date(utcMs + londonOffsetMs(utcMs));
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}` +
+    `T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+}
+function lessonWallRange(lessonDate: string, lessonTime: string, durationMinutes: number) {
+  const [y, mo, d] = lessonDate.split("-").map(Number);
+  const [h, mi, s] = lessonTime.split(":").map(Number);
+  const start = `${y}-${pad(mo)}-${pad(d)}T${pad(h)}:${pad(mi)}:${pad(Number.isFinite(s) ? s : 0)}`;
+  const endMs = londonWallToUtcMs(lessonDate, lessonTime) + durationMinutes * 60000;
+  return { start, end: utcMsToLondonWall(endMs), timeZone: LONDON };
+}
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -66,19 +108,31 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Build event
+  // Build event — wall-clock time + explicit Europe/London (no "Z" instant)
   const isEvent = lesson.lesson_type === "event";
   const title = isEvent ? (lesson.event_title ?? "Event") : `Lesson — ${(lesson.pupils as any)?.name ?? "Pupil"}`;
-  const startDateTime = new Date(`${lesson.lesson_date}T${lesson.lesson_time}`).toISOString();
-  const endDateTime = new Date(new Date(startDateTime).getTime() + (lesson.duration_minutes ?? 60) * 60000).toISOString();
+  const range = lessonWallRange(
+    String(lesson.lesson_date),
+    String(lesson.lesson_time ?? "00:00:00"),
+    lesson.duration_minutes ?? 60,
+  );
 
   const event = {
     summary: title,
     location: lesson.pickup_location ?? undefined,
     description: lesson.notes ?? undefined,
-    start: { dateTime: startDateTime, timeZone: "Europe/London" },
-    end: { dateTime: endDateTime, timeZone: "Europe/London" },
+    start: { dateTime: range.start, timeZone: range.timeZone },
+    end: { dateTime: range.end, timeZone: range.timeZone },
+    // Marks this event as owned by EveryDriver so the importer can recognise
+    // its own lessons coming back from Google instead of guessing by time.
+    extendedProperties: {
+      private: {
+        everydriver_origin: "EVERYDRIVER",
+        everydriver_lesson_id: String(lesson.id),
+      },
+    },
   };
+
 
   const calendarId = instructor.google_calendar_id ?? "primary";
 
