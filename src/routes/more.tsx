@@ -140,7 +140,7 @@ function MorePage() {
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) toast.error('Sign out failed');
-    navigate({ to: '/auth' as never });
+    navigate({ to: '/login' as never, replace: true });
   };
 
   const initials = instructorName
