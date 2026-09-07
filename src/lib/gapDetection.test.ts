@@ -148,4 +148,19 @@ describe("computeDayGaps", () => {
       { startMins: 630, endMins: 1080, gapMins: 450 },
     ]);
   });
+
+  test("blocks a slot before a Google Calendar event with travel buffer", () => {
+    expect(
+      computeDayGaps({
+        ...base,
+        calendarBlocks: [{
+          start_datetime: "2026-09-08T15:00:00",
+          end_datetime: "2026-09-08T16:00:00",
+        }],
+      }),
+    ).toEqual([
+      { startMins: 540, endMins: 870, gapMins: 330 },
+      { startMins: 990, endMins: 1080, gapMins: 90 },
+    ]);
+  });
 });
