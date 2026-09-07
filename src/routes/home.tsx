@@ -7308,45 +7308,11 @@ function HomePage() {
                             <div aria-hidden style={{ width: 2, alignSelf: 'stretch', flexShrink: 0, background: 'repeating-linear-gradient(180deg, #D4A853 0, #D4A853 4px, transparent 4px, transparent 8px)' }} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 12, fontWeight: 500, color: '#633806', lineHeight: 1.3 }}>
-                                Free · {durLabel} · £{potential} potential
+                                Free · {durLabel}
                               </div>
-                              {preview.count > 0 && (
-                                <div style={{ display: 'flex', alignItems: 'center', marginTop: 4 }}>
-                                      {preview.topPupils.map((p, i) => {
-                                        const initials = (p.name ?? p.first_name ?? "P")
-                                          .split(/\s+/)
-                                          .map((s) => s.charAt(0))
-                                          .join("")
-                                          .slice(0, 2)
-                                          .toUpperCase();
-                                        return (
-                                          <div
-                                            key={i}
-                                            style={{
-                                              width: 20,
-                                              height: 20,
-                                              borderRadius: '50%',
-                                              background: p.calendar_colour ?? '#0B2341',
-                                              border: '1.5px solid #FFFFFF',
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              justifyContent: 'center',
-                                              fontSize: 8,
-                                              fontWeight: tokens.fontWeight.bold,
-                                              color: '#FFFFFF',
-                                              marginRight: i === preview.topPupils.length - 1 ? 0 : -5,
-                                              fontFamily: PF,
-                                            }}
-                                          >
-                                            {initials}
-                                          </div>
-                                        );
-                                      })}
-                                  {preview.count > preview.topPupils.length && (
-                                    <span style={{ marginLeft: 5, fontSize: 9, color: '#854F0B' }}>+ {preview.count - preview.topPupils.length} more</span>
-                                  )}
-                                </div>
-                              )}
+                              <div style={{ fontSize: 10, color: '#854F0B', marginTop: 2 }}>
+                                {preview.count} pupil{preview.count === 1 ? '' : 's'} available
+                              </div>
                             </div>
                             {moveModeHome ? (
                               <button
