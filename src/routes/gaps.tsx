@@ -4,7 +4,7 @@ import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconDeviceMobile, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconDeviceMobile, IconInfoCircle, IconMapPin, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -1596,7 +1596,19 @@ function GapsPage() {
   const TEXT_SUBTLE = "#8A94A6";
 
   return (
-    <DSMTopSheet title="Fill your gaps">
+    <DSMTopSheet
+      title="Gap filler"
+      right={
+        <button
+          type="button"
+          aria-label="Gap filler information"
+          onClick={() => toast.info("Choose a free slot and offer it to pupils whose availability is the best match.")}
+          style={{ width: 40, height: 40, borderRadius: 20, border: 0, background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+        >
+          <IconInfoCircle size={19} color="#FFFFFF" stroke={1.8} />
+        </button>
+      }
+    >
       <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", overflow: "hidden", paddingBottom: 80 }}>
       {/* Pulse animation for the freed-slot highlight */}
       <style>{`
@@ -1659,25 +1671,27 @@ function GapsPage() {
         </div>
       )}
 
-      <div
+      {freeSlots.length > 0 && <div
         style={{
-          margin: "12px 16px 18px",
-          padding: "14px 16px",
-          borderRadius: 8,
+          margin: "12px 16px 14px",
+          padding: "10px 12px",
+          borderRadius: 10,
           background: "#EAF3DE",
           display: "flex",
           alignItems: "center",
-          gap: 12,
+          gap: 10,
         }}
       >
         <div style={{ width: 32, height: 32, borderRadius: 8, background: "#639922", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <IconBolt size={17} color="#FFFFFF" stroke={2.2} />
+          <IconBolt size={16} color="#FFFFFF" stroke={2.2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#31511A" }}>Turn free time into earnings</div>
-          <div style={{ fontSize: 11, color: "#55723E", marginTop: 2 }}>Select a gap, then offer it to the best-matched pupils.</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#27500A" }}>
+            {freeSlots.filter((slot) => slot.date === todayIso()).length} gap{freeSlots.filter((slot) => slot.date === todayIso()).length === 1 ? "" : "s"} found today
+          </div>
+          <div style={{ fontSize: 11, color: "#3B6D11", marginTop: 1 }}>Based on your diary and working hours</div>
         </div>
-      </div>
+      </div>}
 
       {/* Section header */}
       <div
@@ -1748,7 +1762,7 @@ function GapsPage() {
           <div
             style={{
               display: "flex",
-              gap: 8,
+              gap: 6,
               overflowX: "auto",
               padding: "0 16px 14px",
               scrollbarWidth: "none",
@@ -1766,18 +1780,16 @@ function GapsPage() {
                   onClick={() => setSelectedDateIso(g.iso)}
                   style={{
                     flex: "0 0 auto",
-                    width: 44,
-                    background: isSelected ? "#1877D6" : "#FFFFFF",
+                    background: isSelected ? "#0B2341" : "#FFFFFF",
                     color: isSelected ? "#FFFFFF" : "#0B1F3A",
-                    border: "none",
-                    borderRadius: 12,
-                    padding: "8px 0 6px",
+                    border: isSelected ? "0.5px solid #0B2341" : "0.5px solid #E4E8EF",
+                    borderRadius: 20,
+                    padding: "5px 10px",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     gap: 2,
                     cursor: "pointer",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                     position: "relative",
                   }}
                 >
@@ -1786,28 +1798,16 @@ function GapsPage() {
                       fontSize: tokens.fontSize.xs,
                       fontWeight: tokens.fontWeight.medium,
                       letterSpacing: "0.04em",
-                      textTransform: "uppercase",
-                      color: isSelected ? "rgba(255,255,255,0.85)" : "#8A93A3",
+                      textTransform: "none",
+                      color: isSelected ? "#FFFFFF" : "#6B7686",
                     }}
                   >
                     {dow}
                   </span>
-                  <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.1 }}>
+                  <span style={{ fontSize: 11, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.1 }}>
                     {dom}
                   </span>
-                  <span
-                    style={{
-                      width: 5,
-                      height: 5,
-                      borderRadius: 999,
-                      marginTop: 2,
-                      background: hasSlots
-                        ? isSelected
-                          ? "#FFFFFF"
-                          : "#1877D6"
-                        : "transparent",
-                    }}
-                  />
+                  {hasSlots && <span style={{ fontSize: 9, color: isSelected ? "#FFFFFF" : "#8A93A3" }}>{g.slots.length}</span>}
                 </button>
               );
             })}
@@ -2471,6 +2471,10 @@ function GapsPage() {
             return (
               <>
                 <div ref={pupilListRef}>
+                  <div style={{ margin: "2px 16px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2341" }}>Suggested pupils</span>
+                    <span style={{ fontSize: 11, color: "#1877D6", fontWeight: 600 }}>See all ({ranked.length}) ›</span>
+                  </div>
                   <SheetGroup>
                     <SheetSearchRow
                       value={pupilSearchQuery}
@@ -2514,75 +2518,41 @@ function GapsPage() {
                           : "New pupil";
 
                       return (
-                        <button
+                        <div
                           key={r.pupil.id}
-                          type="button"
-                          onClick={() => toggle(r.pupil.id)}
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 10,
-                            padding: "12px 14px",
+                            padding: "10px 12px",
                             margin: "0 16px 8px",
-                            borderRadius: 8,
-                            border: checked ? "1.5px solid #1877D6" : "1px solid #E4E8EF",
-                            background: checked ? "#F3F8FE" : "#FFFFFF",
+                            borderRadius: 10,
+                            border: "0.5px solid #E4E8EF",
+                            background: "#FFFFFF",
                             textAlign: "left",
-                            cursor: "pointer",
                             width: "calc(100% - 32px)",
                             boxSizing: "border-box",
                           }}
                         >
-                          {checked ? (
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <div
                               style={{
-                                width: 22,
-                                height: 22,
+                                width: 36,
+                                height: 36,
+                                borderRadius: 999,
+                                background: r.pupil.calendar_colour ?? "#6B7280",
+                                color: tokens.white,
+                                fontSize: 12,
+                                fontWeight: tokens.fontWeight.bold,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 flexShrink: 0,
                               }}
-                            >
-                              <IconCheck size={18} color="#1877D6" stroke={2.5} />
-                            </div>
-                          ) : (
+                            >{initials}</div>
                             <div
                               style={{
-                                width: 22,
-                                height: 22,
-                                borderRadius: 999,
-                                border: "1.5px solid #D1D5DB",
-                                background: "#FFFFFF",
-                                flexShrink: 0,
-                              }}
-                            />
-                          )}
-
-                          <div
-                            style={{
-                              width: 38,
-                              height: 38,
-                              borderRadius: 999,
-                              background: r.pupil.calendar_colour ?? "#6B7280",
-                              color: tokens.white,
-                              fontSize: 13,
-                              fontWeight: tokens.fontWeight.bold,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              flexShrink: 0,
-                            }}
-                          >
-                            {initials}
-                          </div>
-
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div
-                              style={{
-                                fontSize: 14,
-                                fontWeight: tokens.fontWeight.semibold,
+                                fontSize: 13,
+                                fontWeight: 700,
                                 color: "#0B2341",
+                                flex: 1,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
@@ -2590,36 +2560,59 @@ function GapsPage() {
                             >
                               {name}
                             </div>
-                            <div
-                              style={{
-                                fontSize: 12,
-                                color: "#6B7280",
-                                marginTop: 2,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {availLabel} · {last}
-                            </div>
-                          </div>
-
                           <span
                             style={{
-                              background: r.score >= 70 ? "#EAF3DE" : "#FFF4D8",
-                              color: r.score >= 70 ? "#527D1D" : "#854F0B",
-                              fontWeight: tokens.fontWeight.bold,
-                              fontSize: tokens.fontSize.sm,
+                              background: r.score >= 70 ? "#EAF3DE" : r.score >= 45 ? "#EAF5FC" : "#F4F6F8",
+                              color: r.score >= 70 ? "#3B6D11" : r.score >= 45 ? "#185FA5" : "#536579",
+                              border: r.score < 45 ? "0.5px solid #E4E8EF" : "none",
+                              fontWeight: 600,
+                              fontSize: 10,
                               padding: "4px 7px",
-                              borderRadius: 6,
+                              borderRadius: 10,
                               flexShrink: 0,
                             }}
                           >
-                            {r.score}%
+                            {r.score >= 70 ? "High match" : r.score >= 45 ? "Good match" : "Possible"}
                           </span>
-                        </button>
+                          </div>
+                          <div style={{ fontSize: 11, color: "#6B7280", margin: "7px 0 8px", display: "flex", alignItems: "center", gap: 5 }}>
+                            <IconCheck size={13} color={r.dayMatch === "yes" ? "#639922" : "#8A93A3"} />
+                            <span>{availLabel} · {last}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedPupilIds(new Set([r.pupil.id]));
+                              setMessageTemplate(buildDefaultTemplate());
+                              setSelectedDiscountId(null);
+                              setMessageSheetOpen(true);
+                            }}
+                            style={{ width: "100%", background: "#0B2341", color: "#FFFFFF", border: 0, borderRadius: 6, padding: 7, fontSize: 12, fontWeight: 500, cursor: "pointer" }}
+                          >
+                            Offer slot
+                          </button>
+                        </div>
                       );
                     })
+                  )}
+                  {ranked.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPupilIds(new Set(ranked.map((r) => r.pupil.id)));
+                        openMessageSheet();
+                      }}
+                      style={{ margin: "12px 16px 4px", width: "calc(100% - 32px)", padding: "10px 12px", border: 0, borderRadius: 10, background: "#EAF5FC", display: "flex", alignItems: "center", gap: 10, textAlign: "left", cursor: "pointer" }}
+                    >
+                      <span style={{ width: 32, height: 32, borderRadius: 16, background: "#2C97DE", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <IconUsers size={17} color="#FFFFFF" />
+                      </span>
+                      <span style={{ flex: 1 }}>
+                        <span style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#0C447C" }}>Offer to all {ranked.length} pupils</span>
+                        <span style={{ display: "block", fontSize: 11, color: "#185FA5", marginTop: 1 }}>First to reply YES gets the slot</span>
+                      </span>
+                      <IconChevronRight size={16} color="#185FA5" />
+                    </button>
                   )}
                 </div>
 
@@ -2959,8 +2952,8 @@ function GapsPage() {
       <BottomSheet
         open={messageSheetOpen}
         onOpenChange={setMessageSheetOpen}
-        title="Message selected pupils"
-        description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
+        title="Confirm offer"
+        description={`Review the lesson and message for ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 80 }}>
           {(() => {
@@ -3259,6 +3252,40 @@ function GapsPage() {
                     })()}
                   </div>
                 )}
+                {selectedList.length === 1 && (() => {
+                  const match = selectedList[0];
+                  const slot = (searchSlots.length ? searchSlots : selectedSlots)[0];
+                  if (!match || !slot) return null;
+                  const pupilName = fullNameOf(match.pupil);
+                  const initials = pupilName.split(/\s+/).map((part) => part.charAt(0)).join("").slice(0, 2).toUpperCase();
+                  const reasons = [
+                    match.dayMatch === "yes" ? `Available on ${dayOfWeekLabel}s` : "Availability considered",
+                    match.shortNoticeOk ? "Accepts short-notice lessons" : `${match.minNoticeHours} hours notice preferred`,
+                    match.daysSince !== null ? `Last lesson ${match.daysSince} day${match.daysSince === 1 ? "" : "s"} ago` : "New pupil",
+                  ];
+                  return (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 18, background: match.pupil.calendar_colour ?? "#6B7280", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>{initials || "?"}</div>
+                        <div style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0B2341" }}>{pupilName}</div>
+                        <span style={{ borderRadius: 10, padding: "4px 7px", fontSize: 10, fontWeight: 600, background: match.score >= 70 ? "#EAF3DE" : "#EAF5FC", color: match.score >= 70 ? "#3B6D11" : "#185FA5" }}>{match.score >= 70 ? "High match" : "Good match"}</span>
+                      </div>
+                      <div>
+                        {reasons.map((reason) => (
+                          <div key={reason} style={{ display: "flex", alignItems: "center", gap: 6, color: "#536579", fontSize: 11, marginTop: 5 }}>
+                            <IconCheck size={13} color="#639922" stroke={2.4} />{reason}
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ background: "#F4F6F8", borderRadius: 8, padding: 10, display: "grid", gap: 7 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconCalendar size={15} color="#536579" />{fmtDateLong(slot.date)}</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconClock size={15} color="#536579" />{fmtTimeHm(slot.time)} · {slot.duration} minutes</div>
+                        {match.pupil.postcode && <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconMapPin size={15} color="#536579" />{match.pupil.postcode}</div>}
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconCar size={15} color="#536579" />Lesson vehicle</div>
+                      </div>
+                    </>
+                  );
+                })()}
               </>
             );
           })()}
@@ -3273,7 +3300,7 @@ function GapsPage() {
                 marginBottom: 6,
               }}
             >
-              Message
+              Message to pupil
             </label>
             <textarea
               value={messageTemplate}
@@ -3359,7 +3386,7 @@ function GapsPage() {
               width: "100%",
               height: 48,
               borderRadius: 12,
-              background: BLUE_BRIGHT,
+              background: "#0B2341",
               color: tokens.white,
               fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
@@ -3368,9 +3395,14 @@ function GapsPage() {
               opacity: selectedPupilIds.size === 0 ? 0.5 : 1,
             }}
           >
-            {selectedPupilIds.size === 0
-              ? "Select pupils to send"
-              : `IconSend to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
+              <IconSend size={17} color="#FFFFFF" />
+              {selectedPupilIds.size === 0
+                ? "Select pupils to send"
+                : selectedPupilIds.size === 1
+                  ? "Send offer + SMS"
+                  : `Send offer to ${selectedPupilIds.size} pupils`}
+            </span>
           </button>
         </div>
       </BottomSheet>
