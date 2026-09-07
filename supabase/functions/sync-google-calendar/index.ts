@@ -6,6 +6,32 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// --- Europe/London helpers (mirror of src/lib/londonTime.ts) ---
+const LONDON = "Europe/London";
+function londonOffsetMs(utcMs: number): number {
+  const dtf = new Intl.DateTimeFormat("en-GB", {
+    timeZone: LONDON, hour12: false,
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+  });
+  const p: Record<string, string> = {};
+  for (const part of dtf.formatToParts(new Date(utcMs))) p[part.type] = part.value;
+  const asUtc = Date.UTC(
+    Number(p.year), Number(p.month) - 1, Number(p.day),
+    Number(p.hour) % 24, Number(p.minute), Number(p.second),
+  );
+  return asUtc - utcMs;
+}
+/** London midnight on the given YYYY-MM-DD, as an ISO instant. */
+function londonMidnightIso(date: string): string {
+  const [y, mo, d] = date.split("-").map(Number);
+  const guess = Date.UTC(y, mo - 1, d, 0, 0, 0);
+  let ms = guess - londonOffsetMs(guess);
+  ms = guess - londonOffsetMs(ms);
+  return new Date(ms).toISOString();
+}
+
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
