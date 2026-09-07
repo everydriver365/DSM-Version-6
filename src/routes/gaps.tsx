@@ -2471,6 +2471,10 @@ function GapsPage() {
             return (
               <>
                 <div ref={pupilListRef}>
+                  <div style={{ margin: "2px 16px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#0B2341" }}>Suggested pupils</span>
+                    <span style={{ fontSize: 11, color: "#1877D6", fontWeight: 600 }}>See all ({ranked.length}) ›</span>
+                  </div>
                   <SheetGroup>
                     <SheetSearchRow
                       value={pupilSearchQuery}
@@ -2514,75 +2518,41 @@ function GapsPage() {
                           : "New pupil";
 
                       return (
-                        <button
+                        <div
                           key={r.pupil.id}
-                          type="button"
-                          onClick={() => toggle(r.pupil.id)}
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 10,
-                            padding: "12px 14px",
+                            padding: "10px 12px",
                             margin: "0 16px 8px",
-                            borderRadius: 8,
-                            border: checked ? "1.5px solid #1877D6" : "1px solid #E4E8EF",
-                            background: checked ? "#F3F8FE" : "#FFFFFF",
+                            borderRadius: 10,
+                            border: "0.5px solid #E4E8EF",
+                            background: "#FFFFFF",
                             textAlign: "left",
-                            cursor: "pointer",
                             width: "calc(100% - 32px)",
                             boxSizing: "border-box",
                           }}
                         >
-                          {checked ? (
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <div
                               style={{
-                                width: 22,
-                                height: 22,
+                                width: 36,
+                                height: 36,
+                                borderRadius: 999,
+                                background: r.pupil.calendar_colour ?? "#6B7280",
+                                color: tokens.white,
+                                fontSize: 12,
+                                fontWeight: tokens.fontWeight.bold,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 flexShrink: 0,
                               }}
-                            >
-                              <IconCheck size={18} color="#1877D6" stroke={2.5} />
-                            </div>
-                          ) : (
+                            >{initials}</div>
                             <div
                               style={{
-                                width: 22,
-                                height: 22,
-                                borderRadius: 999,
-                                border: "1.5px solid #D1D5DB",
-                                background: "#FFFFFF",
-                                flexShrink: 0,
-                              }}
-                            />
-                          )}
-
-                          <div
-                            style={{
-                              width: 38,
-                              height: 38,
-                              borderRadius: 999,
-                              background: r.pupil.calendar_colour ?? "#6B7280",
-                              color: tokens.white,
-                              fontSize: 13,
-                              fontWeight: tokens.fontWeight.bold,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              flexShrink: 0,
-                            }}
-                          >
-                            {initials}
-                          </div>
-
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div
-                              style={{
-                                fontSize: 14,
-                                fontWeight: tokens.fontWeight.semibold,
+                                fontSize: 13,
+                                fontWeight: 700,
                                 color: "#0B2341",
+                                flex: 1,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
@@ -2590,36 +2560,59 @@ function GapsPage() {
                             >
                               {name}
                             </div>
-                            <div
-                              style={{
-                                fontSize: 12,
-                                color: "#6B7280",
-                                marginTop: 2,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {availLabel} · {last}
-                            </div>
-                          </div>
-
                           <span
                             style={{
-                              background: r.score >= 70 ? "#EAF3DE" : "#FFF4D8",
-                              color: r.score >= 70 ? "#527D1D" : "#854F0B",
-                              fontWeight: tokens.fontWeight.bold,
-                              fontSize: tokens.fontSize.sm,
+                              background: r.score >= 70 ? "#EAF3DE" : r.score >= 45 ? "#EAF5FC" : "#F4F6F8",
+                              color: r.score >= 70 ? "#3B6D11" : r.score >= 45 ? "#185FA5" : "#536579",
+                              border: r.score < 45 ? "0.5px solid #E4E8EF" : "none",
+                              fontWeight: 600,
+                              fontSize: 10,
                               padding: "4px 7px",
-                              borderRadius: 6,
+                              borderRadius: 10,
                               flexShrink: 0,
                             }}
                           >
-                            {r.score}%
+                            {r.score >= 70 ? "High match" : r.score >= 45 ? "Good match" : "Possible"}
                           </span>
-                        </button>
+                          </div>
+                          <div style={{ fontSize: 11, color: "#6B7280", margin: "7px 0 8px", display: "flex", alignItems: "center", gap: 5 }}>
+                            <IconCheck size={13} color={r.dayMatch === "yes" ? "#639922" : "#8A93A3"} />
+                            <span>{availLabel} · {last}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedPupilIds(new Set([r.pupil.id]));
+                              setMessageTemplate(buildDefaultTemplate());
+                              setSelectedDiscountId(null);
+                              setMessageSheetOpen(true);
+                            }}
+                            style={{ width: "100%", background: "#0B2341", color: "#FFFFFF", border: 0, borderRadius: 6, padding: 7, fontSize: 12, fontWeight: 500, cursor: "pointer" }}
+                          >
+                            Offer slot
+                          </button>
+                        </div>
                       );
                     })
+                  )}
+                  {ranked.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedPupilIds(new Set(ranked.map((r) => r.pupil.id)));
+                        openMessageSheet();
+                      }}
+                      style={{ margin: "12px 16px 4px", width: "calc(100% - 32px)", padding: "10px 12px", border: 0, borderRadius: 10, background: "#EAF5FC", display: "flex", alignItems: "center", gap: 10, textAlign: "left", cursor: "pointer" }}
+                    >
+                      <span style={{ width: 32, height: 32, borderRadius: 16, background: "#2C97DE", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <IconUsers size={17} color="#FFFFFF" />
+                      </span>
+                      <span style={{ flex: 1 }}>
+                        <span style={{ display: "block", fontSize: 12, fontWeight: 700, color: "#0C447C" }}>Offer to all {ranked.length} pupils</span>
+                        <span style={{ display: "block", fontSize: 11, color: "#185FA5", marginTop: 1 }}>First to reply YES gets the slot</span>
+                      </span>
+                      <IconChevronRight size={16} color="#185FA5" />
+                    </button>
                   )}
                 </div>
 
