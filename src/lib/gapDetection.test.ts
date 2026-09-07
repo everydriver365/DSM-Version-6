@@ -159,8 +159,8 @@ describe("computeDayGaps", () => {
         }],
       }),
     ).toEqual([
-      { startMins: 540, endMins: 870, gapMins: 330 },
-      { startMins: 990, endMins: 1080, gapMins: 90 },
+      { startMins: 540, endMins: 885, gapMins: 345 },
+      { startMins: 975, endMins: 1080, gapMins: 105 },
     ]);
   });
 });
