@@ -675,40 +675,6 @@ function CalendarSyncPage() {
               </div>
             )}
 
-            {icsInboundUrl.trim() && (
-              <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6 }}>
-                {icsFeedStatus === "healthy" ? (
-                  <>
-                    <div
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 999,
-                        background: "#16A34A",
-                      }}
-                    />
-                    <span style={{ fontSize: 11, color: "#16A34A" }}>
-                      Connected{icsLastFetched ? ` · fetched ${timeAgo(icsLastFetched)}` : ""}
-                    </span>
-                  </>
-                ) : icsFeedStatus === "failed" ? (
-                  <>
-                    <div
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 999,
-                        background: "#E53935",
-                      }}
-                    />
-                    <span style={{ fontSize: 11, color: "#E53935" }}>
-                      Connection failed — check your URL
-                    </span>
-                  </>
-                ) : null}
-              </div>
-            )}
-
             <div style={{ marginTop: 12 }}>
               <div
                 style={{
