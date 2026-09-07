@@ -954,8 +954,17 @@ function SchedulePage() {
       const uid = session?.user?.id;
       if (!uid) return;
       await loadCalendarBlocks(uid);
+      const { data: icsData } = await supabase
+        .from("calendar_blocks")
+        .select("id, start_datetime, end_datetime, title")
+        .eq("instructor_id", uid)
+        .eq("source", "ics_inbound")
+        .gte("end_datetime", todayISO)
+        .lte("start_datetime", `${in14DaysISO}T23:59:59`);
+      setIcsBlocks((icsData as any[]) ?? []);
     })();
   }, []);
+
 
   // Private DSM events in the same window.
   useEffect(() => {
