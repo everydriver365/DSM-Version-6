@@ -481,6 +481,7 @@ function GapsPage() {
   }, [selectedDateIso]);
   const [hourlyRate, setHourlyRate] = useState<number>(0);
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
+  const [icsBlocks, setIcsBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
   const [allPupils, setAllPupils] = useState<Pupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<Availability[]>([]);
 
@@ -565,6 +566,7 @@ function GapsPage() {
       setSlotsLoading(true);
       try {
         const today = new Date();
+        today.setHours(12, 0, 0, 0);
         const startIso = todayIso();
         const endIso = addDaysIso(today, GAP_FILLER_FUTURE_DAYS);
         console.log("[gaps] today ISO:", startIso, "date range:", startIso, "→", endIso);
@@ -590,8 +592,9 @@ function GapsPage() {
             .maybeSingle(),
         ]);
 
-        // Fetch external calendar blocks in the same window.
+        // Fetch external calendar blocks (visual only) and ICS inbound blocks (gap detection) in the same window.
         let blocks: Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }> = [];
+        let icsBlocksLocal: Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }> = [];
         try {
           const { data: { session } } = await supabase.auth.getSession();
           const token = session?.access_token;
@@ -599,13 +602,23 @@ function GapsPage() {
             const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
             const SUPABASE_ANON_KEY =
               "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
-            const blocksRes = await fetch(
-              `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
-              { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
-            );
+            const [blocksRes, icsRes] = await Promise.all([
+              fetch(
+                `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+                { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+              ),
+              fetch(
+                `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${userId}&source=eq.ics_inbound&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+                { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
+              ),
+            ]);
             if (blocksRes.ok) {
               const data = await blocksRes.json();
               if (Array.isArray(data)) blocks = data;
+            }
+            if (icsRes.ok) {
+              const data = await icsRes.json();
+              if (Array.isArray(data)) icsBlocksLocal = data;
             }
           }
         } catch (err) {
@@ -642,6 +655,7 @@ function GapsPage() {
 
         console.log("[gaps] calendar blocks:", blocks.length, "recurring blocks:", recurringBlocks.length, "time off:", timeOffRows.length);
         if (!cancelled) setCalendarBlocks(blocks);
+        if (!cancelled) setIcsBlocks(icsBlocksLocal);
         if (cancelled) return;
         console.log(
           "[gaps] lessons fetched:",
@@ -746,8 +760,8 @@ function GapsPage() {
             continue;
           }
 
-          // Merge external calendar blocks as pseudo-lessons for gap detection.
-          const dayBlocks = getCalendarBlocksForDate(blocks, iso).filter((b) => !b.isAllDay).map((b) => {
+          // Merge ICS inbound calendar blocks as pseudo-lessons for gap detection.
+          const dayBlocks = getCalendarBlocksForDate(icsBlocksLocal, iso).filter((b) => !b.isAllDay).map((b) => {
             const c = getBlockColour(b.title);
             return {
               start: b.startMins,
