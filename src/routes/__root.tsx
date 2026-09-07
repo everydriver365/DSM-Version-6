@@ -371,7 +371,9 @@ function GlobalMenu() {
         style={{
           width: "85%",
           maxWidth: 360,
-          height: "100vh",
+          height: "100dvh",
+          maxHeight: "100dvh",
+          overflow: "hidden",
           background: "#F4F6F8",
           boxShadow: "4px 0 24px rgba(0,0,0,0.2)",
           display: "flex",
@@ -456,6 +458,18 @@ function GlobalMenu() {
           </div>
         </div>
 
+        {/* Scrollable body so every row stays reachable on small screens */}
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
+            WebkitOverflowScrolling: "touch",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+
         {/* Sign-in status row */}
         <div
           style={{
@@ -525,10 +539,10 @@ function GlobalMenu() {
         <div
           style={{
             background: "#F4F6F8",
-            padding: 10,
+            padding: 8,
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 6,
+            gap: 5,
             borderBottom: "1px solid #E4E8EF",
           }}
         >
@@ -543,7 +557,7 @@ function GlobalMenu() {
                   background: "#fff",
                   border: "1px solid #E4E8EF",
                   borderRadius: 12,
-                  padding: "10px 10px",
+                  padding: "9px 8px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
@@ -771,6 +785,7 @@ function GlobalMenu() {
             </span>
             <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#E53935" }}>Sign out</span>
           </button>
+        </div>
         </div>
       </div>
     </div>
