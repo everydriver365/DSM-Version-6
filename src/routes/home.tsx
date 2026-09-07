@@ -5046,38 +5046,39 @@ function HomePage() {
 
   ] as const;
 
+  /** Thin wrapper over the shared matching engine — no separate matching rules here. */
   function previewMatchForGap(gap: {
     date: string;
     dayName: string;
+    startMin: number;
     durationMin: number;
   }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
     if (!allPupils.length || !allAvailability.length) {
       return { count: 0, topPupils: [] };
     }
-    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
-    for (const a of allAvailability) {
-      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
-    }
-    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
-    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
-
-    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
-    for (const p of allPupils) {
-      const s = availByPupil.get(p.id);
-      if (!s) continue;
-      const availDays = s.available_days || [];
-      if (!availDays.includes(gap.dayName)) continue;
-      const minDuration = s.preferred_duration_minutes ?? 60;
-      if (gap.durationMin < minDuration) continue;
-      const minNoticeHours = s.min_notice_hours ?? 24;
-      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
-      matched.push({
+    const { count, topPupils } = previewMatchForGapShared({
+      date: gap.date,
+      dayName: gap.dayName,
+      startMin: gap.startMin,
+      durationMin: gap.durationMin,
+      allPupils: allPupils.map((p) => ({
+        id: p.id,
+        name: p.name,
+        first_name: p.first_name,
+        last_name: p.last_name,
+        calendar_colour: p.calendar_colour,
+      })),
+      allAvailability: allAvailability as unknown as Parameters<typeof previewMatchForGapShared>[0]["allAvailability"],
+      unavailability: allUnavailability,
+    });
+    return {
+      count,
+      topPupils: topPupils.map((p) => ({
         name: p.name,
         first_name: p.first_name,
         calendar_colour: p.calendar_colour,
-      });
-    }
-    return { count: matched.length, topPupils: matched.slice(0, 3) };
+      })),
+    };
   }
 
   const [naEnquiries, setNaEnquiries] = useState(0);
