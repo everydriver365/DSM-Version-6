@@ -37,6 +37,7 @@ import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
+import { previewMatchForGap as previewMatchForGapShared } from "@/lib/pupilMatching";
 
 import { TasksActionsCard } from "@/components/home/TasksActionsCard";
 import ProPage from "@/routes/pro.tsx";
@@ -1739,6 +1740,7 @@ function HomePage() {
   }, [userId]);
   const [allPupils, setAllPupils] = useState<PreviewPupil[]>([]);
   const [allAvailability, setAllAvailability] = useState<PupilReadySetting[]>([]);
+  const [allUnavailability, setAllUnavailability] = useState<Array<{ pupil_id: string; start_date: string; end_date: string }>>([]);
   const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
     const onPaymentRecorded = () => setReloadKey((k) => k + 1);
@@ -3020,8 +3022,20 @@ function HomePage() {
       ]);
       if (pupilsRes.error) console.error("[home] pupils query failed:", pupilsRes.error);
       if (availRes.error) console.error("[home] availability query failed:", availRes.error);
-      setAllPupils((pupilsRes.data ?? []) as PreviewPupil[]);
+      const pupilRows = (pupilsRes.data ?? []) as PreviewPupil[];
+      setAllPupils(pupilRows);
       setAllAvailability((availRes.data ?? []) as PupilReadySetting[]);
+      // Pupil holidays: keyed by pupil only (no instructor column on this table).
+      if (pupilRows.length > 0) {
+        const unavailRes = await supabase
+          .from("pupil_unavailability")
+          .select("pupil_id,start_date,end_date")
+          .in("pupil_id", pupilRows.map((p) => p.id));
+        if (unavailRes.error) console.error("[home] pupil holidays query failed:", unavailRes.error);
+        setAllUnavailability((unavailRes.data ?? []) as Array<{ pupil_id: string; start_date: string; end_date: string }>);
+      } else {
+        setAllUnavailability([]);
+      }
     })();
   }, [userId]);
 
@@ -5032,38 +5046,39 @@ function HomePage() {
 
   ] as const;
 
+  /** Thin wrapper over the shared matching engine — no separate matching rules here. */
   function previewMatchForGap(gap: {
     date: string;
     dayName: string;
+    startMin: number;
     durationMin: number;
   }): { count: number; topPupils: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> } {
     if (!allPupils.length || !allAvailability.length) {
       return { count: 0, topPupils: [] };
     }
-    const availByPupil = new (globalThis.Map)<string, PupilReadySetting>();
-    for (const a of allAvailability) {
-      if (a.pupil_id) availByPupil.set(a.pupil_id, a);
-    }
-    const slotStart = new Date(`${gap.date}T00:00:00`).getTime();
-    const hoursUntilSlot = (slotStart - Date.now()) / 3600000;
-
-    const matched: Array<{ name: string | null; first_name: string | null; calendar_colour: string | null }> = [];
-    for (const p of allPupils) {
-      const s = availByPupil.get(p.id);
-      if (!s) continue;
-      const availDays = s.available_days || [];
-      if (!availDays.includes(gap.dayName)) continue;
-      const minDuration = s.preferred_duration_minutes ?? 60;
-      if (gap.durationMin < minDuration) continue;
-      const minNoticeHours = s.min_notice_hours ?? 24;
-      if (hoursUntilSlot < minNoticeHours && !s.short_notice_opt_in) continue;
-      matched.push({
+    const { count, topPupils } = previewMatchForGapShared({
+      date: gap.date,
+      dayName: gap.dayName,
+      startMin: gap.startMin,
+      durationMin: gap.durationMin,
+      allPupils: allPupils.map((p) => ({
+        id: p.id,
+        name: p.name,
+        first_name: p.first_name,
+        last_name: p.last_name,
+        calendar_colour: p.calendar_colour,
+      })),
+      allAvailability: allAvailability as unknown as Parameters<typeof previewMatchForGapShared>[0]["allAvailability"],
+      unavailability: allUnavailability,
+    });
+    return {
+      count,
+      topPupils: topPupils.map((p) => ({
         name: p.name,
         first_name: p.first_name,
         calendar_colour: p.calendar_colour,
-      });
-    }
-    return { count: matched.length, topPupils: matched.slice(0, 3) };
+      })),
+    };
   }
 
   const [naEnquiries, setNaEnquiries] = useState(0);
@@ -7248,13 +7263,18 @@ function HomePage() {
                       const gs = r.start;
                       const ge = new Date(gs.getTime() + r.mins * 60000);
                       const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-                      const hourlyRate = 40;
-                      const potential = Math.round((r.mins / 60) * hourlyRate);
                       const gapDate = `${gs.getFullYear()}-${String(gs.getMonth() + 1).padStart(2, '0')}-${String(gs.getDate()).padStart(2, '0')}`;
                       const dayName = DAY_NAMES[gs.getDay()];
-                      const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
+                      const gapStartMin = gs.getHours() * 60 + gs.getMinutes();
+                      const preview = previewMatchForGap({ date: gapDate, dayName, startMin: gapStartMin, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
-                      const durLabel = formatMins(r.mins);
+                      const durLabel = (() => {
+                        const h = Math.floor(r.mins / 60);
+                        const m = r.mins % 60;
+                        if (h > 0 && m > 0) return `${h}hr ${m}min`;
+                        if (h > 0) return `${h}hr`;
+                        return `${m}min`;
+                      })();
                       return (
                         <div key={`gap-${idx}`} style={{ marginBottom: 8 }}>
                           <div
@@ -7288,45 +7308,11 @@ function HomePage() {
                             <div aria-hidden style={{ width: 2, alignSelf: 'stretch', flexShrink: 0, background: 'repeating-linear-gradient(180deg, #D4A853 0, #D4A853 4px, transparent 4px, transparent 8px)' }} />
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ fontSize: 12, fontWeight: 500, color: '#633806', lineHeight: 1.3 }}>
-                                Free · {durLabel} · £{potential} potential
+                                Free · {durLabel}
                               </div>
-                              {preview.count > 0 && (
-                                <div style={{ display: 'flex', alignItems: 'center', marginTop: 4 }}>
-                                      {preview.topPupils.map((p, i) => {
-                                        const initials = (p.name ?? p.first_name ?? "P")
-                                          .split(/\s+/)
-                                          .map((s) => s.charAt(0))
-                                          .join("")
-                                          .slice(0, 2)
-                                          .toUpperCase();
-                                        return (
-                                          <div
-                                            key={i}
-                                            style={{
-                                              width: 20,
-                                              height: 20,
-                                              borderRadius: '50%',
-                                              background: p.calendar_colour ?? '#0B2341',
-                                              border: '1.5px solid #FFFFFF',
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              justifyContent: 'center',
-                                              fontSize: 8,
-                                              fontWeight: tokens.fontWeight.bold,
-                                              color: '#FFFFFF',
-                                              marginRight: i === preview.topPupils.length - 1 ? 0 : -5,
-                                              fontFamily: PF,
-                                            }}
-                                          >
-                                            {initials}
-                                          </div>
-                                        );
-                                      })}
-                                  {preview.count > preview.topPupils.length && (
-                                    <span style={{ marginLeft: 5, fontSize: 9, color: '#854F0B' }}>+ {preview.count - preview.topPupils.length} more</span>
-                                  )}
-                                </div>
-                              )}
+                              <div style={{ fontSize: 10, color: '#854F0B', marginTop: 2 }}>
+                                {preview.count} pupil{preview.count === 1 ? '' : 's'} available
+                              </div>
                             </div>
                             {moveModeHome ? (
                               <button
