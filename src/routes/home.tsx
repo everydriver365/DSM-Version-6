@@ -4454,7 +4454,11 @@ function HomePage() {
     if (todayEndTime) {
       const todayGaps = computeDayGaps({
         dayLessons: mapLessons(todayLessons),
-        calendarBlocks: [],
+        calendarBlocks: (icsBlocks || []).map((b) => ({
+          start_datetime: b.start_datetime,
+          end_datetime: b.end_datetime,
+          title: b.title,
+        })),
         recurringBlocks: [],
         dayTimeOff: [],
         dayStart: startTimeStr,
@@ -4470,7 +4474,11 @@ function HomePage() {
     if (tomorrowEndTime) {
       const tomorrowGaps = computeDayGaps({
         dayLessons: mapLessons(tomorrowLessons),
-        calendarBlocks: [],
+        calendarBlocks: (icsBlocks || []).map((b) => ({
+          start_datetime: b.start_datetime,
+          end_datetime: b.end_datetime,
+          title: b.title,
+        })),
         recurringBlocks: [],
         dayTimeOff: [],
         dayStart: startTimeStr,
@@ -4505,7 +4513,11 @@ function HomePage() {
         status: l.status,
         bufferAfterMinutes: (l.pupil_id && typeof pupilBuf[l.pupil_id]?.after === "number" ? (pupilBuf[l.pupil_id].after as number) : null),
       })),
-      calendarBlocks: [],
+      calendarBlocks: (icsBlocks || []).map((b) => ({
+        start_datetime: b.start_datetime,
+        end_datetime: b.end_datetime,
+        title: b.title,
+      })),
       recurringBlocks: [],
       dayTimeOff: [],
       dayStart: startTimeStr,
@@ -6726,7 +6738,11 @@ function HomePage() {
               status: l.status,
               bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
             })),
-            calendarBlocks: [],
+            calendarBlocks: (icsBlocks || []).map((b) => ({
+              start_datetime: b.start_datetime,
+              end_datetime: b.end_datetime,
+              title: b.title,
+            })),
             recurringBlocks: [],
             dayTimeOff: [],
             dayStart,
