@@ -219,7 +219,10 @@ function GapsPage() {
           .from("calendar_blocks")
           .select("start_datetime, end_datetime, title, is_all_day, blocks_availability")
           .eq("instructor_id", uid)
-          .eq("source", "ics_inbound")
+          // Same rows Schedule displays: imported ICS feeds AND Google
+          // Calendar events. Rows with blocks_availability = false are
+          // ignored by computeDayGaps and stay non-blocking.
+          .in("source", ["ics_inbound", "external_calendar"])
           // Overlap, not "starts inside": ends after the window opens and
           // starts before it closes. Local midnight is converted to a real
           // instant (BST/GMT aware) so nothing is lost at either boundary.
