@@ -965,8 +965,58 @@ function SchedulePage() {
     })();
   }, []);
 
+  function detectGaps(
+    lessons: Array<{ status?: string | null; lesson_time: string; duration_minutes?: number | null; pupils?: { buffer_after_minutes?: number | null } | null }>,
+    workStart: string,
+    workEnd: string,
+    bufferAfter: number,
+    calendarBlocks: Array<{ start_datetime: string; end_datetime: string; is_all_day?: boolean | null }>,
+    recurringBlocks: Array<{ day_of_week: string; start_time: string; end_time: string; is_active?: boolean }>,
+    timeOff: Array<{ start_date: string; end_date: string; all_day?: boolean | null; start_time?: string | null; end_time?: string | null }>,
+    dateStr: string,
+    hourlyRate: number,
+    minGapMinutes: number,
+  ): GapInfo[] {
+    const dayTimeOff = (timeOff || []).filter(
+      (t) => t.start_date <= dateStr && t.end_date >= dateStr,
+    );
+    const isToday = dateStr === new Date().toISOString().split("T")[0];
+    const computed = computeDayGaps({
+      dayLessons: (lessons || []).map((l) => ({
+        lesson_time: l.lesson_time,
+        duration_minutes: l.duration_minutes ?? null,
+        status: l.status ?? null,
+        bufferAfterMinutes: l.pupils?.buffer_after_minutes ?? null,
+      })),
+      calendarBlocks: (icsBlocks || []).map((b) => ({
+        start_datetime: b.start_datetime,
+        end_datetime: b.end_datetime,
+      })),
+      recurringBlocks: recurringBlocks || [],
+      dayTimeOff: dayTimeOff.map((t) => ({
+        start_time: t.start_time ?? null,
+        end_time: t.end_time ?? null,
+        all_day: t.all_day ?? null,
+      })),
+      dayStart: workStart,
+      dayEnd: workEnd,
+      instructorBufferAfter: bufferAfter,
+      dateStr,
+      isToday,
+      minGapMinutes,
+    });
+    return computed.map((g) => ({
+      startMins: g.startMins,
+      endMins: g.endMins,
+      gapMins: g.gapMins,
+      startTime: minsToTime(g.startMins),
+      endTime: minsToTime(g.endMins),
+      potential: Math.round((g.gapMins / 60) * (hourlyRate || 40)),
+    }));
+  }
 
   // Private DSM events in the same window.
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
