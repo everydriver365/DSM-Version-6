@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconCalendar, IconChevronRight, IconCopy, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconCalendarPlus, IconChevronRight, IconCopy, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -67,6 +67,9 @@ function CalendarSyncPage() {
   const [connecting, setConnecting] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [icsInboundUrl, setIcsInboundUrl] = useState("");
+  const [icsFeedStatus, setIcsFeedStatus] = useState("");
+  const [icsLastFetched, setIcsLastFetched] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -164,6 +167,28 @@ function CalendarSyncPage() {
         setTimeout(() => {
           void sync();
         }, 1500);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data: userData } = await supabase.auth.getUser();
+        const uid = userData.user?.id;
+        if (!uid) return;
+        const { data } = await supabase
+          .from("instructors")
+          .select("ics_feed_url, ics_feed_status, ics_last_fetched_at")
+          .eq("id", uid)
+          .single();
+        if (data) {
+          setIcsInboundUrl(data.ics_feed_url || "");
+          setIcsFeedStatus(data.ics_feed_status || "");
+          setIcsLastFetched(data.ics_last_fetched_at || "");
+        }
+      } catch {
+        // ignore — table or columns may not exist yet
       }
     })();
   }, []);
@@ -321,6 +346,33 @@ function CalendarSyncPage() {
     }
   }
 
+  async function saveIcsUrl() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await supabase
+      .from("instructors")
+      .update({
+        ics_feed_url: icsInboundUrl.trim() || null,
+      })
+      .eq("id", user.id);
+
+    if (icsInboundUrl.trim()) {
+      await fetch(
+        `${SUPABASE_URL}/functions/v1/sync-ics-feed?instructor_id=${user.id}`,
+        {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+          },
+        }
+      );
+      toast.success("Calendar connected — personal events imported");
+    } else {
+      toast.success("Calendar disconnected");
+    }
+  }
+
   return (
     <DSMTopSheet title="Calendar Sync" onBack={() => navigate({ to: "/settings" as never })}>
       <div style={{ ...POPPINS, minHeight: "100%" }}>
@@ -457,6 +509,164 @@ function CalendarSyncPage() {
 
             <div style={{ marginTop: 8, fontSize: 10, color: "#9CA3AF" }}>
               Apple Calendar: File → New Calendar Subscription → paste the link
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 12,
+              border: "0.5px solid #E4E8EF",
+              padding: 16,
+              marginBottom: 16,
+              ...POPPINS,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 8,
+              }}
+            >
+              <IconCalendarPlus size={20} color="#18A999" />
+              <div
+                style={{
+                  color: "#0B2341",
+                  fontSize: 14,
+                  fontWeight: tokens.fontWeight.bold,
+                }}
+              >
+                Import your personal calendar
+              </div>
+            </div>
+
+            <p
+              style={{
+                color: "#536579",
+                fontSize: 12,
+                lineHeight: 1.5,
+                margin: 0,
+                marginBottom: 12,
+              }}
+            >
+              Paste your Google or Apple private calendar URL below. EDP will import your personal events so gaps are never offered when you're busy.
+            </p>
+
+            <label
+              style={{
+                display: "block",
+                color: "#0B2341",
+                fontSize: 11,
+                fontWeight: tokens.fontWeight.bold,
+                marginBottom: 4,
+              }}
+            >
+              Your private calendar URL
+            </label>
+            <input
+              type="url"
+              placeholder="https://calendar.google.com/calendar/ical/..."
+              value={icsInboundUrl}
+              onChange={(e) => setIcsInboundUrl(e.target.value)}
+              style={{
+                width: "100%",
+                background: "#F4F6F8",
+                borderRadius: 8,
+                border: "0.5px solid #E4E8EF",
+                padding: "10px 12px",
+                fontSize: 12,
+                fontFamily: "inherit",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={saveIcsUrl}
+              style={{
+                marginTop: 10,
+                background: "#18A999",
+                color: "white",
+                borderRadius: 8,
+                padding: "10px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+                width: "100%",
+              }}
+            >
+              Save calendar URL
+            </button>
+
+            {icsInboundUrl.trim() && (
+              <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                {icsFeedStatus === "healthy" ? (
+                  <>
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 999,
+                        background: "#16A34A",
+                      }}
+                    />
+                    <span style={{ fontSize: 11, color: "#16A34A" }}>
+                      Connected{icsLastFetched ? ` · fetched ${timeAgo(icsLastFetched)}` : ""}
+                    </span>
+                  </>
+                ) : icsFeedStatus === "failed" ? (
+                  <>
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 999,
+                        background: "#E53935",
+                      }}
+                    />
+                    <span style={{ fontSize: 11, color: "#E53935" }}>
+                      Connection failed — check your URL
+                    </span>
+                  </>
+                ) : null}
+              </div>
+            )}
+
+            <div style={{ marginTop: 12 }}>
+              <div
+                style={{
+                  color: "#0B2341",
+                  fontSize: 11,
+                  fontWeight: tokens.fontWeight.bold,
+                  marginBottom: 6,
+                }}
+              >
+                How to get your Google Calendar private URL:
+              </div>
+              <div style={{ fontSize: 11, color: "#536579", lineHeight: 1.6 }}>
+                <div>1. Open Google Calendar on desktop</div>
+                <div style={{ marginTop: 4 }}>2. Click the three dots next to your calendar name</div>
+                <div style={{ marginTop: 4 }}>3. Select "Settings and sharing"</div>
+                <div style={{ marginTop: 4 }}>4. Scroll to "Integrate calendar"</div>
+                <div style={{ marginTop: 4 }}>5. Copy the "Secret address in iCal format" link</div>
+                <div style={{ marginTop: 4 }}>6. Paste it above</div>
+              </div>
+              <div
+                style={{
+                  marginTop: 8,
+                  background: "#FEF3C7",
+                  borderRadius: 8,
+                  padding: "8px 10px",
+                  fontSize: 11,
+                  color: "#92400E",
+                }}
+              >
+                ⚠ Keep this URL private — it gives access to your calendar events
+              </div>
             </div>
           </div>
 
