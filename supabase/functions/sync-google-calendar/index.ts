@@ -150,9 +150,27 @@ Deno.serve(async (req) => {
   }
 
   const eventsData = await eventsRes.json();
-  const items = (eventsData.items ?? []).filter((i: any) => i.status !== "cancelled");
+  const allItems = (eventsData.items ?? []).filter((i: any) => i.status !== "cancelled");
 
-  console.log(`[sync-google-calendar] fetched ${items.length} events`);
+  // Events EveryDriver itself pushed must never come back as "external busy":
+  // the lesson already occupies that time. Recognise them by our own marker
+  // and, for older events created before the marker existed, by the stored
+  // lesson -> Google event mapping.
+  const { data: ownedRows } = await supabase
+    .from("lessons")
+    .select("google_event_id")
+    .eq("instructor_id", instructor_id)
+    .not("google_event_id", "is", null);
+  const ownedIds = new Set((ownedRows ?? []).map((r: any) => r.google_event_id));
+
+  const items = allItems.filter((i: any) => {
+    const marked = i.extendedProperties?.private?.everydriver_origin === "EVERYDRIVER";
+    return !marked && !ownedIds.has(i.id);
+  });
+
+  console.log(
+    `[sync-google-calendar] fetched ${allItems.length} events, ${allItems.length - items.length} own lessons skipped`
+  );
 
   // Delete ALL existing external calendar blocks for this instructor first
   const { error: deleteError } = await supabase
@@ -171,8 +189,11 @@ Deno.serve(async (req) => {
   if (items.length > 0) {
     const rows = items.map((item: any) => {
       const isAllDay = !item.start?.dateTime;
-      const startRaw = item.start?.dateTime ?? `${item.start?.date}T00:00:00`;
-      const endRaw = item.end?.dateTime ?? `${item.end?.date}T23:59:59`;
+      // Timed events carry their own UTC offset from Google. All-day events
+      // give a date only, with an exclusive end date — anchor both to London
+      // midnight so availability maths is right in GMT and BST alike.
+      const startRaw = item.start?.dateTime ?? londonMidnightIso(item.start?.date);
+      const endRaw = item.end?.dateTime ?? londonMidnightIso(item.end?.date);
       return {
         instructor_id,
         source: "external_calendar",
@@ -186,6 +207,7 @@ Deno.serve(async (req) => {
         blocks_availability: true,
       };
     });
+
 
     // Insert in batches of 100
     for (let i = 0; i < rows.length; i += 100) {
