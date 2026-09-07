@@ -88,7 +88,7 @@ function CalendarSyncPage() {
           Authorization: `Bearer ${token}`,
         };
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced`,
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced,ics_feed_url,ics_feed_status,ics_last_fetched_at`,
           { headers },
         );
         if (res.ok) {
@@ -97,10 +97,16 @@ function CalendarSyncPage() {
             ? (rows[0] as {
                 google_calendar_connected?: boolean | null;
                 calendar_last_synced?: string | null;
+                ics_feed_url?: string | null;
+                ics_feed_status?: string | null;
+                ics_last_fetched_at?: string | null;
               })
             : null;
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
+          setIcsInboundUrl(row?.ics_feed_url || "");
+          setIcsFeedStatus(row?.ics_feed_status || "");
+          setIcsLastFetched(row?.ics_last_fetched_at || "");
         }
       } catch {
         // ignore — first-time or column may not exist
