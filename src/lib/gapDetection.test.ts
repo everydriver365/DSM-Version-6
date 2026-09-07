@@ -95,6 +95,27 @@ describe("computeDayGaps", () => {
     ).toEqual([]);
   });
 
+  test("reserves travel time on both sides of imported calendar events", () => {
+    expect(
+      computeDayGaps({
+        ...base,
+        dayStart: "10:30",
+        dayEnd: "16:00",
+        instructorBufferAfter: 30,
+        calendarBlocks: [
+          {
+            start_datetime: "2026-09-08T09:00:00",
+            end_datetime: "2026-09-08T12:00:00",
+          },
+          {
+            start_datetime: "2026-09-08T13:00:00",
+            end_datetime: "2026-09-08T16:00:00",
+          },
+        ],
+      }),
+    ).toEqual([]);
+  });
+
   test("ignores calendar events that do not block availability", () => {
     expect(
       computeDayGaps({
