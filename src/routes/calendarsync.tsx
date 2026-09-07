@@ -598,7 +598,11 @@ function CalendarSyncPage() {
 
                 <button
                   type="button"
-                  onClick={saveIcsUrl}
+                  onClick={async () => {
+                    await saveIcsUrl();
+                    setSavedIcsInboundUrl(icsInboundUrl.trim());
+                    setIsEditingIcs(false);
+                  }}
                   style={{
                     marginTop: 10,
                     background: "#18A999",
