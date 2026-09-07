@@ -2918,6 +2918,7 @@ function HomePage() {
   }, []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
   const tomorrowStart = useMemo(() => addDays(todayStart, 1), [todayStart]);
+  const in14DaysStart = useMemo(() => addDays(todayStart, 14), [todayStart]);
   const dayAfter = useMemo(() => addDays(todayStart, 2), [todayStart]);
   const weekStart = useMemo(() => startOfWeek(now), [now]);
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
@@ -4283,9 +4284,11 @@ function HomePage() {
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
+  const [icsBlocks, setIcsBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
+  const in14DaysISO = ymd(in14DaysStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
 
   useEffect(() => {
@@ -4308,11 +4311,24 @@ function HomePage() {
       setCalendarBlocks((data as any[]) ?? []);
     };
 
+    const fetchIcsBlocks = async () => {
+      const { data } = await supabase
+        .from('calendar_blocks')
+        .select('id, start_datetime, end_datetime, title')
+        .eq('instructor_id', userId)
+        .eq('source', 'ics_inbound')
+        .gte('end_datetime', todayISO)
+        .lte('start_datetime', `${in14DaysISO}T23:59:59`);
+      setIcsBlocks((data as any[]) ?? []);
+    };
+
     fetchCalendarBlocks();
+    fetchIcsBlocks();
 
     const handleCalendarSynced = () => {
       console.log("[home] calendar-synced event received; refetching calendar_blocks");
       fetchCalendarBlocks();
+      fetchIcsBlocks();
     };
     window.addEventListener('calendar-synced', handleCalendarSynced);
 
@@ -4320,7 +4336,7 @@ function HomePage() {
       cancelled = true;
       window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
-  }, [userId, todayISO, tomorrowISO]);
+  }, [userId, todayISO, tomorrowISO, in14DaysISO]);
 
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
@@ -4438,7 +4454,11 @@ function HomePage() {
     if (todayEndTime) {
       const todayGaps = computeDayGaps({
         dayLessons: mapLessons(todayLessons),
-        calendarBlocks: [],
+        calendarBlocks: (icsBlocks || []).map((b) => ({
+          start_datetime: b.start_datetime,
+          end_datetime: b.end_datetime,
+          title: b.title,
+        })),
         recurringBlocks: [],
         dayTimeOff: [],
         dayStart: startTimeStr,
@@ -4454,7 +4474,11 @@ function HomePage() {
     if (tomorrowEndTime) {
       const tomorrowGaps = computeDayGaps({
         dayLessons: mapLessons(tomorrowLessons),
-        calendarBlocks: [],
+        calendarBlocks: (icsBlocks || []).map((b) => ({
+          start_datetime: b.start_datetime,
+          end_datetime: b.end_datetime,
+          title: b.title,
+        })),
         recurringBlocks: [],
         dayTimeOff: [],
         dayStart: startTimeStr,
@@ -4489,7 +4513,11 @@ function HomePage() {
         status: l.status,
         bufferAfterMinutes: (l.pupil_id && typeof pupilBuf[l.pupil_id]?.after === "number" ? (pupilBuf[l.pupil_id].after as number) : null),
       })),
-      calendarBlocks: [],
+      calendarBlocks: (icsBlocks || []).map((b) => ({
+        start_datetime: b.start_datetime,
+        end_datetime: b.end_datetime,
+        title: b.title,
+      })),
       recurringBlocks: [],
       dayTimeOff: [],
       dayStart: startTimeStr,
@@ -6710,7 +6738,11 @@ function HomePage() {
               status: l.status,
               bufferAfterMinutes: (l.pupil_id && pupilBufferMap[l.pupil_id]?.after) ?? null,
             })),
-            calendarBlocks: [],
+            calendarBlocks: (icsBlocks || []).map((b) => ({
+              start_datetime: b.start_datetime,
+              end_datetime: b.end_datetime,
+              title: b.title,
+            })),
             recurringBlocks: [],
             dayTimeOff: [],
             dayStart,
