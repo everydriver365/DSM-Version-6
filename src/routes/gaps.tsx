@@ -2952,8 +2952,8 @@ function GapsPage() {
       <BottomSheet
         open={messageSheetOpen}
         onOpenChange={setMessageSheetOpen}
-        title="Message selected pupils"
-        description={`Personalize your message before sending to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
+        title="Confirm offer"
+        description={`Review the lesson and message for ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}.`}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 80 }}>
           {(() => {
@@ -3252,6 +3252,40 @@ function GapsPage() {
                     })()}
                   </div>
                 )}
+                {selectedList.length === 1 && (() => {
+                  const match = selectedList[0];
+                  const slot = (searchSlots.length ? searchSlots : selectedSlots)[0];
+                  if (!match || !slot) return null;
+                  const pupilName = fullNameOf(match.pupil);
+                  const initials = pupilName.split(/\s+/).map((part) => part.charAt(0)).join("").slice(0, 2).toUpperCase();
+                  const reasons = [
+                    match.dayMatch === "yes" ? `Available on ${dayOfWeekLabel}s` : "Availability considered",
+                    match.shortNoticeOk ? "Accepts short-notice lessons" : `${match.minNoticeHours} hours notice preferred`,
+                    match.daysSince !== null ? `Last lesson ${match.daysSince} day${match.daysSince === 1 ? "" : "s"} ago` : "New pupil",
+                  ];
+                  return (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 18, background: match.pupil.calendar_colour ?? "#6B7280", color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>{initials || "?"}</div>
+                        <div style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0B2341" }}>{pupilName}</div>
+                        <span style={{ borderRadius: 10, padding: "4px 7px", fontSize: 10, fontWeight: 600, background: match.score >= 70 ? "#EAF3DE" : "#EAF5FC", color: match.score >= 70 ? "#3B6D11" : "#185FA5" }}>{match.score >= 70 ? "High match" : "Good match"}</span>
+                      </div>
+                      <div>
+                        {reasons.map((reason) => (
+                          <div key={reason} style={{ display: "flex", alignItems: "center", gap: 6, color: "#536579", fontSize: 11, marginTop: 5 }}>
+                            <IconCheck size={13} color="#639922" stroke={2.4} />{reason}
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ background: "#F4F6F8", borderRadius: 8, padding: 10, display: "grid", gap: 7 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconCalendar size={15} color="#536579" />{fmtDateLong(slot.date)}</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconClock size={15} color="#536579" />{fmtTimeHm(slot.time)} · {slot.duration} minutes</div>
+                        {match.pupil.postcode && <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconMapPin size={15} color="#536579" />{match.pupil.postcode}</div>}
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0B2341" }}><IconCar size={15} color="#536579" />Lesson vehicle</div>
+                      </div>
+                    </>
+                  );
+                })()}
               </>
             );
           })()}
@@ -3266,7 +3300,7 @@ function GapsPage() {
                 marginBottom: 6,
               }}
             >
-              Message
+              Message to pupil
             </label>
             <textarea
               value={messageTemplate}
@@ -3352,7 +3386,7 @@ function GapsPage() {
               width: "100%",
               height: 48,
               borderRadius: 12,
-              background: BLUE_BRIGHT,
+              background: "#0B2341",
               color: tokens.white,
               fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
@@ -3361,9 +3395,14 @@ function GapsPage() {
               opacity: selectedPupilIds.size === 0 ? 0.5 : 1,
             }}
           >
-            {selectedPupilIds.size === 0
-              ? "Select pupils to send"
-              : `IconSend to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
+              <IconSend size={17} color="#FFFFFF" />
+              {selectedPupilIds.size === 0
+                ? "Select pupils to send"
+                : selectedPupilIds.size === 1
+                  ? "Send offer + SMS"
+                  : `Send offer to ${selectedPupilIds.size} pupils`}
+            </span>
           </button>
         </div>
       </BottomSheet>
