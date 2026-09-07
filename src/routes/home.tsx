@@ -4316,7 +4316,7 @@ function HomePage() {
         .from('calendar_blocks')
         .select('id, start_datetime, end_datetime, title')
         .eq('instructor_id', userId)
-        .eq('source', 'ics_inbound')
+        .in('source', ['ics_inbound', 'external_calendar'])
         .gte('end_datetime', todayISO)
         .lte('start_datetime', `${in14DaysISO}T23:59:59`);
       setIcsBlocks((data as any[]) ?? []);
