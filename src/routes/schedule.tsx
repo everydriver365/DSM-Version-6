@@ -2047,61 +2047,30 @@ function SchedulePage() {
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
                                 <div
+                                  onClick={() => navigate({ to: '/gaps' as never })}
+                                  role="button"
+                                  tabIndex={0}
                                   style={{
-                                    position: "absolute",
-                                    top: -16,
-                                    left: 12,
-                                    zIndex: 1,
-                                    background: "#DCFCE7",
-                                    color: "#000000",
-                                    fontSize: tokens.fontSize.xs,
-                                    fontWeight: tokens.fontWeight.extrabold,
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.5px",
-                                    padding: "4px 10px",
-                                    borderRadius: "8px 8px 8px 0",
-                                    fontFamily: "Poppins, sans-serif",
-                                    lineHeight: 1.2,
-                                  }}
-                                >
-                                  FILL THIS GAP
-                                </div>
-                                <div
-                                  className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
-                                  style={{
-                                    background: "#EAF5FC",
-                                    borderRadius: tokens.radiusCard,
-                                    border: "2px dashed #D4A853",
-                                    padding: "12px 16px",
-                                    display: "flex",
-                                    alignItems: "stretch",
-                                    gap: 12,
+                                    position: "relative",
+                                    left: 4,
+                                    width: "calc(100% - 8px)",
+                                    borderRadius: 6,
+                                    border: "1.5px dashed #D4A853",
+                                    background: "rgba(212,168,83,0.08)",
+                                    padding: "5px 7px",
+                                    cursor: "pointer",
                                     ...POPPINS,
                                   }}
                                 >
-                                  <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: 2 }}>
-                                    <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
-                                      {e.startTime}
-                                    </div>
-                                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
-                                      {formatMins(e.mins)}
-                                    </div>
+                                  <div style={{ fontSize: 9, color: "#854F0B", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
+                                    {e.startTime} – {e.endTime}
                                   </div>
-                                  <div
-                                    aria-hidden
-                                    style={{
-                                      width: 4,
-                                      borderRadius: "8px 0 0 8px",
-                                      background: "#D4A853",
-                                      flexShrink: 0,
-                                      alignSelf: "stretch",
-                                    }}
-                                  />
-                                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", paddingTop: 2 }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, flexWrap: "wrap" }}>
-                                      {preview.count > 0 ? (
-                                        <>
-                                          <div style={{ display: "flex", alignItems: "center" }}>
+                                  <div style={{ fontSize: 10, color: "#633806", fontWeight: 700, marginBottom: 3 }}>
+                                    Free · {formatMins(e.mins)} · £{e.potential}
+                                  </div>
+                                  <div style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
+                                    {preview.count > 0 && (
+                                          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
                                             {preview.topPupils.map((p, idx) => {
                                               const initials = (p.name ?? p.first_name ?? "P")
                                                 .split(/\s+/)
@@ -2113,17 +2082,17 @@ function SchedulePage() {
                                                   <div
                                                     key={idx}
                                                     style={{
-                                                      width: 34,
-                                                      height: 34,
+                                                      width: 18,
+                                                      height: 18,
                                                       borderRadius: "50%",
-                                                      background: tokens.navy,
-                                                      border: "2px solid #EAF5FC",
-                                                      marginLeft: idx === 0 ? 0 : -10,
+                                                      background: p.calendar_colour ?? tokens.navy,
+                                                      border: "1.5px solid #FFFFFF",
+                                                      marginLeft: idx === 0 ? 0 : -5,
                                                       display: "flex",
                                                       alignItems: "center",
                                                       justifyContent: "center",
                                                       color: tokens.white,
-                                                      fontSize: tokens.fontSize.sm,
+                                                      fontSize: 7,
                                                       fontWeight: tokens.fontWeight.bold,
                                                       fontFamily: "Poppins, sans-serif",
                                                     }}
@@ -2133,25 +2102,10 @@ function SchedulePage() {
                                               );
                                             })}
                                           </div>
-                                          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>
-                                            {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit · £{e.potential} potential
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>
-                                          £{e.potential} potential
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => navigate({ to: '/gaps' as never })}
-                                      className="shrink-0 self-center rounded-lg bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
-                                    >
-                                      Fill
-                                    </button>
+                                    )}
+                                    <span style={{ marginLeft: 4, fontSize: 9, color: "#854F0B" }}>
+                                      {preview.count} pupil{preview.count === 1 ? "" : "s"} available · Fill →
+                                    </span>
                                   </div>
                                 </div>
                               </div>

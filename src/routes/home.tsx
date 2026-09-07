@@ -7256,27 +7256,7 @@ function HomePage() {
                       const gapStartTime = fmtT(gs);
                       const durLabel = formatMins(r.mins);
                       return (
-                        <div key={`gap-${idx}`} style={{ position: "relative", marginBottom: 8 }}>
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: -12,
-                              left: 12,
-                              zIndex: 1,
-                              background: "#00A6A6",
-                              color: tokens.white,
-                              fontSize: tokens.fontSize.xs,
-                              fontWeight: tokens.fontWeight.extrabold,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.5px",
-                              padding: "4px 10px",
-                              borderRadius: "8px 8px 8px 0",
-                              fontFamily: PF,
-                              lineHeight: 1.2,
-                            }}
-                          >
-                            FILL THIS GAP
-                          </div>
+                        <div key={`gap-${idx}`} style={{ marginBottom: 8 }}>
                           <div
                             onClick={() => {
                               if (moveModeHome && movingLessonHome) {
@@ -7288,32 +7268,30 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: moveModeHome ? '#F4F8FE' : '#FDFBF6',
-                              border: '2px dashed #D4A853',
-                              borderRadius: tokens.radiusCard,
-                              boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
-                              padding: '20px 14px 12px',
+                              background: moveModeHome ? '#F4F8FE' : 'rgba(212,168,83,0.06)',
+                              border: 'none',
+                              borderBottom: '0.5px solid #F4F6F8',
+                              borderRadius: 0,
+                              padding: '8px 12px',
                               display: 'flex',
-                              alignItems: 'stretch',
-                              gap: 12,
+                              alignItems: 'center',
+                              gap: 10,
                               cursor: 'pointer',
                               fontFamily: PF,
                             }}
                           >
-                            <div style={{ width: 54, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-                              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
+                            <div style={{ width: 36, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+                              <div style={{ fontSize: 11, fontWeight: 500, color: '#854F0B', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
                                 {fmtT(gs)}
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
-                                {durLabel}
-                              </div>
                             </div>
-                            <div aria-hidden style={{ width: 4, borderRadius: '8px', background: '#D4A853', flexShrink: 0, alignSelf: 'stretch', marginTop: 4, marginBottom: 4 }} />
-                            <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flexWrap: 'wrap' }}>
-                                {preview.count > 0 ? (
-                                  <>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div aria-hidden style={{ width: 2, alignSelf: 'stretch', flexShrink: 0, background: 'repeating-linear-gradient(180deg, #D4A853 0, #D4A853 4px, transparent 4px, transparent 8px)' }} />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 12, fontWeight: 500, color: '#633806', lineHeight: 1.3 }}>
+                                Free · {durLabel} · £{potential} potential
+                              </div>
+                              {preview.count > 0 && (
+                                <div style={{ display: 'flex', alignItems: 'center', marginTop: 4 }}>
                                       {preview.topPupils.map((p, i) => {
                                         const initials = (p.name ?? p.first_name ?? "P")
                                           .split(/\s+/)
@@ -7325,18 +7303,18 @@ function HomePage() {
                                           <div
                                             key={i}
                                             style={{
-                                              width: 34,
-                                              height: 34,
+                                              width: 20,
+                                              height: 20,
                                               borderRadius: '50%',
-                                              background: '#0B1F3A',
-                                              border: '2px solid #FDFBF6',
+                                              background: p.calendar_colour ?? '#0B2341',
+                                              border: '1.5px solid #FFFFFF',
                                               display: 'flex',
                                               alignItems: 'center',
                                               justifyContent: 'center',
-                                              fontSize: tokens.fontSize.sm,
+                                              fontSize: 8,
                                               fontWeight: tokens.fontWeight.bold,
                                               color: '#FFFFFF',
-                                              marginRight: i === preview.topPupils.length - 1 ? 0 : -10,
+                                              marginRight: i === preview.topPupils.length - 1 ? 0 : -5,
                                               fontFamily: PF,
                                             }}
                                           >
@@ -7344,17 +7322,11 @@ function HomePage() {
                                           </div>
                                         );
                                       })}
-                                    </div>
-                                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', lineHeight: 1.3 }}>
-                                      {preview.count} pupil{preview.count === 1 ? '' : 's'} may fit · £{potential} potential
-                                    </div>
-                                  </>
-                                ) : (
-                                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', lineHeight: 1.3 }}>
-                                    {durLabel} free · £{potential} potential
-                                  </div>
-                                )}
-                              </div>
+                                  {preview.count > preview.topPupils.length && (
+                                    <span style={{ marginLeft: 5, fontSize: 9, color: '#854F0B' }}>+ {preview.count - preview.topPupils.length} more</span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                             {moveModeHome ? (
                               <button
@@ -7366,8 +7338,8 @@ function HomePage() {
                                   color: '#FFFFFF',
                                   fontSize: 12.5,
                                   fontWeight: tokens.fontWeight.semibold,
-                                  padding: '8px 14px',
-                                  borderRadius: tokens.radiusCard,
+                                   padding: '4px 10px',
+                                   borderRadius: 5,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
@@ -7382,19 +7354,19 @@ function HomePage() {
                                 onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
                                   alignSelf: 'center',
-                                  background: '#1877D6',
+                                 background: '#D4A853',
                                   color: '#FFFFFF',
-                                  fontSize: tokens.fontSize.base,
-                                  fontWeight: tokens.fontWeight.bold,
-                                  padding: '9px 18px',
-                                  borderRadius: tokens.radiusCard,
+                                 fontSize: 10,
+                                 fontWeight: 500,
+                                 padding: '4px 10px',
+                                 borderRadius: 5,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
                                   flexShrink: 0,
                                 }}
                               >
-                                Fill
+                                Fill →
                               </button>
                             )}
                           </div>
