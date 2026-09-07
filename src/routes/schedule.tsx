@@ -1217,7 +1217,7 @@ function SchedulePage() {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       const useGoogleSync = true;
-      const endpoint = "/functions/v1/sync-google-calendar";
+      const endpoint = "/functions/v1/sync-ics-feed";
       console.log("[schedule] handleSync called", {
         userId,
         google_calendar_connected: instructor?.google_calendar_connected,
