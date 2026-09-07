@@ -4311,11 +4311,24 @@ function HomePage() {
       setCalendarBlocks((data as any[]) ?? []);
     };
 
+    const fetchIcsBlocks = async () => {
+      const { data } = await supabase
+        .from('calendar_blocks')
+        .select('id, start_datetime, end_datetime, title')
+        .eq('instructor_id', userId)
+        .eq('source', 'ics_inbound')
+        .gte('end_datetime', todayISO)
+        .lte('start_datetime', `${in14DaysISO}T23:59:59`);
+      setIcsBlocks((data as any[]) ?? []);
+    };
+
     fetchCalendarBlocks();
+    fetchIcsBlocks();
 
     const handleCalendarSynced = () => {
       console.log("[home] calendar-synced event received; refetching calendar_blocks");
       fetchCalendarBlocks();
+      fetchIcsBlocks();
     };
     window.addEventListener('calendar-synced', handleCalendarSynced);
 
@@ -4323,7 +4336,7 @@ function HomePage() {
       cancelled = true;
       window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
-  }, [userId, todayISO, tomorrowISO]);
+  }, [userId, todayISO, tomorrowISO, in14DaysISO]);
 
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
