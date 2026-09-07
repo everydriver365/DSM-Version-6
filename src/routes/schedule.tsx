@@ -1206,11 +1206,7 @@ function SchedulePage() {
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
-    if (!instructor?.google_calendar_connected) {
-      toast.info("Connect Google Calendar first");
-      navigate({ to: "/calendarsync" as never });
-      return;
-    }
+    // ICS sync — no Google OAuth required
     setSyncing(true);
     setSyncMessage(null);
 
