@@ -101,9 +101,11 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
 
   if (weMin <= wsMin) return [];
 
-  // Every busy interval is normalised to the actual time it occupies. Only
-  // lessons include travel buffer; calendar/time-off blocks must not inherit it.
-  const busy: { start: number; end: number }[] = [];
+  // Every busy interval is normalised to the actual time it occupies, plus the
+  // travel time needed to reach it (bufferBefore) and to leave it (added to the
+  // end for lessons only).
+  const defaultBuffer = Math.max(0, Number(instructorBufferAfter) || 0);
+  const busy: { start: number; end: number; bufferBefore: number }[] = [];
   for (const l of dayLessons || []) {
     if (String(l.status || "").toLowerCase() === "cancelled") continue;
     if (!l.lesson_time) continue;
@@ -111,9 +113,9 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     const e = s + (l.duration_minutes ?? 60);
     const bufAfter =
       l.bufferAfterMinutes != null
-        ? Number(l.bufferAfterMinutes)
-        : instructorBufferAfter;
-    busy.push({ start: s, end: e + Math.max(0, Number(bufAfter) || 0) });
+        ? Math.max(0, Number(l.bufferAfterMinutes) || 0)
+        : defaultBuffer;
+    busy.push({ start: s, end: e + bufAfter, bufferBefore: bufAfter });
   }
 
   // External calendar blocks — filter by local date, clamp multi-day spans.
@@ -134,6 +136,7 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     busy.push({
       start: spansIntoDay ? 0 : hmToMin(startTime),
       end: spansOutOfDay ? 1440 : hmToMin(endTime),
+      bufferBefore: defaultBuffer,
     });
   }
 
@@ -145,6 +148,7 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     busy.push({
       start: hmToMin(b.start_time),
       end: hmToMin(b.end_time),
+      bufferBefore: defaultBuffer,
     });
   }
 
@@ -155,6 +159,7 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     busy.push({
       start: hmToMin(t.start_time),
       end: hmToMin(t.end_time),
+      bufferBefore: defaultBuffer,
     });
   }
 
@@ -162,11 +167,12 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     .map((block) => ({
       start: Math.max(block.start, wsMin),
       end: Math.min(block.end, weMin),
+      bufferBefore: block.bufferBefore,
     }))
     .filter((block) => block.end > block.start)
     .sort((a, b) => a.start - b.start || a.end - b.end);
 
-  const mergedBusy: { start: number; end: number }[] = [];
+  const mergedBusy: { start: number; end: number; bufferBefore: number }[] = [];
   for (const block of clampedBusy) {
     const previous = mergedBusy[mergedBusy.length - 1];
     if (!previous || block.start > previous.end) {
@@ -178,14 +184,16 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
 
   // Walk the merged occupied intervals. Buffers are already included in the
   // lesson intervals, so neither edge of a genuine gap is shortened twice.
+  // The trailing edge of a gap reserves travel time to the next commitment.
   const gaps: ComputedGap[] = [];
   let cursor = wsMin;
   for (const block of mergedBusy) {
-    if (block.start - cursor >= minGap) {
+    const usableEnd = block.start - Math.max(0, block.bufferBefore || 0);
+    if (usableEnd - cursor >= minGap) {
       gaps.push({
         startMins: cursor,
-        endMins: block.start,
-        gapMins: block.start - cursor,
+        endMins: usableEnd,
+        gapMins: usableEnd - cursor,
       });
     }
     cursor = Math.max(cursor, block.end);
