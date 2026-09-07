@@ -245,6 +245,7 @@ function GapsPage() {
             .from("lessons")
             .select("lesson_date, lesson_time, duration_minutes, status, pupil_id")
             .eq("instructor_id", uid)
+            .is("deleted_at", null)
             .gte("lesson_date", today)
             .lte("lesson_date", endDate),
           supabase
@@ -265,7 +266,8 @@ function GapsPage() {
             .from("pupils")
             .select("id, name, first_name, last_name, phone, address, postcode, calendar_colour, buffer_after_minutes")
             .eq("instructor_id", uid)
-            .eq("status", "active"),
+            .is("deleted_at", null)
+            .not("status", "in", "(inactive,archived,cancelled,deleted)"),
           supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date").eq("instructor_id", uid),
         ]);
 
