@@ -2106,7 +2106,7 @@ function SchedulePage() {
                                           </div>
                                     )}
                                     <span style={{ marginLeft: 4, fontSize: 9, color: "#854F0B" }}>
-                                      {preview.count} pupil{preview.count === 1 ? "" : "s"} available · Fill →
+                                      {preview.count} available · Fill →
                                     </span>
                                   </div>
                                 </div>
