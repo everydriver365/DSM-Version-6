@@ -485,7 +485,8 @@ function GapsPage() {
       let duplicates = 0;
       let noPhone = 0;
       let failed = 0;
-      let queued = 0;
+      // Queue row ids created by THIS action — the only rows we may report on.
+      const queuedIds: string[] = [];
 
       for (const pupil of chosen) {
         // 1. Duplicate pending offer for this pupil + slot?
@@ -525,28 +526,36 @@ function GapsPage() {
         }
         created++;
 
-        // 3. Queue the SMS (send-sms drains sms_queue; the row carries the text).
+        // 3. Queue the SMS and keep its row id.
         if (!pupil.phone) {
           noPhone++;
           continue;
         }
-        const insertSms = await supabase.from("sms_queue").insert({
-          instructor_id: user.id,
-          pupil_phone: pupil.phone,
-          message: personalise(message, pupil),
-        });
+        const insertSms = await supabase
+          .from("sms_queue")
+          .insert({
+            instructor_id: user.id,
+            pupil_phone: pupil.phone,
+            message: personalise(message, pupil),
+          })
+          .select("id");
         if (insertSms.error) {
           console.error("[gaps] sms queue insert failed", insertSms.error);
           failed++;
           continue;
         }
-        queued++;
+        for (const row of (insertSms.data ?? []) as Array<{ id: string }>) {
+          queuedIds.push(row.id);
+        }
       }
 
-      // 4. Trigger the sender once and read its real result.
+      // 4. Trigger the sender, then judge ONLY our own rows by their status.
+      // send-sms is account-wide and its {sent, failed} counts can include
+      // other features' messages, so its response is never used for reporting.
       let smsSent = 0;
       let smsFailed = 0;
-      if (queued > 0) {
+      let stillQueued = queuedIds.length;
+      if (queuedIds.length > 0) {
         try {
           const {
             data: { session },
@@ -560,27 +569,43 @@ function GapsPage() {
             // send-sms takes no parameters: it processes queued rows.
             body: "{}",
           });
-          if (!res.ok) throw new Error(`send-sms responded ${res.status}`);
-          const body = (await res.json()) as { sent?: number; failed?: number };
-          smsSent = Math.min(queued, Number(body.sent ?? 0));
-          smsFailed = Math.max(0, queued - smsSent);
-          if (body.failed) console.warn("[gaps] send-sms reported failures", body.failed);
+          if (!res.ok) console.error("[gaps] send-sms responded", res.status);
         } catch (smsError) {
-          console.error("[gaps] send-sms failed", smsError);
-          smsFailed = queued;
+          console.error("[gaps] send-sms call failed", smsError);
+        }
+
+        const statusRes = await supabase
+          .from("sms_queue")
+          .select("id, status")
+          .in("id", queuedIds);
+        if (statusRes.error) {
+          console.error("[gaps] sms status check failed", statusRes.error);
+        } else {
+          smsSent = 0;
+          smsFailed = 0;
+          stillQueued = 0;
+          for (const row of (statusRes.data ?? []) as Array<{ status: string | null }>) {
+            const s = String(row.status ?? "queued").toLowerCase();
+            if (s === "sent") smsSent++;
+            else if (s === "failed") smsFailed++;
+            else stillQueued++;
+          }
         }
       }
 
       const parts: string[] = [];
-      if (smsSent > 0) parts.push(`Offer sent to ${smsSent} pupil${smsSent === 1 ? "" : "s"}`);
-      else if (created > 0) parts.push(`${created} offer${created === 1 ? "" : "s"} created`);
+      if (smsSent > 0) parts.push(`${smsSent} text${smsSent === 1 ? "" : "s"} sent`);
+      if (stillQueued > 0) parts.push(`${stillQueued} still queued`);
+      if (smsFailed > 0) parts.push(`${smsFailed} text${smsFailed === 1 ? "" : "s"} failed`);
+      if (smsSent === 0 && stillQueued === 0 && smsFailed === 0 && created > 0) {
+        parts.push(`${created} offer${created === 1 ? "" : "s"} created`);
+      }
       if (duplicates > 0) parts.push(`${duplicates} already offered`);
       if (noPhone > 0) parts.push(`${noPhone} no phone`);
-      if (smsFailed > 0) parts.push(`${smsFailed} text${smsFailed === 1 ? "" : "s"} failed`);
       if (failed > 0) parts.push(`${failed} failed`);
 
       const summary = parts.length ? parts.join(" · ") : "Nothing to send";
-      if (smsSent > 0 || created > 0) toast.success(summary);
+      if (smsSent > 0 || stillQueued > 0 || created > 0) toast.success(summary);
       else toast.error(summary);
 
       setSheetOpen(false);
