@@ -4,7 +4,7 @@ import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconDeviceMobile, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconCurrencyPound, IconDeviceMobile, IconInfoCircle, IconMapPin, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -1596,7 +1596,19 @@ function GapsPage() {
   const TEXT_SUBTLE = "#8A94A6";
 
   return (
-    <DSMTopSheet title="Fill your gaps">
+    <DSMTopSheet
+      title="Gap filler"
+      right={
+        <button
+          type="button"
+          aria-label="Gap filler information"
+          onClick={() => toast.info("Choose a free slot and offer it to pupils whose availability is the best match.")}
+          style={{ width: 40, height: 40, borderRadius: 20, border: 0, background: "rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+        >
+          <IconInfoCircle size={19} color="#FFFFFF" stroke={1.8} />
+        </button>
+      }
+    >
       <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", overflow: "hidden", paddingBottom: 80 }}>
       {/* Pulse animation for the freed-slot highlight */}
       <style>{`
@@ -1659,25 +1671,27 @@ function GapsPage() {
         </div>
       )}
 
-      <div
+      {freeSlots.length > 0 && <div
         style={{
-          margin: "12px 16px 18px",
-          padding: "14px 16px",
-          borderRadius: 8,
+          margin: "12px 16px 14px",
+          padding: "10px 12px",
+          borderRadius: 10,
           background: "#EAF3DE",
           display: "flex",
           alignItems: "center",
-          gap: 12,
+          gap: 10,
         }}
       >
         <div style={{ width: 32, height: 32, borderRadius: 8, background: "#639922", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <IconBolt size={17} color="#FFFFFF" stroke={2.2} />
+          <IconBolt size={16} color="#FFFFFF" stroke={2.2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#31511A" }}>Turn free time into earnings</div>
-          <div style={{ fontSize: 11, color: "#55723E", marginTop: 2 }}>Select a gap, then offer it to the best-matched pupils.</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#27500A" }}>
+            {freeSlots.filter((slot) => slot.date === todayIso()).length} gap{freeSlots.filter((slot) => slot.date === todayIso()).length === 1 ? "" : "s"} found today
+          </div>
+          <div style={{ fontSize: 11, color: "#3B6D11", marginTop: 1 }}>Based on your diary and working hours</div>
         </div>
-      </div>
+      </div>}
 
       {/* Section header */}
       <div
@@ -1748,7 +1762,7 @@ function GapsPage() {
           <div
             style={{
               display: "flex",
-              gap: 8,
+              gap: 6,
               overflowX: "auto",
               padding: "0 16px 14px",
               scrollbarWidth: "none",
@@ -1766,18 +1780,16 @@ function GapsPage() {
                   onClick={() => setSelectedDateIso(g.iso)}
                   style={{
                     flex: "0 0 auto",
-                    width: 44,
-                    background: isSelected ? "#1877D6" : "#FFFFFF",
+                    background: isSelected ? "#0B2341" : "#FFFFFF",
                     color: isSelected ? "#FFFFFF" : "#0B1F3A",
-                    border: "none",
-                    borderRadius: 12,
-                    padding: "8px 0 6px",
+                    border: isSelected ? "0.5px solid #0B2341" : "0.5px solid #E4E8EF",
+                    borderRadius: 20,
+                    padding: "5px 10px",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     gap: 2,
                     cursor: "pointer",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                     position: "relative",
                   }}
                 >
@@ -1786,28 +1798,16 @@ function GapsPage() {
                       fontSize: tokens.fontSize.xs,
                       fontWeight: tokens.fontWeight.medium,
                       letterSpacing: "0.04em",
-                      textTransform: "uppercase",
-                      color: isSelected ? "rgba(255,255,255,0.85)" : "#8A93A3",
+                      textTransform: "none",
+                      color: isSelected ? "#FFFFFF" : "#6B7686",
                     }}
                   >
                     {dow}
                   </span>
-                  <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.1 }}>
+                  <span style={{ fontSize: 11, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.1 }}>
                     {dom}
                   </span>
-                  <span
-                    style={{
-                      width: 5,
-                      height: 5,
-                      borderRadius: 999,
-                      marginTop: 2,
-                      background: hasSlots
-                        ? isSelected
-                          ? "#FFFFFF"
-                          : "#1877D6"
-                        : "transparent",
-                    }}
-                  />
+                  {hasSlots && <span style={{ fontSize: 9, color: isSelected ? "#FFFFFF" : "#8A93A3" }}>{g.slots.length}</span>}
                 </button>
               );
             })}
