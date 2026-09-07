@@ -268,7 +268,7 @@ function GapsPage() {
             .eq("instructor_id", uid)
             .is("deleted_at", null)
             .not("status", "in", "(inactive,archived,cancelled,deleted)"),
-          supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date").eq("instructor_id", uid),
+          supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date"),
         ]);
 
       // Lessons are essential; everything else degrades gracefully so one
@@ -293,10 +293,10 @@ function GapsPage() {
       let availData: Availability[] = [];
       if (pupilIds.length > 0) {
         const availabilityResult = await supabase
-          .from("pupil_availability")
+          .from("pupil_ready_to_learn_settings")
           .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in, preferred_duration_minutes")
           .in("pupil_id", pupilIds);
-        availData = optional<Availability>("pupil_availability", availabilityResult as never);
+        availData = optional<Availability>("pupil_ready_to_learn_settings", availabilityResult as never);
       }
 
       const lessons = lessonsResult.data ?? [];
