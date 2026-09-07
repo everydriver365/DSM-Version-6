@@ -663,24 +663,46 @@ function CalendarSyncPage() {
                         : "Calendar URL saved"}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setIcsInboundUrl("");
-                    await saveIcsUrl();
-                  }}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#CC2229",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
-                  Remove
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIcsInboundUrl(savedIcsInboundUrl);
+                      setIsEditingIcs(true);
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#1877D6",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setIcsInboundUrl("");
+                      setSavedIcsInboundUrl("");
+                      setIsEditingIcs(false);
+                      await saveIcsUrl("");
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#CC2229",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             )}
 
