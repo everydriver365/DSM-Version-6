@@ -135,8 +135,8 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     const spansOutOfDay = endDate > dateStr;
     busy.push({
       start: spansIntoDay ? 0 : hmToMin(startTime),
-      end: spansOutOfDay ? 1440 : hmToMin(endTime) + defaultBuffer,
-      bufferBefore: defaultBuffer,
+      end: spansOutOfDay ? 1440 : hmToMin(endTime),
+      bufferBefore: 0,
     });
   }
 
