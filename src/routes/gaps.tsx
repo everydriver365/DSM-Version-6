@@ -1596,8 +1596,8 @@ function GapsPage() {
   const TEXT_SUBTLE = "#8A94A6";
 
   return (
-    <DSMTopSheet title="Available Gaps">
-      <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden", paddingBottom: 80 }}>
+    <DSMTopSheet title="Fill your gaps">
+      <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", overflow: "hidden", paddingBottom: 80 }}>
       {/* Pulse animation for the freed-slot highlight */}
       <style>{`
         @keyframes gapsPrefilterPulse {
@@ -1659,7 +1659,25 @@ function GapsPage() {
         </div>
       )}
 
-      <div style={{ height: 20 }} />
+      <div
+        style={{
+          margin: "12px 16px 18px",
+          padding: "14px 16px",
+          borderRadius: 8,
+          background: "#EAF3DE",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <div style={{ width: 32, height: 32, borderRadius: 8, background: "#639922", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <IconBolt size={17} color="#FFFFFF" stroke={2.2} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#31511A" }}>Turn free time into earnings</div>
+          <div style={{ fontSize: 11, color: "#55723E", marginTop: 2 }}>Select a gap, then offer it to the best-matched pupils.</div>
+        </div>
+      </div>
 
       {/* Section header */}
       <div
@@ -1671,8 +1689,8 @@ function GapsPage() {
           marginBottom: 2,
         }}
       >
-        <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
-          Your free slots
+        <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: "#0B2341" }}>
+          Available gaps
         </div>
         {freeSlots.length > 0 && (
           <button
@@ -1713,7 +1731,7 @@ function GapsPage() {
       >
         {slotsLoading
           ? "Scanning diary…"
-          : `${freeSlots.length} free slot${freeSlots.length === 1 ? "" : "s"} across ${daysWithGaps} day${daysWithGaps === 1 ? "" : "s"}`}
+          : `${freeSlots.length} gap${freeSlots.length === 1 ? "" : "s"} across ${daysWithGaps} day${daysWithGaps === 1 ? "" : "s"} · ${potentialValue} potential`}
       </div>
 
       <div>
@@ -1923,12 +1941,13 @@ function GapsPage() {
                       className={isPrefilterMatch ? "gaps-prefilter-match" : undefined}
                       style={{
                         position: "relative",
-                        background: anySelected ? "#F0F7FF" : "#FFFFFF",
-                        borderRadius: tokens.radiusCard,
-                        border: anySelected ? "1.5px solid #1877D6" : "1px solid #DCEAF7",
-                        boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
-                        margin: "0 16px 18px",
-                        padding: "12px 16px",
+                        background: anySelected ? "#FFF8E8" : "#FFFFFF",
+                        borderRadius: 8,
+                        border: anySelected ? "1.5px solid #D4A853" : "1px solid #E4E8EF",
+                        borderLeft: "4px solid #D4A853",
+                        boxShadow: "0 2px 8px rgba(11,35,65,0.06)",
+                        margin: "0 16px 10px",
+                        padding: "12px 14px",
                       }}
                     >
                       {anySelected && (
@@ -2073,9 +2092,7 @@ function GapsPage() {
                                     whiteSpace: "nowrap",
                                   }}
                                 >
-                                  {hasMatches
-                                    ? `${preview.count} pupil${preview.count === 1 ? "" : "s"} may fit · ${fmtGap(slot.gapMinutes)} free`
-                                    : `${fmtGap(slot.gapMinutes)} free`}
+                                  {minToHm(hmToMin(slot.startTime))} – {minToHm(hmToMin(slot.endTime))}
                                 </div>
                                 <div
                                   style={{
@@ -2084,8 +2101,7 @@ function GapsPage() {
                                     marginTop: 1,
                                   }}
                                 >
-                                  {minToHm(hmToMin(slot.startTime))} –{" "}
-                                  {minToHm(hmToMin(slot.endTime))} · tap to fill
+                                  {fmtGap(slot.gapMinutes)} free{hasMatches ? ` · ${preview.count} pupil${preview.count === 1 ? "" : "s"} available` : ""}
                                 </div>
                               </div>
                               {anySelected ? (
@@ -2347,7 +2363,7 @@ function GapsPage() {
 
       {ranked !== null && (
         <BottomSheetV2
-          title={`${ranked.length} pupil${ranked.length === 1 ? "" : "s"} ranked for ${searchSlots.length} slot${searchSlots.length === 1 ? "" : "s"}`}
+          title="Offer this gap"
           subtitle={
             searchSlots.length === 1
               ? `${fmtDateLong(searchSlots[0].date)} at ${fmtTimeHm(searchSlots[0].time)} · ${searchSlots[0].duration} min`
@@ -2505,17 +2521,12 @@ function GapsPage() {
                           style={{
                             display: "flex",
                             alignItems: "center",
-                            gap: 12,
-                            padding: "14px 16px",
+                            gap: 10,
+                            padding: "12px 14px",
                             margin: "0 16px 8px",
                             borderRadius: 8,
-                            border: checked
-                              ? `0.5px solid #E2E6ED`
-                              : `0.5px solid #E2E6ED`,
-                            borderLeft: checked
-                              ? "2px solid #2C97DE"
-                              : `0.5px solid #E2E6ED`,
-                            background: checked ? "#EAF5FC" : "#FFFFFF",
+                            border: checked ? "1.5px solid #1877D6" : "1px solid #E4E8EF",
+                            background: checked ? "#F3F8FE" : "#FFFFFF",
                             textAlign: "left",
                             cursor: "pointer",
                             width: "calc(100% - 32px)",
@@ -2525,21 +2536,21 @@ function GapsPage() {
                           {checked ? (
                             <div
                               style={{
-                                width: 24,
-                                height: 24,
+                                width: 22,
+                                height: 22,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 flexShrink: 0,
                               }}
                             >
-                              <IconCheck size={20} color="#2C97DE" stroke={2.5} />
+                              <IconCheck size={18} color="#1877D6" stroke={2.5} />
                             </div>
                           ) : (
                             <div
                               style={{
-                                width: 24,
-                                height: 24,
+                                width: 22,
+                                height: 22,
                                 borderRadius: 999,
                                 border: "1.5px solid #D1D5DB",
                                 background: "#FFFFFF",
@@ -2550,12 +2561,12 @@ function GapsPage() {
 
                           <div
                             style={{
-                              width: 32,
-                              height: 32,
+                              width: 38,
+                              height: 38,
                               borderRadius: 999,
                               background: r.pupil.calendar_colour ?? "#6B7280",
                               color: tokens.white,
-                              fontSize: 12,
+                              fontSize: 13,
                               fontWeight: tokens.fontWeight.bold,
                               display: "flex",
                               alignItems: "center",
@@ -2570,8 +2581,8 @@ function GapsPage() {
                             <div
                               style={{
                                 fontSize: 14,
-                                fontWeight: tokens.fontWeight.bold,
-                                color: "#0B1F3A",
+                                fontWeight: tokens.fontWeight.semibold,
+                                color: "#0B2341",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
@@ -2595,12 +2606,12 @@ function GapsPage() {
 
                           <span
                             style={{
-                              background: "#E0F4FF",
-                              color: BLUE,
+                              background: r.score >= 70 ? "#EAF3DE" : "#FFF4D8",
+                              color: r.score >= 70 ? "#527D1D" : "#854F0B",
                               fontWeight: tokens.fontWeight.bold,
                               fontSize: tokens.fontSize.sm,
-                              padding: "2px 8px",
-                              borderRadius: 999,
+                              padding: "4px 7px",
+                              borderRadius: 6,
                               flexShrink: 0,
                             }}
                           >
@@ -2616,11 +2627,11 @@ function GapsPage() {
                   <div
                     style={{
                       background: "#FFFFFF",
-                      borderRadius: 14,
+                      borderRadius: 8,
                       border: "1px solid #E4E8EF",
                       padding: 16,
                       margin: "16px",
-                      boxShadow: "0 4px 0 #E4E4E8",
+                      boxShadow: "0 2px 8px rgba(11,35,65,0.08)",
                     }}
                   >
                     <div
@@ -2640,7 +2651,7 @@ function GapsPage() {
                             marginBottom: 4,
                           }}
                         >
-                          Send to:
+                          Selected pupils
                         </div>
                         <div
                           style={{
@@ -2747,7 +2758,7 @@ function GapsPage() {
                         }}
                       >
                         <IconDeviceMobile size={18} color="#FFFFFF" />
-                        {sendingText ? "Sending…" : "Send text"}
+                        {sendingText ? "Sending…" : "Send SMS"}
                       </button>
                       <button
                         type="button"
@@ -2771,7 +2782,7 @@ function GapsPage() {
                         }}
                       >
                         <IconMessage size={18} color="#FFFFFF" />
-                        {sendingInApp ? "Sending…" : "In-app"}
+                        {sendingInApp ? "Sending…" : "Send in app"}
                       </button>
                     </div>
                   </div>
