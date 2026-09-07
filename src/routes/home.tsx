@@ -2918,6 +2918,7 @@ function HomePage() {
   }, []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
   const tomorrowStart = useMemo(() => addDays(todayStart, 1), [todayStart]);
+  const in14DaysStart = useMemo(() => addDays(todayStart, 14), [todayStart]);
   const dayAfter = useMemo(() => addDays(todayStart, 2), [todayStart]);
   const weekStart = useMemo(() => startOfWeek(now), [now]);
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
