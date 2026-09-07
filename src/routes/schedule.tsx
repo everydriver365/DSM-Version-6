@@ -748,9 +748,9 @@ function SchedulePage() {
     title: string | null;
   }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
-
   // "add anything to my day" flow.
   const [personalEvents, setPersonalEvents] = useState<PersonalEvent[]>([]);
+
   const [personalReloadKey, setPersonalReloadKey] = useState(0);
   const [personalSheetOpen, setPersonalSheetOpen] = useState(false);
   const [editingPersonal, setEditingPersonal] = useState<PersonalEvent | null>(null);
