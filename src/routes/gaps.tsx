@@ -25,6 +25,10 @@ export const Route = createFileRoute("/gaps")({
         name: "description",
         content: "Find the right pupil for a free lesson slot in seconds.",
       },
+      { property: "og:title", content: "Fill My Slots — EveryDriver" },
+      { property: "og:description", content: "Find the right pupil for a free lesson slot in seconds." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: GapsPage,
@@ -33,7 +37,7 @@ export const Route = createFileRoute("/gaps")({
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const FUTURE_DAYS = 7;
+const RANGE_DAYS = 7;
 const MIN_GAP = 60;
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -100,6 +104,7 @@ type Pupil = {
   address: string | null;
   postcode: string | null;
   calendar_colour: string | null;
+  buffer_after_minutes: number | null;
 };
 
 type Availability = {
@@ -166,13 +171,16 @@ function GapsPage() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [instructorName, setInstructorName] = useState("");
+  const [hourlyRate, setHourlyRate] = useState<number | null>(null);
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
-    load();
-  }, []);
+    void load();
+  }, [minGapMinutes]);
 
   async function load() {
     setLoading(true);
+    setLoadError("");
     try {
       const {
         data: { user },
@@ -183,13 +191,18 @@ function GapsPage() {
       }
       const uid = user.id;
 
-      const { data: instr } = await supabase
+      const instructorResult = await supabase
         .from("instructors")
-        .select("name, working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after")
+        .select("name, working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after, hourly_rate")
         .eq("id", uid)
         .single();
+      if (instructorResult.error || !instructorResult.data) {
+        throw new Error(instructorResult.error?.message || "Your working hours could not be loaded.");
+      }
+      const instr = instructorResult.data;
 
       setInstructorName(instr?.name ?? "");
+      setHourlyRate(instr.hourly_rate == null ? null : Number(instr.hourly_rate));
 
       const workStart = String(instr?.working_hours_start ?? "09:00").slice(0, 5);
       const workEnd = String(instr?.working_hours_end ?? "18:00").slice(0, 5);
@@ -198,24 +211,22 @@ function GapsPage() {
       const bufferAfter = instr?.lesson_buffer_after ?? 0;
 
       const today = todayIso();
-      const endDate = addDays(today, FUTURE_DAYS);
+      const endDate = addDays(today, RANGE_DAYS - 1);
 
-      const [{ data: lessons }, { data: icsData }, { data: recurringData }, { data: timeOffData }, { data: pupilData }, { data: availData }, { data: unavailData }] =
-        await Promise.all([
+      const [lessonsResult, icsResult, recurringResult, timeOffResult, pupilsResult, unavailabilityResult] = await Promise.all([
           supabase
             .from("lessons")
-            .select("lesson_date, lesson_time, duration_minutes, status")
+            .select("lesson_date, lesson_time, duration_minutes, status, pupil_id")
             .eq("instructor_id", uid)
             .gte("lesson_date", today)
-            .lte("lesson_date", endDate)
-            .neq("status", "cancelled"),
+            .lte("lesson_date", endDate),
           supabase
             .from("calendar_blocks")
-            .select("start_datetime, end_datetime, title")
+            .select("start_datetime, end_datetime, title, is_all_day, blocks_availability")
             .eq("instructor_id", uid)
             .eq("source", "ics_inbound")
-            .gte("end_datetime", today)
-            .lte("start_datetime", endDate + "T23:59:59"),
+            .gt("end_datetime", `${today}T00:00:00`)
+            .lt("start_datetime", `${addDays(endDate, 1)}T00:00:00`),
           supabase.from("instructor_recurring_blocks").select("day_of_week, start_time, end_time, is_active").eq("instructor_id", uid),
           supabase
             .from("instructor_time_off")
@@ -225,28 +236,42 @@ function GapsPage() {
             .lte("start_date", endDate),
           supabase
             .from("pupils")
-            .select("id, name, first_name, last_name, phone, address, postcode, calendar_colour")
+            .select("id, name, first_name, last_name, phone, address, postcode, calendar_colour, buffer_after_minutes")
             .eq("instructor_id", uid)
             .eq("status", "active"),
-          supabase
-            .from("pupil_availability")
-            .select(
-              "pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in, preferred_duration_minutes",
-            )
-            .in(
-              "pupil_id",
-              (await supabase.from("pupils").select("id").eq("instructor_id", uid).eq("status", "active")).data?.map((p) => p.id) ?? [],
-            ),
           supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date").eq("instructor_id", uid),
         ]);
 
-      setPupils((pupilData as Pupil[]) ?? []);
-      setAvailability((availData as Availability[]) ?? []);
+      const requiredResults = [lessonsResult, icsResult, recurringResult, timeOffResult, pupilsResult, unavailabilityResult];
+      const failedResult = requiredResults.find((result) => result.error);
+      if (failedResult?.error) throw new Error(failedResult.error.message);
+
+      const pupilData = (pupilsResult.data as Pupil[]) ?? [];
+      const pupilIds = pupilData.map((pupil) => pupil.id);
+      let availData: Availability[] = [];
+      if (pupilIds.length > 0) {
+        const availabilityResult = await supabase
+          .from("pupil_availability")
+          .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in, preferred_duration_minutes")
+          .in("pupil_id", pupilIds);
+        if (availabilityResult.error) throw new Error(availabilityResult.error.message);
+        availData = (availabilityResult.data as Availability[]) ?? [];
+      }
+
+      const lessons = lessonsResult.data ?? [];
+      const icsData = icsResult.data ?? [];
+      const recurringData = recurringResult.data ?? [];
+      const timeOffData = timeOffResult.data ?? [];
+      const unavailData = unavailabilityResult.data ?? [];
+
+      setPupils(pupilData);
+      setAvailability(availData);
       setUnavailability((unavailData as Unavailability[]) ?? []);
+      const pupilBuffers = new Map(pupilData.map((pupil) => [pupil.id, pupil.buffer_after_minutes]));
 
       const computed: Gap[] = [];
 
-      for (let i = 0; i <= FUTURE_DAYS; i++) {
+      for (let i = 0; i < RANGE_DAYS; i++) {
         const dateStr = addDays(today, i);
         const date = new Date(dateStr + "T12:00:00");
         const dayName = DAY_NAMES[date.getDay()];
@@ -270,7 +295,7 @@ function GapsPage() {
             lesson_time: l.lesson_time || "",
             duration_minutes: l.duration_minutes ?? 60,
             status: l.status,
-            bufferAfterMinutes: bufferAfter,
+            bufferAfterMinutes: l.pupil_id ? pupilBuffers.get(l.pupil_id) ?? bufferAfter : bufferAfter,
           }));
 
         const dayIcsBlocks = (icsData ?? [])
@@ -282,6 +307,8 @@ function GapsPage() {
           .map((b) => ({
             start_datetime: b.start_datetime,
             end_datetime: b.end_datetime,
+             is_all_day: b.is_all_day,
+             blocks_availability: b.blocks_availability,
           }));
 
         const dayTimeOff = (timeOffData ?? [])
@@ -327,6 +354,10 @@ function GapsPage() {
 
       setGaps(computed);
       setSelectedGapIdx(0);
+    } catch (error) {
+      console.error("[gaps] Failed to load diary", error);
+      setGaps([]);
+      setLoadError(error instanceof Error ? error.message : "Your diary could not be loaded.");
     } finally {
       setLoading(false);
     }
@@ -538,8 +569,18 @@ function GapsPage() {
               marginBottom: 16,
             }}
           >
-            No gaps found in the next {FUTURE_DAYS} days
+            {loadError ? "We couldn't load your diary. Please try again." : `No gaps found in the next ${RANGE_DAYS} days`}
           </div>
+        )}
+
+        {loadError && (
+          <button
+            type="button"
+            onClick={() => void load()}
+            style={{ width: "100%", marginBottom: 16, border: "none", borderRadius: 8, padding: "11px 16px", background: "#1877D6", color: "#fff", fontFamily: "inherit", fontWeight: 600, cursor: "pointer" }}
+          >
+            Try again
+          </button>
         )}
 
         {/* Slot pills */}
@@ -608,10 +649,12 @@ function GapsPage() {
                     : `${selectedGap.durationMins}m free`}
                 </span>
                 <span>·</span>
-                <span style={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <IconCurrencyPound size={12} />
-                  {Math.round((selectedGap.durationMins / 60) * 40)} potential
-                </span>
+                {hourlyRate != null && hourlyRate > 0 && (
+                  <span style={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <IconCurrencyPound size={12} />
+                    {Math.round((selectedGap.durationMins / 60) * hourlyRate)} potential
+                  </span>
+                )}
               </div>
             </div>
 
