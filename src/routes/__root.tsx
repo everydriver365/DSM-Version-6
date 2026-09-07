@@ -298,6 +298,8 @@ const ACTION_TILES: MenuTile[] = [
   { label: "Nearest", icon: IconMapSearch, to: "/nearest", bg: "#18A999" },
   { label: "Take Payment", icon: IconQrcode, to: "/take-payment", bg: "#16A34A" },
   { label: "Support", icon: IconHeadset, to: "/help", bg: "#536579" },
+  { label: "Settings", icon: IconSettings, to: "/settings", bg: "#536579" },
+  { label: "Calendar", icon: IconRefresh, to: "/calendarsync", bg: "#18A999" },
 ];
 
 function GlobalMenu() {
