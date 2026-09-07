@@ -656,6 +656,63 @@ function GlobalMenu() {
             </div>
             <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
           </button>
+          <button
+            type="button"
+            onClick={() => go("/settings")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "12px 16px",
+              background: "none",
+              border: "none",
+              borderBottom: "0.5px solid #F4F6F8",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <IconSettings size={18} color="#536579" />
+            <span style={{ fontSize: 13, color: "#0B2341" }}>Settings</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => go("/calendarsync")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "12px 16px",
+              background: "none",
+              border: "none",
+              borderBottom: "0.5px solid #F4F6F8",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <IconRefresh size={18} color="#536579" />
+            <span style={{ fontSize: 13, color: "#0B2341" }}>Calendar sync</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => go("/help")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "12px 16px",
+              background: "none",
+              border: "none",
+              borderBottom: "0.5px solid #F4F6F8",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <IconHelpCircle size={18} color="#536579" />
+            <span style={{ fontSize: 13, color: "#0B2341" }}>Help</span>
+          </button>
           {(!subscriptionTier || subscriptionTier === 'free') && (
             <button
               type="button"
@@ -680,70 +737,6 @@ function GlobalMenu() {
               ⭐ Upgrade to PRO
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => go("/settings")}
-            style={{
-              width: "100%",
-              textAlign: "left",
-              padding: "14px 16px",
-              background: "none",
-              border: "none",
-              borderBottom: "1px solid #E4E8EF",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              cursor: "pointer",
-            }}
-          >
-            <span
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                background: "#EAF5FC",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconSettings size={18} stroke={1.8} color="#2C97DE" />
-            </span>
-            <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Settings</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => go("/help")}
-            style={{
-              width: "100%",
-              textAlign: "left",
-              padding: "14px 16px",
-              background: "none",
-              border: "none",
-              borderBottom: "1px solid #E4E8EF",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              cursor: "pointer",
-            }}
-          >
-            <span
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
-                background: "#EAF5FC",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconHelp size={18} stroke={1.8} color="#2C97DE" />
-            </span>
-            <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Help & support</span>
-          </button>
           <button
             type="button"
             onClick={signOut}
