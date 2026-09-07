@@ -268,7 +268,7 @@ function GapsPage() {
             .eq("instructor_id", uid)
             .is("deleted_at", null)
             .not("status", "in", "(inactive,archived,cancelled,deleted)"),
-          supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date").eq("instructor_id", uid),
+          supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date"),
         ]);
 
       // Lessons are essential; everything else degrades gracefully so one
