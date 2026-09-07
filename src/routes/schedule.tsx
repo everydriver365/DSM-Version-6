@@ -720,8 +720,11 @@ function SchedulePage() {
   const navigate = useNavigate();
   const unreadCount = useUnreadCount({ skipBadge: true });
   const today = useMemo(() => startOfDay(new Date()), []);
+  const todayISO = ymdLocal(today);
+  const in14DaysISO = ymdLocal(addDays(today, 14));
   const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
+
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
   const [lessonsReloadKey, setLessonsReloadKey] = useState(0);
