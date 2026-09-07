@@ -420,7 +420,8 @@ function GapsPage() {
     } catch (error) {
       console.error("[gaps] Failed to load diary", error);
       setGaps([]);
-      setLoadError(error instanceof Error ? error.message : "Your diary could not be loaded.");
+      const detail = error instanceof Error ? error.message.trim() : String(error ?? "").trim();
+      setLoadError(detail || "Your diary could not be loaded.");
     } finally {
       setLoading(false);
     }
