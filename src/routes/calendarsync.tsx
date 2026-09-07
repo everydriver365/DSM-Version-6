@@ -68,6 +68,8 @@ function CalendarSyncPage() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [icsInboundUrl, setIcsInboundUrl] = useState("");
+  const [savedIcsInboundUrl, setSavedIcsInboundUrl] = useState("");
+  const [isEditingIcs, setIsEditingIcs] = useState(false);
   const [icsFeedStatus, setIcsFeedStatus] = useState("");
   const [icsLastFetched, setIcsLastFetched] = useState("");
 
@@ -105,6 +107,7 @@ function CalendarSyncPage() {
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
           setIcsInboundUrl(row?.ics_feed_url || "");
+          setSavedIcsInboundUrl(row?.ics_feed_url || "");
           setIcsFeedStatus(row?.ics_feed_status || "");
           setIcsLastFetched(row?.ics_last_fetched_at || "");
         }
@@ -190,6 +193,7 @@ function CalendarSyncPage() {
           .single();
         if (data) {
           setIcsInboundUrl(data.ics_feed_url || "");
+          setSavedIcsInboundUrl(data.ics_feed_url || "");
           setIcsFeedStatus(data.ics_feed_status || "");
           setIcsLastFetched(data.ics_last_fetched_at || "");
         }
@@ -352,18 +356,19 @@ function CalendarSyncPage() {
     }
   }
 
-  async function saveIcsUrl() {
+  async function saveIcsUrl(overrideUrl?: string) {
+    const value = (overrideUrl ?? icsInboundUrl).trim();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     await supabase
       .from("instructors")
       .update({
-        ics_feed_url: icsInboundUrl.trim() || null,
+        ics_feed_url: value || null,
       })
       .eq("id", user.id);
 
-    if (icsInboundUrl.trim()) {
+    if (value) {
       await fetch(
         `${SUPABASE_URL}/functions/v1/sync-ics-feed?instructor_id=${user.id}`,
         {
@@ -560,7 +565,7 @@ function CalendarSyncPage() {
               Paste your Google or Apple private calendar URL below. EDP will import your personal events so gaps are never offered when you're busy.
             </p>
 
-            {!icsInboundUrl.trim() ? (
+            {(!savedIcsInboundUrl.trim() || isEditingIcs) ? (
               <>
                 <label
                   style={{
@@ -593,7 +598,11 @@ function CalendarSyncPage() {
 
                 <button
                   type="button"
-                  onClick={saveIcsUrl}
+                  onClick={async () => {
+                    await saveIcsUrl();
+                    setSavedIcsInboundUrl(icsInboundUrl.trim());
+                    setIsEditingIcs(false);
+                  }}
                   style={{
                     marginTop: 10,
                     background: "#18A999",
@@ -654,24 +663,46 @@ function CalendarSyncPage() {
                         : "Calendar URL saved"}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setIcsInboundUrl("");
-                    await saveIcsUrl();
-                  }}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#CC2229",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
-                  Remove
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIcsInboundUrl(savedIcsInboundUrl);
+                      setIsEditingIcs(true);
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#1877D6",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setIcsInboundUrl("");
+                      setSavedIcsInboundUrl("");
+                      setIsEditingIcs(false);
+                      await saveIcsUrl("");
+                    }}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#CC2229",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             )}
 
