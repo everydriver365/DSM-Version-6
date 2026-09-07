@@ -107,6 +107,7 @@ function CalendarSyncPage() {
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
           setIcsInboundUrl(row?.ics_feed_url || "");
+          setSavedIcsInboundUrl(row?.ics_feed_url || "");
           setIcsFeedStatus(row?.ics_feed_status || "");
           setIcsLastFetched(row?.ics_last_fetched_at || "");
         }
