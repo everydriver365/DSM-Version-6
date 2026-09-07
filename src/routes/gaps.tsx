@@ -191,11 +191,22 @@ function GapsPage() {
       }
       const uid = user.id;
 
-      const instructorResult = await supabase
+      const INSTRUCTOR_COLS =
+        "name, working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after, hourly_rate";
+      let instructorResult = await supabase
         .from("instructors")
-        .select("name, working_hours_start, working_hours_end, working_days, per_day_hours, lesson_buffer_after, hourly_rate")
+        .select(INSTRUCTOR_COLS)
         .eq("id", uid)
-        .single();
+        .maybeSingle();
+      if (!instructorResult.data) {
+        // Some accounts store the auth user under user_id rather than id.
+        const byUserId = await supabase
+          .from("instructors")
+          .select(INSTRUCTOR_COLS)
+          .eq("user_id", uid)
+          .maybeSingle();
+        if (byUserId.data) instructorResult = byUserId;
+      }
       if (instructorResult.error || !instructorResult.data) {
         throw new Error(instructorResult.error?.message || "Your working hours could not be loaded.");
       }
@@ -242,11 +253,24 @@ function GapsPage() {
           supabase.from("pupil_unavailability").select("pupil_id, start_date, end_date").eq("instructor_id", uid),
         ]);
 
-      const requiredResults = [lessonsResult, icsResult, recurringResult, timeOffResult, pupilsResult, unavailabilityResult];
-      const failedResult = requiredResults.find((result) => result.error);
-      if (failedResult?.error) throw new Error(failedResult.error.message);
+      // Lessons are essential; everything else degrades gracefully so one
+      // unreadable table can never blank the whole page.
+      if (lessonsResult.error) throw new Error(lessonsResult.error.message);
 
-      const pupilData = (pupilsResult.data as Pupil[]) ?? [];
+      const skipped: string[] = [];
+      const optional = <T,>(
+        label: string,
+        result: { data: T[] | null; error: { message: string } | null },
+      ): T[] => {
+        if (result.error) {
+          console.warn(`[gaps] skipped ${label}:`, result.error.message);
+          skipped.push(label);
+          return [];
+        }
+        return result.data ?? [];
+      };
+
+      const pupilData = optional<Pupil>("pupils", pupilsResult as never);
       const pupilIds = pupilData.map((pupil) => pupil.id);
       let availData: Availability[] = [];
       if (pupilIds.length > 0) {
@@ -254,19 +278,40 @@ function GapsPage() {
           .from("pupil_availability")
           .select("pupil_id, available_days, available_from, available_until, min_notice_hours, short_notice_opt_in, preferred_duration_minutes")
           .in("pupil_id", pupilIds);
-        if (availabilityResult.error) throw new Error(availabilityResult.error.message);
-        availData = (availabilityResult.data as Availability[]) ?? [];
+        availData = optional<Availability>("pupil_availability", availabilityResult as never);
       }
 
       const lessons = lessonsResult.data ?? [];
-      const icsData = icsResult.data ?? [];
-      const recurringData = recurringResult.data ?? [];
-      const timeOffData = timeOffResult.data ?? [];
-      const unavailData = unavailabilityResult.data ?? [];
+      const icsData = optional<{
+        start_datetime: string;
+        end_datetime: string;
+        title?: string | null;
+        is_all_day?: boolean | null;
+        blocks_availability?: boolean | null;
+      }>("calendar_blocks", icsResult as never);
+      const recurringData = optional<{
+        day_of_week: string;
+        start_time: string;
+        end_time: string;
+        is_active?: boolean | null;
+      }>("recurring_blocks", recurringResult as never);
+      const timeOffData = optional<{
+        start_date: string;
+        end_date: string;
+        start_time: string | null;
+        end_time: string | null;
+        all_day: boolean | null;
+      }>("time_off", timeOffResult as never);
+      const unavailData = optional<Unavailability>("pupil_unavailability", unavailabilityResult as never);
+
+      console.info(
+        `[gaps] loaded lessons=${lessons.length} calendar=${icsData.length} recurring=${recurringData.length} timeOff=${timeOffData.length} pupils=${pupilData.length} availability=${availData.length}` +
+          (skipped.length ? ` | unavailable: ${skipped.join(", ")}` : ""),
+      );
 
       setPupils(pupilData);
       setAvailability(availData);
-      setUnavailability((unavailData as Unavailability[]) ?? []);
+      setUnavailability(unavailData);
       const pupilBuffers = new Map(pupilData.map((pupil) => [pupil.id, pupil.buffer_after_minutes]));
 
       const computed: Gap[] = [];
