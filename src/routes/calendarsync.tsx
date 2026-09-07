@@ -107,7 +107,7 @@ function CalendarSyncPage() {
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
           setIcsInboundUrl(row?.ics_feed_url || "");
-          setSavedIcsInboundUrl(row?.ics_feed_url || "");
+          setSavedIcsUrl(row?.ics_feed_url || "");
           setIcsFeedStatus(row?.ics_feed_status || "");
           setIcsLastFetched(row?.ics_last_fetched_at || "");
         }
@@ -193,7 +193,7 @@ function CalendarSyncPage() {
           .single();
         if (data) {
           setIcsInboundUrl(data.ics_feed_url || "");
-          setSavedIcsInboundUrl(data.ics_feed_url || "");
+          setSavedIcsUrl(data.ics_feed_url || "");
           setIcsFeedStatus(data.ics_feed_status || "");
           setIcsLastFetched(data.ics_last_fetched_at || "");
         }
@@ -357,18 +357,21 @@ function CalendarSyncPage() {
   }
 
   async function saveIcsUrl(overrideUrl?: string) {
-    const value = (overrideUrl ?? icsInboundUrl).trim();
+    const url = overrideUrl !== undefined ? overrideUrl.trim() : icsInboundUrl.trim();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     await supabase
       .from("instructors")
       .update({
-        ics_feed_url: value || null,
+        ics_feed_url: url || null,
       })
       .eq("id", user.id);
 
-    if (value) {
+    setSavedIcsUrl(url);
+    setIcsInboundUrl(url);
+
+    if (url) {
       await fetch(
         `${SUPABASE_URL}/functions/v1/sync-ics-feed?instructor_id=${user.id}`,
         {
