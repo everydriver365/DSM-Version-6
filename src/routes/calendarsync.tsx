@@ -68,7 +68,7 @@ function CalendarSyncPage() {
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [icsInboundUrl, setIcsInboundUrl] = useState("");
-  const [savedIcsInboundUrl, setSavedIcsInboundUrl] = useState("");
+  const [savedIcsUrl, setSavedIcsUrl] = useState("");
   const [isEditingIcs, setIsEditingIcs] = useState(false);
   const [icsFeedStatus, setIcsFeedStatus] = useState("");
   const [icsLastFetched, setIcsLastFetched] = useState("");
