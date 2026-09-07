@@ -7263,13 +7263,18 @@ function HomePage() {
                       const gs = r.start;
                       const ge = new Date(gs.getTime() + r.mins * 60000);
                       const fmtT = (d: Date) => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-                      const hourlyRate = 40;
-                      const potential = Math.round((r.mins / 60) * hourlyRate);
                       const gapDate = `${gs.getFullYear()}-${String(gs.getMonth() + 1).padStart(2, '0')}-${String(gs.getDate()).padStart(2, '0')}`;
                       const dayName = DAY_NAMES[gs.getDay()];
-                      const preview = previewMatchForGap({ date: gapDate, dayName, durationMin: r.mins });
+                      const gapStartMin = gs.getHours() * 60 + gs.getMinutes();
+                      const preview = previewMatchForGap({ date: gapDate, dayName, startMin: gapStartMin, durationMin: r.mins });
                       const gapStartTime = fmtT(gs);
-                      const durLabel = formatMins(r.mins);
+                      const durLabel = (() => {
+                        const h = Math.floor(r.mins / 60);
+                        const m = r.mins % 60;
+                        if (h > 0 && m > 0) return `${h}hr ${m}min`;
+                        if (h > 0) return `${h}hr`;
+                        return `${m}min`;
+                      })();
                       return (
                         <div key={`gap-${idx}`} style={{ marginBottom: 8 }}>
                           <div
