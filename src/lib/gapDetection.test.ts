@@ -53,8 +53,8 @@ describe("computeDayGaps", () => {
         dayStart: "10:30",
         dayEnd: "16:00",
         calendarBlocks: [{
-          start_datetime: "2026-09-08T08:00:00+01:00",
-          end_datetime: "2026-09-08T11:00:00+01:00",
+          start_datetime: "2026-09-08T08:00:00",
+          end_datetime: "2026-09-08T11:00:00",
         }],
       }),
     ).toEqual([{ startMins: 660, endMins: 960, gapMins: 300 }]);
@@ -65,8 +65,8 @@ describe("computeDayGaps", () => {
       computeDayGaps({
         ...base,
         calendarBlocks: [{
-          start_datetime: "2026-09-08T00:00:00+01:00",
-          end_datetime: "2026-09-09T00:00:00+01:00",
+          start_datetime: "2026-09-08T00:00:00",
+          end_datetime: "2026-09-09T00:00:00",
           is_all_day: true,
         }],
       }),
@@ -78,8 +78,8 @@ describe("computeDayGaps", () => {
       computeDayGaps({
         ...base,
         calendarBlocks: [{
-          start_datetime: "2026-09-08T12:00:00+01:00",
-          end_datetime: "2026-09-08T13:00:00+01:00",
+          start_datetime: "2026-09-08T12:00:00",
+          end_datetime: "2026-09-08T13:00:00",
           blocks_availability: false,
         }],
       }),
