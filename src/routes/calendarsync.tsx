@@ -193,6 +193,7 @@ function CalendarSyncPage() {
           .single();
         if (data) {
           setIcsInboundUrl(data.ics_feed_url || "");
+          setSavedIcsInboundUrl(data.ics_feed_url || "");
           setIcsFeedStatus(data.ics_feed_status || "");
           setIcsLastFetched(data.ics_last_fetched_at || "");
         }
