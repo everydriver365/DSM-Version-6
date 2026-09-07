@@ -570,7 +570,7 @@ function GapsPage() {
         const startIso = todayIso();
         const endIso = addDaysIso(today, GAP_FILLER_FUTURE_DAYS);
         console.log("[gaps] today ISO:", startIso, "date range:", startIso, "→", endIso);
-        console.log("[gaps] icsBlocksLocal count:", icsBlocksLocal.length, JSON.stringify(icsBlocksLocal.slice(0,3)));
+        
         const { data: { session: dbgSession } } = await supabase.auth.getSession();
         console.log("[gaps] auth session user:", dbgSession?.user?.id);
         const [lessonsRes, instrRes] = await Promise.all([
