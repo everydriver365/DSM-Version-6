@@ -1,63 +1,99 @@
-# Availability, Buffer & Gap Filler — Forensic Audit
+# Google Calendar & Availability — Architecture Plan
 
-No code, database or settings were changed. This is findings plus a suggested fix order for you to approve.
+Audit done, nothing changed yet. Both bugs you described are confirmed with an exact cause.
 
-## 1. How availability is worked out today
+## 1. Current architecture
 
 ```text
-Instructor hours (instructors.working_hours_start/end, working_days, per_day_hours)
-  + Lessons (lessons, minus deleted/cancelled)
-  + Imported calendar (calendar_blocks: ics_inbound + external_calendar)
-  + Recurring blocks (instructor_recurring_blocks)
-  + Time off (instructor_time_off)
-  + Flat buffer (instructors.lesson_buffer_after, per-pupil pupils.buffer_after_minutes)
-        -> src/lib/gapDetection.ts computeDayGaps()  = FREE WINDOWS
-        -> src/lib/pupilMatching.ts previewMatchForGap() = pupil shortlist
-        -> src/routes/gaps.tsx -> gap_filler_offers -> sms_queue -> send-sms
+Google OAuth  -> google-calendar-auth / google-calendar-callback
+                 tokens saved on the instructors row (google_access_token etc.)
+                 calendar id hard-set to "primary"
+
+Google -> ED   sync-google-calendar (polling only, no push/webhooks)
+                 pulls -60 to +180 days, every event, every time
+                 DELETES all external_calendar rows, re-INSERTS them
+                 -> calendar_blocks (no Google event id stored)
+
+ED -> Google   push-lesson-to-google
+                 create/update via lessons.google_event_id  (mapping exists)
+                 delete via sync-google-calendar action="delete"
+
+Availability   calendar_blocks + lessons + blocks + time off -> computeDayGaps()
 ```
 
-Screens using it: `src/routes/gaps.tsx`, `src/routes/schedule.tsx`, `src/routes/home.tsx`.
+There are **no Google webhooks at all**, no sync tokens, no channels. Sync is triggered from the app: on open (15-minute throttle), on Schedule/Home load, and from the Sync now button.
 
-## 2. What is genuinely working
+## 2. Exact duplicate-event cause
 
-- One shared free-time calculator; Gap Filler and Schedule feed it the same real data.
-- Lessons, imported calendar events (including Google), recurring blocks, full and partial time off all block time.
-- Travel buffer is reserved both before and after lessons and imported events.
-- Full-day imported events and full-day time off clear the day.
-- Dates use local clock with a midday anchor, so BST/GMT day boundaries hold.
-- Pupil holidays (`pupil_unavailability`) are respected; day, window, minimum duration and notice period are all enforced.
-- Gap Filler counts SMS results only from the message rows it created itself.
+Three faults compounding:
 
-## 3. Confirmed problems, ranked
+1. **The import pulls back our own lessons.** When EveryDriver pushes a lesson to Google, that event lives in the same calendar. The importer takes every event in the window and never checks it against `lessons.google_event_id`, so each lesson returns as an "external busy" record.
+2. **The only defence is a display trick.** `src/lib/calendarDedupe.ts` hides an imported event if it starts within 5 minutes of a lesson. The row still exists in the database and still marks that time as busy for Gap Filler.
+3. **In summer that trick fails**, because the pushed event is an hour out (see below) — 60 minutes apart, 5-minute tolerance. So the lesson appears twice.
 
-1. **Travel time is a fixed number of minutes, never a real journey.** No postcode, distance or drive-time data reaches the calculator (`gapDetection.ts` has no location fields at all). Drive-time lookup exists (`src/lib/lesson-drive-time.*`) but is only used for the next-lesson ETA card on Home. So a gap between two pupils 30 minutes apart is offered as fully usable. Your scenario 21 (09:00 A, 11:00 B, 15 min there, 10 min on) is currently reported VALID; with real travel it is INVALID.
-2. **No double-booking protection anywhere.** Creating a lesson (`lessons.new.tsx`, `courses.$id.tsx`, `messages.$pupilId.tsx`) does no overlap check, and the database has no unique or exclusion constraint on `lessons`. Two people accepting the same gap at the same moment both succeed. Gap Filler also never checks whether the matched pupil already has a lesson at that time.
-3. **Home disagrees with Gap Filler and Schedule.** Home's free-slot and free-minutes calculations pass empty recurring blocks and empty time off, so Home can advertise a slot that is actually blocked. Gap Filler also ignores your saved minimum-gap preference and hard-codes 60 minutes, while Home and Schedule honour the setting.
-4. **Availability is one window per day, per person.** Instructors get a single start/end per day (no split shifts), and the lunch break in Availability Settings is not saved at all — it is on-screen only. Pupils likewise have one from/until across all their chosen days, so "Monday 09:00–10:00 and 14:00–16:00" cannot be expressed. Pupil holidays are whole days only.
-5. **"No preference" is inferred, not chosen, and candidates are not ranked.** A pupil shows as "No preference" purely because they have no availability record. Ranking is alphabetical within status; postcode is loaded but unused, so nearest pupil is never favoured.
+Separately, `calendar_blocks` has no column holding the Google event id, so nothing can be matched or updated by key; the importer wipes and re-inserts everything, which also loses the assigned colours and churns rows for 1,600 instructors. A past migration (`db/064`) refers to a unique constraint `calendar_blocks_external_unique` that no repo migration creates.
 
-Also found, smaller: `schedule.tsx` derives "today" from a UTC date string in one place, which can be a day out near midnight in summer; recurring blocks and time off reserve travel time before but not after them, unlike lessons; a duplicate offer is only blocked for the exact same date and time.
+## 3. Exact timezone cause
 
-## 4. Answers to your verdict questions
+`supabase/functions/push-lesson-to-google/index.ts` lines 72–73:
 
-- Availability engine reliable: **PARTIALLY** — solid on diary conflicts, blind to geography and to concurrent bookings.
-- Gap Filler producing genuinely usable gaps: **PARTIALLY** — time-correct, travel-naive.
-- Pupil availability correctly intersected with instructor availability: **YES** for the single-window model it supports.
-- Travel and buffers correct: **PARTIALLY** — fixed minutes applied consistently, never distance-based.
-- Google Calendar affecting availability: **YES** — `calendar_blocks` rows with source `external_calendar` are treated as busy with buffer either side, unless marked as not blocking availability.
+```text
+new Date("2026-07-01T10:00")   -> read as UTC on the server
+.toISOString()                 -> "2026-07-01T10:00:00Z"
+sent as dateTime + timeZone: "Europe/London"
+```
 
-## 5. Schema warning
+When a time already carries a `Z`, Google ignores the timeZone field. So a 10:00 lesson in British Summer Time lands in Google at 11:00. In winter it looks fine, which is why it seems intermittent. Incoming events are stored correctly (Google supplies the offset), except all-day events, which are written without one.
 
-`pupil_ready_to_learn_settings`, `pupil_unavailability`, `gap_filler_offers`, `instructor_recurring_blocks`, `instructor_time_off` and the instructor working-hours/buffer columns have **no migration in the repo** — they were created directly in Supabase. `db/002_create_lessons.sql` also no longer matches the live lessons table. The repo cannot rebuild this database.
+## 4. Other confirmed problems
 
-## 6. Suggested fix order (nothing done yet)
+- **Two token stores**: the edge functions read `instructors.google_*`, the settings screen reads a `google_calendar_connections` table. They can disagree — a likely source of "Sync failed".
+- **One calendar only** — fixed to `primary`, no selection, no per-calendar busy/write roles.
+- **No double-booking protection anywhere.** Five places create lessons and none check for a clash; the database has no guard either.
+- **Untracked schema**: `lessons.google_event_id`, all `instructors.google_*` columns, `google_calendar_connections`, `gap_filler_offers`, pupil availability tables and the instructor block/time-off tables have no migration in the repo.
 
-1. Double-booking safety: a database-level guard plus a final availability re-check at the moment a lesson is created, and a pupil-conflict check inside Gap Filler.
-2. Make Home use the same inputs as Gap Filler and Schedule, and make Gap Filler honour the saved minimum-gap setting.
-3. Fix the UTC "today" line in Schedule, and make recurring blocks and time off reserve travel time on both sides.
-4. Location-aware gaps: feed pickup postcodes and drive-time into the calculator, shrink gaps by real journey time, and rank candidates by distance.
-5. Richer availability: saved lunch break, multiple windows per day for instructor and pupil, and part-day pupil exceptions.
+## 5. Proposed work, in order
 
-## 7. Leave alone for now
+**Phase 0 — Schema baseline (no behaviour change).** Read the live database, write it down as a baseline migration, and show it to you before anything runs. Everything after this depends on it.
 
-Google Calendar sync and display, the SMS queue and `send-sms`, the shared matching function's rules, and `capacitor.config.ts`. Item 4 changes the meaning of a gap for everyone, so it should not start until items 1–3 are settled.
+**Phase 1 — Timezone fix.** Send lessons to Google as plain local wall-clock time plus `Europe/London`, never a `Z` instant. Fix all-day imports. Add tests across GMT, BST and both changeover weekends.
+
+**Phase 2 — Event identity.** Add a stable Google event id (and calendar id, updated stamp) to `calendar_blocks`, with a real unique key. Stamp every event EveryDriver creates with a private marker so it is recognisably ours. Import becomes update-by-key instead of wipe-and-replace, and skips anything marked as ours or matching a known lesson. Retire the 5-minute guessing filter.
+
+**Phase 3 — Sync reliability.** Store a sync token per calendar and pull only changes. Add `sync_status` (pending/synced/failed) on lessons so a Google failure never leaves a lesson half-created or duplicated, plus a retry path.
+
+**Phase 4 — Google push notifications.** Register watch channels per calendar, store channel and resource ids, renew before expiry, ignore replays and out-of-order deliveries by reconciling against the stored token rather than trusting the notification. Handled through a public webhook route with verification.
+
+**Phase 5 — Multiple calendars.** Store the connected account, each calendar's id, name, whether it contributes busy time, and which one receives lessons. Rebuild Calendar Settings to match your section 19, with the "EveryDriver is the master system" wording.
+
+**Phase 6 — Booking safety.** One shared availability check used by Home, Schedule, Gap Filler and booking, plus a final check inside a database function with a real constraint, so two people booking the same slot gives one success and one clear rejection. Includes a pupil-clash check.
+
+**Phase 7 — Travel time.** Only after the above; changes the meaning of a gap for everyone.
+
+## 6. Files that will change
+
+Backend: `push-lesson-to-google`, `sync-google-calendar`, `google-calendar-auth`, `google-calendar-callback`, plus a new webhook route and new watch/renew jobs.
+App: `src/routes/calendarsync.tsx`, `src/lib/calendarDedupe.ts` (removed), `src/lib/gapDetection.ts`, `src/routes/gaps.tsx`, `home.tsx`, `schedule.tsx`, and the five lesson-creation places (`lessons.new.tsx`, `courses.$id.tsx`, `messages.$pupilId.tsx`, `AddLessonSheet.tsx`, `lesson-series.tsx`).
+
+## 7. Database changes required
+
+Baseline first, then: `calendar_blocks` gains external event id / calendar id / updated marker + unique key; `lessons` gains `sync_status`; a calendars table (account, calendar id, name, busy-source flag, target flag, sync token, channel details); an overlap guard on lessons. Every one shown to you before it runs, with a rollback.
+
+## 8. Google API changes
+
+Scope stays `calendar.events` plus `calendar.readonly` for listing calendars; add incremental sync tokens, `extendedProperties.private` markers on our events, and `events.watch`/`channels.stop` for push. No more full 240-day re-imports.
+
+## 9. Testing
+
+Your eight scenarios become automated tests where possible (identity, replay, edit, cancel, external event, timezone incl. DST) plus a real end-to-end run on your own connected calendar for the webhook and multi-calendar cases.
+
+## 10. Risks
+
+- Live schema is unknown until Phase 0; any migration before that is guesswork.
+- Existing duplicate blocks need a one-off clean-up, and existing pushed events may be an hour out — they will need re-pushing after Phase 1.
+- Push notifications need a stable public URL and channel renewal; if it lapses, sync must fall back to polling rather than silently stop.
+- Removing the 5-minute filter before Phase 2 lands would make duplicates visible, so those two ship together.
+
+## Suggested first step
+
+Phase 0 + Phase 1 only: document the real schema, and fix the one-hour summer shift. Small, verifiable, and it unblocks everything else.
