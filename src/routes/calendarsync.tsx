@@ -276,7 +276,15 @@ function CalendarSyncPage() {
         },
         body: JSON.stringify({ instructor_id: userId, instructorId: userId }),
       });
-      const data = await res.json().catch(() => ({}));
+      const rawBody = await res.text();
+      let data: any = {};
+      try {
+        data = rawBody ? JSON.parse(rawBody) : {};
+      } catch {
+        data = {};
+      }
+      console.log("[calendar-sync] sync response", res.status, rawBody);
+
       if (
         data.ok ||
         data.success ||
@@ -303,17 +311,46 @@ function CalendarSyncPage() {
             }
           })();
         }
-      } else if (
-        String(data.error ?? "").includes("calendar_blocks_external_unique") ||
-        String(data.error ?? "").includes("duplicate key")
-      ) {
+        return;
+      }
+
+      const detail = String(data.message ?? data.error ?? "");
+      const googleStatus = Number(data.status ?? 0);
+
+      if (detail.includes("calendar_blocks_external_unique") || detail.includes("duplicate key")) {
         toast.info("Calendar already up to date");
         setLastSynced(new Date().toISOString());
-      } else {
-        toast.error(data.message ?? data.error ?? "Sync failed");
+        return;
       }
-    } catch {
-      toast.error("Sync failed");
+
+      const authProblem =
+        googleStatus === 401 ||
+        googleStatus === 403 ||
+        /invalid_grant|unauthorized|token|reconnect|no google calendar connected/i.test(detail);
+
+      if (authProblem) {
+        setGoogleConnected(false);
+        toast.error("Your Google Calendar connection has expired — please reconnect.");
+        return;
+      }
+
+      if (!detail && !res.ok) {
+        toast.error(`Sync failed (${res.status})`);
+        return;
+      }
+
+      toast.error(
+        detail
+          ? googleStatus
+            ? `Sync failed: ${detail} (Google ${googleStatus})`
+            : `Sync failed: ${detail}`
+          : `Sync failed (${res.status})`,
+      );
+    } catch (err) {
+      console.error("[calendar-sync] sync error", err);
+      toast.error(
+        `Sync failed: ${err instanceof Error ? err.message : "could not reach the sync service"}`,
+      );
     } finally {
       setSyncing(false);
     }
