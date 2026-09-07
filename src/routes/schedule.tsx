@@ -92,7 +92,7 @@ type GapInfo = {
   gapMins: number;
   startTime: string;
   endTime: string;
-  potential: number;
+  
 };
 
 
