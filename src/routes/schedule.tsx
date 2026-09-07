@@ -92,7 +92,7 @@ type GapInfo = {
   gapMins: number;
   startTime: string;
   endTime: string;
-  potential: number;
+  
 };
 
 
@@ -1011,7 +1011,6 @@ function SchedulePage() {
       gapMins: g.gapMins,
       startTime: minsToTime(g.startMins),
       endTime: minsToTime(g.endMins),
-      potential: Math.round((g.gapMins / 60) * (hourlyRate || 40)),
     }));
   }
 
@@ -1925,7 +1924,7 @@ function SchedulePage() {
                   </div>
                 ) : (
                   (() => {
-                    type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number; potential: number };
+                    type GapRow = { kind: 'gap-row'; id: string; startMins: number; startTime: string; endTime: string; mins: number };
                     const dayLessons = (lessons ?? []).filter((l) => l.lesson_date.substring(0, 10) === row.key);
                     const dayName = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][
                       new Date(row.key + "T12:00:00").getDay()
@@ -1962,7 +1961,6 @@ function SchedulePage() {
                       startTime: g.startTime,
                       endTime: g.endTime,
                       mins: g.gapMins,
-                      potential: g.potential,
                     }));
 
                     // Available slot rows only when a lesson is being moved

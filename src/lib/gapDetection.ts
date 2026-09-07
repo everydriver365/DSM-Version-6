@@ -133,10 +133,12 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     if (b.is_all_day === true) return [];
     const spansIntoDay = startDate < dateStr;
     const spansOutOfDay = endDate > dateStr;
+    // Imported events need travel time too: reserve the buffer before the
+    // event and after it, exactly as a lesson does.
     busy.push({
       start: spansIntoDay ? 0 : hmToMin(startTime),
-      end: spansOutOfDay ? 1440 : hmToMin(endTime),
-      bufferBefore: 0,
+      end: spansOutOfDay ? 1440 : hmToMin(endTime) + defaultBuffer,
+      bufferBefore: defaultBuffer,
     });
   }
 
