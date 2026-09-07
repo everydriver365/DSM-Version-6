@@ -568,7 +568,7 @@ function CalendarSyncPage() {
               Paste your Google or Apple private calendar URL below. EDP will import your personal events so gaps are never offered when you're busy.
             </p>
 
-            {(!savedIcsInboundUrl.trim() || isEditingIcs) ? (
+            {(!savedIcsUrl.trim() || isEditingIcs) ? (
               <>
                 <label
                   style={{
