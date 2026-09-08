@@ -15,7 +15,11 @@ import {
   readMinGapMinutes,
   writeMinGapMinutes,
   DEFAULT_MIN_GAP_MINUTES,
+  readGapWindowDays,
+  writeGapWindowDays,
+  GAP_WINDOW_OPTIONS,
 } from "../lib/gapPrefs";
+
 import {
   readBadgePrefs,
   writeBadgePrefs,
