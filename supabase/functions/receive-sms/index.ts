@@ -555,7 +555,13 @@ async function autoBookOffer(
       `Sorry — that slot on ${when} has just gone. I'll let you know as soon as another comes up.`,
     );
     await notify("Slot already taken", `${pupilName} accepted ${when}, but it could not be booked`);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Booking ${when} failed: ${lessonErr.message ?? "unknown error"}`,
+    });
     return;
+
   }
 
   console.log("receive-sms: lesson booked", booked);
