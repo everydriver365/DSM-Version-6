@@ -33,7 +33,8 @@ import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-li
 import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
 import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
 import { verifyAddress } from "@/lib/geocode.functions";
-import { useMinGapMinutes } from "@/lib/gapPrefs";
+import { useMinGapMinutes, useGapWindowDays } from "@/lib/gapPrefs";
+
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
