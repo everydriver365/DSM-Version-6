@@ -852,6 +852,19 @@ function CalendarSyncPage() {
                     >
                       Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
                     </div>
+                    {syncError ? (
+                      <div
+                        style={{
+                          ...POPPINS,
+                          color: "#CC2229",
+                          fontSize: tokens.fontSize.sm,
+                          marginTop: 4,
+                        }}
+                      >
+                        {syncError}
+                      </div>
+                    ) : null}
+
                   </div>
                   <div
                     style={{
