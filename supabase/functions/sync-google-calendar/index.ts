@@ -151,7 +151,12 @@ Deno.serve(async (req) => {
 
   // ---------- ACTION: register/renew push channels (instant updates) ----------
   if (action === "watch" || action === "unwatch") {
-    const webhookUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/google-calendar-webhook`;
+    // Google only accepts push callbacks on an HTTPS domain you own and have
+    // verified, so the app's own domain hosts the receiver.
+    const webhookUrl =
+      body.webhook_url ??
+      Deno.env.get("GOOGLE_WEBHOOK_URL") ??
+      "https://app.everydriver.pro/api/public/google-calendar-webhook";
     const next: Record<string, any> = { ...channels };
     const stop = async (info: any) => {
       if (!info?.channelId || !info?.resourceId) return;
