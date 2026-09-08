@@ -74,6 +74,14 @@ function CalendarSyncPage() {
   const [isEditingIcs, setIsEditingIcs] = useState(false);
   const [icsFeedStatus, setIcsFeedStatus] = useState("");
   const [icsLastFetched, setIcsLastFetched] = useState("");
+  // Multiple Google calendars + instant updates
+  const [calendars, setCalendars] = useState<
+    { id: string; summary: string; primary: boolean }[]
+  >([]);
+  const [selectedCalendars, setSelectedCalendars] = useState<string[]>([]);
+  const [loadingCalendars, setLoadingCalendars] = useState(false);
+  const [instantUpdates, setInstantUpdates] = useState(false);
+  const [instantBusy, setInstantBusy] = useState(false);
 
   useEffect(() => {
     (async () => {
