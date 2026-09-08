@@ -7,6 +7,12 @@ import { toast } from "@/lib/toast";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import {
+  guardLessonSave,
+  splitClashingDates,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+} from "../lib/bookingConflicts";
 import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
 import { PageLayout } from "@/components/PageLayout";
@@ -241,6 +247,20 @@ function NewLessonPage() {
     const isPrepaidPricing =
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
+
+    // Double-booking safety: stop clashes before anything is written.
+    const guard = await guardLessonSave({
+      instructorId: user.id,
+      pupilId,
+      date,
+      time,
+      durationMinutes: duration,
+    });
+    if (!guard.ok) {
+      if (guard.message) setErrors({ form: guard.message });
+      setSaving(false);
+      return;
+    }
 
     // If recurring, create a lesson_series first so the initial lesson can link to it
     let seriesId: string | null = null;
