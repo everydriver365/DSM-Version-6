@@ -19,6 +19,7 @@ import {
   IconArrowLeft,
   IconBolt,
   IconCalendar,
+  IconCheck,
   IconClock,
   IconSend,
   IconLoader2,
@@ -713,7 +714,7 @@ function GapsPage() {
     minHeight: "100vh",
     background: "#F4F6F8",
     fontFamily: "Poppins, sans-serif",
-    paddingBottom: "calc(env(safe-area-inset-bottom) + 90px)",
+    paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 110px)",
   };
 
   const header = (
@@ -1110,6 +1111,60 @@ function GapsPage() {
               </button>
             </div>
 
+            {/* Inline action bar — visible as soon as pupils are selected */}
+            <div
+              style={{
+                background: "#FFFFFF",
+                border: `1px solid ${GREEN_LINE}`,
+                borderRadius: 12,
+                padding: 12,
+                marginBottom: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                boxShadow: selectedPupilIds.length > 0 ? "0 4px 12px rgba(30,122,70,0.12)" : "none",
+                transition: "box-shadow 120ms ease",
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {selectedPupilIds.length > 0 ? (
+                  <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
+                    {selectedPupilIds.length} pupil{selectedPupilIds.length === 1 ? "" : "s"} selected
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: "#536579" }}>
+                    Select one or more pupils to offer this slot
+                  </div>
+                )}
+                <div style={{ fontSize: 11, color: "#7A8A9A", marginTop: 2 }}>
+                  {fmtDateLong(selectedGap.date)} · {minToHm(selectedGap.startMins)}–{minToHm(selectedGap.endMins)}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={openSheet}
+                disabled={selectedPupilIds.length === 0}
+                style={{
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  background: selectedPupilIds.length === 0 ? "#C7D2DD" : GREEN,
+                  color: "#FFFFFF",
+                  fontFamily: "inherit",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: selectedPupilIds.length === 0 ? "default" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  flexShrink: 0,
+                }}
+              >
+                <IconSend size={14} />
+                Send
+              </button>
+            </div>
+
             {sortedPupils.length === 0 ? (
               <div
                 style={{
@@ -1156,6 +1211,7 @@ function GapsPage() {
                         gap: 12,
                         padding: "12px 14px",
                         borderTop: idx === 0 ? "none" : "0.5px solid #F4F6F8",
+                        borderLeft: checked ? `3px solid ${GREEN}` : "3px solid transparent",
                         cursor: "pointer",
                         background: checked ? GREEN_TINT : "transparent",
                         opacity: status === "unavailable" ? 0.6 : 1,
@@ -1211,13 +1267,30 @@ function GapsPage() {
                         {badge.label}
                       </span>
 
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => togglePupil(p.id)}
-                        onClick={(e) => e.stopPropagation()}
-                        style={{ width: 18, height: 18, accentColor: "#2C97DE", flexShrink: 0 }}
-                      />
+                      {checked ? (
+                        <div
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: "50%",
+                            background: GREEN,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <IconCheck size={14} color="#FFFFFF" stroke={2.5} />
+                        </div>
+                      ) : (
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => togglePupil(p.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ width: 18, height: 18, accentColor: "#2C97DE", flexShrink: 0 }}
+                        />
+                      )}
                     </div>
                   );
                 })}
@@ -1238,8 +1311,9 @@ function GapsPage() {
             background: "#FFFFFF",
             borderTop: "0.5px solid #E4E8EF",
             padding: "12px 16px",
-            paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)",
-            zIndex: 20,
+            paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)",
+            zIndex: 50,
+            boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
           }}
         >
           <button
@@ -1251,7 +1325,7 @@ function GapsPage() {
               border: "none",
               borderRadius: 10,
               padding: "13px 0",
-              background: selectedPupilIds.length === 0 ? "#C7D2DD" : NAVY,
+              background: selectedPupilIds.length === 0 ? "#C7D2DD" : GREEN,
               color: "#FFFFFF",
               fontSize: 13,
               fontWeight: 600,
