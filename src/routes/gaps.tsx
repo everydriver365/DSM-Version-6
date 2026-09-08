@@ -979,6 +979,7 @@ function GapsPage() {
                         ? { label: "No preference", bg: "#F3F4F6", color: "#6B7280" }
                         : { label: "Unavailable", bg: "#F3F4F6", color: "#9CA3AF" };
                   const name = pupilDisplayName(p);
+                  const travel = proximityLabel(proximityByPupil.get(p.id) ?? "unknown");
                   return (
                     <div
                       key={p.id}
