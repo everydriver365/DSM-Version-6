@@ -12,6 +12,9 @@ const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
 
+/** Google only posts change notifications to a verified domain we own. */
+const WEBHOOK_URL = "https://app.everydriver.pro/api/public/google-calendar-webhook";
+
 function timeAgo(iso: string): string {
   const then = new Date(iso).getTime();
   const now = Date.now();
@@ -438,33 +441,50 @@ function CalendarSyncPage() {
       return;
     }
     void sync();
-    if (instantUpdates) void callCalendarService("watch").catch(() => undefined);
+    if (instantUpdates)
+      void callCalendarService("watch", { webhook_url: WEBHOOK_URL }).catch(() => undefined);
   }
 
   /** Ask Google to tell us the moment something changes (or stop). */
   async function toggleInstantUpdates() {
     if (!userId) return;
+    if (!instantUpdates && selectedCalendars.length === 0) {
+      toast.error("Pick at least one calendar first");
+      return;
+    }
     setInstantBusy(true);
     try {
       const turnOn = !instantUpdates;
       const data = await callCalendarService(turnOn ? "watch" : "unwatch", {
-        webhook_url:
-          typeof window !== "undefined" && window.location.hostname.endsWith("everydriver.pro")
-            ? `${window.location.origin}/api/public/google-calendar-webhook`
-            : undefined,
+        webhook_url: WEBHOOK_URL,
       });
       if (turnOn) {
         const watching: string[] = data?.watching ?? [];
         if (watching.length) {
           setInstantUpdates(true);
           toast.success("Google changes will now appear straight away");
+        } else if (data?.reason === "no_calendars_selected") {
+          toast.error("Pick at least one calendar first");
+        } else if (data?.watching === undefined && data?.failures === undefined) {
+          toast.error(
+            data?.message || data?.error
+              ? `Instant updates unavailable: ${data.message ?? data.error}`
+              : "Instant updates aren't available yet — the calendar service needs redeploying",
+          );
         } else {
           const reason = Object.values(data?.failures ?? {})[0];
-          toast.error(
-            typeof reason === "string" && reason
-              ? `Google refused instant updates: ${reason}`
-              : "Google refused instant updates — please try again",
-          );
+          const text = typeof reason === "string" ? reason : "";
+          if (/webhook|address|domain|unauthorized.*callback|not verified/i.test(text)) {
+            toast.error(
+              `Google won't accept ${WEBHOOK_URL} yet — verify everydriver.pro in Google Search Console, then try again.`,
+            );
+          } else {
+            toast.error(
+              text
+                ? `Google refused instant updates: ${text}`
+                : "Google refused instant updates — please try again",
+            );
+          }
         }
       } else {
         setInstantUpdates(false);
@@ -1077,6 +1097,17 @@ function CalendarSyncPage() {
                       {instantUpdates
                         ? "Google changes appear here straight away"
                         : "Turn on to skip waiting for the next sync"}
+                    </div>
+                    <div
+                      style={{
+                        ...POPPINS,
+                        color: tokens.textMuted,
+                        fontSize: 11,
+                        marginTop: 2,
+                        wordBreak: "break-all",
+                      }}
+                    >
+                      Notification address: {WEBHOOK_URL}
                     </div>
                   </div>
                   <div
