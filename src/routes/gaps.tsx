@@ -185,9 +185,10 @@ function GapsPage() {
       const uid = user.id;
 
       const today = todayIso();
-      const endDate = addDays(today, RANGE_DAYS - 1);
+      const endDate = addDays(today, rangeDays - 1);
 
       // --- Instructor settings (required: working hours drive everything) ---
+
       const instructorRes = await supabase
         .from("instructors")
         .select(
@@ -328,9 +329,10 @@ function GapsPage() {
       const pupilBuffers = new Map(pupilData.map((p) => [p.id, p.buffer_after_minutes]));
       const pupilPostcodes = new Map(pupilData.map((p) => [p.id, p.postcode]));
 
-      // --- Exactly 7 days: today .. today + 6 ---
+      // --- Configurable window: today .. today + (rangeDays - 1) ---
       const computed: Gap[] = [];
-      for (let i = 0; i < RANGE_DAYS; i++) {
+      for (let i = 0; i < rangeDays; i++) {
+
         const dateStr = addDays(today, i);
         const dayName = DAY_NAMES[new Date(dateStr + "T12:00:00").getDay()];
 
