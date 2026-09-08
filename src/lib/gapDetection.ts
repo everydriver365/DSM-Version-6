@@ -134,6 +134,9 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     // usually reminders ("Lotty college 1245-1600") rather than a blocked day.
     // Use Time off to block a whole day.
     if (b.is_all_day === true) continue;
+    // Safeguard: some imported events arrive without the all-day flag but cover
+    // a full day (midnight to midnight). Treat those as notes too.
+    if (startTime === "00:00" && (endTime === "00:00" || endTime === "23:59") && endDate > startDate) continue;
 
     const spansIntoDay = startDate < dateStr;
     const spansOutOfDay = endDate > dateStr;
