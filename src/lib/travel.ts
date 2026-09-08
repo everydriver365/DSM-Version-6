@@ -14,7 +14,7 @@
 
 export type Proximity = "same-sector" | "same-district" | "same-area" | "far" | "unknown";
 
-const POSTCODE_RE = /^([A-Z]{1,2})(\d[A-Z\d]?)\s*(\d)?([A-Z]{2})?$/;
+const POSTCODE_RE = /^([A-Z]{1,2})(\d[A-Z\d]?)(?:(\d)([A-Z]{2}))?$/;
 
 export type PostcodeParts = {
   area: string;
