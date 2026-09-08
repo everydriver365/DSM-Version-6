@@ -4298,7 +4298,7 @@ function HomePage() {
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
-  const [icsBlocks, setIcsBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
+  const [icsBlocks, setIcsBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; blocks_availability?: boolean | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
@@ -4328,7 +4328,7 @@ function HomePage() {
     const fetchIcsBlocks = async () => {
       const { data } = await supabase
         .from('calendar_blocks')
-        .select('id, start_datetime, end_datetime, title')
+        .select('id, start_datetime, end_datetime, title, is_all_day, blocks_availability')
         .eq('instructor_id', userId)
         .eq('source', 'external_calendar')
         .gte('end_datetime', todayISO)
@@ -4472,6 +4472,7 @@ function HomePage() {
           start_datetime: b.start_datetime,
           end_datetime: b.end_datetime,
           title: b.title,
+          is_all_day: b.is_all_day ?? null,
         })),
         recurringBlocks: [],
         dayTimeOff: [],
@@ -4492,6 +4493,7 @@ function HomePage() {
           start_datetime: b.start_datetime,
           end_datetime: b.end_datetime,
           title: b.title,
+          is_all_day: b.is_all_day ?? null,
         })),
         recurringBlocks: [],
         dayTimeOff: [],
@@ -4531,6 +4533,7 @@ function HomePage() {
         start_datetime: b.start_datetime,
         end_datetime: b.end_datetime,
         title: b.title,
+        is_all_day: b.is_all_day ?? null,
       })),
       recurringBlocks: [],
       dayTimeOff: [],
@@ -6757,6 +6760,7 @@ function HomePage() {
               start_datetime: b.start_datetime,
               end_datetime: b.end_datetime,
               title: b.title,
+              is_all_day: b.is_all_day ?? null,
             })),
             recurringBlocks: [],
             dayTimeOff: [],
