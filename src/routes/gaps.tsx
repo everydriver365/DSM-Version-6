@@ -96,6 +96,9 @@ type Gap = {
   startMins: number;
   endMins: number;
   durationMins: number;
+  // Where the instructor is coming from / heading to around this gap.
+  beforePostcode: string | null;
+  afterPostcode: string | null;
 };
 
 type Pupil = {
