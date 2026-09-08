@@ -4306,8 +4306,9 @@ function HomePage() {
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
-  const in14DaysISO = ymd(in14DaysStart);
+  const gapWindowEndISO = ymd(gapWindowEndStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
+
 
   useEffect(() => {
     if (!userId) return;
