@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { notifyInstructors } from "@/lib/notify";
+import { looksLikeAcceptance, OPEN_OFFER_STATUSES } from "@/lib/smsAcceptance";
 import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
