@@ -931,7 +931,7 @@ function SchedulePage() {
       const startIso = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
       const endIso = new Date(now.getFullYear(), now.getMonth() + 3, 0).toISOString();
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour,location,description,notes`,
+        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour,location,description,notes,is_all_day,blocks_availability`,
         { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
       );
       if (!res.ok) return;
@@ -1127,7 +1127,8 @@ function SchedulePage() {
                     `${endIso}T23:59:59` +
                     `&select=id,start_datetime,` +
                     `end_datetime,title,colour,` +
-                    `location,description,notes`,
+                    `location,description,notes,` +
+                    `is_all_day,blocks_availability`,
                   {
                     headers: {
                       apikey: SUPABASE_ANON_KEY,
