@@ -7299,32 +7299,33 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: moveModeHome ? '#F4F8FE' : 'rgba(212,168,83,0.06)',
-                              border: 'none',
-                              borderBottom: '0.5px solid #F4F6F8',
-                              borderRadius: 0,
-                              padding: '8px 12px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 10,
-                              cursor: 'pointer',
-                              fontFamily: PF,
-                            }}
-                          >
-                            <div style={{ width: 36, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-                              <div style={{ fontSize: 11, fontWeight: 500, color: '#854F0B', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
-                                {fmtT(gs)}
-                              </div>
-                            </div>
-                            <div aria-hidden style={{ width: 2, alignSelf: 'stretch', flexShrink: 0, background: 'repeating-linear-gradient(180deg, #D4A853 0, #D4A853 4px, transparent 4px, transparent 8px)' }} />
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 12, fontWeight: 500, color: '#633806', lineHeight: 1.3 }}>
-                                Free · {durLabel}
-                              </div>
-                              <div style={{ fontSize: 10, color: '#854F0B', marginTop: 2 }}>
-                                {preview.count} pupil{preview.count === 1 ? '' : 's'} available
-                              </div>
-                            </div>
+                              background: moveModeHome ? '#F4F8FE' : '#EAF6EF',
+                               border: 'none',
+                               borderBottom: '0.5px solid #F4F6F8',
+                               borderRadius: 0,
+                               padding: '8px 12px',
+                               display: 'flex',
+                               alignItems: 'center',
+                               gap: 10,
+                               cursor: 'pointer',
+                               fontFamily: PF,
+                             }}
+                           >
+                             <div style={{ width: 36, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+                               <div style={{ fontSize: 11, fontWeight: 600, color: '#15683B', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
+                                 {fmtT(gs)}
+                               </div>
+                             </div>
+                             <div aria-hidden style={{ width: 2, alignSelf: 'stretch', flexShrink: 0, background: 'repeating-linear-gradient(180deg, #1E7A46 0, #1E7A46 4px, transparent 4px, transparent 8px)' }} />
+                             <div style={{ flex: 1, minWidth: 0 }}>
+                               <div style={{ fontSize: 12, fontWeight: 600, color: '#0B2341', lineHeight: 1.3 }}>
+                                 Free · {durLabel}
+                               </div>
+                               <div style={{ fontSize: 10, color: '#15683B', marginTop: 2 }}>
+                                 {preview.count} pupil{preview.count === 1 ? '' : 's'} available
+                               </div>
+                             </div>
+
                             {moveModeHome ? (
                               <button
                                 type="button"
@@ -7351,7 +7352,7 @@ function HomePage() {
                                 onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
                                   alignSelf: 'center',
-                                 background: '#D4A853',
+                                 background: '#1E7A46',
                                   color: '#FFFFFF',
                                  fontSize: 10,
                                  fontWeight: 500,

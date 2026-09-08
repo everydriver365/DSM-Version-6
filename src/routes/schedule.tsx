@@ -2039,30 +2039,31 @@ function SchedulePage() {
                                   onClick={() => navigate({ to: '/gaps' as never })}
                                   role="button"
                                   tabIndex={0}
-                                  style={{
-                                    position: "relative",
-                                    left: 4,
-                                    width: "calc(100% - 8px)",
-                                    borderRadius: 6,
-                                    border: "1.5px dashed #D4A853",
-                                    background: "rgba(212,168,83,0.08)",
-                                    padding: "5px 7px",
-                                    cursor: "pointer",
-                                    ...POPPINS,
-                                  }}
-                                >
-                                  <div style={{ fontSize: 9, color: "#854F0B", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
-                                    {e.startTime} – {e.endTime}
-                                  </div>
-                                  <div style={{ fontSize: 10, color: "#633806", fontWeight: 700, marginBottom: 3 }}>
-                                    Free · {(() => {
-                                      const h = Math.floor(e.mins / 60);
-                                      const m = e.mins % 60;
-                                      if (h > 0 && m > 0) return `${h}hr ${m}min`;
-                                      if (h > 0) return `${h}hr`;
-                                      return `${m}min`;
-                                    })()}
-                                  </div>
+                                   style={{
+                                     position: "relative",
+                                     left: 4,
+                                     width: "calc(100% - 8px)",
+                                     borderRadius: 12,
+                                     border: "1px solid #CFE8DA",
+                                     background: "#EAF6EF",
+                                     padding: "7px 9px",
+                                     cursor: "pointer",
+                                     ...POPPINS,
+                                   }}
+                                 >
+                                   <div style={{ fontSize: 9, color: "#15683B", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
+                                     {e.startTime} – {e.endTime}
+                                   </div>
+                                   <div style={{ fontSize: 10, color: "#0B2341", fontWeight: 700, marginBottom: 3 }}>
+                                     Free · {(() => {
+                                       const h = Math.floor(e.mins / 60);
+                                       const m = e.mins % 60;
+                                       if (h > 0 && m > 0) return `${h}hr ${m}min`;
+                                       if (h > 0) return `${h}hr`;
+                                       return `${m}min`;
+                                     })()}
+                                   </div>
+
                                   <div style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
                                     {preview.count > 0 && (
                                           <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
@@ -2098,9 +2099,24 @@ function SchedulePage() {
                                             })}
                                           </div>
                                     )}
-                                    <span style={{ marginLeft: 4, fontSize: 9, color: "#854F0B" }}>
-                                      {preview.count} available · Fill →
+                                    <span style={{ marginLeft: 4, fontSize: 9, color: "#15683B", fontWeight: 600 }}>
+                                      {preview.count} available
                                     </span>
+                                    <span
+                                      style={{
+                                        marginLeft: "auto",
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: "#FFFFFF",
+                                        background: "#1E7A46",
+                                        borderRadius: 8,
+                                        padding: "3px 8px",
+                                        flexShrink: 0,
+                                      }}
+                                    >
+                                      Fill →
+                                    </span>
+
                                   </div>
                                 </div>
                               </div>
