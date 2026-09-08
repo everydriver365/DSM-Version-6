@@ -550,8 +550,9 @@ export function AddLessonSheet({
         })
         .eq("id", editingLesson.id);
       if (updErr) {
-        setErrors({ form: updErr.message });
-        toast.error(updErr.message);
+        const msg = isDoubleBookingError(updErr) ? DOUBLE_BOOKING_MESSAGE : updErr.message;
+        setErrors({ form: msg });
+        toast.error(msg);
         hapticError();
         setSaving(false);
         return;
@@ -640,8 +641,9 @@ export function AddLessonSheet({
       .select("id")
       .single();
     if (error) {
-      setErrors({ form: error.message });
-      toast.error(error.message);
+      const msg = isDoubleBookingError(error) ? DOUBLE_BOOKING_MESSAGE : error.message;
+      setErrors({ form: msg });
+      toast.error(msg);
       hapticError();
       setSaving(false);
       return;
