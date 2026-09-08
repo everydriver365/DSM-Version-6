@@ -974,6 +974,14 @@ function SettingsPage() {
             onClick={() => navigate({ to: "/calendarsync" as never })}
           />
           <MenuRow
+            icon={<IconMessage size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Text replies"
+            subLabel="Every incoming reply and what happened to it"
+            onClick={() => navigate({ to: "/textreplies" as never })}
+          />
+
+          <MenuRow
             icon={<IconMicrophone size={18} color="#FFFFFF" />}
             iconBg="#0B2341"
             label="ED Settings"

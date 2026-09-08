@@ -16,6 +16,7 @@ import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as UpcomingTestsRouteImport } from './routes/upcoming-tests'
 import { Route as TodosRouteImport } from './routes/todos'
+import { Route as TextrepliesRouteImport } from './routes/textreplies'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as TestdayRouteImport } from './routes/testday'
 import { Route as TestSwapRouteImport } from './routes/test-swap'
@@ -223,6 +224,11 @@ const UpcomingTestsRoute = UpcomingTestsRouteImport.update({
 const TodosRoute = TodosRouteImport.update({
   id: '/todos',
   path: '/todos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TextrepliesRoute = TextrepliesRouteImport.update({
+  id: '/textreplies',
+  path: '/textreplies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestsRoute = TestsRouteImport.update({
@@ -1202,6 +1208,7 @@ export interface FileRoutesByFullPath {
   '/test-swap': typeof TestSwapRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
+  '/textreplies': typeof TextrepliesRoute
   '/todos': typeof TodosRoute
   '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
@@ -1381,6 +1388,7 @@ export interface FileRoutesByTo {
   '/test-swap': typeof TestSwapRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
+  '/textreplies': typeof TextrepliesRoute
   '/todos': typeof TodosRoute
   '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
@@ -1564,6 +1572,7 @@ export interface FileRoutesById {
   '/test-swap': typeof TestSwapRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
+  '/textreplies': typeof TextrepliesRoute
   '/todos': typeof TodosRoute
   '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
@@ -1748,6 +1757,7 @@ export interface FileRouteTypes {
     | '/test-swap'
     | '/testday'
     | '/tests'
+    | '/textreplies'
     | '/todos'
     | '/upcoming-tests'
     | '/vehicle'
@@ -1927,6 +1937,7 @@ export interface FileRouteTypes {
     | '/test-swap'
     | '/testday'
     | '/tests'
+    | '/textreplies'
     | '/todos'
     | '/upcoming-tests'
     | '/vehicle'
@@ -2109,6 +2120,7 @@ export interface FileRouteTypes {
     | '/test-swap'
     | '/testday'
     | '/tests'
+    | '/textreplies'
     | '/todos'
     | '/upcoming-tests'
     | '/vehicle'
@@ -2292,6 +2304,7 @@ export interface RootRouteChildren {
   TestSwapRoute: typeof TestSwapRoute
   TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
+  TextrepliesRoute: typeof TextrepliesRoute
   TodosRoute: typeof TodosRoute
   UpcomingTestsRoute: typeof UpcomingTestsRoute
   VehicleRoute: typeof VehicleRoute
@@ -2399,6 +2412,13 @@ declare module '@tanstack/react-router' {
       path: '/todos'
       fullPath: '/todos'
       preLoaderRoute: typeof TodosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/textreplies': {
+      id: '/textreplies'
+      path: '/textreplies'
+      fullPath: '/textreplies'
+      preLoaderRoute: typeof TextrepliesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tests': {
@@ -3809,6 +3829,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestSwapRoute: TestSwapRoute,
   TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
+  TextrepliesRoute: TextrepliesRoute,
   TodosRoute: TodosRoute,
   UpcomingTestsRoute: UpcomingTestsRoute,
   VehicleRoute: VehicleRoute,
