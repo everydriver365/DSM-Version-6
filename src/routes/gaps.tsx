@@ -312,6 +312,7 @@ function GapsPage() {
       setUnavailability(unavailData);
 
       const pupilBuffers = new Map(pupilData.map((p) => [p.id, p.buffer_after_minutes]));
+      const pupilPostcodes = new Map(pupilData.map((p) => [p.id, p.postcode]));
 
       // --- Exactly 7 days: today .. today + 6 ---
       const computed: Gap[] = [];
