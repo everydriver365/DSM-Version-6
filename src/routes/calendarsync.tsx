@@ -72,11 +72,6 @@ function CalendarSyncPage() {
   const [syncError, setSyncError] = useState<string | null>(null);
 
   const [syncing, setSyncing] = useState(false);
-  const [icsInboundUrl, setIcsInboundUrl] = useState("");
-  const [savedIcsUrl, setSavedIcsUrl] = useState("");
-  const [isEditingIcs, setIsEditingIcs] = useState(false);
-  const [icsFeedStatus, setIcsFeedStatus] = useState("");
-  const [icsLastFetched, setIcsLastFetched] = useState("");
   // Multiple Google calendars + instant updates
   const [calendars, setCalendars] = useState<
     { id: string; summary: string; primary: boolean }[]
