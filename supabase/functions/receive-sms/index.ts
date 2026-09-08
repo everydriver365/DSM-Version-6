@@ -493,7 +493,13 @@ async function autoBookOffer(
       `Sorry — that slot on ${when} has just gone. I'll let you know as soon as another comes up.`,
     );
     await notify("Slot already taken", `${pupilName} accepted ${when}, but it clashed`);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "clash",
+      detail: `Accepted ${when} but it clashed with the diary — not booked`,
+    });
     return;
+
   }
 
   // --- Pricing -----------------------------------------------------------
