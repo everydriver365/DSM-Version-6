@@ -738,9 +738,21 @@ function SchedulePage() {
   // so paid/unpaid badges stay in sync.
   useEffect(() => {
     const onPaymentRecorded = () => setLessonsReloadKey((k) => k + 1);
+    // Lessons can also be booked outside the app (a pupil texting YES to a
+    // gap offer), so re-check whenever the screen comes back into view.
+    const onFocus = () => {
+      if (document.visibilityState === "visible") setLessonsReloadKey((k) => k + 1);
+    };
     window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
-    return () => window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+    document.addEventListener("visibilitychange", onFocus);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
+      document.removeEventListener("visibilitychange", onFocus);
+      window.removeEventListener("focus", onFocus);
+    };
   }, []);
+
 
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();

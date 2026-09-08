@@ -1748,13 +1748,23 @@ function HomePage() {
   useEffect(() => {
     const onPaymentRecorded = () => setReloadKey((k) => k + 1);
     const onMessagesRead = () => setReloadKey((k) => k + 1);
+    // Lessons can be booked outside the app (a pupil texting YES to a gap
+    // offer), so re-check whenever the screen comes back into view.
+    const onFocus = () => {
+      if (document.visibilityState === "visible") setReloadKey((k) => k + 1);
+    };
     window.addEventListener("dsm-payment-recorded", onPaymentRecorded);
     window.addEventListener("dsm-messages-read", onMessagesRead);
+    document.addEventListener("visibilitychange", onFocus);
+    window.addEventListener("focus", onFocus);
     return () => {
       window.removeEventListener("dsm-payment-recorded", onPaymentRecorded);
       window.removeEventListener("dsm-messages-read", onMessagesRead);
+      document.removeEventListener("visibilitychange", onFocus);
+      window.removeEventListener("focus", onFocus);
     };
   }, []);
+
 
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
