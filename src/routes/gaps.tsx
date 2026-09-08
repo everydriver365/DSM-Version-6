@@ -804,12 +804,13 @@ function GapsPage() {
               boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             }}
           >
-            No gaps in the next 7 days
+            No gaps in the next {rangeDays} days
           </div>
         </div>
       </div>
     );
   }
+
 
   const potential =
     selectedGap && hourlyRate != null && hourlyRate > 0
