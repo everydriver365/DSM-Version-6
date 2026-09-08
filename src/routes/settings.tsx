@@ -106,7 +106,9 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
+  const [gapWindowDays, setGapWindowDays] = useState<number>(7);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
+
   const [badgePrefs, setBadgePrefs] = useState<{
     issues: boolean;
     chat: boolean;
