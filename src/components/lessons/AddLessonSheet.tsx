@@ -21,6 +21,7 @@ import { PupilPickerSheet } from "./PupilPickerSheet";
 import { supabase } from "../../lib/supabaseClient";
 import {
   guardLessonSave,
+  splitClashingDates,
   isDoubleBookingError,
   DOUBLE_BOOKING_MESSAGE,
 } from "../../lib/bookingConflicts";
@@ -676,7 +677,18 @@ export function AddLessonSheet({
         cur = new Date(cur);
         cur.setDate(cur.getDate() + step);
       }
-      const lessonsPayload = dates.map((d) => ({
+      const { free: freeDates, clashing: clashDates } = await splitClashingDates({
+        instructorId: user.id,
+        dates,
+        time: effTime,
+        durationMinutes: savedDuration,
+      });
+      if (clashDates.length > 0) {
+        toast.error(
+          `${clashDates.length} repeat lesson${clashDates.length === 1 ? "" : "s"} skipped — already booked`,
+        );
+      }
+      const lessonsPayload = freeDates.map((d) => ({
         instructor_id: user.id,
         pupil_id: pupilId,
         lesson_date: d,
