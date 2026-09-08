@@ -3,8 +3,12 @@
 // - Validates the request is genuinely from Twilio via HMAC-SHA1 signature.
 // - Matches the sender's phone number to a pupil.
 // - Inserts the reply into chat_messages.
+// - If the reply is an acceptance of an open gap-filler offer, books the
+//   lesson automatically (clash-checked), closes competing offers, notifies
+//   the instructor and texts the pupil back.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { looksLikeAcceptance, OPEN_OFFER_STATUSES } from "../../../src/lib/smsAcceptance.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,6 +20,7 @@ const corsHeaders = {
 function digitsOnly(s: string | null | undefined): string {
   return (s ?? "").replace(/\D+/g, "");
 }
+
 
 // Build the string Twilio signs: full URL + concatenated sorted (key + value) pairs.
 function buildSignatureBase(url: string, params: Record<string, string>): string {
