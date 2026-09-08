@@ -2923,7 +2923,7 @@ function HomePage() {
   }, []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
   const tomorrowStart = useMemo(() => addDays(todayStart, 1), [todayStart]);
-  const gapWindowEndStart = useMemo(() => addDays(todayStart, gapWindowDays), [todayStart, gapWindowDays]);
+  const gapWindowEndStart = useMemo(() => addDays(todayStart, gapWindowDays - 1), [todayStart, gapWindowDays]);
   const dayAfter = useMemo(() => addDays(todayStart, 2), [todayStart]);
 
   const weekStart = useMemo(() => startOfWeek(now), [now]);
