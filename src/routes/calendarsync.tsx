@@ -1043,6 +1043,115 @@ function CalendarSyncPage() {
                 </div>
 
                 <div
+                  onClick={instantBusy ? undefined : toggleInstantUpdates}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    padding: "13px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    cursor: instantBusy ? "default" : "pointer",
+                    borderBottom: "1px solid #E4E8EF",
+                    opacity: instantBusy ? 0.6 : 1,
+                  }}
+                  onKeyDown={(e) => {
+                    if (!instantBusy && (e.key === "Enter" || e.key === " ")) toggleInstantUpdates();
+                  }}
+                >
+                  <IconRefresh size={16} color="#1877D6" stroke={1.5} />
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        ...POPPINS,
+                        color: tokens.navy,
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.medium,
+                      }}
+                    >
+                      Instant updates
+                    </div>
+                    <div
+                      style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm }}
+                    >
+                      {instantUpdates
+                        ? "Google changes appear here straight away"
+                        : "Turn on to skip waiting for the next sync"}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: instantUpdates ? "#DCFCE7" : "#EEF2F7",
+                      color: instantUpdates ? "#15803D" : tokens.textMuted,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
+                      borderRadius: 999,
+                      padding: "4px 10px",
+                    }}
+                  >
+                    {instantBusy ? "…" : instantUpdates ? "On" : "Off"}
+                  </div>
+                </div>
+
+                <div style={{ padding: "13px 16px", borderBottom: "1px solid #E4E8EF" }}>
+                  <div
+                    style={{
+                      ...POPPINS,
+                      color: tokens.navy,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.medium,
+                      marginBottom: 6,
+                    }}
+                  >
+                    Calendars to import
+                  </div>
+                  {loadingCalendars && calendars.length === 0 ? (
+                    <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm }}>
+                      Loading your calendars…
+                    </div>
+                  ) : calendars.length === 0 ? (
+                    <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm }}>
+                      Could not list your calendars — using your main one.
+                    </div>
+                  ) : (
+                    calendars.map((cal) => {
+                      const on = selectedCalendars.includes(cal.id);
+                      return (
+                        <label
+                          key={cal.id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            padding: "6px 0",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={on}
+                            onChange={() => toggleCalendar(cal.id)}
+                            style={{ width: 16, height: 16, accentColor: "#1877D6" }}
+                          />
+                          <span
+                            style={{
+                              ...POPPINS,
+                              color: tokens.navy,
+                              fontSize: tokens.fontSize.sm,
+                            }}
+                          >
+                            {cal.summary || cal.id}
+                            {cal.primary ? " (main)" : ""}
+                          </span>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+
+
+
+                <div
                   onClick={disconnect}
                   role="button"
                   tabIndex={0}
