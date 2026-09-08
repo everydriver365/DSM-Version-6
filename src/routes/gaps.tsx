@@ -714,7 +714,7 @@ function GapsPage() {
     minHeight: "100vh",
     background: "#F4F6F8",
     fontFamily: "Poppins, sans-serif",
-    paddingBottom: "calc(max(env(safe-area-inset-bottom, 0px), 0px) + 110px)",
+    paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 110px)",
   };
 
   const header = (
