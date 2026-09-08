@@ -130,7 +130,11 @@ export function computeDayGaps(params: ComputeDayGapsParams): ComputedGap[] {
     if (!overlaps) continue;
     const startTime = localTimeStr(b.start_datetime) || "00:00";
     const endTime = localTimeStr(b.end_datetime) || "23:59";
-    if (b.is_all_day === true) return [];
+    // All-day imported events are treated as notes, not as busy time: they are
+    // usually reminders ("Lotty college 1245-1600") rather than a blocked day.
+    // Use Time off to block a whole day.
+    if (b.is_all_day === true) continue;
+
     const spansIntoDay = startDate < dateStr;
     const spansOutOfDay = endDate > dateStr;
     // Imported events need travel time too: reserve the buffer before the
