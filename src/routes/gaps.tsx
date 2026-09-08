@@ -1025,7 +1025,10 @@ function GapsPage() {
                         >
                           {name}
                         </div>
-                        <div style={{ fontSize: 11, color: "#536579" }}>{p.phone || "No phone"}</div>
+                        <div style={{ fontSize: 11, color: "#536579" }}>
+                          {p.phone || "No phone"}
+                          {travel ? ` · ${travel}` : ""}
+                        </div>
                       </div>
                       <span
                         style={{
