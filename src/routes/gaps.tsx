@@ -1111,6 +1111,62 @@ function GapsPage() {
               </button>
             </div>
 
+            {/* Inline action bar — visible as soon as pupils are selected */}
+            <div
+              style={{
+                position: "sticky",
+                top: 8,
+                zIndex: 30,
+                background: "#FFFFFF",
+                border: `1px solid ${GREEN_LINE}`,
+                borderRadius: 12,
+                padding: 12,
+                marginBottom: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                boxShadow: selectedPupilIds.length > 0 ? "0 4px 12px rgba(30,122,70,0.12)" : "none",
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {selectedPupilIds.length > 0 ? (
+                  <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>
+                    {selectedPupilIds.length} pupil{selectedPupilIds.length === 1 ? "" : "s"} selected
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: "#536579" }}>
+                    Select one or more pupils to offer this slot
+                  </div>
+                )}
+                <div style={{ fontSize: 11, color: "#7A8A9A", marginTop: 2 }}>
+                  {fmtDateLong(selectedGap.date)} · {minToHm(selectedGap.startMins)}–{minToHm(selectedGap.endMins)}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={openSheet}
+                disabled={selectedPupilIds.length === 0}
+                style={{
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  background: selectedPupilIds.length === 0 ? "#C7D2DD" : GREEN,
+                  color: "#FFFFFF",
+                  fontFamily: "inherit",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: selectedPupilIds.length === 0 ? "default" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  flexShrink: 0,
+                }}
+              >
+                <IconSend size={14} />
+                Send
+              </button>
+            </div>
+
             {sortedPupils.length === 0 ? (
               <div
                 style={{
