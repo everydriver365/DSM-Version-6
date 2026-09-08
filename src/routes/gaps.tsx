@@ -1313,8 +1313,9 @@ function GapsPage() {
             background: "#FFFFFF",
             borderTop: "0.5px solid #E4E8EF",
             padding: "12px 16px",
-            paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)",
-            zIndex: 20,
+            paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)",
+            zIndex: 50,
+            boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
           }}
         >
           <button
@@ -1326,7 +1327,7 @@ function GapsPage() {
               border: "none",
               borderRadius: 10,
               padding: "13px 0",
-              background: selectedPupilIds.length === 0 ? "#C7D2DD" : NAVY,
+              background: selectedPupilIds.length === 0 ? "#C7D2DD" : GREEN,
               color: "#FFFFFF",
               fontSize: 13,
               fontWeight: 600,
