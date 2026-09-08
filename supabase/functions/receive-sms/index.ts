@@ -412,22 +412,30 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
 
   const { data: pupilPricing } = await supabase
     .from("pupils")
-    .select("pricing_type")
+    .select("pricing_type, address")
     .eq("id", pupil.id)
     .maybeSingle();
   const pricingType = String(pupilPricing?.pricing_type ?? "").toLowerCase();
   const isPrepaid = pricingType === "block" || pricingType === "national_intensives";
 
-  const { error: lessonErr } = await supabase.from("lessons").insert({
-    instructor_id: instructorId,
-    pupil_id: pupil.id,
-    lesson_date: dateStr,
-    lesson_time: offer.slot_time,
-    duration_minutes: duration,
-    status: "confirmed",
-    amount_due: amountDue,
-    payment_status: isPrepaid ? "prepaid" : "unpaid",
-  });
+  // A real booking row, shaped exactly like a lesson added by hand so the
+  // diary renders it identically.
+  const { data: booked, error: lessonErr } = await supabase
+    .from("lessons")
+    .insert({
+      instructor_id: instructorId,
+      pupil_id: pupil.id,
+      lesson_date: dateStr,
+      lesson_time: offer.slot_time,
+      duration_minutes: duration,
+      status: "confirmed",
+      lesson_type: "lesson",
+      pickup_location: pupilPricing?.address ?? null,
+      amount_due: amountDue,
+      payment_status: isPrepaid ? "prepaid" : "unpaid",
+    })
+    .select("id, lesson_date, lesson_time, duration_minutes, pupil_id")
+    .single();
 
   if (lessonErr) {
     console.error("receive-sms: lesson insert failed", lessonErr);
@@ -437,6 +445,9 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
     await notify("Slot already taken", `${pupilName} accepted ${when}, but it could not be booked`);
     return;
   }
+
+  console.log("receive-sms: lesson booked", booked);
+
 
   await supabase
     .from("gap_filler_offers")
