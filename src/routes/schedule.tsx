@@ -741,12 +741,6 @@ function SchedulePage() {
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
-  const [icsBlocks, setIcsBlocks] = useState<Array<{
-    id: string;
-    start_datetime: string;
-    end_datetime: string;
-    title: string | null;
-  }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
   // "add anything to my day" flow.
   const [personalEvents, setPersonalEvents] = useState<PersonalEvent[]>([]);
@@ -954,14 +948,6 @@ function SchedulePage() {
       const uid = session?.user?.id;
       if (!uid) return;
       await loadCalendarBlocks(uid);
-      const { data: icsData } = await supabase
-        .from("calendar_blocks")
-        .select("id, start_datetime, end_datetime, title")
-        .eq("instructor_id", uid)
-        .eq("source", "external_calendar")
-        .gte("end_datetime", todayISO)
-        .lte("start_datetime", `${in14DaysISO}T23:59:59`);
-      setIcsBlocks((icsData as any[]) ?? []);
     })();
   }, []);
 
