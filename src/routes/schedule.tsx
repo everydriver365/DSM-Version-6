@@ -2099,9 +2099,24 @@ function SchedulePage() {
                                             })}
                                           </div>
                                     )}
-                                    <span style={{ marginLeft: 4, fontSize: 9, color: "#854F0B" }}>
-                                      {preview.count} available · Fill →
+                                    <span style={{ marginLeft: 4, fontSize: 9, color: "#15683B", fontWeight: 600 }}>
+                                      {preview.count} available
                                     </span>
+                                    <span
+                                      style={{
+                                        marginLeft: "auto",
+                                        fontSize: 9,
+                                        fontWeight: 700,
+                                        color: "#FFFFFF",
+                                        background: "#1E7A46",
+                                        borderRadius: 8,
+                                        padding: "3px 8px",
+                                        flexShrink: 0,
+                                      }}
+                                    >
+                                      Fill →
+                                    </span>
+
                                   </div>
                                 </div>
                               </div>
