@@ -7352,7 +7352,7 @@ function HomePage() {
                                 onClick={(e) => { e.stopPropagation(); navigate({ to: '/gaps' as never }); }}
                                 style={{
                                   alignSelf: 'center',
-                                 background: '#D4A853',
+                                 background: '#1E7A46',
                                   color: '#FFFFFF',
                                  fontSize: 10,
                                  fontWeight: 500,
