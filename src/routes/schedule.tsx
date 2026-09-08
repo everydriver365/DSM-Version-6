@@ -988,10 +988,12 @@ function SchedulePage() {
         status: l.status ?? null,
         bufferAfterMinutes: l.pupils?.buffer_after_minutes ?? null,
       })),
-      calendarBlocks: (icsBlocks || []).map((b) => ({
+      calendarBlocks: (calendarBlocks || []).map((b) => ({
         start_datetime: b.start_datetime,
         end_datetime: b.end_datetime,
+        is_all_day: b.is_all_day ?? null,
       })),
+
       recurringBlocks: recurringBlocks || [],
       dayTimeOff: dayTimeOff.map((t) => ({
         start_time: t.start_time ?? null,
