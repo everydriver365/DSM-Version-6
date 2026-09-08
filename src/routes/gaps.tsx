@@ -1091,13 +1091,21 @@ function GapsPage() {
                 No active pupils found
               </div>
             ) : (
-              <div style={{ background: "#FFFFFF", borderRadius: 12, overflow: "hidden" }}>
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  border: "1px solid #EDF1F5",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                }}
+              >
                 {sortedPupils.map((p, idx) => {
                   const status = statusByPupil.get(p.id) ?? "no-preference";
                   const checked = selectedPupilIds.includes(p.id);
                   const badge =
                     status === "available"
-                      ? { label: "Available", bg: "#EAF3DE", color: "#3B6D11" }
+                      ? { label: "Available", bg: GREEN_TINT, color: GREEN_DEEP }
                       : status === "no-preference"
                         ? { label: "No preference", bg: "#F3F4F6", color: "#6B7280" }
                         : { label: "Unavailable", bg: "#F3F4F6", color: "#9CA3AF" };
@@ -1112,13 +1120,15 @@ function GapsPage() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 10,
-                        padding: "10px 12px",
+                        gap: 12,
+                        padding: "12px 14px",
                         borderTop: idx === 0 ? "none" : "0.5px solid #F4F6F8",
                         cursor: "pointer",
+                        background: checked ? GREEN_TINT : "transparent",
                         opacity: status === "unavailable" ? 0.6 : 1,
                       }}
                     >
+
                       <div
                         style={{
                           width: 34,
