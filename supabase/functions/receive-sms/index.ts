@@ -130,9 +130,11 @@ Deno.serve(async (req) => {
   const fromDigits = digitsOnly(from);
   const fromTail = fromDigits.slice(-10);
 
+  // Only the columns needed here — a missing optional column must never make
+  // the whole lookup fail and silently drop the reply.
   const { data: pupils, error: pupilError } = await supabase
     .from("pupils")
-    .select("id, phone, instructor_id, first_name, last_name")
+    .select("id, phone, instructor_id, name")
     .not("phone", "is", null);
 
   if (pupilError) {
@@ -165,5 +167,14 @@ Deno.serve(async (req) => {
     return twiml("");
   }
 
+  if (looksLikeAcceptance(body)) {
+    try {
+      await autoBookOffer(supabase, matched, from);
+    } catch (err) {
+      console.error("receive-sms: auto-book failed", err);
+    }
+  }
+
   return twiml("");
+
 });
