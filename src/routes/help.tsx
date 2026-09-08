@@ -58,7 +58,7 @@ const faqs: FaqItem[] = [
   {
     question: "How do I sync my calendar?",
     answer:
-      "Go to Settings → Calendar sync to set up ICS feed sync.",
+      "Go to Settings → Calendar sync to connect your Google Calendar.",
   },
   {
     question: "How do I change my working hours?",

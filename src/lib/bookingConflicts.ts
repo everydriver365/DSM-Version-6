@@ -255,7 +255,7 @@ export async function checkLessonConflict(
       .from("calendar_blocks")
       .select("start_datetime, end_datetime, title, is_all_day, blocks_availability")
       .eq("instructor_id", p.instructorId)
-      .in("source", ["ics_inbound", "external_calendar"])
+      .eq("source", "external_calendar")
       .gt("end_datetime", new Date(`${dateStr}T00:00:00`).toISOString())
       .lt("start_datetime", nextDay.toISOString()),
     supabase
