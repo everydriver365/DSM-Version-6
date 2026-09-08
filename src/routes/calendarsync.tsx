@@ -98,7 +98,7 @@ function CalendarSyncPage() {
           Authorization: `Bearer ${token}`,
         };
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced,google_sync_error,google_sync_error_at,ics_feed_url,ics_feed_status,ics_last_fetched_at`,
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced,google_sync_error,google_sync_error_at`,
           { headers },
         );
         if (res.ok) {
@@ -109,18 +109,11 @@ function CalendarSyncPage() {
                 calendar_last_synced?: string | null;
                 google_sync_error?: string | null;
                 google_sync_error_at?: string | null;
-                ics_feed_url?: string | null;
-                ics_feed_status?: string | null;
-                ics_last_fetched_at?: string | null;
               })
             : null;
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
           setSyncError(row?.google_sync_error ?? null);
-          setIcsInboundUrl(row?.ics_feed_url || "");
-          setSavedIcsUrl(row?.ics_feed_url || "");
-          setIcsFeedStatus(row?.ics_feed_status || "");
-          setIcsLastFetched(row?.ics_last_fetched_at || "");
         }
       } catch {
 
