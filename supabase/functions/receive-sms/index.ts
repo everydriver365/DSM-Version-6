@@ -3,8 +3,12 @@
 // - Validates the request is genuinely from Twilio via HMAC-SHA1 signature.
 // - Matches the sender's phone number to a pupil.
 // - Inserts the reply into chat_messages.
+// - If the reply is an acceptance of an open gap-filler offer, books the
+//   lesson automatically (clash-checked), closes competing offers, notifies
+//   the instructor and texts the pupil back.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { looksLikeAcceptance, OPEN_OFFER_STATUSES } from "../../../src/lib/smsAcceptance.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,6 +20,7 @@ const corsHeaders = {
 function digitsOnly(s: string | null | undefined): string {
   return (s ?? "").replace(/\D+/g, "");
 }
+
 
 // Build the string Twilio signs: full URL + concatenated sorted (key + value) pairs.
 function buildSignatureBase(url: string, params: Record<string, string>): string {
@@ -125,9 +130,11 @@ Deno.serve(async (req) => {
   const fromDigits = digitsOnly(from);
   const fromTail = fromDigits.slice(-10);
 
+  // Only the columns needed here — a missing optional column must never make
+  // the whole lookup fail and silently drop the reply.
   const { data: pupils, error: pupilError } = await supabase
     .from("pupils")
-    .select("id, phone, instructor_id, first_name, last_name")
+    .select("id, phone, instructor_id, name")
     .not("phone", "is", null);
 
   if (pupilError) {
@@ -160,5 +167,302 @@ Deno.serve(async (req) => {
     return twiml("");
   }
 
+  if (looksLikeAcceptance(body)) {
+    try {
+      await autoBookOffer(supabase, matched, from);
+    } catch (err) {
+      console.error("receive-sms: auto-book failed", err);
+    }
+  }
+
   return twiml("");
+
 });
+
+// ---------------------------------------------------------------------------
+// Automatic booking of an accepted gap-filler offer.
+// Mirrors the diary rules used by the app's double-booking check
+// (src/lib/bookingConflicts.ts): lessons, blocking Google calendar events,
+// recurring blocks and time off. The database overlap constraint remains the
+// final guard.
+// ---------------------------------------------------------------------------
+
+const DAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+function hmToMin(t: string | null | undefined): number {
+  if (!t) return 0;
+  const [h, m] = String(t).split(":").map(Number);
+  return (h || 0) * 60 + (m || 0);
+}
+
+function overlaps(aS: number, aE: number, bS: number, bE: number): boolean {
+  return aS < bE && bS < aE;
+}
+
+function londonParts(iso: string): { date: string; mins: number } {
+  const d = new Date(iso);
+  const fmt = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const p: Record<string, string> = {};
+  for (const part of fmt.formatToParts(d)) p[part.type] = part.value;
+  return {
+    date: `${p.year}-${p.month}-${p.day}`,
+    mins: Number(p.hour) * 60 + Number(p.minute),
+  };
+}
+
+function formatWhen(slotDate: string, slotTime: string): string {
+  try {
+    const d = new Date(`${slotDate}T${(slotTime || "00:00").slice(0, 5)}:00`);
+    const day = d.toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      timeZone: "Europe/London",
+    });
+    return `${day} at ${(slotTime || "").slice(0, 5)}`;
+  } catch {
+    return `${slotDate} at ${slotTime}`;
+  }
+}
+
+// deno-lint-ignore no-explicit-any
+async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
+  const instructorId = pupil.instructor_id;
+  if (!instructorId) return;
+
+  const { data: offer, error: offerErr } = await supabase
+    .from("gap_filler_offers")
+    .select("*")
+    .eq("pupil_id", pupil.id)
+    .eq("instructor_id", instructorId)
+    .in("status", OPEN_OFFER_STATUSES)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (offerErr) {
+    console.error("receive-sms: offer lookup failed", offerErr);
+    return;
+  }
+  if (!offer) {
+    console.log("receive-sms: acceptance with no open offer", { pupil: pupil.id });
+    return;
+  }
+
+  const dateStr: string = offer.slot_date;
+  const timeStr: string = String(offer.slot_time || "").slice(0, 5);
+  const duration: number = Number(offer.duration_minutes ?? 60) || 60;
+  const startMins = hmToMin(timeStr);
+  const endMins = startMins + duration;
+  const when = formatWhen(dateStr, timeStr);
+  const pupilName = pupil.name || "Your pupil";
+
+  // --- Clash check -------------------------------------------------------
+  const nextDay = new Date(`${dateStr}T00:00:00Z`);
+  nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+
+  const [lessonsRes, blocksRes, recurringRes, timeOffRes] = await Promise.all([
+    supabase
+      .from("lessons")
+      .select("lesson_time, duration_minutes, status")
+      .eq("instructor_id", instructorId)
+      .is("deleted_at", null)
+      .eq("lesson_date", dateStr),
+    supabase
+      .from("calendar_blocks")
+      .select("start_datetime, end_datetime, is_all_day, blocks_availability")
+      .eq("instructor_id", instructorId)
+      .eq("source", "external_calendar")
+      .gt("end_datetime", new Date(`${dateStr}T00:00:00Z`).toISOString())
+      .lt("start_datetime", nextDay.toISOString()),
+    supabase
+      .from("instructor_recurring_blocks")
+      .select("day_of_week, start_time, end_time, is_active")
+      .eq("instructor_id", instructorId),
+    supabase
+      .from("instructor_time_off")
+      .select("start_time, end_time, all_day")
+      .eq("instructor_id", instructorId)
+      .lte("start_date", dateStr)
+      .gte("end_date", dateStr),
+  ]);
+
+  const queryError =
+    lessonsRes.error || blocksRes.error || recurringRes.error || timeOffRes.error;
+  if (queryError) {
+    console.error("receive-sms: diary read failed", queryError);
+    return; // never book against unknown diary data
+  }
+
+  let clash = false;
+
+  for (const t of timeOffRes.data ?? []) {
+    if (t.all_day) clash = true;
+    else if (t.start_time && t.end_time &&
+      overlaps(startMins, endMins, hmToMin(t.start_time), hmToMin(t.end_time))) clash = true;
+  }
+
+  for (const l of lessonsRes.data ?? []) {
+    if (!l.lesson_time) continue;
+    if (String(l.status || "").toLowerCase() === "cancelled") continue;
+    const s = hmToMin(l.lesson_time);
+    const e = s + (Number(l.duration_minutes ?? 60) || 60);
+    if (overlaps(startMins, endMins, s, e)) clash = true;
+  }
+
+  for (const b of blocksRes.data ?? []) {
+    if (b.blocks_availability === false) continue;
+    if (b.is_all_day) continue; // all-day entries are notes, not busy time
+    const sP = londonParts(b.start_datetime);
+    const eP = londonParts(b.end_datetime);
+    const s = sP.date < dateStr ? 0 : sP.mins;
+    const e = eP.date > dateStr ? 1440 : eP.mins;
+    if (e > s && overlaps(startMins, endMins, s, e)) clash = true;
+  }
+
+  const dayName = DAY_NAMES[new Date(`${dateStr}T12:00:00Z`).getUTCDay()];
+  for (const r of recurringRes.data ?? []) {
+    if (r.is_active === false) continue;
+    if (r.day_of_week !== dayName) continue;
+    if (overlaps(startMins, endMins, hmToMin(r.start_time), hmToMin(r.end_time))) clash = true;
+  }
+
+  const queueSms = async (message: string) => {
+    if (!fromNumber) return;
+    const { error } = await supabase.from("sms_queue").insert({
+      instructor_id: instructorId,
+      pupil_phone: fromNumber,
+      message,
+    });
+    if (error) console.error("receive-sms: sms queue insert failed", error);
+    else {
+      try {
+        await supabase.functions.invoke("send-sms", { body: {} });
+      } catch (e) {
+        console.warn("receive-sms: send-sms invoke failed", e);
+      }
+    }
+  };
+
+  const notify = async (title: string, bodyText: string) => {
+    const { error } = await supabase.from("instructor_notifications").insert({
+      instructor_id: instructorId,
+      title,
+      body: bodyText,
+      type: "lesson",
+      read: false,
+    });
+    if (error) console.error("receive-sms: notification insert failed", error);
+    try {
+      await supabase.functions.invoke("send-push", {
+        body: { instructor_id: instructorId, title, body: bodyText, type: "lesson" },
+      });
+    } catch (e) {
+      console.warn("receive-sms: push failed", e);
+    }
+  };
+
+  if (clash) {
+    await supabase
+      .from("gap_filler_offers")
+      .update({ status: "expired" })
+      .eq("id", offer.id);
+    await queueSms(
+      `Sorry — that slot on ${when} has just gone. I'll let you know as soon as another comes up.`,
+    );
+    await notify("Slot already taken", `${pupilName} accepted ${when}, but it clashed`);
+    return;
+  }
+
+  // --- Pricing -----------------------------------------------------------
+  let amountDue: number | null = offer.original_price ?? null;
+  if (offer.discount_code_id) {
+    const { data: dc } = await supabase
+      .from("discount_codes")
+      .select("*")
+      .eq("id", offer.discount_code_id)
+      .maybeSingle();
+    const now = Date.now();
+    const expired = dc?.expires_at ? new Date(dc.expires_at).getTime() < now : false;
+    const overUsed = dc?.max_uses != null && (dc.uses_count ?? 0) >= dc.max_uses;
+    if (dc && dc.active !== false && !expired && !overUsed) {
+      amountDue = offer.discounted_price ?? offer.original_price ?? null;
+      await supabase
+        .from("discount_codes")
+        .update({ uses_count: (dc.uses_count ?? 0) + 1 })
+        .eq("id", dc.id);
+    }
+  }
+
+  const { data: pupilPricing } = await supabase
+    .from("pupils")
+    .select("pricing_type")
+    .eq("id", pupil.id)
+    .maybeSingle();
+  const pricingType = String(pupilPricing?.pricing_type ?? "").toLowerCase();
+  const isPrepaid = pricingType === "block" || pricingType === "national_intensives";
+
+  const { error: lessonErr } = await supabase.from("lessons").insert({
+    instructor_id: instructorId,
+    pupil_id: pupil.id,
+    lesson_date: dateStr,
+    lesson_time: offer.slot_time,
+    duration_minutes: duration,
+    status: "confirmed",
+    amount_due: amountDue,
+    payment_status: isPrepaid ? "prepaid" : "unpaid",
+  });
+
+  if (lessonErr) {
+    console.error("receive-sms: lesson insert failed", lessonErr);
+    await queueSms(
+      `Sorry — that slot on ${when} has just gone. I'll let you know as soon as another comes up.`,
+    );
+    await notify("Slot already taken", `${pupilName} accepted ${when}, but it could not be booked`);
+    return;
+  }
+
+  await supabase
+    .from("gap_filler_offers")
+    .update({ status: "accepted", accepted_at: new Date().toISOString() })
+    .eq("id", offer.id);
+
+  // Close any other offers still out for the same slot.
+  const { error: closeErr } = await supabase
+    .from("gap_filler_offers")
+    .update({ status: "expired" })
+    .eq("instructor_id", instructorId)
+    .eq("slot_date", dateStr)
+    .eq("slot_time", offer.slot_time)
+    .in("status", OPEN_OFFER_STATUSES)
+    .neq("id", offer.id);
+  if (closeErr) console.error("receive-sms: closing competing offers failed", closeErr);
+
+  await supabase.from("chat_messages").insert({
+    instructor_id: instructorId,
+    pupil_id: pupil.id,
+    sender_type: "instructor",
+    sender_id: instructorId,
+    source: "sms",
+    body: `Great news — you're booked in for ${when}! See you then.`,
+  });
+
+  await queueSms(`Great news — you're booked in for ${when}! See you then.`);
+  await notify("Lesson booked!", `${pupilName} confirmed ${when}`);
+}

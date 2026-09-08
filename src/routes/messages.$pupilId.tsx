@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { notifyInstructors } from "@/lib/notify";
+import { looksLikeAcceptance, OPEN_OFFER_STATUSES } from "@/lib/smsAcceptance";
 import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
@@ -83,19 +84,8 @@ function formatSlotWhen(slotDate: string, slotTime: string): string {
   }
 }
 
-const ACCEPT_WORDS = ["yes", "yeah", "yep", "yup", "sure", "ok", "okay", "confirm", "sounds good"];
-function looksLikeAcceptance(body: string): boolean {
-  const t = body.trim().toLowerCase();
-  if (!t) return false;
-  for (const w of ACCEPT_WORDS) {
-    if (t === w) return true;
-    if (t.startsWith(w)) {
-      const nextChar = t.charAt(w.length);
-      if (nextChar === "" || /[\s.!?,]/.test(nextChar)) return true;
-    }
-  }
-  return false;
-}
+// Acceptance wording rules are shared with the receive-sms Edge Function.
+
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", {
@@ -796,7 +786,7 @@ function PupilThreadPage() {
         .from("gap_filler_offers")
         .select("*")
         .eq("pupil_id", pupilId)
-        .eq("status", "sent")
+        .in("status", OPEN_OFFER_STATUSES)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
