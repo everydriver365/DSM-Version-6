@@ -19,6 +19,11 @@ import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/Botto
 import { SaveButton } from "../dsm/SaveFooter";
 import { PupilPickerSheet } from "./PupilPickerSheet";
 import { supabase } from "../../lib/supabaseClient";
+import {
+  guardLessonSave,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+} from "../../lib/bookingConflicts";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
@@ -506,6 +511,25 @@ export function AddLessonSheet({
     const isPrepaidPricing =
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
+
+    // Double-booking safety: stop clashes before anything is written.
+    const guard = await guardLessonSave({
+      instructorId: user.id,
+      pupilId: isEvent ? null : pupilId,
+      date,
+      time: effTime,
+      durationMinutes: savedDuration,
+      excludeLessonId: editingLesson?.id ?? null,
+    });
+    if (!guard.ok) {
+      if (guard.message) {
+        setErrors({ form: guard.message });
+        toast.error(guard.message);
+        hapticError();
+      }
+      setSaving(false);
+      return;
+    }
 
     // Update existing lesson when editing.
     if (editingLesson) {
