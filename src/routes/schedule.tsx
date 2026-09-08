@@ -722,9 +722,11 @@ function SchedulePage() {
   const unreadCount = useUnreadCount({ skipBadge: true });
   const today = useMemo(() => startOfDay(new Date()), []);
   const todayISO = ymdLocal(today);
-  const in14DaysISO = ymdLocal(addDays(today, 14));
+  const gapWindowDays = useGapWindowDays();
+  const gapWindowEndISO = ymdLocal(addDays(today, gapWindowDays));
   const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
+
 
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
