@@ -149,6 +149,7 @@ function pupilDisplayName(p: Pupil): string {
 
 function GapsPage() {
   const navigate = useNavigate();
+  const rangeDays = useGapWindowDays();
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -167,7 +168,8 @@ function GapsPage() {
   useEffect(() => {
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rangeDays]);
+
 
   async function load() {
     setLoading(true);
