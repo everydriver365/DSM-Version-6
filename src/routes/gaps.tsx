@@ -4,6 +4,12 @@ import { supabase } from "@/lib/supabaseClient";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import {
+  useGapWindowDays,
+  GAP_WINDOW_OPTIONS,
+  writeGapWindowDays,
+} from "@/lib/gapPrefs";
+
+import {
   proximityToNeighbours,
   proximityRank,
   proximityLabel,
