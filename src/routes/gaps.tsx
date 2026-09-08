@@ -19,6 +19,7 @@ import {
   IconArrowLeft,
   IconBolt,
   IconCalendar,
+  IconCheck,
   IconClock,
   IconSend,
   IconLoader2,
