@@ -285,10 +285,11 @@ Deno.serve(async (req) => {
     calendar_last_synced: new Date().toISOString(),
   }).eq("id", instructor_id);
 
-  console.log(`[sync-google-calendar] done: ${synced} synced`);
+  console.log(`[sync-google-calendar] done: ${synced} synced, ${removed} removed`);
 
   return new Response(
-    JSON.stringify({ ok: true, success: true, synced, eventsImported: synced }),
+    JSON.stringify({ ok: true, success: true, synced, removed, eventsImported: synced }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
 });
+
