@@ -21,6 +21,29 @@ function digitsOnly(s: string | null | undefined): string {
   return (s ?? "").replace(/\D+/g, "");
 }
 
+type InboundLogRow = {
+  instructor_id?: string | null;
+  pupil_id?: string | null;
+  from_number?: string | null;
+  message_sid?: string | null;
+  body?: string | null;
+  outcome: string;
+  detail?: string | null;
+};
+
+// One audit row per inbound text. Never allowed to break reply handling.
+// deno-lint-ignore no-explicit-any
+async function logInbound(supabase: any, row: InboundLogRow): Promise<void> {
+  try {
+    const { error } = await supabase.from("sms_inbound_log").insert(row);
+    if (error) console.error("receive-sms: inbound log insert failed", error);
+  } catch (e) {
+    console.error("receive-sms: inbound log threw", e);
+  }
+}
+
+
+
 
 // Build the string Twilio signs: full URL + concatenated sorted (key + value) pairs.
 function buildSignatureBase(url: string, params: Record<string, string>): string {
@@ -104,10 +127,23 @@ Deno.serve(async (req) => {
 
   console.log("receive-sms: signature check", { publicUrl, base, expected, signatureHeader });
 
+  const from = params["From"] ?? "";
+  const body = params["Body"] ?? "";
+  const messageSid = params["MessageSid"] ?? params["SmsMessageSid"] ?? "";
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
   if (!signatureHeader || !safeEqual(signatureHeader, expected)) {
     console.warn("receive-sms: invalid Twilio signature", {
       publicUrl,
       hasHeader: !!signatureHeader,
+    });
+    await logInbound(supabase, {
+      from_number: from,
+      message_sid: messageSid,
+      body,
+      outcome: "invalid_signature",
+      detail: signatureHeader ? "Signature did not match" : "No signature header",
     });
     return new Response("Invalid signature", {
       status: 403,
@@ -115,15 +151,15 @@ Deno.serve(async (req) => {
     });
   }
 
-  const from = params["From"] ?? "";
-  const body = params["Body"] ?? "";
-  const messageSid = params["MessageSid"] ?? params["SmsMessageSid"] ?? "";
-
   if (!from) {
+    await logInbound(supabase, {
+      body,
+      message_sid: messageSid,
+      outcome: "error",
+      detail: "No sender number on the request",
+    });
     return twiml("");
   }
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   // Match sender to a pupil by comparing digits-only phone numbers, and also
   // by the last 10 digits (handles country-code differences).
@@ -139,6 +175,13 @@ Deno.serve(async (req) => {
 
   if (pupilError) {
     console.error("receive-sms: pupil lookup failed", pupilError);
+    await logInbound(supabase, {
+      from_number: from,
+      message_sid: messageSid,
+      body,
+      outcome: "error",
+      detail: `Pupil lookup failed: ${pupilError.message ?? "unknown error"}`,
+    });
     return twiml("");
   }
 
@@ -150,8 +193,23 @@ Deno.serve(async (req) => {
 
   if (!matched) {
     console.log("receive-sms: no pupil matched", { from, messageSid });
+    await logInbound(supabase, {
+      from_number: from,
+      message_sid: messageSid,
+      body,
+      outcome: "no_pupil_match",
+      detail: "No pupil has this phone number",
+    });
     return twiml("");
   }
+
+  const logBase = {
+    instructor_id: matched.instructor_id ?? null,
+    pupil_id: matched.id,
+    from_number: from,
+    message_sid: messageSid,
+    body,
+  };
 
   const { error: insertError } = await supabase.from("chat_messages").insert({
     pupil_id: matched.id,
@@ -164,18 +222,35 @@ Deno.serve(async (req) => {
 
   if (insertError) {
     console.error("receive-sms: chat_messages insert failed", insertError);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Saving to the chat failed: ${insertError.message ?? "unknown error"}`,
+    });
     return twiml("");
   }
 
   if (looksLikeAcceptance(body)) {
     try {
-      await autoBookOffer(supabase, matched, from);
+      await autoBookOffer(supabase, matched, from, logBase);
     } catch (err) {
       console.error("receive-sms: auto-book failed", err);
+      await logInbound(supabase, {
+        ...logBase,
+        outcome: "error",
+        detail: `Auto-booking failed: ${err instanceof Error ? err.message : String(err)}`,
+      });
     }
+  } else {
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "logged_only",
+      detail: "Saved to the chat — not read as an acceptance",
+    });
   }
 
   return twiml("");
+
 
 });
 
@@ -242,9 +317,23 @@ function formatWhen(slotDate: string, slotTime: string): string {
 }
 
 // deno-lint-ignore no-explicit-any
-async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
+async function autoBookOffer(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  // deno-lint-ignore no-explicit-any
+  pupil: any,
+  fromNumber: string,
+  logBase: Omit<InboundLogRow, "outcome">,
+) {
   const instructorId = pupil.instructor_id;
-  if (!instructorId) return;
+  if (!instructorId) {
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: "Pupil has no instructor",
+    });
+    return;
+  }
 
   const { data: offer, error: offerErr } = await supabase
     .from("gap_filler_offers")
@@ -258,12 +347,23 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
 
   if (offerErr) {
     console.error("receive-sms: offer lookup failed", offerErr);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Offer lookup failed: ${offerErr.message ?? "unknown error"}`,
+    });
     return;
   }
   if (!offer) {
     console.log("receive-sms: acceptance with no open offer", { pupil: pupil.id });
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "no_open_offer",
+      detail: "Reply read as YES but no open offer for this pupil",
+    });
     return;
   }
+
 
   const dateStr: string = offer.slot_date;
   const timeStr: string = String(offer.slot_time || "").slice(0, 5);
@@ -307,7 +407,13 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
     lessonsRes.error || blocksRes.error || recurringRes.error || timeOffRes.error;
   if (queryError) {
     console.error("receive-sms: diary read failed", queryError);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Diary check failed: ${queryError.message ?? "unknown error"}`,
+    });
     return; // never book against unknown diary data
+
   }
 
   let clash = false;
@@ -387,7 +493,13 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
       `Sorry — that slot on ${when} has just gone. I'll let you know as soon as another comes up.`,
     );
     await notify("Slot already taken", `${pupilName} accepted ${when}, but it clashed`);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "clash",
+      detail: `Accepted ${when} but it clashed with the diary — not booked`,
+    });
     return;
+
   }
 
   // --- Pricing -----------------------------------------------------------
@@ -443,7 +555,13 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
       `Sorry — that slot on ${when} has just gone. I'll let you know as soon as another comes up.`,
     );
     await notify("Slot already taken", `${pupilName} accepted ${when}, but it could not be booked`);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Booking ${when} failed: ${lessonErr.message ?? "unknown error"}`,
+    });
     return;
+
   }
 
   console.log("receive-sms: lesson booked", booked);
@@ -476,4 +594,10 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
 
   await queueSms(`Great news — you're booked in for ${when}! See you then.`);
   await notify("Lesson booked!", `${pupilName} confirmed ${when}`);
+  await logInbound(supabase, {
+    ...logBase,
+    outcome: "booked",
+    detail: `Booked ${when} (${duration} min)`,
+  });
+
 }

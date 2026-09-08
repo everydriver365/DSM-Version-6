@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconAlertCircle, IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCalendarCheck, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconFileText, IconFingerprint, IconFlag, IconGift, IconHelp, IconLogout, IconMapPin, IconMicrophone, IconPlus, IconRobot, IconSchool, IconSettings, IconShield, IconShoppingBag, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
+import { IconAlertCircle, IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCalendarCheck, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconFileText, IconFingerprint, IconFlag, IconGift, IconHelp, IconLogout, IconMapPin, IconMessage, IconMicrophone, IconPlus, IconRobot, IconSchool, IconSettings, IconShield, IconShoppingBag, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import squareLogo from "../assets/square-logo.png.asset.json";
 
@@ -973,6 +973,14 @@ function SettingsPage() {
             subLabel="Google Calendar and iCloud connections"
             onClick={() => navigate({ to: "/calendarsync" as never })}
           />
+          <MenuRow
+            icon={<IconMessage size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Text replies"
+            subLabel="Every incoming reply and what happened to it"
+            onClick={() => navigate({ to: "/textreplies" as never })}
+          />
+
           <MenuRow
             icon={<IconMicrophone size={18} color="#FFFFFF" />}
             iconBg="#0B2341"
