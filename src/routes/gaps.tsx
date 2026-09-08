@@ -1167,16 +1167,17 @@ function GapsPage() {
                       <span
                         style={{
                           fontSize: 10,
-                          fontWeight: 600,
+                          fontWeight: 700,
                           background: badge.bg,
                           color: badge.color,
-                          padding: "2px 6px",
-                          borderRadius: 4,
+                          padding: "4px 8px",
+                          borderRadius: 999,
                           whiteSpace: "nowrap",
                         }}
                       >
                         {badge.label}
                       </span>
+
                       <input
                         type="checkbox"
                         checked={checked}
