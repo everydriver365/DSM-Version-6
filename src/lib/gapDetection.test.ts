@@ -82,7 +82,7 @@ describe("computeDayGaps", () => {
     ).toEqual([{ startMins: 675, endMins: 960, gapMins: 285 }]);
   });
 
-  test("blocks the day for an all-day imported calendar event", () => {
+  test("treats an all-day imported calendar event as a note, not busy time", () => {
     expect(
       computeDayGaps({
         ...base,
@@ -92,8 +92,9 @@ describe("computeDayGaps", () => {
           is_all_day: true,
         }],
       }),
-    ).toEqual([]);
+    ).toEqual([{ startMins: 540, endMins: 1080, gapMins: 540 }]);
   });
+
 
   test("reserves travel time on both sides of imported calendar events", () => {
     expect(
