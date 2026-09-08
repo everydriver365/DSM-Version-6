@@ -723,9 +723,37 @@ function GapsPage() {
       >
         <IconArrowLeft size={20} color="#FFFFFF" />
       </button>
-      <span style={{ fontSize: 18, fontWeight: 600, color: "#FFFFFF" }}>Gap filler</span>
+      <span style={{ fontSize: 18, fontWeight: 600, color: "#FFFFFF", flex: 1 }}>Gap filler</span>
+      <label
+        htmlFor="gapWindow"
+        style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", display: "flex", alignItems: "center", gap: 6 }}
+      >
+        Next
+        <select
+          id="gapWindow"
+          value={rangeDays}
+          onChange={(e) => writeGapWindowDays(parseInt(e.target.value, 10))}
+          style={{
+            background: "rgba(255,255,255,0.12)",
+            color: "#FFFFFF",
+            border: "1px solid rgba(255,255,255,0.25)",
+            borderRadius: 8,
+            padding: "4px 8px",
+            fontSize: 12,
+            fontFamily: "inherit",
+            cursor: "pointer",
+          }}
+        >
+          {GAP_WINDOW_OPTIONS.map((d) => (
+            <option key={d} value={d} style={{ color: NAVY }}>
+              {d} days
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
+
 
   if (loading) {
     return (
