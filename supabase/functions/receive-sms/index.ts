@@ -104,10 +104,23 @@ Deno.serve(async (req) => {
 
   console.log("receive-sms: signature check", { publicUrl, base, expected, signatureHeader });
 
+  const from = params["From"] ?? "";
+  const body = params["Body"] ?? "";
+  const messageSid = params["MessageSid"] ?? params["SmsMessageSid"] ?? "";
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
   if (!signatureHeader || !safeEqual(signatureHeader, expected)) {
     console.warn("receive-sms: invalid Twilio signature", {
       publicUrl,
       hasHeader: !!signatureHeader,
+    });
+    await logInbound(supabase, {
+      from_number: from,
+      message_sid: messageSid,
+      body,
+      outcome: "invalid_signature",
+      detail: signatureHeader ? "Signature did not match" : "No signature header",
     });
     return new Response("Invalid signature", {
       status: 403,
@@ -115,15 +128,15 @@ Deno.serve(async (req) => {
     });
   }
 
-  const from = params["From"] ?? "";
-  const body = params["Body"] ?? "";
-  const messageSid = params["MessageSid"] ?? params["SmsMessageSid"] ?? "";
-
   if (!from) {
+    await logInbound(supabase, {
+      body,
+      message_sid: messageSid,
+      outcome: "error",
+      detail: "No sender number on the request",
+    });
     return twiml("");
   }
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   // Match sender to a pupil by comparing digits-only phone numbers, and also
   // by the last 10 digits (handles country-code differences).
@@ -139,6 +152,13 @@ Deno.serve(async (req) => {
 
   if (pupilError) {
     console.error("receive-sms: pupil lookup failed", pupilError);
+    await logInbound(supabase, {
+      from_number: from,
+      message_sid: messageSid,
+      body,
+      outcome: "error",
+      detail: `Pupil lookup failed: ${pupilError.message ?? "unknown error"}`,
+    });
     return twiml("");
   }
 
@@ -150,8 +170,23 @@ Deno.serve(async (req) => {
 
   if (!matched) {
     console.log("receive-sms: no pupil matched", { from, messageSid });
+    await logInbound(supabase, {
+      from_number: from,
+      message_sid: messageSid,
+      body,
+      outcome: "no_pupil_match",
+      detail: "No pupil has this phone number",
+    });
     return twiml("");
   }
+
+  const logBase = {
+    instructor_id: matched.instructor_id ?? null,
+    pupil_id: matched.id,
+    from_number: from,
+    message_sid: messageSid,
+    body,
+  };
 
   const { error: insertError } = await supabase.from("chat_messages").insert({
     pupil_id: matched.id,
@@ -164,18 +199,35 @@ Deno.serve(async (req) => {
 
   if (insertError) {
     console.error("receive-sms: chat_messages insert failed", insertError);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Saving to the chat failed: ${insertError.message ?? "unknown error"}`,
+    });
     return twiml("");
   }
 
   if (looksLikeAcceptance(body)) {
     try {
-      await autoBookOffer(supabase, matched, from);
+      await autoBookOffer(supabase, matched, from, logBase);
     } catch (err) {
       console.error("receive-sms: auto-book failed", err);
+      await logInbound(supabase, {
+        ...logBase,
+        outcome: "error",
+        detail: `Auto-booking failed: ${err instanceof Error ? err.message : String(err)}`,
+      });
     }
+  } else {
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "logged_only",
+      detail: "Saved to the chat — not read as an acceptance",
+    });
   }
 
   return twiml("");
+
 
 });
 
