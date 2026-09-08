@@ -4,6 +4,12 @@ import { supabase } from "@/lib/supabaseClient";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import {
+  proximityToNeighbours,
+  proximityRank,
+  proximityLabel,
+  type Proximity,
+} from "@/lib/travel";
+import {
   IconArrowLeft,
   IconBolt,
   IconCalendar,
