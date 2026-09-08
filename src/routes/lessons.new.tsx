@@ -306,7 +306,7 @@ function NewLessonPage() {
       series_id: seriesId,
     }).select("id").single();
     if (error) {
-      setErrors({ form: error.message });
+      setErrors({ form: isDoubleBookingError(error) ? DOUBLE_BOOKING_MESSAGE : error.message });
       setSaving(false);
       return;
     }
@@ -344,7 +344,18 @@ function NewLessonPage() {
         cur = new Date(cur);
         cur.setDate(cur.getDate() + step);
       }
-      const lessonsPayload = dates.map((d) => ({
+      const { free: freeDates, clashing: clashDates } = await splitClashingDates({
+        instructorId: user.id,
+        dates,
+        time,
+        durationMinutes: duration,
+      });
+      if (clashDates.length > 0) {
+        setErrors({
+          form: `${clashDates.length} repeat lesson${clashDates.length === 1 ? "" : "s"} skipped — already booked`,
+        });
+      }
+      const lessonsPayload = freeDates.map((d) => ({
         instructor_id: user.id,
         pupil_id: pupilId,
         lesson_date: d,
