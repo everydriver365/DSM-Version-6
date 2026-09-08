@@ -301,6 +301,8 @@ function CalendarSyncPage() {
           `Synced ${data.synced ?? data.eventsImported ?? 0} events from Google Calendar`,
         );
         setLastSynced(new Date().toISOString());
+        setSyncError(null);
+
         if (userId) {
           void (async () => {
             try {
