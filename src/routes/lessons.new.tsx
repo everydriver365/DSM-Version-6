@@ -7,6 +7,12 @@ import { toast } from "@/lib/toast";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import {
+  guardLessonSave,
+  splitClashingDates,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+} from "../lib/bookingConflicts";
 import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
 import { PageLayout } from "@/components/PageLayout";
@@ -242,6 +248,20 @@ function NewLessonPage() {
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
 
+    // Double-booking safety: stop clashes before anything is written.
+    const guard = await guardLessonSave({
+      instructorId: user.id,
+      pupilId,
+      date,
+      time,
+      durationMinutes: duration,
+    });
+    if (!guard.ok) {
+      if (guard.message) setErrors({ form: guard.message });
+      setSaving(false);
+      return;
+    }
+
     // If recurring, create a lesson_series first so the initial lesson can link to it
     let seriesId: string | null = null;
     if (isRecurring) {
@@ -286,7 +306,7 @@ function NewLessonPage() {
       series_id: seriesId,
     }).select("id").single();
     if (error) {
-      setErrors({ form: error.message });
+      setErrors({ form: isDoubleBookingError(error) ? DOUBLE_BOOKING_MESSAGE : error.message });
       setSaving(false);
       return;
     }
@@ -324,7 +344,18 @@ function NewLessonPage() {
         cur = new Date(cur);
         cur.setDate(cur.getDate() + step);
       }
-      const lessonsPayload = dates.map((d) => ({
+      const { free: freeDates, clashing: clashDates } = await splitClashingDates({
+        instructorId: user.id,
+        dates,
+        time,
+        durationMinutes: duration,
+      });
+      if (clashDates.length > 0) {
+        setErrors({
+          form: `${clashDates.length} repeat lesson${clashDates.length === 1 ? "" : "s"} skipped — already booked`,
+        });
+      }
+      const lessonsPayload = freeDates.map((d) => ({
         instructor_id: user.id,
         pupil_id: pupilId,
         lesson_date: d,

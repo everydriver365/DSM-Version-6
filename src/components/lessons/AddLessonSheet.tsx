@@ -19,6 +19,12 @@ import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/Botto
 import { SaveButton } from "../dsm/SaveFooter";
 import { PupilPickerSheet } from "./PupilPickerSheet";
 import { supabase } from "../../lib/supabaseClient";
+import {
+  guardLessonSave,
+  splitClashingDates,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+} from "../../lib/bookingConflicts";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
@@ -507,6 +513,25 @@ export function AddLessonSheet({
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
 
+    // Double-booking safety: stop clashes before anything is written.
+    const guard = await guardLessonSave({
+      instructorId: user.id,
+      pupilId: isEvent ? null : pupilId,
+      date,
+      time: effTime,
+      durationMinutes: savedDuration,
+      excludeLessonId: editingLesson?.id ?? null,
+    });
+    if (!guard.ok) {
+      if (guard.message) {
+        setErrors({ form: guard.message });
+        toast.error(guard.message);
+        hapticError();
+      }
+      setSaving(false);
+      return;
+    }
+
     // Update existing lesson when editing.
     if (editingLesson) {
       const { error: updErr } = await supabase
@@ -526,8 +551,9 @@ export function AddLessonSheet({
         })
         .eq("id", editingLesson.id);
       if (updErr) {
-        setErrors({ form: updErr.message });
-        toast.error(updErr.message);
+        const msg = isDoubleBookingError(updErr) ? DOUBLE_BOOKING_MESSAGE : updErr.message;
+        setErrors({ form: msg });
+        toast.error(msg);
         hapticError();
         setSaving(false);
         return;
@@ -616,8 +642,9 @@ export function AddLessonSheet({
       .select("id")
       .single();
     if (error) {
-      setErrors({ form: error.message });
-      toast.error(error.message);
+      const msg = isDoubleBookingError(error) ? DOUBLE_BOOKING_MESSAGE : error.message;
+      setErrors({ form: msg });
+      toast.error(msg);
       hapticError();
       setSaving(false);
       return;
@@ -650,7 +677,18 @@ export function AddLessonSheet({
         cur = new Date(cur);
         cur.setDate(cur.getDate() + step);
       }
-      const lessonsPayload = dates.map((d) => ({
+      const { free: freeDates, clashing: clashDates } = await splitClashingDates({
+        instructorId: user.id,
+        dates,
+        time: effTime,
+        durationMinutes: savedDuration,
+      });
+      if (clashDates.length > 0) {
+        toast.error(
+          `${clashDates.length} repeat lesson${clashDates.length === 1 ? "" : "s"} skipped — already booked`,
+        );
+      }
+      const lessonsPayload = freeDates.map((d) => ({
         instructor_id: user.id,
         pupil_id: pupilId,
         lesson_date: d,

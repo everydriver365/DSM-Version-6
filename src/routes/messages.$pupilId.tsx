@@ -5,6 +5,12 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
+import {
+  checkLessonConflict,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+  type Conflict,
+} from "../lib/bookingConflicts";
 import { PageLayout } from "@/components/PageLayout";
 import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
 import { PupilAvatar } from "@/components/PupilAvatar";
@@ -852,6 +858,18 @@ function PupilThreadPage() {
       const isPrepaidPricing =
         pricingType === "block" || pricingType === "national_intensives";
 
+      // Double-booking safety: refuse to book over existing diary time.
+      const clash = await checkLessonConflict({
+        instructorId: userId,
+        pupilId,
+        date: pendingOffer.slot_date,
+        time: pendingOffer.slot_time,
+        durationMinutes: pendingOffer.duration_minutes,
+      }).catch(() => null);
+      if (clash && clash.blocking.length > 0) {
+        throw new Error(clash.blocking.map((c: Conflict) => c.label).join(". "));
+      }
+
       const { error: lessonErr } = await supabase.from("lessons").insert({
         instructor_id: userId,
         pupil_id: pupilId,
@@ -864,7 +882,7 @@ function PupilThreadPage() {
       });
       if (lessonErr) {
         console.error("[pupil-thread] lesson insert failed:", lessonErr);
-        throw lessonErr;
+        throw isDoubleBookingError(lessonErr) ? new Error(DOUBLE_BOOKING_MESSAGE) : lessonErr;
       }
 
       // Increment discount uses_count after successful lesson insert
