@@ -377,15 +377,39 @@ function GapsPage() {
           minGapMinutes: MIN_GAP,
         });
 
+        // Where the instructor is before and after each gap, for travel ranking.
+        const daySpans = lessons
+          .filter(
+            (l) =>
+              l.lesson_date === dateStr &&
+              l.lesson_time &&
+              (l.status ?? "scheduled") !== "cancelled",
+          )
+          .map((l) => {
+            const [h, m] = (l.lesson_time as string).split(":").map(Number);
+            const start = (h || 0) * 60 + (m || 0);
+            return {
+              start,
+              end: start + (l.duration_minutes ?? 60),
+              postcode: l.pupil_id ? pupilPostcodes.get(l.pupil_id) ?? null : null,
+            };
+          })
+          .sort((a, b) => a.start - b.start);
+
         for (const g of result) {
+          const before = [...daySpans].reverse().find((s) => s.end <= g.startMins);
+          const after = daySpans.find((s) => s.start >= g.endMins);
           computed.push({
             date: dateStr,
             startMins: g.startMins,
             endMins: g.endMins,
             durationMins: g.gapMins,
+            beforePostcode: before?.postcode ?? null,
+            afterPostcode: after?.postcode ?? null,
           });
         }
       }
+
 
       setGaps(computed);
       setSelectedGapIdx(0);
