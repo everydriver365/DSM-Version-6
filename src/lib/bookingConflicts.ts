@@ -362,3 +362,57 @@ export async function guardLessonSave(
 
   return { ok: true };
 }
+
+/**
+ * For a recurring series: split candidate dates into ones that are free and
+ * ones that clash with an existing lesson. One query, lessons only — the
+ * database guard still protects anything this misses.
+ */
+export async function splitClashingDates(params: {
+  instructorId: string;
+  dates: string[];
+  time: string;
+  durationMinutes: number;
+}): Promise<{ free: string[]; clashing: string[] }> {
+  const { instructorId, dates } = params;
+  if (dates.length === 0) return { free: [], clashing: [] };
+  const startMins = hmToMin(params.time);
+  const endMins = startMins + (Number(params.durationMinutes) || 60);
+  const sorted = [...dates].sort();
+
+  const res = await supabase
+    .from("lessons")
+    .select("lesson_date, lesson_time, duration_minutes, status")
+    .eq("instructor_id", instructorId)
+    .is("deleted_at", null)
+    .gte("lesson_date", sorted[0])
+    .lte("lesson_date", sorted[sorted.length - 1]);
+  if (res.error) {
+    console.warn("[bookingConflicts] recurring check failed", res.error);
+    return { free: dates, clashing: [] };
+  }
+
+  const byDate = new Map<string, Array<{ s: number; e: number }>>();
+  for (const l of (res.data ?? []) as Array<{
+    lesson_date: string;
+    lesson_time: string | null;
+    duration_minutes: number | null;
+    status: string | null;
+  }>) {
+    if (!l.lesson_time) continue;
+    if (String(l.status || "").toLowerCase() === "cancelled") continue;
+    const s = hmToMin(l.lesson_time);
+    const list = byDate.get(l.lesson_date) ?? [];
+    list.push({ s, e: s + (l.duration_minutes ?? 60) });
+    byDate.set(l.lesson_date, list);
+  }
+
+  const free: string[] = [];
+  const clashing: string[] = [];
+  for (const d of dates) {
+    const busy = byDate.get(d) ?? [];
+    if (busy.some((b) => overlaps(startMins, endMins, b.s, b.e))) clashing.push(d);
+    else free.push(d);
+  }
+  return { free, clashing };
+}
