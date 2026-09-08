@@ -4,6 +4,12 @@ import { supabase } from "@/lib/supabaseClient";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import {
+  proximityToNeighbours,
+  proximityRank,
+  proximityLabel,
+  type Proximity,
+} from "@/lib/travel";
+import {
   IconArrowLeft,
   IconBolt,
   IconCalendar,
@@ -96,6 +102,9 @@ type Gap = {
   startMins: number;
   endMins: number;
   durationMins: number;
+  // Where the instructor is coming from / heading to around this gap.
+  beforePostcode: string | null;
+  afterPostcode: string | null;
 };
 
 type Pupil = {
@@ -309,6 +318,7 @@ function GapsPage() {
       setUnavailability(unavailData);
 
       const pupilBuffers = new Map(pupilData.map((p) => [p.id, p.buffer_after_minutes]));
+      const pupilPostcodes = new Map(pupilData.map((p) => [p.id, p.postcode]));
 
       // --- Exactly 7 days: today .. today + 6 ---
       const computed: Gap[] = [];
@@ -374,15 +384,39 @@ function GapsPage() {
           minGapMinutes: MIN_GAP,
         });
 
+        // Where the instructor is before and after each gap, for travel ranking.
+        const daySpans = lessons
+          .filter(
+            (l) =>
+              l.lesson_date === dateStr &&
+              l.lesson_time &&
+              (l.status ?? "scheduled") !== "cancelled",
+          )
+          .map((l) => {
+            const [h, m] = (l.lesson_time as string).split(":").map(Number);
+            const start = (h || 0) * 60 + (m || 0);
+            return {
+              start,
+              end: start + (l.duration_minutes ?? 60),
+              postcode: l.pupil_id ? pupilPostcodes.get(l.pupil_id) ?? null : null,
+            };
+          })
+          .sort((a, b) => a.start - b.start);
+
         for (const g of result) {
+          const before = [...daySpans].reverse().find((s) => s.end <= g.startMins);
+          const after = daySpans.find((s) => s.start >= g.endMins);
           computed.push({
             date: dateStr,
             startMins: g.startMins,
             endMins: g.endMins,
             durationMins: g.gapMins,
+            beforePostcode: before?.postcode ?? null,
+            afterPostcode: after?.postcode ?? null,
           });
         }
       }
+
 
       setGaps(computed);
       setSelectedGapIdx(0);
@@ -429,15 +463,33 @@ function GapsPage() {
     [pupils, statusByPupil],
   );
 
+  /** How close each pupil is to the lessons either side of this gap. */
+  const proximityByPupil = useMemo(() => {
+    const map = new Map<string, Proximity>();
+    for (const p of pupils) {
+      map.set(
+        p.id,
+        selectedGap
+          ? proximityToNeighbours(p.postcode, selectedGap.beforePostcode, selectedGap.afterPostcode)
+          : "unknown",
+      );
+    }
+    return map;
+  }, [pupils, selectedGap]);
+
   const sortedPupils = useMemo(() => {
     const rank: Record<MatchStatus, number> = { available: 0, "no-preference": 1, unavailable: 2 };
     return [...pupils].sort((a, b) => {
       const ra = rank[statusByPupil.get(a.id) ?? "no-preference"];
       const rb = rank[statusByPupil.get(b.id) ?? "no-preference"];
       if (ra !== rb) return ra - rb;
+      // Closest first, so the least driving is offered first.
+      const pa = proximityRank(proximityByPupil.get(a.id) ?? "unknown");
+      const pb = proximityRank(proximityByPupil.get(b.id) ?? "unknown");
+      if (pa !== pb) return pa - pb;
       return pupilDisplayName(a).localeCompare(pupilDisplayName(b));
     });
-  }, [pupils, statusByPupil]);
+  }, [pupils, statusByPupil, proximityByPupil]);
 
   function selectGap(i: number) {
     setSelectedGapIdx(i);
@@ -927,6 +979,7 @@ function GapsPage() {
                         ? { label: "No preference", bg: "#F3F4F6", color: "#6B7280" }
                         : { label: "Unavailable", bg: "#F3F4F6", color: "#9CA3AF" };
                   const name = pupilDisplayName(p);
+                  const travel = proximityLabel(proximityByPupil.get(p.id) ?? "unknown");
                   return (
                     <div
                       key={p.id}
@@ -973,7 +1026,10 @@ function GapsPage() {
                         >
                           {name}
                         </div>
-                        <div style={{ fontSize: 11, color: "#536579" }}>{p.phone || "No phone"}</div>
+                        <div style={{ fontSize: 11, color: "#536579" }}>
+                          {p.phone || "No phone"}
+                          {travel ? ` · ${travel}` : ""}
+                        </div>
                       </div>
                       <span
                         style={{

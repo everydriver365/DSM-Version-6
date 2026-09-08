@@ -74,6 +74,14 @@ function CalendarSyncPage() {
   const [isEditingIcs, setIsEditingIcs] = useState(false);
   const [icsFeedStatus, setIcsFeedStatus] = useState("");
   const [icsLastFetched, setIcsLastFetched] = useState("");
+  // Multiple Google calendars + instant updates
+  const [calendars, setCalendars] = useState<
+    { id: string; summary: string; primary: boolean }[]
+  >([]);
+  const [selectedCalendars, setSelectedCalendars] = useState<string[]>([]);
+  const [loadingCalendars, setLoadingCalendars] = useState(false);
+  const [instantUpdates, setInstantUpdates] = useState(false);
+  const [instantBusy, setInstantBusy] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -362,6 +370,119 @@ function CalendarSyncPage() {
       setSyncing(false);
     }
   }
+
+  /** Call the calendar service with a specific action. */
+  async function callCalendarService(action: string, extra: Record<string, unknown> = {}) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !userId) throw new Error("Please sign in again");
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/sync-google-calendar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ instructor_id: userId, action, ...extra }),
+    });
+    const raw = await res.text();
+    let data: any = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch { /* non-JSON */ }
+    console.log(`[calendar-sync] ${action}`, res.status, raw.slice(0, 300));
+    return data;
+  }
+
+  /** Load which Google calendars exist and which are being imported. */
+  async function loadCalendars() {
+    if (!userId) return;
+    setLoadingCalendars(true);
+    try {
+      const { data: row } = await supabase
+        .from("instructors")
+        .select("google_calendar_ids, google_channels")
+        .eq("id", userId)
+        .maybeSingle();
+      const chosen = (row as any)?.google_calendar_ids ?? [];
+      setSelectedCalendars(Array.isArray(chosen) ? chosen : []);
+      const channels = (row as any)?.google_channels ?? {};
+      setInstantUpdates(Object.keys(channels).length > 0);
+
+      const data = await callCalendarService("list_calendars");
+      if (Array.isArray(data?.calendars)) {
+        setCalendars(data.calendars);
+        if (!chosen?.length && data.selected?.length) setSelectedCalendars(data.selected);
+      }
+    } catch (err) {
+      console.warn("[calendar-sync] could not load calendars", err);
+    } finally {
+      setLoadingCalendars(false);
+    }
+  }
+
+  /** Turn a calendar's import on or off. */
+  async function toggleCalendar(id: string) {
+    if (!userId) return;
+    const next = selectedCalendars.includes(id)
+      ? selectedCalendars.filter((c) => c !== id)
+      : [...selectedCalendars, id];
+    if (next.length === 0) {
+      toast.error("Keep at least one calendar selected");
+      return;
+    }
+    setSelectedCalendars(next);
+    const { error } = await supabase
+      .from("instructors")
+      .update({ google_calendar_ids: next })
+      .eq("id", userId);
+    if (error) {
+      toast.error("Could not save your calendar choice");
+      return;
+    }
+    void sync();
+    if (instantUpdates) void callCalendarService("watch").catch(() => undefined);
+  }
+
+  /** Ask Google to tell us the moment something changes (or stop). */
+  async function toggleInstantUpdates() {
+    if (!userId) return;
+    setInstantBusy(true);
+    try {
+      const turnOn = !instantUpdates;
+      const data = await callCalendarService(turnOn ? "watch" : "unwatch", {
+        webhook_url:
+          typeof window !== "undefined" && window.location.hostname.endsWith("everydriver.pro")
+            ? `${window.location.origin}/api/public/google-calendar-webhook`
+            : undefined,
+      });
+      if (turnOn) {
+        const watching: string[] = data?.watching ?? [];
+        if (watching.length) {
+          setInstantUpdates(true);
+          toast.success("Google changes will now appear straight away");
+        } else {
+          const reason = Object.values(data?.failures ?? {})[0];
+          toast.error(
+            typeof reason === "string" && reason
+              ? `Google refused instant updates: ${reason}`
+              : "Google refused instant updates — please try again",
+          );
+        }
+      } else {
+        setInstantUpdates(false);
+        toast.success("Instant updates turned off");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not change instant updates");
+    } finally {
+      setInstantBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    if (googleConnected && userId) void loadCalendars();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [googleConnected, userId]);
+
+
 
   /** Disconnect Google Calendar. */
   async function disconnect() {
@@ -920,6 +1041,115 @@ function CalendarSyncPage() {
                     </div>
                   )}
                 </div>
+
+                <div
+                  onClick={instantBusy ? undefined : toggleInstantUpdates}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    padding: "13px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    cursor: instantBusy ? "default" : "pointer",
+                    borderBottom: "1px solid #E4E8EF",
+                    opacity: instantBusy ? 0.6 : 1,
+                  }}
+                  onKeyDown={(e) => {
+                    if (!instantBusy && (e.key === "Enter" || e.key === " ")) toggleInstantUpdates();
+                  }}
+                >
+                  <IconRefresh size={16} color="#1877D6" stroke={1.5} />
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        ...POPPINS,
+                        color: tokens.navy,
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.medium,
+                      }}
+                    >
+                      Instant updates
+                    </div>
+                    <div
+                      style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm }}
+                    >
+                      {instantUpdates
+                        ? "Google changes appear here straight away"
+                        : "Turn on to skip waiting for the next sync"}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: instantUpdates ? "#DCFCE7" : "#EEF2F7",
+                      color: instantUpdates ? "#15803D" : tokens.textMuted,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
+                      borderRadius: 999,
+                      padding: "4px 10px",
+                    }}
+                  >
+                    {instantBusy ? "…" : instantUpdates ? "On" : "Off"}
+                  </div>
+                </div>
+
+                <div style={{ padding: "13px 16px", borderBottom: "1px solid #E4E8EF" }}>
+                  <div
+                    style={{
+                      ...POPPINS,
+                      color: tokens.navy,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.medium,
+                      marginBottom: 6,
+                    }}
+                  >
+                    Calendars to import
+                  </div>
+                  {loadingCalendars && calendars.length === 0 ? (
+                    <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm }}>
+                      Loading your calendars…
+                    </div>
+                  ) : calendars.length === 0 ? (
+                    <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm }}>
+                      Could not list your calendars — using your main one.
+                    </div>
+                  ) : (
+                    calendars.map((cal) => {
+                      const on = selectedCalendars.includes(cal.id);
+                      return (
+                        <label
+                          key={cal.id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            padding: "6px 0",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={on}
+                            onChange={() => toggleCalendar(cal.id)}
+                            style={{ width: 16, height: 16, accentColor: "#1877D6" }}
+                          />
+                          <span
+                            style={{
+                              ...POPPINS,
+                              color: tokens.navy,
+                              fontSize: tokens.fontSize.sm,
+                            }}
+                          >
+                            {cal.summary || cal.id}
+                            {cal.primary ? " (main)" : ""}
+                          </span>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+
+
 
                 <div
                   onClick={disconnect}

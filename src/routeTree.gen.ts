@@ -184,6 +184,7 @@ import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.p
 import { Route as ApiPublicSquareWebhookRouteImport } from './routes/api/public/square-webhook'
 import { Route as ApiPublicSendLessonRemindersRouteImport } from './routes/api/public/send-lesson-reminders'
 import { Route as ApiPublicNewsIngestRouteImport } from './routes/api/public/news-ingest'
+import { Route as ApiPublicGoogleCalendarWebhookRouteImport } from './routes/api/public/google-calendar-webhook'
 import { Route as ApiPublicCarplayV1LessonRouteImport } from './routes/api/public/carplay/v1/lesson'
 import { Route as ApiPublicCarplayV1DirectionsRouteImport } from './routes/api/public/carplay/v1/directions'
 import { Route as ApiPublicCarplayV1DevicesRouteImport } from './routes/api/public/carplay/v1/devices'
@@ -1068,6 +1069,12 @@ const ApiPublicNewsIngestRoute = ApiPublicNewsIngestRouteImport.update({
   path: '/api/public/news-ingest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGoogleCalendarWebhookRoute =
+  ApiPublicGoogleCalendarWebhookRouteImport.update({
+    id: '/api/public/google-calendar-webhook',
+    path: '/api/public/google-calendar-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCarplayV1LessonRoute =
   ApiPublicCarplayV1LessonRouteImport.update({
     id: '/api/public/carplay/v1/lesson',
@@ -1253,6 +1260,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/google-calendar-webhook': typeof ApiPublicGoogleCalendarWebhookRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1431,6 +1439,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/api/public/google-calendar-webhook': typeof ApiPublicGoogleCalendarWebhookRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1613,6 +1622,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/google-calendar-webhook': typeof ApiPublicGoogleCalendarWebhookRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
@@ -1796,6 +1806,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/google-calendar-webhook'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -1974,6 +1985,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/api/public/google-calendar-webhook'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -2155,6 +2167,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/google-calendar-webhook'
     | '/api/public/news-ingest'
     | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
@@ -2316,6 +2329,7 @@ export interface RootRouteChildren {
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  ApiPublicGoogleCalendarWebhookRoute: typeof ApiPublicGoogleCalendarWebhookRoute
   ApiPublicNewsIngestRoute: typeof ApiPublicNewsIngestRoute
   ApiPublicSendLessonRemindersRoute: typeof ApiPublicSendLessonRemindersRoute
   ApiPublicSquareWebhookRoute: typeof ApiPublicSquareWebhookRoute
@@ -3563,6 +3577,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsIngestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/google-calendar-webhook': {
+      id: '/api/public/google-calendar-webhook'
+      path: '/api/public/google-calendar-webhook'
+      fullPath: '/api/public/google-calendar-webhook'
+      preLoaderRoute: typeof ApiPublicGoogleCalendarWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/carplay/v1/lesson': {
       id: '/api/public/carplay/v1/lesson'
       path: '/api/public/carplay/v1/lesson'
@@ -3825,6 +3846,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  ApiPublicGoogleCalendarWebhookRoute: ApiPublicGoogleCalendarWebhookRoute,
   ApiPublicNewsIngestRoute: ApiPublicNewsIngestRoute,
   ApiPublicSendLessonRemindersRoute: ApiPublicSendLessonRemindersRoute,
   ApiPublicSquareWebhookRoute: ApiPublicSquareWebhookRoute,
