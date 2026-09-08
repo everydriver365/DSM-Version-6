@@ -57,9 +57,18 @@ Deno.serve(async (req) => {
 
   const { data: instructor } = await supabase
     .from("instructors")
-    .select("google_access_token, google_refresh_token, google_token_expiry, google_calendar_id, google_calendar_connected")
+    .select("google_access_token, google_refresh_token, google_token_expiry, google_calendar_id, google_calendar_connected, google_sync_token")
     .eq("id", instructor_id)
     .single();
+
+  const recordSyncError = async (message: string, disconnect = false) => {
+    const update: Record<string, unknown> = {
+      google_sync_error: message.slice(0, 500),
+      google_sync_error_at: new Date().toISOString(),
+    };
+    if (disconnect) update.google_calendar_connected = false;
+    await supabase.from("instructors").update(update).eq("id", instructor_id);
+  };
 
   if (!instructor?.google_calendar_connected || !instructor?.google_access_token) {
     return new Response(
@@ -88,8 +97,18 @@ Deno.serve(async (req) => {
         google_access_token: accessToken,
         google_token_expiry: new Date(Date.now() + refreshData.expires_in * 1000).toISOString(),
       }).eq("id", instructor_id);
+    } else {
+      const reason = String(refreshData.error_description ?? refreshData.error ?? "token refresh failed");
+      const revoked = /invalid_grant|unauthorized_client/i.test(String(refreshData.error ?? ""));
+      console.error("[sync-google-calendar] refresh failed", reason);
+      await recordSyncError(reason, revoked);
+      return new Response(
+        JSON.stringify({ error: "google auth error", message: reason, status: 401, reconnect: true }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
   }
+
 
   const calendarId = instructor.google_calendar_id ?? "primary";
 
