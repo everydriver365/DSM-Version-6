@@ -477,6 +477,23 @@ function GapsPage() {
     [pupils, statusByPupil],
   );
 
+  /** Available pupil count per gap, for the summary cards. Read-only preview. */
+  const availableCountByGap = useMemo(() => {
+    return gaps.map((g) => {
+      const dayName = DAY_NAMES[new Date(g.date + "T12:00:00").getDay()];
+      const { allMatched } = previewMatchForGap({
+        date: g.date,
+        dayName,
+        startMin: g.startMins,
+        durationMin: g.durationMins,
+        allPupils: pupils,
+        allAvailability: availability,
+        unavailability,
+      });
+      return allMatched.length;
+    });
+  }, [gaps, pupils, availability, unavailability]);
+
   /** How close each pupil is to the lessons either side of this gap. */
   const proximityByPupil = useMemo(() => {
     const map = new Map<string, Proximity>();
