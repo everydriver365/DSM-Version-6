@@ -1680,6 +1680,8 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
 
 function HomePage() {
   const navigate = useNavigate();
+  const gapWindowDays = useGapWindowDays();
+
 
   // Full-screen HOME ↔ PRO swipe state
   const [activePage, setActivePage] = useState(0);
