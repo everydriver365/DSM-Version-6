@@ -21,6 +21,29 @@ function digitsOnly(s: string | null | undefined): string {
   return (s ?? "").replace(/\D+/g, "");
 }
 
+type InboundLogRow = {
+  instructor_id?: string | null;
+  pupil_id?: string | null;
+  from_number?: string | null;
+  message_sid?: string | null;
+  body?: string | null;
+  outcome: string;
+  detail?: string | null;
+};
+
+// One audit row per inbound text. Never allowed to break reply handling.
+// deno-lint-ignore no-explicit-any
+async function logInbound(supabase: any, row: InboundLogRow): Promise<void> {
+  try {
+    const { error } = await supabase.from("sms_inbound_log").insert(row);
+    if (error) console.error("receive-sms: inbound log insert failed", error);
+  } catch (e) {
+    console.error("receive-sms: inbound log threw", e);
+  }
+}
+
+
+
 
 // Build the string Twilio signs: full URL + concatenated sorted (key + value) pairs.
 function buildSignatureBase(url: string, params: Record<string, string>): string {
