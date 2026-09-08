@@ -14,6 +14,11 @@ import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import {
+  checkLessonConflict,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+} from "../lib/bookingConflicts";
 
 export const Route = createFileRoute("/courses/$id")({
   head: () => ({

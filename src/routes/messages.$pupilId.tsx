@@ -5,6 +5,12 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { supabase } from "../lib/supabaseClient";
+import {
+  checkLessonConflict,
+  isDoubleBookingError,
+  DOUBLE_BOOKING_MESSAGE,
+  type Conflict,
+} from "../lib/bookingConflicts";
 import { PageLayout } from "@/components/PageLayout";
 import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
 import { PupilAvatar } from "@/components/PupilAvatar";
