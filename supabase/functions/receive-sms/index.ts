@@ -594,4 +594,10 @@ async function autoBookOffer(
 
   await queueSms(`Great news — you're booked in for ${when}! See you then.`);
   await notify("Lesson booked!", `${pupilName} confirmed ${when}`);
+  await logInbound(supabase, {
+    ...logBase,
+    outcome: "booked",
+    detail: `Booked ${when} (${duration} min)`,
+  });
+
 }
