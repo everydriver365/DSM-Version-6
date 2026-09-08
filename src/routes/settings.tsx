@@ -117,10 +117,12 @@ function SettingsPage() {
 
   useEffect(() => {
     setMinGapMinutes(readMinGapMinutes());
+    setGapWindowDays(readGapWindowDays());
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.id) setBadgePrefs(readBadgePrefs(data.user.id));
     });
   }, []);
+
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
   const [homeAddress, setHomeAddress] = useState<string>("");
