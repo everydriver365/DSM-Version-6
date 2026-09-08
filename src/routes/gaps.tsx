@@ -973,26 +973,55 @@ function GapsPage() {
                   >
                     Free · {fmtDuration(g.durationMins)}
                   </div>
-                  <div style={{ fontSize: 11, color: "#8A94A6", marginTop: 2 }}>
-                    {count} pupil{count === 1 ? "" : "s"} available
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      marginTop: 4,
+                      minWidth: 0,
+                    }}
+                  >
+                    {preview.top.length > 0 && (
+                      <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+                        {preview.top.map((p, ai) => (
+                          <div
+                            key={p.id}
+                            style={{
+                              width: 18,
+                              height: 18,
+                              borderRadius: "50%",
+                              background: p.calendar_colour || avatarColor(p.id),
+                              border: "1.5px solid #FFFFFF",
+                              marginLeft: ai === 0 ? 0 : -6,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: "#FFFFFF",
+                              fontSize: 7,
+                              fontWeight: 700,
+                            }}
+                          >
+                            {initials(pupilDisplayName(p))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: count > 0 ? GREEN_DEEP : "#8A94A6",
+                        fontWeight: count > 0 ? 600 : 400,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {count > 0 ? `${count} available` : "No pupils available"}
+                    </span>
                   </div>
                 </div>
 
-                {/* Status pill */}
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    padding: "4px 8px",
-                    borderRadius: 999,
-                    whiteSpace: "nowrap",
-                    background: count > 0 ? GREEN_TINT : "#F3F4F6",
-                    color: count > 0 ? GREEN_DEEP : "#9CA3AF",
-                    flexShrink: 0,
-                  }}
-                >
-                  {count > 0 ? "Available" : "No pupils"}
-                </span>
 
                 <button
                   type="button"
