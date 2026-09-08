@@ -725,7 +725,8 @@ function SchedulePage() {
   const gapWindowDays = useGapWindowDays();
   const gapWindowEndISO = ymdLocal(addDays(today, gapWindowDays));
   const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
-  const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
+  const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today]);
+
 
 
 
