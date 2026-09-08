@@ -457,15 +457,33 @@ function GapsPage() {
     [pupils, statusByPupil],
   );
 
+  /** How close each pupil is to the lessons either side of this gap. */
+  const proximityByPupil = useMemo(() => {
+    const map = new Map<string, Proximity>();
+    for (const p of pupils) {
+      map.set(
+        p.id,
+        selectedGap
+          ? proximityToNeighbours(p.postcode, selectedGap.beforePostcode, selectedGap.afterPostcode)
+          : "unknown",
+      );
+    }
+    return map;
+  }, [pupils, selectedGap]);
+
   const sortedPupils = useMemo(() => {
     const rank: Record<MatchStatus, number> = { available: 0, "no-preference": 1, unavailable: 2 };
     return [...pupils].sort((a, b) => {
       const ra = rank[statusByPupil.get(a.id) ?? "no-preference"];
       const rb = rank[statusByPupil.get(b.id) ?? "no-preference"];
       if (ra !== rb) return ra - rb;
+      // Closest first, so the least driving is offered first.
+      const pa = proximityRank(proximityByPupil.get(a.id) ?? "unknown");
+      const pb = proximityRank(proximityByPupil.get(b.id) ?? "unknown");
+      if (pa !== pb) return pa - pb;
       return pupilDisplayName(a).localeCompare(pupilDisplayName(b));
     });
-  }, [pupils, statusByPupil]);
+  }, [pupils, statusByPupil, proximityByPupil]);
 
   function selectGap(i: number) {
     setSelectedGapIdx(i);
