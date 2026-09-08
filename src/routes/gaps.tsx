@@ -1157,6 +1157,7 @@ function GapsPage() {
                         gap: 12,
                         padding: "12px 14px",
                         borderTop: idx === 0 ? "none" : "0.5px solid #F4F6F8",
+                        borderLeft: checked ? `3px solid ${GREEN}` : "3px solid transparent",
                         cursor: "pointer",
                         background: checked ? GREEN_TINT : "transparent",
                         opacity: status === "unavailable" ? 0.6 : 1,
@@ -1212,13 +1213,30 @@ function GapsPage() {
                         {badge.label}
                       </span>
 
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => togglePupil(p.id)}
-                        onClick={(e) => e.stopPropagation()}
-                        style={{ width: 18, height: 18, accentColor: "#2C97DE", flexShrink: 0 }}
-                      />
+                      {checked ? (
+                        <div
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: "50%",
+                            background: GREEN,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <IconCheck size={14} color="#FFFFFF" stroke={2.5} />
+                        </div>
+                      ) : (
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => togglePupil(p.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ width: 18, height: 18, accentColor: "#2C97DE", flexShrink: 0 }}
+                        />
+                      )}
                     </div>
                   );
                 })}
