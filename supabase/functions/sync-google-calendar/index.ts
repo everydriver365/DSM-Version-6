@@ -146,30 +146,82 @@ Deno.serve(async (req) => {
   const timeMax = new Date(now);
   timeMax.setDate(timeMax.getDate() + 180);
 
-  const params = new URLSearchParams({
-    timeMin: timeMin.toISOString(),
-    timeMax: timeMax.toISOString(),
-    singleEvents: "true",
-    orderBy: "startTime",
-    maxResults: "2500",
-  });
+  const forceFull = body.full === true;
+  let syncToken: string | null = forceFull ? null : (instructor.google_sync_token ?? null);
 
-  const eventsRes = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
+  /**
+   * Read every page Google offers. With a sync token Google returns only what
+   * changed since the last run; without one it returns the whole window.
+   * A 410 means the token is too old, so we fall back to a full read.
+   */
+  async function readEvents(token: string | null): Promise<
+    | { ok: true; items: any[]; nextSyncToken: string | null; incremental: boolean }
+    | { ok: false; status: number; message: string; expiredToken: boolean }
+  > {
+    const items: any[] = [];
+    let pageToken: string | undefined;
+    let nextSyncToken: string | null = null;
 
-  if (!eventsRes.ok) {
-    const errText = await eventsRes.text();
-    console.error("[sync-google-calendar] fetch failed", eventsRes.status, errText);
+    do {
+      const params = new URLSearchParams({ singleEvents: "true", maxResults: "2500" });
+      if (token) {
+        params.set("syncToken", token);
+      } else {
+        params.set("timeMin", timeMin.toISOString());
+        params.set("timeMax", timeMax.toISOString());
+        params.set("orderBy", "startTime");
+      }
+      if (pageToken) params.set("pageToken", pageToken);
+
+      const res = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("[sync-google-calendar] fetch failed", res.status, errText);
+        let message = errText;
+        try { message = JSON.parse(errText)?.error?.message ?? errText; } catch { /* keep raw */ }
+        return {
+          ok: false,
+          status: res.status,
+          message: String(message).slice(0, 500),
+          expiredToken: res.status === 410 && Boolean(token),
+        };
+      }
+
+      const page = await res.json();
+      items.push(...(page.items ?? []));
+      pageToken = page.nextPageToken ?? undefined;
+      nextSyncToken = page.nextSyncToken ?? nextSyncToken;
+    } while (pageToken);
+
+    return { ok: true, items, nextSyncToken, incremental: Boolean(token) };
+  }
+
+  let read = await readEvents(syncToken);
+  if (!read.ok && read.expiredToken) {
+    console.log("[sync-google-calendar] sync token expired — falling back to a full read");
+    syncToken = null;
+    await supabase.from("instructors").update({ google_sync_token: null }).eq("id", instructor_id);
+    read = await readEvents(null);
+  }
+
+  if (!read.ok) {
+    const authProblem = read.status === 401 || read.status === 403;
+    await recordSyncError(read.message || `google api error ${read.status}`, authProblem);
     return new Response(
-      JSON.stringify({ error: "google api error", status: eventsRes.status }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: "google api error", status: read.status, message: read.message }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
-  const eventsData = await eventsRes.json();
-  const allItems = (eventsData.items ?? []).filter((i: any) => i.status !== "cancelled");
+  const incremental = read.incremental;
+  const cancelledIds: string[] = read.items
+    .filter((i: any) => i.status === "cancelled" && i.id)
+    .map((i: any) => i.id);
+  const allItems = read.items.filter((i: any) => i.status !== "cancelled");
 
   // Events EveryDriver itself pushed must never come back as "external busy":
   // the lesson already occupies that time. Recognise them by our own marker
@@ -188,8 +240,10 @@ Deno.serve(async (req) => {
   });
 
   console.log(
-    `[sync-google-calendar] fetched ${allItems.length} events, ${allItems.length - items.length} own lessons skipped`
+    `[sync-google-calendar] ${incremental ? "incremental" : "full"} read: ${allItems.length} events, ` +
+      `${allItems.length - items.length} own lessons skipped, ${cancelledIds.length} cancelled`
   );
+
 
   // Match-and-update rather than wipe-and-reinsert: each imported row keeps a
   // permanent link to its Google event, so the diary never flickers and
