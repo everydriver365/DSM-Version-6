@@ -50,6 +50,10 @@ const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const MIN_GAP = 60;
 
 const NAVY = "#0B2341";
+const GREEN = "#1E7A46";
+const GREEN_DEEP = "#15683B";
+const GREEN_TINT = "#EAF6EF";
+const GREEN_LINE = "#CFE8DA";
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function minToHm(m: number): string {
