@@ -914,7 +914,8 @@ function GapsPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
           {gaps.map((g, i) => {
             const active = i === selectedGapIdx;
-            const count = availableCountByGap[i] ?? 0;
+            const preview = previewByGap[i] ?? { count: 0, top: [] };
+            const count = preview.count;
             const isToday = g.date === todayIso();
             const dayLabel = isToday
               ? "Today"
