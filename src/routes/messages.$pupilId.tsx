@@ -867,7 +867,7 @@ function PupilThreadPage() {
         durationMinutes: pendingOffer.duration_minutes,
       }).catch(() => null);
       if (clash && clash.blocking.length > 0) {
-        throw new Error(clash.blocking.map((c) => c.label).join(". "));
+        throw new Error(clash.blocking.map((c: Conflict) => c.label).join(". "));
       }
 
       const { error: lessonErr } = await supabase.from("lessons").insert({
