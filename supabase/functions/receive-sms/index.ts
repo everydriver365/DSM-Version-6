@@ -407,7 +407,13 @@ async function autoBookOffer(
     lessonsRes.error || blocksRes.error || recurringRes.error || timeOffRes.error;
   if (queryError) {
     console.error("receive-sms: diary read failed", queryError);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Diary check failed: ${queryError.message ?? "unknown error"}`,
+    });
     return; // never book against unknown diary data
+
   }
 
   let clash = false;
