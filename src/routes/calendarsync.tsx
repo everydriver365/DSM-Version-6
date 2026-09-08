@@ -192,28 +192,6 @@ function CalendarSyncPage() {
     })();
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data: userData } = await supabase.auth.getUser();
-        const uid = userData.user?.id;
-        if (!uid) return;
-        const { data } = await supabase
-          .from("instructors")
-          .select("ics_feed_url, ics_feed_status, ics_last_fetched_at")
-          .eq("id", uid)
-          .single();
-        if (data) {
-          setIcsInboundUrl(data.ics_feed_url || "");
-          setSavedIcsUrl(data.ics_feed_url || "");
-          setIcsFeedStatus(data.ics_feed_status || "");
-          setIcsLastFetched(data.ics_last_fetched_at || "");
-        }
-      } catch {
-        // ignore — table or columns may not exist yet
-      }
-    })();
-  }, []);
 
   async function connectGoogleCalendar() {
     setConnecting(true);
