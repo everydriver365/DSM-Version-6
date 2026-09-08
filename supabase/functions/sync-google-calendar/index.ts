@@ -57,9 +57,18 @@ Deno.serve(async (req) => {
 
   const { data: instructor } = await supabase
     .from("instructors")
-    .select("google_access_token, google_refresh_token, google_token_expiry, google_calendar_id, google_calendar_connected")
+    .select("google_access_token, google_refresh_token, google_token_expiry, google_calendar_id, google_calendar_connected, google_sync_token")
     .eq("id", instructor_id)
     .single();
+
+  const recordSyncError = async (message: string, disconnect = false) => {
+    const update: Record<string, unknown> = {
+      google_sync_error: message.slice(0, 500),
+      google_sync_error_at: new Date().toISOString(),
+    };
+    if (disconnect) update.google_calendar_connected = false;
+    await supabase.from("instructors").update(update).eq("id", instructor_id);
+  };
 
   if (!instructor?.google_calendar_connected || !instructor?.google_access_token) {
     return new Response(
@@ -88,8 +97,18 @@ Deno.serve(async (req) => {
         google_access_token: accessToken,
         google_token_expiry: new Date(Date.now() + refreshData.expires_in * 1000).toISOString(),
       }).eq("id", instructor_id);
+    } else {
+      const reason = String(refreshData.error_description ?? refreshData.error ?? "token refresh failed");
+      const revoked = /invalid_grant|unauthorized_client/i.test(String(refreshData.error ?? ""));
+      console.error("[sync-google-calendar] refresh failed", reason);
+      await recordSyncError(reason, revoked);
+      return new Response(
+        JSON.stringify({ error: "google auth error", message: reason, status: 401, reconnect: true }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
   }
+
 
   const calendarId = instructor.google_calendar_id ?? "primary";
 
@@ -127,30 +146,82 @@ Deno.serve(async (req) => {
   const timeMax = new Date(now);
   timeMax.setDate(timeMax.getDate() + 180);
 
-  const params = new URLSearchParams({
-    timeMin: timeMin.toISOString(),
-    timeMax: timeMax.toISOString(),
-    singleEvents: "true",
-    orderBy: "startTime",
-    maxResults: "2500",
-  });
+  const forceFull = body.full === true;
+  let syncToken: string | null = forceFull ? null : (instructor.google_sync_token ?? null);
 
-  const eventsRes = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } }
-  );
+  /**
+   * Read every page Google offers. With a sync token Google returns only what
+   * changed since the last run; without one it returns the whole window.
+   * A 410 means the token is too old, so we fall back to a full read.
+   */
+  async function readEvents(token: string | null): Promise<
+    | { ok: true; items: any[]; nextSyncToken: string | null; incremental: boolean }
+    | { ok: false; status: number; message: string; expiredToken: boolean }
+  > {
+    const items: any[] = [];
+    let pageToken: string | undefined;
+    let nextSyncToken: string | null = null;
 
-  if (!eventsRes.ok) {
-    const errText = await eventsRes.text();
-    console.error("[sync-google-calendar] fetch failed", eventsRes.status, errText);
+    do {
+      const params = new URLSearchParams({ singleEvents: "true", maxResults: "2500" });
+      if (token) {
+        params.set("syncToken", token);
+      } else {
+        params.set("timeMin", timeMin.toISOString());
+        params.set("timeMax", timeMax.toISOString());
+        params.set("orderBy", "startTime");
+      }
+      if (pageToken) params.set("pageToken", pageToken);
+
+      const res = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("[sync-google-calendar] fetch failed", res.status, errText);
+        let message = errText;
+        try { message = JSON.parse(errText)?.error?.message ?? errText; } catch { /* keep raw */ }
+        return {
+          ok: false,
+          status: res.status,
+          message: String(message).slice(0, 500),
+          expiredToken: res.status === 410 && Boolean(token),
+        };
+      }
+
+      const page = await res.json();
+      items.push(...(page.items ?? []));
+      pageToken = page.nextPageToken ?? undefined;
+      nextSyncToken = page.nextSyncToken ?? nextSyncToken;
+    } while (pageToken);
+
+    return { ok: true, items, nextSyncToken, incremental: Boolean(token) };
+  }
+
+  let read = await readEvents(syncToken);
+  if (!read.ok && read.expiredToken) {
+    console.log("[sync-google-calendar] sync token expired — falling back to a full read");
+    syncToken = null;
+    await supabase.from("instructors").update({ google_sync_token: null }).eq("id", instructor_id);
+    read = await readEvents(null);
+  }
+
+  if (!read.ok) {
+    const authProblem = read.status === 401 || read.status === 403;
+    await recordSyncError(read.message || `google api error ${read.status}`, authProblem);
     return new Response(
-      JSON.stringify({ error: "google api error", status: eventsRes.status }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: "google api error", status: read.status, message: read.message }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
-  const eventsData = await eventsRes.json();
-  const allItems = (eventsData.items ?? []).filter((i: any) => i.status !== "cancelled");
+  const incremental = read.incremental;
+  const cancelledIds: string[] = read.items
+    .filter((i: any) => i.status === "cancelled" && i.id)
+    .map((i: any) => i.id);
+  const allItems = read.items.filter((i: any) => i.status !== "cancelled");
 
   // Events EveryDriver itself pushed must never come back as "external busy":
   // the lesson already occupies that time. Recognise them by our own marker
@@ -169,8 +240,10 @@ Deno.serve(async (req) => {
   });
 
   console.log(
-    `[sync-google-calendar] fetched ${allItems.length} events, ${allItems.length - items.length} own lessons skipped`
+    `[sync-google-calendar] ${incremental ? "incremental" : "full"} read: ${allItems.length} events, ` +
+      `${allItems.length - items.length} own lessons skipped, ${cancelledIds.length} cancelled`
   );
+
 
   // Match-and-update rather than wipe-and-reinsert: each imported row keeps a
   // permanent link to its Google event, so the diary never flickers and
@@ -255,41 +328,78 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Remove only what Google no longer has: rows in the synced window whose
-  // event has gone (deleted or cancelled), plus legacy rows that predate the
-  // Google id and have just been re-imported with one.
-  const staleIds = (existingRows ?? [])
-    .filter((r: any) => !r.external_event_id || !seenEventIds.has(r.external_event_id))
-    .map((r: any) => r.id);
-
   let removed = 0;
-  for (let i = 0; i < staleIds.length; i += 100) {
-    const batch = staleIds.slice(i, i + 100);
-    const { error, count } = await supabase
-      .from("calendar_blocks")
-      .delete({ count: "exact" })
-      .in("id", batch)
-      .eq("instructor_id", instructor_id)
-      .eq("source", "external_calendar")
-      .gte("start_datetime", windowStart)
-      .lte("start_datetime", windowEnd);
-    if (error) {
-      console.error("[sync-google-calendar] delete error", error.message);
-    } else {
-      removed += count ?? batch.length;
+
+  const deleteByIds = async (ids: string[]) => {
+    for (let i = 0; i < ids.length; i += 100) {
+      const batch = ids.slice(i, i + 100);
+      const { error, count } = await supabase
+        .from("calendar_blocks")
+        .delete({ count: "exact" })
+        .in("id", batch)
+        .eq("instructor_id", instructor_id)
+        .eq("source", "external_calendar");
+      if (error) {
+        console.error("[sync-google-calendar] delete error", error.message);
+      } else {
+        removed += count ?? batch.length;
+      }
+    }
+  };
+
+  if (incremental) {
+    // Google tells us exactly what was cancelled or deleted — remove only those.
+    const ids = cancelledIds
+      .map((eventId) => existingByEventId.get(eventId))
+      .filter((id): id is string => Boolean(id));
+    await deleteByIds(ids);
+  } else {
+    // Full read: remove what Google no longer has within the synced window,
+    // plus legacy rows that predate the Google id and were just re-imported.
+    const staleIds = (existingRows ?? [])
+      .filter((r: any) => !r.external_event_id || !seenEventIds.has(r.external_event_id))
+      .map((r: any) => r.id);
+
+    for (let i = 0; i < staleIds.length; i += 100) {
+      const batch = staleIds.slice(i, i + 100);
+      const { error, count } = await supabase
+        .from("calendar_blocks")
+        .delete({ count: "exact" })
+        .in("id", batch)
+        .eq("instructor_id", instructor_id)
+        .eq("source", "external_calendar")
+        .gte("start_datetime", windowStart)
+        .lte("start_datetime", windowEnd);
+      if (error) {
+        console.error("[sync-google-calendar] delete error", error.message);
+      } else {
+        removed += count ?? batch.length;
+      }
     }
   }
 
-
   await supabase.from("instructors").update({
     calendar_last_synced: new Date().toISOString(),
+    google_sync_token: read.nextSyncToken ?? (incremental ? syncToken : null),
+    google_sync_error: null,
+    google_sync_error_at: null,
   }).eq("id", instructor_id);
 
-  console.log(`[sync-google-calendar] done: ${synced} synced, ${removed} removed`);
+  console.log(
+    `[sync-google-calendar] done (${incremental ? "incremental" : "full"}): ${synced} synced, ${removed} removed`
+  );
 
   return new Response(
-    JSON.stringify({ ok: true, success: true, synced, removed, eventsImported: synced }),
+    JSON.stringify({
+      ok: true,
+      success: true,
+      synced,
+      removed,
+      incremental,
+      eventsImported: synced,
+    }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
+
 });
 

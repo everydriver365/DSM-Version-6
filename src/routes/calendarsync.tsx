@@ -66,6 +66,8 @@ function CalendarSyncPage() {
   const [googleConnected, setGoogleConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+
   const [syncing, setSyncing] = useState(false);
   const [icsInboundUrl, setIcsInboundUrl] = useState("");
   const [savedIcsUrl, setSavedIcsUrl] = useState("");
@@ -90,7 +92,7 @@ function CalendarSyncPage() {
           Authorization: `Bearer ${token}`,
         };
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced,ics_feed_url,ics_feed_status,ics_last_fetched_at`,
+          `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=google_calendar_connected,calendar_last_synced,google_sync_error,google_sync_error_at,ics_feed_url,ics_feed_status,ics_last_fetched_at`,
           { headers },
         );
         if (res.ok) {
@@ -99,6 +101,8 @@ function CalendarSyncPage() {
             ? (rows[0] as {
                 google_calendar_connected?: boolean | null;
                 calendar_last_synced?: string | null;
+                google_sync_error?: string | null;
+                google_sync_error_at?: string | null;
                 ics_feed_url?: string | null;
                 ics_feed_status?: string | null;
                 ics_last_fetched_at?: string | null;
@@ -106,12 +110,14 @@ function CalendarSyncPage() {
             : null;
           setGoogleConnected(row?.google_calendar_connected ?? false);
           setLastSynced(row?.calendar_last_synced ?? null);
+          setSyncError(row?.google_sync_error ?? null);
           setIcsInboundUrl(row?.ics_feed_url || "");
           setSavedIcsUrl(row?.ics_feed_url || "");
           setIcsFeedStatus(row?.ics_feed_status || "");
           setIcsLastFetched(row?.ics_last_fetched_at || "");
         }
       } catch {
+
         // ignore — first-time or column may not exist
       }
     })();
@@ -295,6 +301,8 @@ function CalendarSyncPage() {
           `Synced ${data.synced ?? data.eventsImported ?? 0} events from Google Calendar`,
         );
         setLastSynced(new Date().toISOString());
+        setSyncError(null);
+
         if (userId) {
           void (async () => {
             try {
@@ -320,37 +328,36 @@ function CalendarSyncPage() {
       if (detail.includes("calendar_blocks_external_unique") || detail.includes("duplicate key")) {
         toast.info("Calendar already up to date");
         setLastSynced(new Date().toISOString());
+        setSyncError(null);
         return;
       }
 
       const authProblem =
+        data.reconnect === true ||
         googleStatus === 401 ||
         googleStatus === 403 ||
         /invalid_grant|unauthorized|token|reconnect|no google calendar connected/i.test(detail);
 
       if (authProblem) {
         setGoogleConnected(false);
+        setSyncError("Your Google Calendar connection has expired — please reconnect.");
         toast.error("Your Google Calendar connection has expired — please reconnect.");
         return;
       }
 
-      if (!detail && !res.ok) {
-        toast.error(`Sync failed (${res.status})`);
-        return;
-      }
-
-      toast.error(
-        detail
-          ? googleStatus
-            ? `Sync failed: ${detail} (Google ${googleStatus})`
-            : `Sync failed: ${detail}`
-          : `Sync failed (${res.status})`,
-      );
+      const message = detail
+        ? googleStatus
+          ? `Sync failed: ${detail} (Google ${googleStatus})`
+          : `Sync failed: ${detail}`
+        : `Sync failed (${res.status})`;
+      setSyncError(message);
+      toast.error(message);
     } catch (err) {
       console.error("[calendar-sync] sync error", err);
-      toast.error(
-        `Sync failed: ${err instanceof Error ? err.message : "could not reach the sync service"}`,
-      );
+      const message = `Sync failed: ${err instanceof Error ? err.message : "could not reach the sync service"}`;
+      setSyncError(message);
+      toast.error(message);
+
     } finally {
       setSyncing(false);
     }
@@ -845,6 +852,19 @@ function CalendarSyncPage() {
                     >
                       Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
                     </div>
+                    {syncError ? (
+                      <div
+                        style={{
+                          ...POPPINS,
+                          color: "#CC2229",
+                          fontSize: tokens.fontSize.sm,
+                          marginTop: 4,
+                        }}
+                      >
+                        {syncError}
+                      </div>
+                    ) : null}
+
                   </div>
                   <div
                     style={{
