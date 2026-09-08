@@ -527,50 +527,8 @@ function CalendarSyncPage() {
     }
   }
 
-  const icsUrl = userId
-    ? `${SUPABASE_URL}/functions/v1/ics-feed?instructor_id=${userId}`
-    : "";
 
-  async function copyIcsUrl() {
-    if (!icsUrl) return;
-    try {
-      await navigator.clipboard.writeText(icsUrl);
-      toast.success("Link copied!");
-    } catch {
-      toast.error("Copy failed");
-    }
-  }
 
-  async function saveIcsUrl(overrideUrl?: string) {
-    const url = overrideUrl !== undefined ? overrideUrl.trim() : icsInboundUrl.trim();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase
-      .from("instructors")
-      .update({
-        ics_feed_url: url || null,
-      })
-      .eq("id", user.id);
-
-    setSavedIcsUrl(url);
-    setIcsInboundUrl(url);
-
-    if (url) {
-      await fetch(
-        `${SUPABASE_URL}/functions/v1/sync-ics-feed?instructor_id=${user.id}`,
-        {
-          method: "GET",
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-          },
-        }
-      );
-      toast.success("Calendar connected — personal events imported");
-    } else {
-      toast.success("Calendar disconnected");
-    }
-  }
 
   return (
     <DSMTopSheet title="Calendar Sync" onBack={() => navigate({ to: "/settings" as never })}>
