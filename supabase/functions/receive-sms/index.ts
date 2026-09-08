@@ -317,9 +317,23 @@ function formatWhen(slotDate: string, slotTime: string): string {
 }
 
 // deno-lint-ignore no-explicit-any
-async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
+async function autoBookOffer(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  // deno-lint-ignore no-explicit-any
+  pupil: any,
+  fromNumber: string,
+  logBase: Omit<InboundLogRow, "outcome">,
+) {
   const instructorId = pupil.instructor_id;
-  if (!instructorId) return;
+  if (!instructorId) {
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: "Pupil has no instructor",
+    });
+    return;
+  }
 
   const { data: offer, error: offerErr } = await supabase
     .from("gap_filler_offers")
@@ -333,12 +347,23 @@ async function autoBookOffer(supabase: any, pupil: any, fromNumber: string) {
 
   if (offerErr) {
     console.error("receive-sms: offer lookup failed", offerErr);
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "error",
+      detail: `Offer lookup failed: ${offerErr.message ?? "unknown error"}`,
+    });
     return;
   }
   if (!offer) {
     console.log("receive-sms: acceptance with no open offer", { pupil: pupil.id });
+    await logInbound(supabase, {
+      ...logBase,
+      outcome: "no_open_offer",
+      detail: "Reply read as YES but no open offer for this pupil",
+    });
     return;
   }
+
 
   const dateStr: string = offer.slot_date;
   const timeStr: string = String(offer.slot_time || "").slice(0, 5);
