@@ -786,7 +786,7 @@ function PupilThreadPage() {
         .from("gap_filler_offers")
         .select("*")
         .eq("pupil_id", pupilId)
-        .eq("status", "sent")
+        .in("status", OPEN_OFFER_STATUSES)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
