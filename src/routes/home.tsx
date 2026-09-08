@@ -4337,9 +4337,10 @@ function HomePage() {
         .eq('instructor_id', userId)
         .eq('source', 'external_calendar')
         .gte('end_datetime', todayISO)
-        .lte('start_datetime', `${in14DaysISO}T23:59:59`);
+        .lte('start_datetime', `${gapWindowEndISO}T23:59:59`);
       setIcsBlocks((data as any[]) ?? []);
     };
+
 
     fetchCalendarBlocks();
     fetchIcsBlocks();
@@ -4355,7 +4356,8 @@ function HomePage() {
       cancelled = true;
       window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
-  }, [userId, todayISO, tomorrowISO, in14DaysISO]);
+  }, [userId, todayISO, tomorrowISO, gapWindowEndISO]);
+
 
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
