@@ -652,9 +652,11 @@ function SettingsPage() {
       toast.error("Failed to save rates");
     } else {
       writeMinGapMinutes(minGapMinutes);
+      writeGapWindowDays(gapWindowDays);
       toast.success("Saved ✓");
     }
   }
+
 
   async function saveBuffers(nextAfter: number) {
     if (!userId) return;
