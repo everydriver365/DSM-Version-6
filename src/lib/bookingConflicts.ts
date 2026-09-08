@@ -133,9 +133,10 @@ export function evaluateConflicts(p: EvaluateConflictsParams): ConflictResult {
   for (const b of p.calendarBlocks || []) {
     if (b.blocks_availability === false) continue;
     if (b.is_all_day) {
-      blocking.push({
+      // All-day entries are notes, not busy time — same rule the gap engine uses.
+      warnings.push({
         kind: "calendar",
-        label: `Clashes with ${b.title || "a calendar event"} (all day)`,
+        label: `${b.title || "A calendar event"} is marked all day`,
       });
       continue;
     }
