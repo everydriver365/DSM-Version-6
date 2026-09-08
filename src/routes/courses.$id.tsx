@@ -2064,19 +2064,35 @@ function AddBookingSheet({
     const durationMinutes = course.daily_hours ? course.daily_hours * 60 : 60;
 
     if (course.start_date) {
-      const { error: lessonErr } = await supabase.from("lessons").insert({
-        instructor_id: uid,
-        pupil_id: null,
-        lesson_date: course.start_date,
-        lesson_time: lessonTime,
-        duration_minutes: durationMinutes,
-        status: "confirmed",
-        notes: `Course booking: ${course.name} — ${name.trim()}`,
-        amount_due: course.price ?? 0,
-        payment_status:
-          parseFloat(amount || "0") >= (course.price ?? 0) ? "paid" : "unpaid",
-      });
-      if (lessonErr) console.error("[courses.$id] auto-create lesson", lessonErr);
+      // Double-booking safety: don't auto-create a lesson over existing diary time.
+      const clash = await checkLessonConflict({
+        instructorId: uid,
+        date: course.start_date,
+        time: lessonTime,
+        durationMinutes: durationMinutes,
+      }).catch(() => null);
+      if (clash && clash.blocking.length > 0) {
+        toast.error(
+          `Booking saved, but no lesson was added — ${clash.blocking[0].label.toLowerCase()}`,
+        );
+      } else {
+        const { error: lessonErr } = await supabase.from("lessons").insert({
+          instructor_id: uid,
+          pupil_id: null,
+          lesson_date: course.start_date,
+          lesson_time: lessonTime,
+          duration_minutes: durationMinutes,
+          status: "confirmed",
+          notes: `Course booking: ${course.name} — ${name.trim()}`,
+          amount_due: course.price ?? 0,
+          payment_status:
+            parseFloat(amount || "0") >= (course.price ?? 0) ? "paid" : "unpaid",
+        });
+        if (lessonErr) {
+          console.error("[courses.$id] auto-create lesson", lessonErr);
+          if (isDoubleBookingError(lessonErr)) toast.error(DOUBLE_BOOKING_MESSAGE);
+        }
+      }
     }
 
     // Notification

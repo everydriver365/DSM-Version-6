@@ -852,6 +852,18 @@ function PupilThreadPage() {
       const isPrepaidPricing =
         pricingType === "block" || pricingType === "national_intensives";
 
+      // Double-booking safety: refuse to book over existing diary time.
+      const clash = await checkLessonConflict({
+        instructorId: userId,
+        pupilId,
+        date: pendingOffer.slot_date,
+        time: pendingOffer.slot_time,
+        durationMinutes: pendingOffer.duration_minutes,
+      }).catch(() => null);
+      if (clash && clash.blocking.length > 0) {
+        throw new Error(clash.blocking.map((c) => c.label).join(". "));
+      }
+
       const { error: lessonErr } = await supabase.from("lessons").insert({
         instructor_id: userId,
         pupil_id: pupilId,
@@ -864,7 +876,7 @@ function PupilThreadPage() {
       });
       if (lessonErr) {
         console.error("[pupil-thread] lesson insert failed:", lessonErr);
-        throw lessonErr;
+        throw isDoubleBookingError(lessonErr) ? new Error(DOUBLE_BOOKING_MESSAGE) : lessonErr;
       }
 
       // Increment discount uses_count after successful lesson insert
