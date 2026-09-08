@@ -1098,6 +1098,17 @@ function CalendarSyncPage() {
                         ? "Google changes appear here straight away"
                         : "Turn on to skip waiting for the next sync"}
                     </div>
+                    <div
+                      style={{
+                        ...POPPINS,
+                        color: tokens.textMuted,
+                        fontSize: 11,
+                        marginTop: 2,
+                        wordBreak: "break-all",
+                      }}
+                    >
+                      Notification address: {WEBHOOK_URL}
+                    </div>
                   </div>
                   <div
                     style={{
