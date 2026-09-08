@@ -50,6 +50,10 @@ const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const MIN_GAP = 60;
 
 const NAVY = "#0B2341";
+const GREEN = "#1E7A46";
+const GREEN_DEEP = "#15683B";
+const GREEN_TINT = "#EAF6EF";
+const GREEN_LINE = "#CFE8DA";
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function minToHm(m: number): string {
@@ -473,6 +477,23 @@ function GapsPage() {
     [pupils, statusByPupil],
   );
 
+  /** Available pupil count per gap, for the summary cards. Read-only preview. */
+  const availableCountByGap = useMemo(() => {
+    return gaps.map((g) => {
+      const dayName = DAY_NAMES[new Date(g.date + "T12:00:00").getDay()];
+      const { allMatched } = previewMatchForGap({
+        date: g.date,
+        dayName,
+        startMin: g.startMins,
+        durationMin: g.durationMins,
+        allPupils: pupils,
+        allAvailability: availability,
+        unavailability,
+      });
+      return allMatched.length;
+    });
+  }, [gaps, pupils, availability, unavailability]);
+
   /** How close each pupil is to the lessons either side of this gap. */
   const proximityByPupil = useMemo(() => {
     const map = new Map<string, Proximity>();
@@ -886,72 +907,134 @@ function GapsPage() {
           </div>
         </div>
 
-        {/* Gap selector */}
-        {gaps.length > 1 && (
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              overflowX: "auto",
-              paddingBottom: 12,
-              scrollbarWidth: "none",
-            }}
-          >
-            {gaps.map((g, i) => {
-              const isToday = g.date === todayIso();
-              const label = `${
-                isToday
-                  ? "Today"
-                  : new Date(g.date + "T12:00:00").toLocaleDateString("en-GB", {
-                      weekday: "short",
-                      day: "numeric",
-                    })
-              } ${minToHm(g.startMins)}`;
-              const active = i === selectedGapIdx;
-              return (
-                <button
-                  key={`${g.date}-${g.startMins}`}
-                  onClick={() => selectGap(i)}
+        {/* Gap cards */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+          {gaps.map((g, i) => {
+            const active = i === selectedGapIdx;
+            const count = availableCountByGap[i] ?? 0;
+            const isToday = g.date === todayIso();
+            const dayLabel = isToday
+              ? "Today"
+              : new Date(g.date + "T12:00:00").toLocaleDateString("en-GB", {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                });
+            return (
+              <div
+                key={`${g.date}-${g.startMins}`}
+                onClick={() => selectGap(i)}
+                role="button"
+                tabIndex={0}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "14px 14px",
+                  borderRadius: 16,
+                  cursor: "pointer",
+                  background: active ? GREEN_TINT : "#FFFFFF",
+                  border: `1px solid ${active ? GREEN : GREEN_LINE}`,
+                  boxShadow: active
+                    ? "0 4px 16px rgba(30,122,70,0.14)"
+                    : "0 1px 2px rgba(0,0,0,0.04)",
+                  transition: "background 120ms ease, border-color 120ms ease",
+                }}
+              >
+                {/* Time block */}
+                <div style={{ flexShrink: 0 }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: GREEN_DEEP, lineHeight: 1.1 }}>
+                    {minToHm(g.startMins)}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#8A94A6", marginTop: 2, whiteSpace: "nowrap" }}>
+                    {dayLabel}
+                  </div>
+                </div>
+
+                <div style={{ width: 1, alignSelf: "stretch", background: GREEN_LINE, flexShrink: 0 }} />
+
+                <IconClock size={20} color={GREEN} style={{ flexShrink: 0 }} />
+
+                {/* Detail */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: NAVY,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Free · {fmtDuration(g.durationMins)}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#8A94A6", marginTop: 2 }}>
+                    {count} pupil{count === 1 ? "" : "s"} available
+                  </div>
+                </div>
+
+                {/* Status pill */}
+                <span
                   style={{
-                    padding: "6px 12px",
-                    borderRadius: 20,
-                    fontSize: 11,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "4px 8px",
+                    borderRadius: 999,
                     whiteSpace: "nowrap",
-                    cursor: "pointer",
-                    border: "0.5px solid",
-                    background: active ? NAVY : "#FFFFFF",
-                    color: active ? "#FFFFFF" : "#536579",
-                    borderColor: active ? NAVY : "#E4E8EF",
-                    fontWeight: 500,
-                    fontFamily: "inherit",
+                    background: count > 0 ? GREEN_TINT : "#F3F4F6",
+                    color: count > 0 ? GREEN_DEEP : "#9CA3AF",
+                    flexShrink: 0,
                   }}
                 >
-                  {label}
+                  {count > 0 ? "Available" : "No pupils"}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectGap(i);
+                  }}
+                  style={{
+                    border: "none",
+                    borderRadius: 10,
+                    padding: "8px 12px",
+                    background: GREEN,
+                    color: "#FFFFFF",
+                    fontFamily: "inherit",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Fill →
                 </button>
-              );
-            })}
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
 
         {selectedGap && (
           <>
-            {/* Selected gap card */}
+            {/* Selected gap detail */}
             <div
               style={{
-                background: "#FFFFFF",
-                borderRadius: 12,
+                background: GREEN_TINT,
+                borderRadius: 16,
+                border: `1px solid ${GREEN_LINE}`,
                 padding: 16,
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                 marginBottom: 16,
               }}
             >
-              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, marginBottom: 4 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: GREEN_DEEP, marginBottom: 4 }}>
                 {fmtDateLong(selectedGap.date)}
               </div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: NAVY, marginBottom: 8 }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: NAVY, marginBottom: 6 }}>
                 {minToHm(selectedGap.startMins)} – {minToHm(selectedGap.endMins)}
               </div>
-              <div style={{ fontSize: 12, color: "#536579", display: "flex", gap: 6 }}>
+              <div style={{ fontSize: 12, color: "#4B5C6B", display: "flex", gap: 6 }}>
                 <span>{fmtDuration(selectedGap.durationMins)} free</span>
                 {potential != null && (
                   <>
@@ -961,6 +1044,7 @@ function GapsPage() {
                 )}
               </div>
             </div>
+
 
             {/* Pupils */}
             <div
@@ -1007,13 +1091,21 @@ function GapsPage() {
                 No active pupils found
               </div>
             ) : (
-              <div style={{ background: "#FFFFFF", borderRadius: 12, overflow: "hidden" }}>
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  border: "1px solid #EDF1F5",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                }}
+              >
                 {sortedPupils.map((p, idx) => {
                   const status = statusByPupil.get(p.id) ?? "no-preference";
                   const checked = selectedPupilIds.includes(p.id);
                   const badge =
                     status === "available"
-                      ? { label: "Available", bg: "#EAF3DE", color: "#3B6D11" }
+                      ? { label: "Available", bg: GREEN_TINT, color: GREEN_DEEP }
                       : status === "no-preference"
                         ? { label: "No preference", bg: "#F3F4F6", color: "#6B7280" }
                         : { label: "Unavailable", bg: "#F3F4F6", color: "#9CA3AF" };
@@ -1028,13 +1120,15 @@ function GapsPage() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 10,
-                        padding: "10px 12px",
+                        gap: 12,
+                        padding: "12px 14px",
                         borderTop: idx === 0 ? "none" : "0.5px solid #F4F6F8",
                         cursor: "pointer",
+                        background: checked ? GREEN_TINT : "transparent",
                         opacity: status === "unavailable" ? 0.6 : 1,
                       }}
                     >
+
                       <div
                         style={{
                           width: 34,
@@ -1073,16 +1167,17 @@ function GapsPage() {
                       <span
                         style={{
                           fontSize: 10,
-                          fontWeight: 600,
+                          fontWeight: 700,
                           background: badge.bg,
                           color: badge.color,
-                          padding: "2px 6px",
-                          borderRadius: 4,
+                          padding: "4px 8px",
+                          borderRadius: 999,
                           whiteSpace: "nowrap",
                         }}
                       >
                         {badge.label}
                       </span>
+
                       <input
                         type="checkbox"
                         checked={checked}
