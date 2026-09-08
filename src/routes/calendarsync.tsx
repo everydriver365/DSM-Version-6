@@ -66,6 +66,8 @@ function CalendarSyncPage() {
   const [googleConnected, setGoogleConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+
   const [syncing, setSyncing] = useState(false);
   const [icsInboundUrl, setIcsInboundUrl] = useState("");
   const [savedIcsUrl, setSavedIcsUrl] = useState("");
