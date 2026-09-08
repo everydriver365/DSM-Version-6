@@ -4,6 +4,12 @@ import { supabase } from "@/lib/supabaseClient";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import {
+  useGapWindowDays,
+  GAP_WINDOW_OPTIONS,
+  writeGapWindowDays,
+} from "@/lib/gapPrefs";
+
+import {
   proximityToNeighbours,
   proximityRank,
   proximityLabel,
@@ -41,8 +47,8 @@ export const Route = createFileRoute("/gaps")({
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 
-const RANGE_DAYS = 7;
 const MIN_GAP = 60;
+
 const NAVY = "#0B2341";
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -143,6 +149,7 @@ function pupilDisplayName(p: Pupil): string {
 
 function GapsPage() {
   const navigate = useNavigate();
+  const rangeDays = useGapWindowDays();
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -161,7 +168,8 @@ function GapsPage() {
   useEffect(() => {
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rangeDays]);
+
 
   async function load() {
     setLoading(true);
@@ -177,9 +185,10 @@ function GapsPage() {
       const uid = user.id;
 
       const today = todayIso();
-      const endDate = addDays(today, RANGE_DAYS - 1);
+      const endDate = addDays(today, rangeDays - 1);
 
       // --- Instructor settings (required: working hours drive everything) ---
+
       const instructorRes = await supabase
         .from("instructors")
         .select(
@@ -320,9 +329,10 @@ function GapsPage() {
       const pupilBuffers = new Map(pupilData.map((p) => [p.id, p.buffer_after_minutes]));
       const pupilPostcodes = new Map(pupilData.map((p) => [p.id, p.postcode]));
 
-      // --- Exactly 7 days: today .. today + 6 ---
+      // --- Configurable window: today .. today + (rangeDays - 1) ---
       const computed: Gap[] = [];
-      for (let i = 0; i < RANGE_DAYS; i++) {
+      for (let i = 0; i < rangeDays; i++) {
+
         const dateStr = addDays(today, i);
         const dayName = DAY_NAMES[new Date(dateStr + "T12:00:00").getDay()];
 
@@ -713,9 +723,37 @@ function GapsPage() {
       >
         <IconArrowLeft size={20} color="#FFFFFF" />
       </button>
-      <span style={{ fontSize: 18, fontWeight: 600, color: "#FFFFFF" }}>Gap filler</span>
+      <span style={{ fontSize: 18, fontWeight: 600, color: "#FFFFFF", flex: 1 }}>Gap filler</span>
+      <label
+        htmlFor="gapWindow"
+        style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", display: "flex", alignItems: "center", gap: 6 }}
+      >
+        Next
+        <select
+          id="gapWindow"
+          value={rangeDays}
+          onChange={(e) => writeGapWindowDays(parseInt(e.target.value, 10))}
+          style={{
+            background: "rgba(255,255,255,0.12)",
+            color: "#FFFFFF",
+            border: "1px solid rgba(255,255,255,0.25)",
+            borderRadius: 8,
+            padding: "4px 8px",
+            fontSize: 12,
+            fontFamily: "inherit",
+            cursor: "pointer",
+          }}
+        >
+          {GAP_WINDOW_OPTIONS.map((d) => (
+            <option key={d} value={d} style={{ color: NAVY }}>
+              {d} days
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
+
 
   if (loading) {
     return (
@@ -794,12 +832,13 @@ function GapsPage() {
               boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             }}
           >
-            No gaps in the next 7 days
+            No gaps in the next {rangeDays} days
           </div>
         </div>
       </div>
     );
   }
+
 
   const potential =
     selectedGap && hourlyRate != null && hourlyRate > 0

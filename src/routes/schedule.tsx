@@ -20,8 +20,9 @@ import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
-import { useMinGapMinutes } from "../lib/gapPrefs";
+import { useMinGapMinutes, useGapWindowDays } from "../lib/gapPrefs";
 import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
+
 
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
@@ -721,9 +722,13 @@ function SchedulePage() {
   const unreadCount = useUnreadCount({ skipBadge: true });
   const today = useMemo(() => startOfDay(new Date()), []);
   const todayISO = ymdLocal(today);
-  const in14DaysISO = ymdLocal(addDays(today, 14));
+  const gapWindowDays = useGapWindowDays();
+  const gapWindowEndISO = ymdLocal(addDays(today, gapWindowDays - 1));
+
   const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
-  const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
+  const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today]);
+
+
 
 
   const [lessons, setLessons] = useState<Lesson[] | null>(null);
@@ -1630,11 +1635,12 @@ function SchedulePage() {
       const dots: string[] = [];
       if (dayLessons.length > 0) dots.push("#1877D6");
       if (dayBlocks.length > 0) dots.push("#8A93A3");
-      if (gaps.length > 0) dots.push("#B5661E");
+      if (gaps.length > 0 && key <= gapWindowEndISO) dots.push("#B5661E");
       if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+  }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes, gapWindowEndISO]);
+
 
   const scrollToDate = useCallback(
     (key: string) => {

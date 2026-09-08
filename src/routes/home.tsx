@@ -33,7 +33,8 @@ import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-li
 import { getLessonWeather, type LessonWeather } from "@/lib/lesson-weather.functions";
 import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-time.functions";
 import { verifyAddress } from "@/lib/geocode.functions";
-import { useMinGapMinutes } from "@/lib/gapPrefs";
+import { useMinGapMinutes, useGapWindowDays } from "@/lib/gapPrefs";
+
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
 import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
@@ -1679,6 +1680,8 @@ function ProTeaserTile({ onExploreSwipe }: { onExploreSwipe?: () => void }) {
 
 function HomePage() {
   const navigate = useNavigate();
+  const gapWindowDays = useGapWindowDays();
+
 
   // Full-screen HOME ↔ PRO swipe state
   const [activePage, setActivePage] = useState(0);
@@ -2920,8 +2923,9 @@ function HomePage() {
   }, []);
   const todayStart = useMemo(() => startOfDay(now), [now]);
   const tomorrowStart = useMemo(() => addDays(todayStart, 1), [todayStart]);
-  const in14DaysStart = useMemo(() => addDays(todayStart, 14), [todayStart]);
+  const gapWindowEndStart = useMemo(() => addDays(todayStart, gapWindowDays - 1), [todayStart, gapWindowDays]);
   const dayAfter = useMemo(() => addDays(todayStart, 2), [todayStart]);
+
   const weekStart = useMemo(() => startOfWeek(now), [now]);
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
@@ -4302,8 +4306,9 @@ function HomePage() {
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
-  const in14DaysISO = ymd(in14DaysStart);
+  const gapWindowEndISO = ymd(gapWindowEndStart);
   const tomorrowFormatted = formatDayLabel(tomorrowStart);
+
 
   useEffect(() => {
     if (!userId) return;
@@ -4332,9 +4337,10 @@ function HomePage() {
         .eq('instructor_id', userId)
         .eq('source', 'external_calendar')
         .gte('end_datetime', todayISO)
-        .lte('start_datetime', `${in14DaysISO}T23:59:59`);
+        .lte('start_datetime', `${gapWindowEndISO}T23:59:59`);
       setIcsBlocks((data as any[]) ?? []);
     };
+
 
     fetchCalendarBlocks();
     fetchIcsBlocks();
@@ -4350,7 +4356,8 @@ function HomePage() {
       cancelled = true;
       window.removeEventListener('calendar-synced', handleCalendarSynced);
     };
-  }, [userId, todayISO, tomorrowISO, in14DaysISO]);
+  }, [userId, todayISO, tomorrowISO, gapWindowEndISO]);
+
 
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).

@@ -16,6 +16,8 @@ import {
   writeMinGapMinutes,
   DEFAULT_MIN_GAP_MINUTES,
 } from "../lib/gapPrefs";
+
+
 import {
   readBadgePrefs,
   writeBadgePrefs,
@@ -103,6 +105,8 @@ function SettingsPage() {
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
+
+
   const [badgePrefs, setBadgePrefs] = useState<{
     issues: boolean;
     chat: boolean;
@@ -115,6 +119,8 @@ function SettingsPage() {
       if (data.user?.id) setBadgePrefs(readBadgePrefs(data.user.id));
     });
   }, []);
+
+
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
   const [homeAddress, setHomeAddress] = useState<string>("");
@@ -647,6 +653,8 @@ function SettingsPage() {
       toast.success("Saved ✓");
     }
   }
+
+
 
   async function saveBuffers(nextAfter: number) {
     if (!userId) return;
