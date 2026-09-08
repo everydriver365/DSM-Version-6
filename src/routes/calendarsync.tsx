@@ -328,37 +328,36 @@ function CalendarSyncPage() {
       if (detail.includes("calendar_blocks_external_unique") || detail.includes("duplicate key")) {
         toast.info("Calendar already up to date");
         setLastSynced(new Date().toISOString());
+        setSyncError(null);
         return;
       }
 
       const authProblem =
+        data.reconnect === true ||
         googleStatus === 401 ||
         googleStatus === 403 ||
         /invalid_grant|unauthorized|token|reconnect|no google calendar connected/i.test(detail);
 
       if (authProblem) {
         setGoogleConnected(false);
+        setSyncError("Your Google Calendar connection has expired — please reconnect.");
         toast.error("Your Google Calendar connection has expired — please reconnect.");
         return;
       }
 
-      if (!detail && !res.ok) {
-        toast.error(`Sync failed (${res.status})`);
-        return;
-      }
-
-      toast.error(
-        detail
-          ? googleStatus
-            ? `Sync failed: ${detail} (Google ${googleStatus})`
-            : `Sync failed: ${detail}`
-          : `Sync failed (${res.status})`,
-      );
+      const message = detail
+        ? googleStatus
+          ? `Sync failed: ${detail} (Google ${googleStatus})`
+          : `Sync failed: ${detail}`
+        : `Sync failed (${res.status})`;
+      setSyncError(message);
+      toast.error(message);
     } catch (err) {
       console.error("[calendar-sync] sync error", err);
-      toast.error(
-        `Sync failed: ${err instanceof Error ? err.message : "could not reach the sync service"}`,
-      );
+      const message = `Sync failed: ${err instanceof Error ? err.message : "could not reach the sync service"}`;
+      setSyncError(message);
+      toast.error(message);
+
     } finally {
       setSyncing(false);
     }
