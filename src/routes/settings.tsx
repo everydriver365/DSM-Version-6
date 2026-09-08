@@ -15,10 +15,8 @@ import {
   readMinGapMinutes,
   writeMinGapMinutes,
   DEFAULT_MIN_GAP_MINUTES,
-  readGapWindowDays,
-  writeGapWindowDays,
-  GAP_WINDOW_OPTIONS,
 } from "../lib/gapPrefs";
+
 
 import {
   readBadgePrefs,
@@ -106,8 +104,8 @@ function SettingsPage() {
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
   const [minGapMinutes, setMinGapMinutes] = useState<number>(DEFAULT_MIN_GAP_MINUTES);
-  const [gapWindowDays, setGapWindowDays] = useState<number>(7);
   const [bufferAfter, setBufferAfter] = useState<number>(15);
+
 
   const [badgePrefs, setBadgePrefs] = useState<{
     issues: boolean;
@@ -117,11 +115,11 @@ function SettingsPage() {
 
   useEffect(() => {
     setMinGapMinutes(readMinGapMinutes());
-    setGapWindowDays(readGapWindowDays());
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.id) setBadgePrefs(readBadgePrefs(data.user.id));
     });
   }, []);
+
 
   const [savingRates, setSavingRates] = useState(false);
   const [homePostcode, setHomePostcode] = useState<string>("");
@@ -652,10 +650,10 @@ function SettingsPage() {
       toast.error("Failed to save rates");
     } else {
       writeMinGapMinutes(minGapMinutes);
-      writeGapWindowDays(gapWindowDays);
       toast.success("Saved ✓");
     }
   }
+
 
 
   async function saveBuffers(nextAfter: number) {
