@@ -331,3 +331,34 @@ export function isDoubleBookingError(err: unknown): boolean {
 
 export const DOUBLE_BOOKING_MESSAGE =
   "That time clashes with another lesson in your diary.";
+
+/**
+ * Run the clash check for a save. Blocking clashes stop the save; softer
+ * warnings ask the user whether to book anyway.
+ */
+export async function guardLessonSave(
+  p: CheckLessonConflictParams,
+): Promise<{ ok: boolean; message?: string }> {
+  let result: ConflictResult;
+  try {
+    result = await checkLessonConflict(p);
+  } catch (e) {
+    // Never block a save because the check itself failed — the database
+    // constraint is still the final safety net.
+    console.warn("[bookingConflicts] check failed", e);
+    return { ok: true };
+  }
+
+  if (result.blocking.length > 0) {
+    return { ok: false, message: result.blocking.map((c) => c.label).join(". ") };
+  }
+
+  if (result.warnings.length > 0 && typeof window !== "undefined") {
+    const proceed = window.confirm(
+      `${result.warnings.map((c) => c.label).join("\n")}\n\nBook anyway?`,
+    );
+    if (!proceed) return { ok: false };
+  }
+
+  return { ok: true };
+}
