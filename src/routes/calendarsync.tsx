@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconCalendar, IconCalendarPlus, IconChevronRight, IconCopy, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconChevronRight, IconInfoCircle, IconRefresh, IconX } from "@tabler/icons-react";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "@/lib/toast";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";

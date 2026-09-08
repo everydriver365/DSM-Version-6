@@ -68,7 +68,7 @@ describe("computeDayGaps", () => {
     ]);
   });
 
-  test("clamps an ICS event that begins before working hours", () => {
+  test("clamps an imported calendar event that begins before working hours", () => {
     expect(
       computeDayGaps({
         ...base,
@@ -82,7 +82,7 @@ describe("computeDayGaps", () => {
     ).toEqual([{ startMins: 675, endMins: 960, gapMins: 285 }]);
   });
 
-  test("blocks the day for an all-day ICS event", () => {
+  test("blocks the day for an all-day imported calendar event", () => {
     expect(
       computeDayGaps({
         ...base,
