@@ -1114,9 +1114,6 @@ function GapsPage() {
             {/* Inline action bar — visible as soon as pupils are selected */}
             <div
               style={{
-                position: "sticky",
-                top: 8,
-                zIndex: 30,
                 background: "#FFFFFF",
                 border: `1px solid ${GREEN_LINE}`,
                 borderRadius: 12,
@@ -1126,6 +1123,7 @@ function GapsPage() {
                 alignItems: "center",
                 gap: 10,
                 boxShadow: selectedPupilIds.length > 0 ? "0 4px 12px rgba(30,122,70,0.12)" : "none",
+                transition: "box-shadow 120ms ease",
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
