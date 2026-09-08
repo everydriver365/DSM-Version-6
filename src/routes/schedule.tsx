@@ -1633,11 +1633,12 @@ function SchedulePage() {
       const dots: string[] = [];
       if (dayLessons.length > 0) dots.push("#1877D6");
       if (dayBlocks.length > 0) dots.push("#8A93A3");
-      if (gaps.length > 0) dots.push("#B5661E");
+      if (gaps.length > 0 && key <= gapWindowEndISO) dots.push("#B5661E");
       if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+  }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes, gapWindowEndISO]);
+
 
   const scrollToDate = useCallback(
     (key: string) => {
