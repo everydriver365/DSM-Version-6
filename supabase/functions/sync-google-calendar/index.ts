@@ -180,6 +180,16 @@ Deno.serve(async (req) => {
       }
     }
 
+    if (!selected.length) {
+      return json({
+        ok: false,
+        watching: [],
+        failures: {},
+        reason: "no_calendars_selected",
+        webhook_url: webhookUrl,
+      });
+    }
+
     const failures: Record<string, string> = {};
     for (const calId of selected) {
       const existing = next[calId];
@@ -201,8 +211,16 @@ Deno.serve(async (req) => {
       });
       if (!res.ok) {
         const text = await res.text();
-        console.error("[sync-google-calendar] watch failed", calId, res.status, text);
-        failures[calId] = text.slice(0, 300);
+        console.error("[sync-google-calendar] watch failed", calId, res.status, webhookUrl, text);
+        let reason = text.slice(0, 600);
+        try {
+          const parsed = JSON.parse(text);
+          reason =
+            parsed?.error?.errors?.[0]?.message ??
+            parsed?.error?.message ??
+            reason;
+        } catch { /* keep raw text */ }
+        failures[calId] = `${reason} (Google ${res.status})`;
         continue;
       }
       const info = await res.json();
@@ -218,6 +236,7 @@ Deno.serve(async (req) => {
       ok: Object.keys(failures).length === 0,
       watching: Object.keys(next),
       failures,
+      webhook_url: webhookUrl,
     });
   }
 
