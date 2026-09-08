@@ -172,65 +172,124 @@ Deno.serve(async (req) => {
     `[sync-google-calendar] fetched ${allItems.length} events, ${allItems.length - items.length} own lessons skipped`
   );
 
-  // Delete ALL existing external calendar blocks for this instructor first
-  const { error: deleteError } = await supabase
+  // Match-and-update rather than wipe-and-reinsert: each imported row keeps a
+  // permanent link to its Google event, so the diary never flickers and
+  // availability never briefly frees up time that is actually busy.
+  const syncStartedAt = new Date().toISOString();
+  const windowStart = timeMin.toISOString();
+  const windowEnd = timeMax.toISOString();
+
+  const { data: existingRows, error: existingError } = await supabase
     .from("calendar_blocks")
-    .delete()
+    .select("id, external_event_id")
     .eq("instructor_id", instructor_id)
     .eq("source", "external_calendar");
 
-  if (deleteError) {
-    console.error("[sync-google-calendar] delete error", deleteError.message);
-  } else {
-    console.log("[sync-google-calendar] cleared existing blocks");
+  if (existingError) {
+    console.error("[sync-google-calendar] read existing error", existingError.message);
   }
+
+  const existingByEventId = new Map<string, string>();
+  for (const row of existingRows ?? []) {
+    if (row.external_event_id) existingByEventId.set(row.external_event_id, row.id);
+  }
+
+  const rowFor = (item: any) => {
+    const isAllDay = !item.start?.dateTime;
+    // Timed events carry their own UTC offset from Google. All-day events
+    // give a date only, with an exclusive end date — anchor both to London
+    // midnight so availability maths is right in GMT and BST alike.
+    const startRaw = item.start?.dateTime ?? londonMidnightIso(item.start?.date);
+    const endRaw = item.end?.dateTime ?? londonMidnightIso(item.end?.date);
+    return {
+      instructor_id,
+      source: "external_calendar",
+      title: item.summary ?? "Google event",
+      description: item.description ?? null,
+      location: item.location ?? null,
+      start_datetime: startRaw,
+      end_datetime: endRaw,
+      is_all_day: isAllDay,
+      colour: null,
+      blocks_availability: true,
+      external_event_id: item.id ?? null,
+      external_calendar_id: calendarId,
+      external_updated_at: item.updated ?? null,
+      last_synced_at: syncStartedAt,
+    };
+  };
 
   let synced = 0;
-  if (items.length > 0) {
-    const rows = items.map((item: any) => {
-      const isAllDay = !item.start?.dateTime;
-      // Timed events carry their own UTC offset from Google. All-day events
-      // give a date only, with an exclusive end date — anchor both to London
-      // midnight so availability maths is right in GMT and BST alike.
-      const startRaw = item.start?.dateTime ?? londonMidnightIso(item.start?.date);
-      const endRaw = item.end?.dateTime ?? londonMidnightIso(item.end?.date);
-      return {
-        instructor_id,
-        source: "external_calendar",
-        title: item.summary ?? "Google event",
-        description: item.description ?? null,
-        location: item.location ?? null,
-        start_datetime: startRaw,
-        end_datetime: endRaw,
-        is_all_day: isAllDay,
-        colour: null,
-        blocks_availability: true,
-      };
-    });
+  const seenEventIds = new Set<string>();
+  const toInsert: any[] = [];
 
+  for (const item of items) {
+    const row = rowFor(item);
+    if (row.external_event_id) seenEventIds.add(row.external_event_id);
+    const existingId = row.external_event_id
+      ? existingByEventId.get(row.external_event_id)
+      : undefined;
 
-    // Insert in batches of 100
-    for (let i = 0; i < rows.length; i += 100) {
-      const batch = rows.slice(i, i + 100);
+    if (existingId) {
       const { error } = await supabase
         .from("calendar_blocks")
-        .insert(batch);
+        .update(row)
+        .eq("id", existingId);
       if (error) {
-        console.error("[sync-google-calendar] insert error", error.message);
+        console.error("[sync-google-calendar] update error", error.message);
       } else {
-        synced += batch.length;
+        synced += 1;
       }
+    } else {
+      toInsert.push(row);
     }
   }
+
+  for (let i = 0; i < toInsert.length; i += 100) {
+    const batch = toInsert.slice(i, i + 100);
+    const { error } = await supabase.from("calendar_blocks").insert(batch);
+    if (error) {
+      console.error("[sync-google-calendar] insert error", error.message);
+    } else {
+      synced += batch.length;
+    }
+  }
+
+  // Remove only what Google no longer has: rows in the synced window whose
+  // event has gone (deleted or cancelled), plus legacy rows that predate the
+  // Google id and have just been re-imported with one.
+  const staleIds = (existingRows ?? [])
+    .filter((r: any) => !r.external_event_id || !seenEventIds.has(r.external_event_id))
+    .map((r: any) => r.id);
+
+  let removed = 0;
+  for (let i = 0; i < staleIds.length; i += 100) {
+    const batch = staleIds.slice(i, i + 100);
+    const { error, count } = await supabase
+      .from("calendar_blocks")
+      .delete({ count: "exact" })
+      .in("id", batch)
+      .eq("instructor_id", instructor_id)
+      .eq("source", "external_calendar")
+      .gte("start_datetime", windowStart)
+      .lte("start_datetime", windowEnd);
+    if (error) {
+      console.error("[sync-google-calendar] delete error", error.message);
+    } else {
+      removed += count ?? batch.length;
+    }
+  }
+
 
   await supabase.from("instructors").update({
     calendar_last_synced: new Date().toISOString(),
   }).eq("id", instructor_id);
 
-  console.log(`[sync-google-calendar] done: ${synced} synced`);
+  console.log(`[sync-google-calendar] done: ${synced} synced, ${removed} removed`);
 
   return new Response(
-    JSON.stringify({ ok: true, success: true, synced, eventsImported: synced }),
+    JSON.stringify({ ok: true, success: true, synced, removed, eventsImported: synced }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
 });
+
