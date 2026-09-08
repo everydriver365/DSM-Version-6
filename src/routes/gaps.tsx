@@ -47,8 +47,8 @@ export const Route = createFileRoute("/gaps")({
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 
-const RANGE_DAYS = 7;
 const MIN_GAP = 60;
+
 const NAVY = "#0B2341";
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
