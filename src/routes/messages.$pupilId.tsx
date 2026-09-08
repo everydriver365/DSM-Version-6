@@ -83,19 +83,8 @@ function formatSlotWhen(slotDate: string, slotTime: string): string {
   }
 }
 
-const ACCEPT_WORDS = ["yes", "yeah", "yep", "yup", "sure", "ok", "okay", "confirm", "sounds good"];
-function looksLikeAcceptance(body: string): boolean {
-  const t = body.trim().toLowerCase();
-  if (!t) return false;
-  for (const w of ACCEPT_WORDS) {
-    if (t === w) return true;
-    if (t.startsWith(w)) {
-      const nextChar = t.charAt(w.length);
-      if (nextChar === "" || /[\s.!?,]/.test(nextChar)) return true;
-    }
-  }
-  return false;
-}
+// Acceptance wording rules are shared with the receive-sms Edge Function.
+
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", {
