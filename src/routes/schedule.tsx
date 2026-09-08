@@ -958,7 +958,7 @@ function SchedulePage() {
         .from("calendar_blocks")
         .select("id, start_datetime, end_datetime, title")
         .eq("instructor_id", uid)
-        .in("source", ["ics_inbound", "external_calendar"])
+        .eq("source", "external_calendar")
         .gte("end_datetime", todayISO)
         .lte("start_datetime", `${in14DaysISO}T23:59:59`);
       setIcsBlocks((icsData as any[]) ?? []);
@@ -1205,7 +1205,7 @@ function SchedulePage() {
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
-    // ICS sync — no Google OAuth required
+    // Google Calendar sync
     setSyncing(true);
     setSyncMessage(null);
 
@@ -1216,7 +1216,7 @@ function SchedulePage() {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
       const useGoogleSync = true;
-      const endpoint = "/functions/v1/sync-ics-feed";
+      const endpoint = "/functions/v1/sync-google-calendar";
       console.log("[schedule] handleSync called", {
         userId,
         google_calendar_connected: instructor?.google_calendar_connected,

@@ -1549,7 +1549,7 @@ function RootComponent() {
 
     const syncCalendar = async () => {
       try {
-        // Throttle: Google rate-limits (HTTP 429) ICS feeds that are polled
+        // Throttle: Google rate-limits (HTTP 429) calendars that are polled
         // too often. At most one background sync every 15 minutes per device.
         const THROTTLE_MS = 15 * 60 * 1000;
         const lastKey = `dsm:calendar-sync:${userId}`;
