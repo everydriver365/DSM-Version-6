@@ -441,7 +441,8 @@ function CalendarSyncPage() {
       return;
     }
     void sync();
-    if (instantUpdates) void callCalendarService("watch").catch(() => undefined);
+    if (instantUpdates)
+      void callCalendarService("watch", { webhook_url: WEBHOOK_URL }).catch(() => undefined);
   }
 
   /** Ask Google to tell us the moment something changes (or stop). */
