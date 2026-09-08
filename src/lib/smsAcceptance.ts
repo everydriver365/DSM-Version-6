@@ -15,7 +15,7 @@ export const ACCEPT_WORDS = [
 ];
 
 /** Statuses that mean an offer is still open and can be accepted. */
-export const OPEN_OFFER_STATUSES = ["pending", "sent"];
+export const OPEN_OFFER_STATUSES = ["pending"];
 
 export function looksLikeAcceptance(body: string): boolean {
   const t = (body ?? "").trim().toLowerCase();

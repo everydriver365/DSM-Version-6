@@ -48,12 +48,22 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-  const { data: queued, error: fetchError } = await supabase
+  // Scope to a specific instructor if provided — prevents one instructor's
+  // call from draining another instructor's queued messages.
+  let body: Record<string, string> = {};
+  try { body = await req.json(); } catch { /* no body */ }
+  const instructorId = body.instructor_id ?? null;
+
+  let query = supabase
     .from("sms_queue")
     .select("id, pupil_phone, message")
     .eq("status", "queued")
     .lte("scheduled_for", new Date().toISOString())
     .limit(50);
+
+  if (instructorId) query = query.eq("instructor_id", instructorId);
+
+  const { data: queued, error: fetchError } = await query;
 
   if (fetchError) {
     return new Response(JSON.stringify({ error: fetchError.message }), {
