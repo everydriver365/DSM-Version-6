@@ -328,41 +328,78 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Remove only what Google no longer has: rows in the synced window whose
-  // event has gone (deleted or cancelled), plus legacy rows that predate the
-  // Google id and have just been re-imported with one.
-  const staleIds = (existingRows ?? [])
-    .filter((r: any) => !r.external_event_id || !seenEventIds.has(r.external_event_id))
-    .map((r: any) => r.id);
-
   let removed = 0;
-  for (let i = 0; i < staleIds.length; i += 100) {
-    const batch = staleIds.slice(i, i + 100);
-    const { error, count } = await supabase
-      .from("calendar_blocks")
-      .delete({ count: "exact" })
-      .in("id", batch)
-      .eq("instructor_id", instructor_id)
-      .eq("source", "external_calendar")
-      .gte("start_datetime", windowStart)
-      .lte("start_datetime", windowEnd);
-    if (error) {
-      console.error("[sync-google-calendar] delete error", error.message);
-    } else {
-      removed += count ?? batch.length;
+
+  const deleteByIds = async (ids: string[]) => {
+    for (let i = 0; i < ids.length; i += 100) {
+      const batch = ids.slice(i, i + 100);
+      const { error, count } = await supabase
+        .from("calendar_blocks")
+        .delete({ count: "exact" })
+        .in("id", batch)
+        .eq("instructor_id", instructor_id)
+        .eq("source", "external_calendar");
+      if (error) {
+        console.error("[sync-google-calendar] delete error", error.message);
+      } else {
+        removed += count ?? batch.length;
+      }
+    }
+  };
+
+  if (incremental) {
+    // Google tells us exactly what was cancelled or deleted — remove only those.
+    const ids = cancelledIds
+      .map((eventId) => existingByEventId.get(eventId))
+      .filter((id): id is string => Boolean(id));
+    await deleteByIds(ids);
+  } else {
+    // Full read: remove what Google no longer has within the synced window,
+    // plus legacy rows that predate the Google id and were just re-imported.
+    const staleIds = (existingRows ?? [])
+      .filter((r: any) => !r.external_event_id || !seenEventIds.has(r.external_event_id))
+      .map((r: any) => r.id);
+
+    for (let i = 0; i < staleIds.length; i += 100) {
+      const batch = staleIds.slice(i, i + 100);
+      const { error, count } = await supabase
+        .from("calendar_blocks")
+        .delete({ count: "exact" })
+        .in("id", batch)
+        .eq("instructor_id", instructor_id)
+        .eq("source", "external_calendar")
+        .gte("start_datetime", windowStart)
+        .lte("start_datetime", windowEnd);
+      if (error) {
+        console.error("[sync-google-calendar] delete error", error.message);
+      } else {
+        removed += count ?? batch.length;
+      }
     }
   }
 
-
   await supabase.from("instructors").update({
     calendar_last_synced: new Date().toISOString(),
+    google_sync_token: read.nextSyncToken ?? (incremental ? syncToken : null),
+    google_sync_error: null,
+    google_sync_error_at: null,
   }).eq("id", instructor_id);
 
-  console.log(`[sync-google-calendar] done: ${synced} synced, ${removed} removed`);
+  console.log(
+    `[sync-google-calendar] done (${incremental ? "incremental" : "full"}): ${synced} synced, ${removed} removed`
+  );
 
   return new Response(
-    JSON.stringify({ ok: true, success: true, synced, removed, eventsImported: synced }),
+    JSON.stringify({
+      ok: true,
+      success: true,
+      synced,
+      removed,
+      incremental,
+      eventsImported: synced,
+    }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
+
 });
 
