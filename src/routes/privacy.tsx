@@ -174,7 +174,21 @@ const sections: { title: string; content: React.ReactNode }[] = [
     ),
   },
   {
-    title: "13. YOUR RIGHTS",
+    title: "13. WITHDRAWING GOOGLE ACCESS",
+    content: (
+      <>
+        <p>
+          Connecting Google Calendar is optional and you can withdraw access at any time.
+        </p>
+        <p style={{ marginTop: 8 }}>
+          You can disconnect Google Calendar using the calendar settings in Every Driver Pro™, or remove Every Driver Pro™ from the third-party access permissions in your Google account. Once access is withdrawn, we stop synchronising your calendar.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "14. YOUR RIGHTS",
+
     content: (
       <>
         <p>Under UK GDPR you have the right to:</p>
