@@ -174,7 +174,21 @@ const sections: { title: string; content: React.ReactNode }[] = [
     ),
   },
   {
-    title: "13. YOUR RIGHTS",
+    title: "13. WITHDRAWING GOOGLE ACCESS",
+    content: (
+      <>
+        <p>
+          Connecting Google Calendar is optional and you can withdraw access at any time.
+        </p>
+        <p style={{ marginTop: 8 }}>
+          You can disconnect Google Calendar using the calendar settings in Every Driver Pro™, or remove Every Driver Pro™ from the third-party access permissions in your Google account. Once access is withdrawn, we stop synchronising your calendar.
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "14. YOUR RIGHTS",
+
     content: (
       <>
         <p>Under UK GDPR you have the right to:</p>
@@ -191,15 +205,15 @@ const sections: { title: string; content: React.ReactNode }[] = [
     ),
   },
   {
-    title: "14. COOKIES",
+    title: "15. COOKIES",
     content: <p>Every Driver Pro™ uses essential cookies only for authentication.</p>,
   },
   {
-    title: "15. CHANGES",
+    title: "16. CHANGES",
     content: <p>We may update this policy. We will notify you of significant changes via the app.</p>,
   },
   {
-    title: "16. CONTACT",
+    title: "17. CONTACT",
     content: (
       <>
         <p>EveryDriver™ Ltd</p>
