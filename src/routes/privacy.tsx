@@ -205,15 +205,15 @@ const sections: { title: string; content: React.ReactNode }[] = [
     ),
   },
   {
-    title: "14. COOKIES",
+    title: "15. COOKIES",
     content: <p>Every Driver Pro™ uses essential cookies only for authentication.</p>,
   },
   {
-    title: "15. CHANGES",
+    title: "16. CHANGES",
     content: <p>We may update this policy. We will notify you of significant changes via the app.</p>,
   },
   {
-    title: "16. CONTACT",
+    title: "17. CONTACT",
     content: (
       <>
         <p>EveryDriver™ Ltd</p>
