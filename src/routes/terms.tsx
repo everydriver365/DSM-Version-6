@@ -113,7 +113,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     content: (
       <>
         <p>We may suspend or terminate accounts that violate these terms.</p>
-        <p style={{ marginTop: 8 }}>You may delete your account at any time in Settings.</p>
+        <p style={{ marginTop: 8 }}>You may schedule your account for deletion at any time in Settings. Personal data is handled as described in our Privacy Policy.</p>
       </>
     ),
   },
