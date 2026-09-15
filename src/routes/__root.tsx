@@ -1018,7 +1018,7 @@ function RootComponent() {
   // screen, not just the handful of pages that mount this hook themselves.
   const unreadCount = useUnreadCount();
 
-  // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
+  // Desktop redirect: keep the public legal pages on this domain for unauthenticated review.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const isIframe = (() => {
@@ -1028,7 +1028,8 @@ function RootComponent() {
         return true;
       }
     })();
-    if (!Capacitor.isNativePlatform() && !isIframe && window.innerWidth > 768) {
+    const isPublicLegalPage = window.location.pathname === "/privacy" || window.location.pathname === "/terms";
+    if (!Capacitor.isNativePlatform() && !isIframe && !isPublicLegalPage && window.innerWidth > 768) {
       window.location.href = "https://desktop.everydriver.pro";
     }
   }, []);
