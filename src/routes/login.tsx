@@ -1,13 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { tokens } from "@/lib/tokens";
-import { useState, useEffect, useRef, type FormEvent } from "react";
-import {
-  IconChevronRight,
-  IconEye,
-  IconEyeOff,
-  IconScan,
-  IconShieldCheck,
-} from "@tabler/icons-react";
+import { useState, useEffect, type FormEvent } from "react";
+import { IconEye, IconEyeOff, IconShieldCheck } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import edpLogoAsset from "../assets/edp-signin-logo.png.asset.json";
@@ -34,12 +27,9 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [webauthnSupported, setWebauthnSupported] = useState(false);
-  const [enrolled, setEnrolled] = useState(false);
-  const [askEnroll, setAskEnroll] = useState(false);
-  const fetchedRefreshToken = useRef<string | null>(null);
-  const instructorId = useRef<string | null>(null);
 
+  // Face ID sign-in is disabled: it relied on reading a stored refresh token
+  // from the browser. Password sign-in is unchanged.
   useEffect(() => {
     let saved: string | null = null;
     try {
@@ -50,20 +40,6 @@ function LoginPage() {
     if (saved) {
       setEmail(saved);
     }
-    if (typeof window !== "undefined" && window.PublicKeyCredential && navigator.credentials) {
-      setWebauthnSupported(true);
-    }
-    if (!saved) return;
-    (async () => {
-      const { data: instructor } = await supabase
-        .from("instructors")
-        .select("id, faceid_enrolled, faceid_refresh_token")
-        .eq("remembered_email", saved)
-        .maybeSingle();
-      instructorId.current = instructor?.id ?? null;
-      fetchedRefreshToken.current = instructor?.faceid_refresh_token ?? null;
-      if (instructor?.faceid_enrolled) setEnrolled(true);
-    })();
   }, []);
 
   function persistRemember(value: string, on: boolean) {
@@ -96,9 +72,8 @@ function LoginPage() {
       return;
     }
     const userId = data.session?.user?.id ?? null;
-    instructorId.current = userId;
-    // The remembered email powers the Face ID row and prefill on the next
-    // visit, so it is always persisted on a successful sign-in.
+    // The remembered email powers the prefill on the next visit, so it is
+    // always persisted on a successful sign-in.
     persistRemember(email, true);
     if (userId) {
       await supabase
@@ -120,107 +95,6 @@ function LoginPage() {
       }
       navigate({ to: "/calendarsync", search: { connected: "true" }, replace: true });
       return;
-    }
-    if (webauthnSupported && !enrolled) {
-      setAskEnroll(true);
-      return;
-    }
-    navigate({ to: "/home", replace: true });
-  }
-
-  async function enableFaceId() {
-    setAskEnroll(false);
-    try {
-      const challenge = new Uint8Array(32);
-      crypto.getRandomValues(challenge);
-      const cred = await navigator.credentials.create({
-        publicKey: {
-          challenge,
-          rp: { name: "EDP by EveryDriver", id: window.location.hostname },
-          user: {
-            id: new TextEncoder().encode(email),
-            name: email,
-            displayName: email,
-          },
-          pubKeyCredParams: [{ type: "public-key", alg: -7 }],
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            userVerification: "required",
-            residentKey: "preferred",
-          },
-          timeout: 60000,
-        },
-      });
-      if (cred) {
-        const { data } = await supabase.auth.getSession();
-        const refreshToken = data.session?.refresh_token;
-        const userId = data.session?.user?.id;
-        if (refreshToken && userId) {
-          await supabase
-            .from("instructors")
-            .update({ faceid_enrolled: true, faceid_refresh_token: refreshToken })
-            .eq("id", userId);
-          instructorId.current = userId;
-          fetchedRefreshToken.current = refreshToken;
-          setEnrolled(true);
-          setNotice("Face ID enabled — you can use it next time you sign in");
-          setTimeout(() => navigate({ to: "/home", replace: true }), 900);
-          return;
-        }
-      }
-    } catch {
-      /* enrollment cancelled or failed */
-    }
-    navigate({ to: "/home", replace: true });
-  }
-
-  function skipEnroll() {
-    setAskEnroll(false);
-    navigate({ to: "/home", replace: true });
-  }
-
-  async function onBiometric() {
-    setError(null);
-    setNotice(null);
-    const refreshToken = fetchedRefreshToken.current;
-    if (!enrolled || !refreshToken) {
-      setError("Face ID not set up — sign in with your password first");
-      return;
-    }
-    try {
-      const challenge = new Uint8Array(32);
-      crypto.getRandomValues(challenge);
-      await navigator.credentials.get({
-        publicKey: {
-          challenge,
-          timeout: 60000,
-          userVerification: "required",
-        },
-      });
-    } catch {
-      setError("Face ID failed — use your password instead");
-      return;
-    }
-    const { error: err } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
-    if (err) {
-      await supabase
-        .from("instructors")
-        .update({ faceid_enrolled: false, faceid_refresh_token: null })
-        .eq("faceid_refresh_token", refreshToken);
-      fetchedRefreshToken.current = null;
-      setEnrolled(false);
-      setError("Session expired — please sign in with your password");
-      return;
-    }
-    const newSession = await supabase.auth.getSession();
-    const newToken = newSession.data.session?.refresh_token;
-    const userId = newSession.data.session?.user?.id ?? instructorId.current;
-    if (newToken && userId) {
-      fetchedRefreshToken.current = newToken;
-      await supabase
-        .from("instructors")
-        .update({ faceid_refresh_token: newToken })
-        .eq("id", userId);
     }
     navigate({ to: "/home", replace: true });
   }
@@ -278,84 +152,6 @@ function LoginPage() {
             Driving School Management
           </span>
         </div>
-
-        {/* Face ID row */}
-        {webauthnSupported && (
-          <button
-            type="button"
-            onClick={
-              enrolled
-                ? onBiometric
-                : () => setError("Sign in with your password first to enable Face ID")
-            }
-            className="w-full flex items-center gap-3.5 text-left mb-5 transition-colors active:bg-[#F1F5F9]"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E2E8F0",
-              borderRadius: 16,
-              padding: "13px 16px",
-              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
-            }}
-          >
-            <span
-              className="flex items-center justify-center flex-shrink-0"
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 11,
-                background: "rgba(24,119,214,0.12)",
-              }}
-            >
-              <IconScan size={19} color="#1877D6" />
-            </span>
-            <span className="flex-1 min-w-0">
-              <span className="block text-[15px] font-semibold leading-tight" style={{ color: "#0B1F3A" }}>
-                Face ID
-              </span>
-              <span className="block text-[12px] leading-tight mt-0.5" style={{ color: "#64748B" }}>
-                {enrolled ? "Sign in with Face ID" : "Sign in faster next time"}
-              </span>
-            </span>
-            <IconChevronRight size={17} color="#94A3B8" className="flex-shrink-0" />
-          </button>
-        )}
-
-        {/* One-time enrolment prompt */}
-        {askEnroll && (
-          <div
-            className="w-full mb-5"
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E2E8F0",
-              borderRadius: 18,
-              padding: 18,
-              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
-            }}
-          >
-            <p className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>Enable Face ID for next time?</p>
-            <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>
-              Sign in faster without typing your password.
-            </p>
-            <div className="flex gap-2.5 mt-4">
-              <button
-                type="button"
-                onClick={enableFaceId}
-                className="flex-1 h-11 text-[14px] font-semibold text-white"
-                style={{ background: tokens.blue, borderRadius: 12 }}
-              >
-                Enable
-              </button>
-              <button
-                type="button"
-                onClick={skipEnroll}
-                className="flex-1 h-11 text-[14px] font-medium"
-                style={{ border: "1px solid #E2E8F0", borderRadius: 12, color: "#475569" }}
-              >
-                Not now
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Login card */}
         <form
