@@ -1362,14 +1362,15 @@ function RootComponent() {
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(async ({ data }: any) => {
+    // Always hide the native splash promptly, even if the sign-in check is slow or fails.
+    const hideSplash = () => { SplashScreen.hide().catch(() => {}); };
+    if (Capacitor.isNativePlatform()) hideSplash();
+    const splashFallback = setTimeout(hideSplash, 3000);
+    supabase.auth.getUser().then(({ data }: any) => {
       if (mounted) setUserId(data.user?.id ?? null);
-      try {
-        await SplashScreen.hide();
-      } catch (e) {
-        // ignore
-      }
-    });
+    }).catch(() => {
+      if (mounted) setUserId(null);
+    }).finally(hideSplash);
     const { data: sub } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       const uid = session?.user?.id ?? null;
       setUserId(uid);
@@ -1389,6 +1390,7 @@ function RootComponent() {
     });
     return () => {
       mounted = false;
+      clearTimeout(splashFallback);
       sub.subscription.unsubscribe();
     };
   }, []);
