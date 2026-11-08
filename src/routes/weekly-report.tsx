@@ -16,7 +16,7 @@ export const Route = createFileRoute("/weekly-report")({
   }),
   component: WeeklyReportPage,
   errorComponent: ({ error }) => (
-    <div className="p-4 text-sm text-red-600">{error.message}</div>
+    <div className="p-4 text-sm text-red-600">{error instanceof Error ? error.message : String(error)}</div>
   ),
   notFoundComponent: () => <div className="p-4 text-sm">Not found.</div>,
 });
